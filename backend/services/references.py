@@ -2,7 +2,26 @@
 from __future__ import annotations
 import logging
 
-import librosa, numpy as np, soundfile as sf
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+    np = None
+
+try:
+    import librosa
+    HAS_LIBROSA = True
+except ImportError:
+    HAS_LIBROSA = False
+    librosa = None
+
+try:
+    import soundfile as sf
+    HAS_SOUNDFILE = True
+except ImportError:
+    HAS_SOUNDFILE = False
+    sf = None
 
 from ..core.paths import VOICES, OUTPUT, SUPPORTED
 from ..core.utils import _num

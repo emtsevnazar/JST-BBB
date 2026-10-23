@@ -3,7 +3,26 @@ from __future__ import annotations
 import logging, re, sys, time
 from dataclasses import dataclass, asdict
 from pathlib import Path
-import librosa, numpy as np, torch
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+    np = None
+
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+    torch = None
+
+try:
+    import librosa
+    HAS_LIBROSA = True
+except ImportError:
+    HAS_LIBROSA = False
+    librosa = None
 
 # Robust path resolution: ищем AAC/main (содержит src/) независимо от расположения engine.py.
 _here = Path(__file__).resolve().parent
