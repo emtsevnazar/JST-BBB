@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: System deps
+      - name: System deps (minimal)
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg libsndfile1 build-essential
+          sudo apt-get install -y libsndfile1
 
       - uses: actions/setup-python@v5
         with:
