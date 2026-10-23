@@ -1,0 +1,71 @@
+# Virtual envs
+.venv*/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+
+# Backups
+*.bak
+*.bak[0-9]*
+*_bak
+*_backup
+*.old
+*.orig
+*.tmp
+*.swp
+.DS_Store
+
+# Models (large)
+pretrained_models/
+VoxCPM2_portable/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# User data
+output/
+voices/
+uploads/
+temp/
+tmp/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Backup-файлы шагов рефакторинга
+*.step*_bak
+*.step*.bak
+
+# Frontend-бэкапы
+*.before_*
+
+# Эксперименты/артефакты
+*.presets_fail
+*.overlay_broken
+*.before_final_fix
+*.before_rollback
+*.pre-compress.bak

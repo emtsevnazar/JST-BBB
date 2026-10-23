@@ -1,0 +1,27 @@
+# JST Studio — Python dependencies
+# Python 3.12
+fastapi
+uvicorn[standard]
+pydantic>=2
+pydantic-settings>=2
+starlette
+aiofiles
+python-multipart
+httpx
+requests
+python-dotenv
+numpy
+soundfile
+librosa
+pydub
+scipy
+Pillow
+torch
+transformers
+huggingface-hub
+safetensors
+resemblyzer
+webrtcvad
+tqdm
+regex
+pyyaml

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JST · Just Start Transform</title>
+<link rel="icon" href="/static/img/poster_b.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Merienda:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css?v=1792775772">
+</head>
+<body>
+<div class="bg"><div class="bg-image"></div></div>
+<div class="app">
+<header class="header">
+  <a class="logo" href="/">
+    <img class="logo-img" src="/static/img/poster_b.png" alt="JST">
+    <div class="logo-text"><h1>JST</h1><p data-i18n="tagline">Just Start Transform</p></div>
+  </a>
+  <span class="org-badge" data-i18n="org">Justice Solidarity Tolerance</span>
+  <div class="header-buttons">
+    <button class="icon-btn" id="help-toggle" title="Help">?</button>
+    <button class="icon-btn" id="lang-toggle">RU</button>
+    <button class="icon-btn" id="theme-toggle"><span id="theme-icon">☾</span></button>
+  </div>
+</header>
+
+<main class="main">
+<aside class="sidebar">
+
+  <!-- МОДЕЛЬ -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="model">Модель</h3>
+    <div class="carousel-wrap">
+      <button class="carousel-btn prev" id="model-prev">&#9679;</button>
+      <div class="carousel" id="model-grid"></div>
+      <button class="carousel-btn next" id="model-next">&#9679;</button>
+    </div>
+    <div class="model-info" id="model-info"></div>
+    <span id="mode-hint" style="display:none"></span>
+  </div>
+
+  <!-- ЯЗЫК -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="language">Язык синтеза</h3>
+    <div class="carousel-wrap">
+      <button class="carousel-btn prev" id="lang-prev">&#9679;</button>
+      <div class="carousel" id="lang-grid"></div>
+      <button class="carousel-btn next" id="lang-next">&#9679;</button>
+    </div>
+  </div>
+
+  <!-- АКЦЕНТ -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="accent">Акцент / Стиль</h3>
+    <div class="carousel-wrap">
+      <button class="carousel-btn prev" id="accent-prev">&#9679;</button>
+      <div class="carousel" id="accent-grid"></div>
+      <button class="carousel-btn next" id="accent-next">&#9679;</button>
+    </div>
+  </div>
+
+  <!-- ГОЛОС -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="voice">Голос</h3>
+    <div class="select-wrap">
+      <select id="voice" class="select"></select>
+    </div>
+  </div>
+
+  <!-- ПРЕСЕТ -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="preset">Пресет</h3>
+    <div class="select-wrap">
+      <select id="preset" class="select"></select>
+    </div>
+  </div>
+
+  <!-- НАСТРОЕНИЕ -->
+  <div class="panel">
+    <h3 data-i18n="mood" class="panel-title">Настроение</h3>
+    <div class="select-wrap">
+      <select id="mood" class="select">
+        <option value="auto">JST Auto Spirits</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- НАСТРОЙКИ -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="settings">Настройки</h3>
+    <div class="sliders">
+      <div class="slider"><label><span data-i18n="s_exag">Выразительность</span> <output id="o-exag">0.50</output></label>
+        <input type="range" id="exaggeration" min="0" max="1" step="0.05" value="0.50"></div>
+      <div class="slider"><label><span data-i18n="s_cfg">Близость</span> <output id="o-cfg">0.50</output></label>
+        <input type="range" id="cfg_weight" min="0" max="1" step="0.05" value="0.50"></div>
+      <div class="slider"><label><span data-i18n="s_temp">Температура</span> <output id="o-temp">0.80</output></label>
+        <input type="range" id="temperature" min="0.1" max="1.5" step="0.05" value="0.80"></div>
+      <div class="slider"><label><span data-i18n="s_rep">Штраф</span> <output id="o-rep">1.20</output></label>
+        <input type="range" id="repetition_penalty" min="1" max="2" step="0.05" value="1.20"></div>
+      <div class="slider"><label><span data-i18n="s_speed">Скорость</span> <output id="o-speed">1.00</output></label>
+        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1.0"></div>
+      <div class="slider"><label><span data-i18n="s_pitch">Высота</span> <output id="o-pitch">0</output></label>
+        <input type="range" id="pitch_shift" min="-12" max="12" step="1" value="0"></div>
+      <div class="slider"><label><span data-i18n="s_vol">Громкость</span> <output id="o-vol">1.00</output></label>
+        <input type="range" id="volume" min="0" max="2" step="0.05" value="1.0"></div>
+    </div>
+  </div>
+
+  <!-- ДОПОЛНИТЕЛЬНО -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="extra">Дополнительно</h3>
+    <div class="extra-row">
+      <label class="extra-label"><span data-i18n="ref">Референс</span>
+        <div class="select-wrap"><select id="ref_length" class="select">
+          <option value="6">6 s</option><option value="10">10 s</option>
+          <option value="15" selected>15 s</option><option value="20">20 s</option>
+          <option value="30">30 s</option>
+        </select></div></label>
+      <label class="extra-label"><span data-i18n="pause">Пауза</span>
+        <div class="select-wrap"><select id="pause_between" class="select">
+          <option value="0.10">0.10 s</option><option value="0.20" selected>0.20 s</option>
+          <option value="0.30">0.30 s</option><option value="0.50">0.50 s</option>
+          <option value="1.00">1.00 s</option>
+        </select></div></label>
+    </div>
+    <label class="extra-label" style="margin-top:8px"><span data-i18n="split">Дробление</span>
+      <div class="select-wrap"><select id="sentence_split" class="select">
+        <option value="short" data-i18n="split_short">Короткие</option>
+        <option value="medium" selected data-i18n="split_medium">Средние</option>
+        <option value="long" data-i18n="split_long">Длинные</option>
+      </select></div></label>
+  </div>
+
+  <!-- СОХРАНЕНИЕ -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="save">Сохранение</h3>
+    <div class="save-row">
+      <label class="save-label"><span data-i18n="format">Формат</span>
+        <div class="select-wrap"><select id="output_format" class="select">
+          <option value="wav">WAV</option><option value="mp3">MP3</option>
+          <option value="flac">FLAC</option><option value="ogg">OGG</option>
+          <option value="m4a">M4A</option><option value="opus">OPUS</option>
+        </select></div></label>
+      <label class="save-label"><span data-i18n="freq">Частота</span>
+        <div class="select-wrap"><select id="output_sr" class="select">
+          <option>8000</option><option>11025</option><option>16000</option>
+          <option>22050</option><option>24000</option><option>32000</option>
+          <option selected>44100</option><option>48000</option>
+          <option>88200</option><option>96000</option>
+        </select></div></label>
+      <label class="save-label"><span data-i18n="bits">Битность</span>
+        <div class="select-wrap"><select id="bit_depth" class="select">
+          <option value="8">8-bit</option><option value="16" selected>16-bit</option>
+          <option value="24">24-bit</option><option value="32">32-bit float</option>
+        </select></div></label>
+      <label class="save-label"><span data-i18n="fadein">Fade in</span>
+        <div class="select-wrap"><select id="fade_in_sec" class="select">
+          <option value="0" selected>0</option><option value="0.1">0.1</option>
+          <option value="0.3">0.3</option><option value="0.5">0.5</option>
+          <option value="1.0">1.0</option><option value="2.0">2.0</option>
+        </select></div></label>
+      <label class="save-label"><span data-i18n="fadeout">Fade out</span>
+        <div class="select-wrap"><select id="fade_out_sec" class="select">
+          <option value="0" selected>0</option><option value="0.1">0.1</option>
+          <option value="0.3">0.3</option><option value="0.5">0.5</option>
+          <option value="1.0">1.0</option><option value="2.0">2.0</option>
+        </select></div></label>
+    </div>
+  </div>
+
+  <!-- ДОБАВИТЬ ГОЛОС -->
+  <div class="panel">
+    <h3 class="panel-title" data-i18n="addvoice">Добавить голос</h3>
+    <input type="text" id="new-voice" class="select" data-i18n-placeholder="profile_ph" placeholder="Имя профиля">
+    <div class="dropzone" id="dropzone">
+      <input type="file" id="voice-files" multiple accept="audio/*" hidden>
+      <p data-i18n="drop_hint">Перетащите аудио или нажмите</p>
+      <p class="drop-sub" data-i18n="drop_sub">.wav .mp3 .m4a .opus .flac .ogg</p>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:8px">
+      <button class="btn btn-ghost btn-sm" id="btn-upload" data-i18n="upload_btn">Загрузить</button>
+      <button class="btn btn-ghost btn-sm btn-mic" id="btn-record" title="Записать голос" style="width:auto;min-width:44px;padding:9px 12px">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+      </button>
+    </div>
+  </div>
+
+</aside>
+
+<section class="workspace">
+
+  <div class="text-panel">
+    <h3 class="panel-title" data-i18n="text">Текст</h3>
+    <div class="carousel-wrap">
+      <button class="carousel-btn prev" id="carousel-prev">&#9679;</button>
+      <div class="carousel" id="carousel"></div>
+      <button class="carousel-btn next" id="carousel-next">&#9679;</button>
+    </div>
+    <textarea id="text">Привет! Это тестовая озвучка обученным голосом. Слышно ли различие с оригиналом?</textarea>
+    <button id="btn-stt" class="btn-mic" title="Голосовой ввод">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+    </button>
+    
+  </div>
+
+  <div class="controls">
+    <button id="btn-synth" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <span data-i18n="speak">Озвучить</span>
+    </button>
+    <button id="btn-stop" class="btn btn-ghost" disabled>
+      <span data-i18n="stop">Стоп</span>
+    </button>
+    <button id="btn-random" class="btn btn-ghost">
+      <span data-i18n="random_text">Случайный</span>
+    </button>
+    <button id="btn-clear-history" class="btn btn-ghost">
+      <span data-i18n="clear_history">Очистить</span>
+    </button>
+    <div class="dropdown" id="dl-dropdown">
+      <button class="btn btn-ghost" id="btn-download-toggle">
+        <span data-i18n="download">Скачать</span>
+      </button>
+      <div class="dropdown-menu">
+        <a id="btn-download" download data-i18n="dl_current">Скачать текущий</a>
+        <a id="btn-download-zip" data-i18n="dl_zip">Скачать всё (ZIP)</a>
+        <a id="btn-download-merged" data-i18n="dl_merged">Скачать всё одним файлом</a>
+      </div>
+    </div>
+    <div class="dropdown" id="history-dropdown">
+      <button class="btn btn-ghost">
+        <span data-i18n="history">История</span>
+      </button>
+      <div class="dropdown-menu history-menu">
+        <div class="history-list" id="history"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-panel">
+    <canvas id="waveform" width="800" height="120"></canvas>
+    <div class="player-info">
+      <span id="player-time">0:00.0</span>
+      <div class="progress"><div class="progress-fill" id="progress"></div></div>
+      <span id="player-total">0:00.0</span>
+    </div>
+    <audio id="preview-player" controls style="display:none;width:100%;margin-top:8px"></audio>
+    <div class="status" id="status">
+      <span class="status-dot"></span>
+      <span id="status-text" data-i18n="status_ready">Готов к работе</span>
+    </div>
+  </div>
+
+</section>
+</main>
+
+<footer class="footer" data-i18n="footer">
+  © 2026 · JST (Justice Solidarity Tolerance) · Director: Emtsev Nazar · EU (France)
+</footer>
+</div>
+
+<div class="help-modal" id="help-modal">
+  <div class="help-modal-content">
+    <button class="help-modal-close" id="help-close">✕</button>
+    <div id="help-body"></div>
+  </div>
+</div>
+
+<script src="/static/app.js?v=1792774346"></script>
+</body>
+</html>
