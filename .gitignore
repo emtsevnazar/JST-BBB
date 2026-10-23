@@ -69,3 +69,6 @@ logs/
 *.before_final_fix
 *.before_rollback
 *.pre-compress.bak
+
+# Локальный симлинк на голоса
+voices
