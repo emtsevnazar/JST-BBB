@@ -43,8 +43,14 @@ except ImportError:
     HAS_VOXCPM = False
     VoxCPM = None
 
-from src.chatterbox_.tts import ChatterboxTTS
-from src.chatterbox_.models.t3.t3 import T3
+try:
+    from src.chatterbox_.tts import ChatterboxTTS
+    from src.chatterbox_.models.t3.t3 import T3
+    HAS_CHATTERBOX = True
+except ImportError:
+    HAS_CHATTERBOX = False
+    ChatterboxTTS = None
+    T3 = None
 
 try:
     from openvoice import se_extractor
