@@ -1892,23 +1892,40 @@ window.addEventListener("load", init);
     const target = modal.querySelector(".batch-cloned");
     if (!target) return;
     target.innerHTML = "";
-    ["preset", "mood", "settings", "extra", "save"].forEach(function (key) {
+
+    function findSrc(key) {
       let src = null;
       document.querySelectorAll(".sidebar .panel").forEach(function (p) {
         if (src) return;
-        const t = p.querySelector('[data-i18n="' + key + '"]');
-        if (t) src = p;
+        if (p.querySelector('[data-i18n="' + key + '"]')) src = p;
       });
-      if (!src) return;
-      const clone = src.cloneNode(true);
-      clone.querySelectorAll("[id]").forEach(function (el) {
-        el.id = "m-" + el.id;
-      });
-      clone.querySelectorAll("label[for]").forEach(function (el) {
+      return src;
+    }
+    function clonePanel(src) {
+      const c = src.cloneNode(true);
+      c.querySelectorAll("[id]").forEach(function (el) { el.id = "m-" + el.id; });
+      c.querySelectorAll("label[for]").forEach(function (el) {
         el.setAttribute("for", "m-" + el.getAttribute("for"));
       });
-      target.appendChild(clone);
+      return c;
+    }
+
+    // Пресет + Настроение — в 2 колонки (как model+voice)
+    const twoCol = document.createElement("div");
+    twoCol.className = "batch-row";
+    ["preset", "mood"].forEach(function (key) {
+      const src = findSrc(key);
+      if (src) twoCol.appendChild(clonePanel(src));
     });
+    target.appendChild(twoCol);
+
+    // Остальные — столбиком
+    ["settings", "extra", "save"].forEach(function (key) {
+      const src = findSrc(key);
+      if (src) target.appendChild(clonePanel(src));
+    });
+
+    // input → output sync
     Object.keys(OUT_MAP).forEach(function (sliderId) {
       const inp = modal.querySelector("#m-" + sliderId);
       const outp = modal.querySelector("#m-" + OUT_MAP[sliderId]);
