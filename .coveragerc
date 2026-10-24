@@ -3,6 +3,7 @@ source = backend
 # Модули, которые нельзя покрыть unit-тестами (требуют реальных моделей/весов,
 # либо это тонкие реэкспорты). Проверяются smoke-тестами (P3.7) и вручную.
 omit =
+    */test_real_engine.py
     backend/engine.py
     backend/services/clone_engine.py
     backend/main.py

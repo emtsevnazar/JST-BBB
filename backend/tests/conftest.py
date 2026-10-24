@@ -43,7 +43,21 @@ class FakeEngine:
     def silence(self, sec):
         return np.zeros(int(sec * self.sr), dtype=np.float32)
 
-    def synth_one(self, *a, **kw):
+    def synth_one(self, text, reference, settings, **kwargs):
+        # Сигнатура как у реального Engine: (text, ref, settings, **kwargs).
+        # Любой вызов с неправильным числом позиционных аргументов → TypeError.
+        return np.zeros(self.sr // 2, dtype=np.float32)
+
+    def synth_jst_clone(self, text, reference, settings, **kw):
+        return np.zeros(self.sr // 2, dtype=np.float32)
+
+    def synth_qwen(self, text, reference, settings, **kw):
+        return np.zeros(self.sr // 2, dtype=np.float32)
+
+    def synth_voxcpm(self, text, reference, settings, **kw):
+        return np.zeros(self.sr // 2, dtype=np.float32)
+
+    def synth_cosyvoice(self, text, reference, settings, **kw):
         return np.zeros(self.sr // 2, dtype=np.float32)
 
 
@@ -81,3 +95,21 @@ def real_client(monkeypatch, tmp_path):
 
     with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
         yield c
+
+
+@pytest.fixture
+def fake_ref_path(tmp_path, monkeypatch):
+    """1-сек валидный WAV + патч resolve_reference в synth_helpers.
+
+    Нужен для batch-тестов, чтобы не зависеть от реального
+    output/merged_reference.wav на диске.
+    """
+    import soundfile as sf
+
+    ref = tmp_path / "merged_reference.wav"
+    sf.write(str(ref), np.zeros(24000, dtype=np.float32), 24000)
+
+    from backend.services import synth_helpers
+
+    monkeypatch.setattr(synth_helpers, "resolve_reference", lambda voice, n: ref)
+    return ref

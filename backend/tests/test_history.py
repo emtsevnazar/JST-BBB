@@ -84,7 +84,7 @@ def test_api_history_get_404(client):
     assert r.status_code == 404
 
 
-def test_api_history_after_batch(client, monkeypatch, tmp_path):
+def test_api_history_after_batch(client, monkeypatch, tmp_path, fake_ref_path):
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
 
     r = client.post("/api/batch", json={"text": "hist test", "voice": "", "settings": {}})
@@ -141,7 +141,7 @@ def test_export_missing_audio(client, monkeypatch, tmp_path):
     assert r.status_code == 410
 
 
-def test_export_ok(client, monkeypatch, tmp_path):
+def test_export_ok(client, monkeypatch, tmp_path, fake_ref_path):
     import io
     import json
     import zipfile

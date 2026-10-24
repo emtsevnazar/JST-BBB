@@ -16,7 +16,9 @@ from typing import Any
 from ..core.state import get_engine
 from ..engine import SynthSettings
 from .history import get_history
+from .jst_moods import apply_mood
 from .output_service import save_output
+from .synth_helpers import synth_chunk
 
 log = logging.getLogger("JST.Batch")
 
@@ -162,8 +164,12 @@ class BatchQueue:
             if engine is None:
                 raise RuntimeError("engine not ready")
             s = SynthSettings.from_dict(task.settings)
+            try:
+                apply_mood(s, task.text)
+            except Exception as _e:
+                log.warning("batch: apply_mood failed: %s", _e)
             t0 = time.time()
-            audio = await asyncio.to_thread(engine.synth_one, task.text, s)
+            audio = await asyncio.to_thread(synth_chunk, engine, task.text, task.voice, s)
             dt = time.time() - t0
             base = f"batch_{task.id}"
             filename = await asyncio.to_thread(save_output, audio, engine.sr, s, base)

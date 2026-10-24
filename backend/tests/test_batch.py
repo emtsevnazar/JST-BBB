@@ -89,7 +89,7 @@ def test_api_cancel_not_found(client):
     assert r.status_code == 409
 
 
-def test_batch_end_to_end(client, monkeypatch, tmp_path):
+def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
     """POST -> poll -> done -> файл в OUTPUT (tmp_path)."""
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
 

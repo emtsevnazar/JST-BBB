@@ -203,3 +203,30 @@ pytest: 78 passed, coverage 59.50% (гейт 59). ruff: All checks passed.
 - README: раздел "Real-engine smoke" с одной командой.
 
 Локально: `JST_REAL_ENGINE=1 pytest tests/test_real_engine.py -v -s --no-cov`.
+
+## P5.5 — фикс batch synth_one + честный FakeEngine
+
+**Багу нашёл P5.4 (real-engine smoke).** 78 юнит-тестов проходили, потому что
+`FakeEngine.synth_one(self, *a, **kw)` принимал любую сигнатуру. Реальный
+`Engine.synth_one(text, ref, settings)` требует 3 позиционных аргумента —
+`BatchQueue._execute` вызывал `synth_one(text, settings)`, что в production
+давало `TypeError` на каждом batch-синтезе.
+
+- services/synth_helpers.py (новый): synth_chunk(engine, text, voice, settings) —
+  выбор метода по settings.mode (jst_clone/qwen/voxcpm/cosyvoice/core),
+  resolve_reference, раннее падение при отсутствии референса
+- services/jst_moods.py: apply_mood(settings, text) — вынесено из inline
+  MOOD_PARAMS в api/ws.py (было дублирование ~50 строк)
+- api/ws.py: inline MOOD_PARAMS → apply_mood (DRY)
+- services/batch.py: synth_chunk + apply_mood (batch теперь эквивалентен ws
+  по логике синтеза и mood)
+- conftest.py: FakeEngine.synth_one(text, reference, settings, **kw) —
+  теперь любая ошибка сигнатуры вылетает в тестах, а не в проде
+- conftest.py: fake_ref_path — 1-сек WAV + патч resolve_reference,
+  batch-тесты не зависят от реального merged_reference.wav на диске
+- .coveragerc: omit */test_real_engine.py (skipif-файл не должен снижать coverage)
+
+Регрессия: test_batch_end_to_end + 2 теста в test_history.py теперь используют
+fake_ref_path. Реальный путь проверяется P5.4 (JST_REAL_ENGINE=1).
+
+Локально: JST_REAL_ENGINE=1 pytest tests/test_real_engine.py -v -s --no-cov → 2 passed.

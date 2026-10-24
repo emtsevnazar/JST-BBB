@@ -59,69 +59,16 @@ async def _ws_orig(ws: WebSocket):
             s = SynthSettings.from_dict(data.get("settings", {}))
 
             # Применяем mood через параметры (не префиксом в текст)
-            _mood = getattr(s, "mood", "auto") or "auto"
             try:
-                from ..services.jst_moods import detect_mood as _dm
+                from ..services.jst_moods import apply_mood
 
-                if _mood == "auto":
-                    _mood = _dm(text)
-                _MOOD_PARAMS = {
-                    "neutral": {
-                        "exaggeration": 0.50,
-                        "cfg_weight": 0.50,
-                        "temperature": 0.80,
-                        "speed": 1.00,
-                    },
-                    "sad": {
-                        "exaggeration": 0.40,
-                        "cfg_weight": 0.55,
-                        "temperature": 0.75,
-                        "speed": 0.90,
-                    },
-                    "whisper": {
-                        "exaggeration": 0.30,
-                        "cfg_weight": 0.60,
-                        "temperature": 0.70,
-                        "speed": 0.85,
-                    },
-                    "asmr": {
-                        "exaggeration": 0.25,
-                        "cfg_weight": 0.65,
-                        "temperature": 0.70,
-                        "speed": 0.80,
-                    },
-                    "podcast": {
-                        "exaggeration": 0.60,
-                        "cfg_weight": 0.45,
-                        "temperature": 0.85,
-                        "speed": 1.05,
-                    },
-                    "audiobook": {
-                        "exaggeration": 0.55,
-                        "cfg_weight": 0.50,
-                        "temperature": 0.78,
-                        "speed": 1.00,
-                    },
-                    "news": {
-                        "exaggeration": 0.45,
-                        "cfg_weight": 0.55,
-                        "temperature": 0.78,
-                        "speed": 1.00,
-                    },
-                    "trailer": {
-                        "exaggeration": 0.75,
-                        "cfg_weight": 0.35,
-                        "temperature": 0.85,
-                        "speed": 0.95,
-                    },
-                }
-                _mp = _MOOD_PARAMS.get(_mood)
-                if _mp:
-                    s.exaggeration = _mp["exaggeration"]
-                    s.cfg_weight = _mp["cfg_weight"]
-                    s.temperature = _mp["temperature"]
-                    s.speed = _mp["speed"]
-                    log.info("[mood] %s -> exag=%.2f speed=%.2f", _mood, s.exaggeration, s.speed)
+                _mood = apply_mood(s, text)
+                log.info(
+                    "[mood] %s -> exag=%.2f speed=%.2f",
+                    _mood,
+                    s.exaggeration,
+                    s.speed,
+                )
             except Exception as _e:
                 log.warning("mood apply failed: %s", _e)
             try:
