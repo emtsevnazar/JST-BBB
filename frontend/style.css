@@ -5077,9 +5077,6 @@ html body #help-modal.help-modal.open::after {
 .batch-header{display:flex;align-items:center;justify-content:space-between;
   padding:16px 22px;border-bottom:1.5px solid var(--panel-border)}
 .batch-header h2{font-family:var(--font-heading);font-size:24px;color:var(--accent);margin:0}
-.batch-close{background:none;border:none;font-size:28px;line-height:1;cursor:pointer;
-  color:var(--text-dim);padding:0 6px;border-radius:8px;transition:all .2s}
-.batch-close:hover{color:var(--red);background:var(--input-bg)}
 .batch-body{padding:16px 22px;display:flex;flex-direction:column;gap:12px}
 .batch-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .batch-label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;
@@ -5119,3 +5116,47 @@ html body #help-modal.help-modal.open::after {
   text-decoration:none;font-weight:700;font-size:12px;transition:all .2s}
 [data-theme="night"] .batch-download{background:var(--gold);color:var(--navy-dark)}
 .batch-download:hover{transform:scale(1.05);opacity:.9}
+
+/* === P6.2b: Пакет = Случайный, glow, close-крестик === */
+/* «Пакет» — идентична «Случайный» (btn btn-ghost), + жёлтый glow на hover */
+#btn-batch:hover,
+#btn-random:hover {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+
+/* Крестик закрытия модалки: день — синий в синем, ночь — жёлтый в жёлтом */
+.batch-close {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(26,42,94,.15);
+  color: #1a2a5e;
+  font-size: 22px;
+  line-height: 1;
+  font-family: inherit;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .25s;
+}
+.batch-close:hover {
+  background: rgba(26,42,94,.25);
+  box-shadow: 0 0 14px rgba(26,42,94,.35);
+  transform: scale(1.06);
+}
+[data-theme="night"] .batch-close {
+  background: rgba(245,184,0,.22);
+  color: #F5B800;
+}
+[data-theme="night"] .batch-close:hover {
+  background: rgba(245,184,0,.32);
+  box-shadow: 0 0 14px rgba(245,184,0,.55);
+  transform: scale(1.06);
+}

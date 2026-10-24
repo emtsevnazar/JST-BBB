@@ -364,3 +364,13 @@ TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
 правок в `engine.py` + `services/batch.py`).
 
 pytest backend: 80 passed, 2 skipped. JS/CSS не затронуты тестами.
+
+## P6.2b — стиль «Пакет» + close-крестик (день/ночь)
+
+- style.css: `#btn-batch:hover, #btn-random:hover` — единый жёлтый
+  border + glow (rgba(245,184,0,.45)) — оба работают одинаково
+- style.css: `.batch-close` — круглый 38×38:
+  день: фон rgba(26,42,94,.15), крест #1a2a5e (синий в синем);
+  ночь: фон rgba(245,184,0,.22), крест #F5B800 (жёлтый в жёлтом);
+  hover → темнее фон + glow + scale(1.06)
+- index.html: cache-busting `?v=` bump
