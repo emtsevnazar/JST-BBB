@@ -5096,12 +5096,6 @@ html body #help-modal.help-modal.open::after {
 .batch-sliders input[type=range]{width:100%;accent-color:var(--gold)}
 .batch-sliders input[type=number],.batch-sliders select{padding:6px 8px;border-radius:8px;
   border:1.5px solid var(--panel-border);background:var(--input-bg);color:var(--text);font-size:13px}
-.batch-submit{align-self:flex-start;padding:10px 22px;border-radius:12px;border:none;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--navy-dark);
-  font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;
-  box-shadow:0 4px 14px rgba(245,184,0,.35)}
-.batch-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 18px rgba(245,184,0,.45)}
-.batch-submit:disabled{opacity:.6;cursor:wait}
 .batch-list{flex:1;overflow-y:auto;padding:0 22px 16px;display:flex;flex-direction:column;gap:8px}
 .batch-list:empty::after{content:"—";display:block;text-align:center;color:var(--text-dim);padding:16px;font-size:13px}
 .batch-task{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
@@ -5148,47 +5142,57 @@ button.btn.btn-primary:focus *,
 #btn-clear-history,
 #dl-dropdown > .btn,
 #history-dropdown > .btn,
-.batch-submit {
-  transition: background-color .4s ease, color .4s ease,
-              border-color .4s ease, box-shadow .25s ease;
-}
-
 /* 3. «В очередь» — ghost-стиль (как Пакет/Случайный) */
-.batch-submit {
-  align-self: flex-start;
-  padding: 10px 22px;
-  border-radius: 12px;
-  border: 1.5px solid var(--panel-border);
-  background: var(--panel-bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: none;
-}
-.batch-submit:hover:not(:disabled) {
-  border-color: var(--gold);
-  color: var(--gold);
-  box-shadow: 0 0 18px rgba(245,184,0,.45);
-}
-.batch-submit:disabled { opacity: .55; cursor: wait; }
-html[data-theme="night"] .batch-submit {
-  background: var(--panel-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--panel-border) !important;
-}
-html[data-theme="night"] .batch-submit:hover:not(:disabled) {
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
-}
-
-/* 4. Крестик над углом */
+html[data-theme="night"] html[data-theme="night"] /* 4. Крестик над углом */
 .batch-dialog { overflow: visible !important; }
 #batch-modal .help-modal-close {
   position: absolute !important;
   top: -16px !important;
   right: -16px !important;
   z-index: 10;
+}
+
+/* === P6.2g: «В очередь» — ghost + hover как у Пакета/Случайного === */
+.batch-submit {
+  align-self: flex-start !important;
+  padding: 10px 22px !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background-color .4s ease, color .4s ease,
+              border-color .4s ease, box-shadow .25s ease !important;
+}
+
+/* Hover ДЕНЬ: фон остаётся panel-bg, рамка жёлтая + glow + цвет текста жёлтый */
+.batch-submit:hover:not(:disabled) {
+  background: var(--panel-bg) !important;
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+
+.batch-submit:disabled {
+  opacity: .55 !important;
+  cursor: wait !important;
+}
+
+/* NOCHЬ: текст жёлтый (как у Пакет/Случайный ночью) */
+html[data-theme="night"] .batch-submit {
+  background: var(--panel-bg) !important;
+  color: #FFC72C !important;
+  border-color: var(--panel-border) !important;
+}
+
+/* Hover НОЧЬ: фон panel-bg, рамка жёлтая + glow */
+html[data-theme="night"] .batch-submit:hover:not(:disabled) {
+  background: var(--panel-bg) !important;
+  color: #FFC72C !important;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
