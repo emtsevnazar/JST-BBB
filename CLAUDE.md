@@ -162,3 +162,16 @@ CI: P4.1b (df28d7c) — ✓ (4m41s). P4.2 (4bb6df9) — ✓ pytest (ожид.).
 
 CI: P4.4 (cb28069) — ✓ pytest (ожид.).
 Дальше — P4.5 (ZIP-экспорт) или P3.4 (structured logging).
+
+## P4 — batch synthesis (закрыт целиком)
+
+- P4.1  (419e9d6): BatchQueue + 4 HTTP-эндпоинта
+- P4.1b (df28d7c): фикс cancel — sync
+- P4.2  (4bb6df9): история в SQLite + /api/history
+- P4.4  (cb28069): WS-статус /ws/batch/{task_id} (pub/sub)
+- P4.5  (4f28feb): ZIP-экспорт /api/history/{id}/export
+- Тесты: 74 → 78 passed
+- coverage: 50.44% → 59.50%
+- --cov-fail-under: 50 → 59
+
+Следующий этап — ревизия перед P5 (гигиена, docs, real-engine smoke).
