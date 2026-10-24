@@ -388,3 +388,19 @@ pytest backend: 80 passed, 2 skipped. JS/CSS не затронуты теста�
   `#batch-modal .help-modal-close` — position:static, чтобы не ломалось
   из-за absolute в родительской модалке
 - index.html: cache-busting bump
+
+## P6.2d — «Пакет» = .btn-ghost (как «Стоп»), крестик над углом
+
+**Проблема:** P6.2c добавил `#btn-batch { background: transparent }` — «Пакет»
+потерял `var(--panel-bg)` и выглядел иначе, чем «Стоп»/«Случайный»
+(у тех `.btn-ghost` с фоном). Крестик стоял `position: static` внутри
+`.batch-header`.
+
+- style.css: P6.2c блок удалён; добавлен P6.2d:
+  · `#btn-batch` без override — наследует `.btn-ghost` (= «Стоп»)
+  · hover: `border-color:var(--gold); color:var(--gold);
+    box-shadow:0 0 18px rgba(245,184,0,.45)` для #btn-batch и #btn-random
+  · `.batch-dialog { overflow: visible }` — чтобы крестик не срезало
+  · `#batch-modal .help-modal-close { position:absolute; top:-16px;
+    right:-16px; z-index:10 }` — крестик чуть заезжает за углы диалога
+- index.html: cache-busting bump

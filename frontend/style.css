@@ -5117,43 +5117,27 @@ html body #help-modal.help-modal.open::after {
 [data-theme="night"] .batch-download{background:var(--gold);color:var(--navy-dark)}
 .batch-download:hover{transform:scale(1.05);opacity:.9}
 
-/* === P6.2c: btn-batch = btn-random (night), glow, close = help === */
-/* «Пакет» в дневной и ночной теме — идентична «Случайному» */
-#btn-batch,
-#btn-random {
-  background: transparent;
-  color: var(--text);
-  border: 1.5px solid var(--panel-border);
-  cursor: pointer;
-  transition: all .25s;
-}
-#btn-batch:hover,
-#btn-random:hover {
+/* === P6.2d: btn-batch (as pause) + floating close === */
+/* «Пакет» — обычный .btn-ghost (как «Стоп»/«Случайный»): без override фона.
+   На hover — жёлтая рамка + glow. */
+#btn-batch:hover:not(:disabled),
+#btn-random:hover:not(:disabled) {
   border-color: var(--gold) !important;
   color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45);
+}
+[data-theme="night"] #btn-batch:hover:not(:disabled),
+[data-theme="night"] #btn-random:hover:not(:disabled) {
+  box-shadow: 0 0 18px rgba(245,184,0,.55);
 }
 
-/* Ночь: явно продублировать стиль «Случайного» для «Пакета» */
-[data-theme="night"] #btn-batch,
-[data-theme="night"] #btn-random {
-  background: transparent !important;
-  color: var(--text) !important;
-  border: 1.5px solid var(--panel-border) !important;
+/* Крестик модалки Пакета — вылезает над верхним правым углом диалога */
+.batch-dialog {
+  overflow: visible !important;
 }
-[data-theme="night"] #btn-batch:hover,
-[data-theme="night"] #btn-random:hover {
-  background: transparent !important;
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.55) !important;
-}
-
-/* Крестик модалки Пакета — как в help-модалке (класс .help-modal-close
-   уже определён в style.css, применятся его родные стили; здесь только
-   фикс позиционирования, если help-modal-close предполагает absolute) */
 #batch-modal .help-modal-close {
-  position: static;
-  margin-left: auto;
-  align-self: flex-start;
+  position: absolute !important;
+  top: -16px !important;
+  right: -16px !important;
+  z-index: 10;
 }
