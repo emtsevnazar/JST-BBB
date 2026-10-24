@@ -1269,7 +1269,7 @@ html[data-theme="night"] body .btn-ghost,
 html[data-theme="night"] body .btn-danger,
 html[data-theme="night"] body .dropdown > .btn:not(.active),
 html[data-theme="night"] body #btn-stop,
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear,
 html[data-theme="night"] body #dl-dropdown > .btn,
 html[data-theme="night"] body #history-dropdown > .btn,
@@ -1283,7 +1283,7 @@ html[data-theme="night"] body .btn-ghost *,
 html[data-theme="night"] body .btn-danger *,
 html[data-theme="night"] body .dropdown > .btn:not(.active) *,
 html[data-theme="night"] body #btn-stop *,
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear *,
 html[data-theme="night"] body #dl-dropdown > .btn *,
 html[data-theme="night"] body #history-dropdown > .btn * {
@@ -2005,7 +2005,7 @@ html[data-theme="night"] body .dropdown.open > .btn {
    ============================================================ */
 
 /* Все 4 кнопки в ночи — фон var(--input-bg, rgba(255,255,255,0.55)) */
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
@@ -2041,7 +2041,7 @@ html[data-theme="night"] body .dropdown > .btn::after {
 }
 
 /* Hover — жёлтая рамка, фон НЕ меняется */
-html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear:hover,
 html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
@@ -2110,7 +2110,7 @@ html body .help-section .help-arrow {
 }
 
 /* ---------- КНОПКИ «СЛУЧАЙНЫЙ», «СКАЧАТЬ», «ИСТОРИЯ» ---------- */
-html body #btn-random,
+html body :is(#btn-random, #btn-batch),
 html body #btn-clear-history,
 html body #btn-download-toggle,
 html body #history-toggle,
@@ -2120,7 +2120,7 @@ html body .dropdown > button {
   color: #FFC72C !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
-html body #btn-random *,
+html body :is(#btn-random, #btn-batch) *,
 html body #btn-clear-history *,
 html body #btn-download-toggle *,
 html body #history-toggle *,
@@ -2136,7 +2136,7 @@ html body .dropdown > .btn::after {
   border-color: rgba(245, 184, 0, 0.40) !important;
 }
 /* Hover */
-html body #btn-random:hover,
+html body :is(#btn-random, #btn-batch):hover,
 html body #btn-clear-history:hover,
 html body #btn-download-toggle:hover,
 html body #history-toggle:hover,
@@ -2290,7 +2290,7 @@ html[data-theme="night"] body .help-close * {
    КНОПКИ СЛУЧАЙНЫЙ / ОЧИСТИТЬ / СКАЧАТЬ / ИСТОРИЯ
    ================================================ */
 /* ДЕНЬ */
-html[data-theme="day"] body #btn-random,
+html[data-theme="day"] body :is(#btn-random, #btn-batch),
 html[data-theme="day"] body #btn-clear-history,
 html[data-theme="day"] body #btn-download-toggle,
 html[data-theme="day"] body #history-toggle,
@@ -2299,7 +2299,7 @@ html[data-theme="day"] body .dropdown > .btn {
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
 }
-html[data-theme="day"] body #btn-random *,
+html[data-theme="day"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="day"] body #btn-clear-history *,
 html[data-theme="day"] body #btn-download-toggle *,
 html[data-theme="day"] body #history-toggle *,
@@ -2313,7 +2313,7 @@ html[data-theme="day"] body .dropdown > .btn::after {
   color: var(--navy, #1a2a5e) !important;
   border-color: var(--gold, #F5B800) !important;
 }
-html[data-theme="day"] body #btn-random:hover,
+html[data-theme="day"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="day"] body #btn-clear-history:hover,
 html[data-theme="day"] body #btn-download-toggle:hover,
 html[data-theme="day"] body #history-toggle:hover,
@@ -2324,7 +2324,7 @@ html[data-theme="day"] body .dropdown > .btn:hover {
 }
 
 /* НОЧЬ */
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
@@ -2333,7 +2333,7 @@ html[data-theme="night"] body .dropdown > .btn {
   color: var(--gold, #F5B800) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle *,
@@ -2347,7 +2347,7 @@ html[data-theme="night"] body .dropdown > .btn::after {
   color: #0d1a3f !important;
   border-color: var(--gold, #F5B800) !important;
 }
-html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear-history:hover,
 html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
@@ -2474,19 +2474,19 @@ html[data-theme="night"] body .help-section .help-arrow {
 
 /* ---------- КНОПКИ: СТОП, СЛУЧАЙНЫЙ, ОЧИСТИТЬ ---------- */
 html[data-theme="night"] body #btn-stop,
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history {
   background: #1a2a5e !important;
   color: #F5B800 !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body #btn-stop *,
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history * {
   color: #F5B800 !important;
 }
 html[data-theme="night"] body #btn-stop:hover,
-html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear-history:hover {
   background: #1a2a5e !important;
   border-color: #F5B800 !important;
@@ -2560,7 +2560,7 @@ html[data-theme="night"] body #help-body,
 html[data-theme="night"] body .help-doc,
 html[data-theme="night"] body .help-section,
 html[data-theme="night"] body #btn-stop,
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
@@ -2576,7 +2576,7 @@ html[data-theme="night"] body .history-menu {
 
 /* Текст внутри — остаётся жёлтым */
 html[data-theme="night"] body #btn-stop *,
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle *,
@@ -2635,7 +2635,7 @@ html[data-theme="day"] body .help-doc {
 
 /* ---------- 1. КНОПКИ — НОЧЬ ---------- */
 html[data-theme="night"] body #btn-stop,
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle {
@@ -2644,7 +2644,7 @@ html[data-theme="night"] body #history-toggle {
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body #btn-stop *,
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle * {
@@ -2700,7 +2700,7 @@ html[data-theme="night"] body .help-section .help-content * {
 
 /* --- По id (Стоп, Случайный, Очистить, Скачать) --- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_x):not(#_y),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_x):not(#_y),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_x):not(#_y),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_x):not(#_y),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_x):not(#_y) {
   background: rgba(255, 255, 255, 0.55) !important;
@@ -2755,7 +2755,7 @@ html[data-theme="night"] body .help-modal-content:not(#_a):not(#_b) {
 /* ---------- 2. НОЧЬ: 5 кнопок → rgba(13,26,63,0.55) ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-stop:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -2805,7 +2805,7 @@ html[data-theme="night"] body .help-modal-content:not(#_a):not(#_b) {
 /* ---------- 2. НОЧЬ: 5 КНОПОК → rgba(0,0,0,0.35) ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-stop:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -2841,7 +2841,7 @@ html[data-theme="day"] body .help-content:not(#_a):not(#_b) {
 /* ---------- НОЧЬ: 5 КНОПОК — блюр ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-stop:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -2880,7 +2880,7 @@ html[data-theme="day"] body .help-content:not(#_a):not(#_b) {
 /* ---------- НОЧЬ: 5 КНОПОК ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-stop:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -2953,7 +2953,7 @@ html body .help-modal-content {
 
 /* ---------- 2. КНОПКИ (НОЧЬ) — чистый transparent + blur ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -3116,7 +3116,7 @@ html[data-theme="day"] body #help-close * {
 
 /* ---------- 3. КНОПКИ (НОЧЬ) — ЧИСТЫЙ TRANSPARENT ---------- */
 html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_a):not(#_b),
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#_a):not(#_b),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
@@ -3144,7 +3144,7 @@ html[data-theme="night"] body button.btn.btn-ghost:not(#_a):not(#_b) {
 
 /* ---------- КНОПКИ: НОЧЬ ---------- */
 html[data-theme="night"] body #btn-stop,
-html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
@@ -3154,7 +3154,7 @@ html[data-theme="night"] body button.btn.btn-ghost {
   color: #F5B800 !important;
 }
 html[data-theme="night"] body #btn-stop *,
-html[data-theme="night"] body #btn-random *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle *,
@@ -3165,7 +3165,7 @@ html[data-theme="night"] body button.btn.btn-ghost * {
 
 /* ---------- КНОПКИ: ДЕНЬ ---------- */
 html[data-theme="day"] body #btn-stop,
-html[data-theme="day"] body #btn-random,
+html[data-theme="day"] body :is(#btn-random, #btn-batch),
 html[data-theme="day"] body #btn-clear-history,
 html[data-theme="day"] body #btn-download-toggle,
 html[data-theme="day"] body #history-toggle,
@@ -3174,7 +3174,7 @@ html[data-theme="day"] body button.btn.btn-ghost {
   color: #1a2a5e !important;
 }
 html[data-theme="day"] body #btn-stop *,
-html[data-theme="day"] body #btn-random *,
+html[data-theme="day"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="day"] body #btn-clear-history *,
 html[data-theme="day"] body #btn-download-toggle *,
 html[data-theme="day"] body #history-toggle *,
@@ -3332,7 +3332,7 @@ html[data-theme="day"] body #cards button * {
 
 /* ---------- КНОПКИ: НОЧЬ (rgba + blur + жёлтый) ---------- */
 html[data-theme="night"] body #btn-stop:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
-html[data-theme="night"] body #btn-random:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
+html[data-theme="night"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="night"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="night"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
@@ -3346,7 +3346,7 @@ html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.35) !important;
 }
 html[data-theme="night"] body #btn-stop:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
-html[data-theme="night"] body #btn-random:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="night"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="night"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) * {
@@ -3355,7 +3355,7 @@ html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4
 
 /* ---------- КНОПКИ: ДЕНЬ (белый + синий) ---------- */
 html[data-theme="day"] body #btn-stop:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
-html[data-theme="day"] body #btn-random:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
+html[data-theme="day"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="day"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="day"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="day"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
@@ -3368,7 +3368,7 @@ html[data-theme="day"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):
   border-radius: 14px !important;
 }
 html[data-theme="day"] body #btn-stop:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
-html[data-theme="day"] body #btn-random:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
+html[data-theme="day"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="day"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="day"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="day"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) * {
@@ -3581,7 +3581,7 @@ html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):n
 }
 
 /* ---------- 4. 4 КНОПКИ + ИСТОРИЯ — ФОН КАК У .card ---------- */
-html body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
+html body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
@@ -3595,7 +3595,7 @@ html body #history-dropdown > button.btn.btn-ghost:not(#p1):not(#p2):not(#p3):no
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-html body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
+html body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) * {
@@ -3603,7 +3603,7 @@ html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4)
 }
 
 /* ---------- 5. ДЕНЬ — СЕРЫЙ КОНТУР ---------- */
-html[data-theme="day"] body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
+html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="day"] body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="day"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="day"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) {
@@ -3611,14 +3611,14 @@ html[data-theme="day"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2)
 }
 
 /* ---------- 6. НОЧЬ — ЖЁЛТЫЙ КОНТУР + ЖЁЛТЫЙ ТЕКСТ ---------- */
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) {
   border-color: rgba(245, 184, 0, 0.40) !important;
   color: #F5B800 !important;
 }
-html[data-theme="night"] body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) * {
@@ -3626,14 +3626,14 @@ html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p
 }
 
 /* ---------- 7. HOVER / ACTIVE — КАК У .card ---------- */
-html body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
+html body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
 html body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
 html body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
 html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 14px rgba(245,184,0,0.20) !important;
 }
-html body #btn-random.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active,
+html body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active,
 html body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active,
 html body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active,
 html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active {
@@ -5117,44 +5117,43 @@ html body #help-modal.help-modal.open::after {
 [data-theme="night"] .batch-download{background:var(--gold);color:var(--navy-dark)}
 .batch-download:hover{transform:scale(1.05);opacity:.9}
 
-/* === P6.2e: transition, ночной Пакет, ghost-submit, floating close === */
-/* 1. Плавная смена темы для всех транспорт-кнопок (как у body .4s) */
+/* === P6.2f: :is() для Пакета + primary protection + transition + ghost submit === */
+
+/* 1. «Озвучить» — всегда градиент (перебивает generic button.btn:hover на 797) */
+button.btn.btn-primary,
+button.btn.btn-primary:hover:not(:disabled),
+button.btn.btn-primary:focus,
+button.btn.btn-primary:active,
+#btn-synth.btn.btn-primary,
+#btn-synth.btn.btn-primary:hover:not(:disabled),
+#btn-synth.btn.btn-primary:focus,
+#btn-synth.btn.btn-primary:active {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  color: var(--navy-dark) !important;
+}
+button.btn.btn-primary *,
+button.btn.btn-primary:hover:not(:disabled) *,
+button.btn.btn-primary:focus *,
+#btn-synth.btn.btn-primary *,
+#btn-synth.btn.btn-primary:hover:not(:disabled) * {
+  color: var(--navy-dark) !important;
+  fill: var(--navy-dark) !important;
+}
+
+/* 2. Плавная смена темы — одинаковая transition на всех транспорт-кнопках */
 #btn-batch,
 #btn-random,
-#btn-synth {
+#btn-synth,
+#btn-stop,
+#btn-clear-history,
+#dl-dropdown > .btn,
+#history-dropdown > .btn,
+.batch-submit {
   transition: background-color .4s ease, color .4s ease,
               border-color .4s ease, box-shadow .25s ease;
 }
 
-/* 2. День + ночь: «Пакет» и «Случайный» — идентичны (.btn-ghost) */
-#btn-batch,
-#btn-random {
-  background: var(--panel-bg);
-  color: var(--text);
-  border: 1.5px solid var(--panel-border);
-}
-#btn-batch:hover:not(:disabled),
-#btn-random:hover:not(:disabled) {
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.45);
-}
-
-/* Ночью — те же цвета, что и у «Случайный» (panel-bg тёмный, gold-рамка) */
-html[data-theme="night"] #btn-batch,
-html[data-theme="night"] #btn-random {
-  background: var(--panel-bg) !important;
-  color: var(--text) !important;
-  border-color: var(--panel-border) !important;
-}
-html[data-theme="night"] #btn-batch:hover:not(:disabled),
-html[data-theme="night"] #btn-random:hover:not(:disabled) {
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
-}
-
-/* 3. «→ В очередь» — стиль ghost (.btn-ghost), без градиента */
+/* 3. «В очередь» — ghost-стиль (как Пакет/Случайный) */
 .batch-submit {
   align-self: flex-start;
   padding: 10px 22px;
@@ -5166,8 +5165,6 @@ html[data-theme="night"] #btn-random:hover:not(:disabled) {
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color .4s ease, color .4s ease,
-              border-color .4s ease, box-shadow .25s ease;
   box-shadow: none;
 }
 .batch-submit:hover:not(:disabled) {
@@ -5187,7 +5184,7 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
 
-/* 4. Крестик над углом + dialog без обрезки */
+/* 4. Крестик над углом */
 .batch-dialog { overflow: visible !important; }
 #batch-modal .help-modal-close {
   position: absolute !important;
