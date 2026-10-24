@@ -404,3 +404,19 @@ pytest backend: 80 passed, 2 skipped. JS/CSS не затронуты теста�
   · `#batch-modal .help-modal-close { position:absolute; top:-16px;
     right:-16px; z-index:10 }` — крестик чуть заезжает за углы диалога
 - index.html: cache-busting bump
+
+## P6.2e — мигание, ночной Пакет, стрелка, ghost-submit
+
+- style.css:
+  · `button.btn:hover` → `button.btn:not(.btn-primary):not(.batch-submit):hover`
+    (primary больше не мигает при hover — градиент сохраняется)
+  · `#btn-batch, #btn-random, #btn-synth` — `transition: background .4s,
+    color .4s, border-color .4s` (синхронно с body, без флеша при смене темы)
+  · `[data-theme="night"] #btn-batch` = ночной `#btn-random`
+    (panel-bg + text + panel-border; hover → gold + glow .6)
+  · `.batch-submit` — ghost-стиль (panel-bg + text + border, hover gold
+    + glow, night-версия) вместо жёлтого градиента
+  · `.batch-dialog { overflow: visible }` + `#batch-modal .help-modal-close
+    { top:-16px; right:-16px; z-index:10 }` — крестик над углом
+- app.js: i18n `batch_submit: "→ В очередь"` → `"В очередь"` (ru),
+  `"→ Queue"` → `"Queue"` (en); шаблон `<button>` без стрелки

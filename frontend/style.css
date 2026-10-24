@@ -795,7 +795,7 @@ summary.help-header {
 .btn:hover,
 .btn-ghost:hover,
 button.btn:hover,
-button:hover:not(:disabled),
+button.btn:not(.btn-primary):not(.batch-submit):hover:not(:disabled),
 .btn:focus,
 button.btn:focus {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
@@ -5117,24 +5117,78 @@ html body #help-modal.help-modal.open::after {
 [data-theme="night"] .batch-download{background:var(--gold);color:var(--navy-dark)}
 .batch-download:hover{transform:scale(1.05);opacity:.9}
 
-/* === P6.2d: btn-batch (as pause) + floating close === */
-/* «Пакет» — обычный .btn-ghost (как «Стоп»/«Случайный»): без override фона.
-   На hover — жёлтая рамка + glow. */
+/* === P6.2e: transition, ночной Пакет, ghost-submit, floating close === */
+/* 1. Плавная смена темы для всех транспорт-кнопок (как у body .4s) */
+#btn-batch,
+#btn-random,
+#btn-synth {
+  transition: background-color .4s ease, color .4s ease,
+              border-color .4s ease, box-shadow .25s ease;
+}
+
+/* 2. День + ночь: «Пакет» и «Случайный» — идентичны (.btn-ghost) */
+#btn-batch,
+#btn-random {
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1.5px solid var(--panel-border);
+}
 #btn-batch:hover:not(:disabled),
 #btn-random:hover:not(:disabled) {
   border-color: var(--gold) !important;
   color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.45);
 }
-[data-theme="night"] #btn-batch:hover:not(:disabled),
-[data-theme="night"] #btn-random:hover:not(:disabled) {
-  box-shadow: 0 0 18px rgba(245,184,0,.55);
+
+/* Ночью — те же цвета, что и у «Случайный» (panel-bg тёмный, gold-рамка) */
+html[data-theme="night"] #btn-batch,
+html[data-theme="night"] #btn-random {
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--panel-border) !important;
+}
+html[data-theme="night"] #btn-batch:hover:not(:disabled),
+html[data-theme="night"] #btn-random:hover:not(:disabled) {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
 
-/* Крестик модалки Пакета — вылезает над верхним правым углом диалога */
-.batch-dialog {
-  overflow: visible !important;
+/* 3. «→ В очередь» — стиль ghost (.btn-ghost), без градиента */
+.batch-submit {
+  align-self: flex-start;
+  padding: 10px 22px;
+  border-radius: 12px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel-bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color .4s ease, color .4s ease,
+              border-color .4s ease, box-shadow .25s ease;
+  box-shadow: none;
 }
+.batch-submit:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 18px rgba(245,184,0,.45);
+}
+.batch-submit:disabled { opacity: .55; cursor: wait; }
+html[data-theme="night"] .batch-submit {
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--panel-border) !important;
+}
+html[data-theme="night"] .batch-submit:hover:not(:disabled) {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
+}
+
+/* 4. Крестик над углом + dialog без обрезки */
+.batch-dialog { overflow: visible !important; }
 #batch-modal .help-modal-close {
   position: absolute !important;
   top: -16px !important;

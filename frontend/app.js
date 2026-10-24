@@ -5,7 +5,7 @@ const I18N = {
     mood:"Настроение",
     batch:"Пакет", batch_title:"Пакетный синтез", batch_text:"Текст",
     batch_voice:"Голос", batch_model:"Модель", batch_settings:"Настройки",
-    batch_adv:"Дополнительно", batch_submit:"→ В очередь", batch_download:"ZIP",
+    batch_adv:"Дополнительно", batch_submit:"В очередь", batch_download:"ZIP",
     batch_empty:"Задач пока нет", batch_in_queue:"в очереди", batch_running:"синтез…",
     batch_done:"готово", batch_error:"ошибка", batch_cancelled:"отменено",
     batch_send_err:"Ошибка отправки: ", batch_need_text:"Введите текст",
@@ -58,7 +58,7 @@ const I18N = {
     mood:"Mood",
     batch:"Batch", batch_title:"Batch synthesis", batch_text:"Text",
     batch_voice:"Voice", batch_model:"Model", batch_settings:"Settings",
-    batch_adv:"Extra", batch_submit:"→ Queue", batch_download:"ZIP",
+    batch_adv:"Extra", batch_submit:"Queue", batch_download:"ZIP",
     batch_empty:"No tasks yet", batch_in_queue:"queued", batch_running:"synthesizing…",
     batch_done:"done", batch_error:"error", batch_cancelled:"cancelled",
     batch_send_err:"Send error: ", batch_need_text:"Enter text",
@@ -1924,7 +1924,7 @@ window.addEventListener("load", init);
               <label>Дробление <select class="m-split"><option value="short">short</option><option value="medium" selected>medium</option><option value="long">long</option></select></label>
             </div>
           </details>
-          <button class="batch-submit" type="button" data-i18n="batch_submit">→ В очередь</button>
+          <button class="batch-submit" type="button" data-i18n="batch_submit">В очередь</button>
         </div>
         <div class="batch-list" aria-live="polite"></div>
       </div>`;
