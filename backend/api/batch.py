@@ -52,7 +52,7 @@ async def list_batch(request: Request, limit: int = 50):
 @router.delete("/api/batch/{task_id}")
 async def cancel_batch(task_id: str, request: Request):
     q = _queue(request)
-    ok = await q.cancel(task_id)
+    ok = q.cancel(task_id)
     if not ok:
         raise HTTPException(409, "task not cancellable")
     return {"ok": True, "cancelled": task_id}

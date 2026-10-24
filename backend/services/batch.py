@@ -92,7 +92,7 @@ class BatchQueue:
         ids = self._order[-limit:][::-1]  # новые сверху
         return [self._tasks[i] for i in ids if i in self._tasks]
 
-    async def cancel(self, task_id: str) -> bool:
+    def cancel(self, task_id: str) -> bool:
         task = self._tasks.get(task_id)
         if task is None or task.status not in ("queued", "running"):
             return False
