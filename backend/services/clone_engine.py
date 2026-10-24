@@ -7,6 +7,7 @@
   4. Тональная конверсия (OpenVoice V2) — перенос тембра
   5. Профессиональная пост-обработка (pitch stabilize, loudness, de-ess)
 """
+
 from __future__ import annotations
 
 import logging
@@ -23,24 +24,28 @@ log = logging.getLogger("JST.Clone")
 # Опциональные импорты
 try:
     import noisereduce as nr
+
     HAS_NR = True
 except ImportError:
     HAS_NR = False
 
 try:
     from resemblyzer import VoiceEncoder, preprocess_wav
+
     HAS_RESEMBLYZER = True
 except ImportError:
     HAS_RESEMBLYZER = False
 
 try:
     import pyloudnorm as pyln
+
     HAS_LOUDNORM = True
 except ImportError:
     HAS_LOUDNORM = False
 
 try:
-    import parselmouth
+    import parselmouth  # noqa: F401 — только для проверки HAS_PARSELMOUTH
+
     HAS_PARSELMOUTH = True
 except ImportError:
     HAS_PARSELMOUTH = False
@@ -48,6 +53,7 @@ except ImportError:
 try:
     from openvoice import se_extractor
     from openvoice.api import ToneColorConverter
+
     HAS_OPENVOICE = True
 except ImportError:
     HAS_OPENVOICE = False
@@ -87,8 +93,13 @@ class JSTCloneEngine:
             except Exception as e:
                 log.warning("[JST.Clone] OpenVoice failed: %s", e)
 
-        log.info("[JST.Clone] Pipeline готов: nr=%s resemblyzer=%s openvoice=%s loudnorm=%s",
-                 HAS_NR, HAS_RESEMBLYZER, self.tone_converter is not None, HAS_LOUDNORM)
+        log.info(
+            "[JST.Clone] Pipeline готов: nr=%s resemblyzer=%s openvoice=%s loudnorm=%s",
+            HAS_NR,
+            HAS_RESEMBLYZER,
+            self.tone_converter is not None,
+            HAS_LOUDNORM,
+        )
 
     # ==================== STEP 1: Reference cleaner ====================
     def clean_reference(self, ref_path: Path, voice_name: str) -> Path:
@@ -174,8 +185,7 @@ class JSTCloneEngine:
         return audio.astype(np.float32)
 
     # ==================== STEP 4: Tone conversion (OpenVoice) ====================
-    def apply_tone_conversion(self, base_audio: np.ndarray, clean_ref: Path,
-                              sr: int) -> np.ndarray:
+    def apply_tone_conversion(self, base_audio: np.ndarray, clean_ref: Path, sr: int) -> np.ndarray:
         """Перенос тембра через OpenVoice V2."""
         if not self.tone_converter:
             return base_audio
@@ -183,8 +193,7 @@ class JSTCloneEngine:
         log.info("[JST.Clone] Шаг 4/5: tone color conversion")
         try:
             # Извлечь tone color из референса
-            source_se, _ = se_extractor.get_se(str(clean_ref),
-                                                self.tone_converter, vad=True)
+            source_se, _ = se_extractor.get_se(str(clean_ref), self.tone_converter, vad=True)
 
             # Ресемплинг в частоту конвертера
             target_sr = self.tone_converter.hps.data.sampling_rate
@@ -194,6 +203,7 @@ class JSTCloneEngine:
             # Convert
             base_tensor = torch.from_numpy(base_audio).float().unsqueeze(0).to(self.device)
             from openvoice.mel_processing import spectrogram_torch
+
             spec = spectrogram_torch(
                 base_tensor,
                 self.tone_converter.hps.data.filter_length,
@@ -202,9 +212,7 @@ class JSTCloneEngine:
                 self.tone_converter.hps.data.win_length,
                 center=False,
             )
-            converted = self.tone_converter.convert(
-                spec, source_se, target_sr
-            )
+            converted = self.tone_converter.convert(spec, source_se, target_sr)
             result = converted.squeeze().cpu().numpy()
 
             # Обратный ресемплинг
@@ -218,9 +226,14 @@ class JSTCloneEngine:
             return base_audio
 
     # ==================== MAIN PIPELINE ====================
-    def synthesize_segment(self, text: str, voice_name: str,
-                           ref_path: Path, tts_callback,
-                           use_tone_conversion: bool = True) -> np.ndarray:
+    def synthesize_segment(
+        self,
+        text: str,
+        voice_name: str,
+        ref_path: Path,
+        tts_callback,
+        use_tone_conversion: bool = True,
+    ) -> np.ndarray:
         """Полный pipeline для одного сегмента текста.
 
         Args:
@@ -247,6 +260,9 @@ class JSTCloneEngine:
         # Step 5: post-processing
         base_audio = self.postprocess(base_audio, self.SR)
 
-        log.info("[JST.Clone] ✅ Pipeline завершён: %.2f сек аудио за %.1f сек",
-                 len(base_audio) / self.SR, time.time() - t_start)
+        log.info(
+            "[JST.Clone] ✅ Pipeline завершён: %.2f сек аудио за %.1f сек",
+            len(base_audio) / self.SR,
+            time.time() - t_start,
+        )
         return base_audio

@@ -2,6 +2,7 @@
 
 Точка сборки приложения. main.py реэкспортирует `app` из этого модуля.
 """
+
 from __future__ import annotations
 
 import logging
@@ -41,11 +42,6 @@ from .core.state import set_engine
 # Что каждая модель МОЖЕТ поддерживать (независимо от загрузки весов)
 
 
-
-
-
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown: инициализация Engine."""
@@ -73,17 +69,26 @@ app.include_router(ws_router)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestSizeLimitMiddleware)
 
-app.add_middleware(CORSMiddleware, allow_origins=["http://127.0.0.1:8000", "http://localhost:8000"], allow_credentials=True,
-                   allow_methods=["*"], allow_headers=["*"])
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:8000", "localhost:8000"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8000", "http://localhost:8000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:8000", "localhost:8000"],
+)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
 
 app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")
 
-@app.get("/")
-async def index(): return FileResponse(FRONTEND / "index.html")
 
+@app.get("/")
+async def index():
+    return FileResponse(FRONTEND / "index.html")
 
 
 # === МОДЕЛИ И ЯЗЫКИ ===
@@ -94,24 +99,15 @@ async def static_cache_control(request, call_next):
     if request.url.path.startswith("/static/"):
         response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     return response
+
+
 # === ГОЛОСА ===
-
-
-
-
-
 
 
 # === OUTPUT ===
 
 
-
-
 # === STT (Speech-to-Text) для микрофона ===
-
-
-
-
 
 
 # === SAVE ===

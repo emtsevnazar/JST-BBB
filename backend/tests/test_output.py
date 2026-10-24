@@ -6,6 +6,7 @@ def test_list_output(client):
 
 def test_clear_history(client, monkeypatch, tmp_path):
     import backend.api.output as out_mod
+
     monkeypatch.setattr(out_mod, "OUTPUT", tmp_path)
     (tmp_path / "x.wav").write_bytes(b"")
 
@@ -18,6 +19,7 @@ def test_clear_history(client, monkeypatch, tmp_path):
 
 def test_download_all_zip_no_files(client, monkeypatch, tmp_path):
     import backend.api.output as out_mod
+
     monkeypatch.setattr(out_mod, "OUTPUT", tmp_path)
 
     r = client.get("/api/download-all-zip")

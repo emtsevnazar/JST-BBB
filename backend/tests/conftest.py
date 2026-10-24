@@ -1,4 +1,5 @@
 """Pytest fixtures: TestClient + FakeEngine (не грузит реальную модель)."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -25,8 +26,16 @@ class FakeEngine:
         self.current_mode = m
 
     def parse_markup(self, text):
-        return [{"text": text, "emphasize": False, "volume": 1.0,
-                 "whisper": False, "speed": 1.0, "pause": 0.0}]
+        return [
+            {
+                "text": text,
+                "emphasize": False,
+                "volume": 1.0,
+                "whisper": False,
+                "speed": 1.0,
+                "pause": 0.0,
+            }
+        ]
 
     def split_into_sentences(self, text, mode="medium"):
         return [text]

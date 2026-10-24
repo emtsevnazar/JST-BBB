@@ -1,4 +1,5 @@
 """Voices API: list/create/upload/upload-blob/rebuild-reference."""
+
 from __future__ import annotations
 
 import logging
@@ -22,7 +23,8 @@ router = APIRouter()
 async def list_voices():
     items = []
     for d in sorted(VOICES.iterdir()):
-        if not d.is_dir() or d.name.startswith("."): continue
+        if not d.is_dir() or d.name.startswith("."):
+            continue
         files = [f for f in d.iterdir() if f.suffix.lower() in SUPPORTED]
         has_ref = (OUTPUT / f"merged_reference_{d.name}.wav").exists()
         items.append({"name": d.name, "files": len(files), "has_ref": has_ref})
@@ -45,7 +47,8 @@ async def upload_file(voice: str, file: UploadFile = File(...)):
     except ValueError as e:
         raise HTTPException(400, str(e))
     folder = VOICES / voice
-    if not folder.is_dir(): raise HTTPException(404)
+    if not folder.is_dir():
+        raise HTTPException(404)
     contents = await file.read()
     try:
         validate_audio_file(file.filename, contents)
@@ -77,7 +80,9 @@ async def upload_blob(voice: str, file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, f)
         subprocess.run(
             ["ffmpeg", "-y", "-i", str(tmp), "-ar", "24000", "-ac", "1", str(dst)],
-            check=True, capture_output=True, timeout=30
+            check=True,
+            capture_output=True,
+            timeout=30,
         )
         tmp.unlink(missing_ok=True)
         return {"ok": True, "file": dst.name}
@@ -93,5 +98,6 @@ async def rebuild(voice: str, ref_length: str = Form("15")):
     except ValueError as e:
         raise HTTPException(400, str(e))
     out = build_reference(voice, _num(ref_length, 15.0))
-    if not out: raise HTTPException(400, "Failed to build")
+    if not out:
+        raise HTTPException(400, "Failed to build")
     return {"ok": True, "file": out.name}

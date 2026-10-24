@@ -1,4 +1,5 @@
 """Синглтон ENGINE — доступен из main.startup и из api/*.py."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

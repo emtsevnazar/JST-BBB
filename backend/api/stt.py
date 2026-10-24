@@ -1,4 +1,5 @@
 """STT API: speech-to-text через openai-whisper (модель кэшируется в модуле)."""
+
 from __future__ import annotations
 
 import logging
@@ -32,7 +33,9 @@ async def speech_to_text(file: UploadFile = File(...)):
         try:
             subprocess.run(
                 ["ffmpeg", "-y", "-i", str(tmp_in), "-ar", "16000", "-ac", "1", str(tmp_wav)],
-                check=True, capture_output=True, timeout=30
+                check=True,
+                capture_output=True,
+                timeout=30,
             )
         except Exception as e:
             log.warning("stt ffmpeg: %s", e)
@@ -43,6 +46,7 @@ async def speech_to_text(file: UploadFile = File(...)):
         # Whisper
         try:
             import whisper
+
             model = _STT_MODEL
             if model is None:
                 model = whisper.load_model("base")
@@ -56,7 +60,11 @@ async def speech_to_text(file: UploadFile = File(...)):
             log.exception("stt error")
             raise HTTPException(500, f"STT: {e}")
     finally:
-        try: tmp_in.unlink(missing_ok=True)
-        except Exception: pass
-        try: tmp_wav.unlink(missing_ok=True)
-        except Exception: pass
+        try:
+            tmp_in.unlink(missing_ok=True)
+        except Exception:
+            pass
+        try:
+            tmp_wav.unlink(missing_ok=True)
+        except Exception:
+            pass

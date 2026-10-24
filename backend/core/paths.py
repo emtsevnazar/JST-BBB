@@ -2,6 +2,7 @@
 
 Импорт этого модуля создаёт папки VOICES, OUTPUT, FRONTEND (если их нет).
 """
+
 from pathlib import Path
 
 ROOT = Path(__file__).parents[2].resolve()  # voice_forge_studio/

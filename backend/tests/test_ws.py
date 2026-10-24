@@ -6,6 +6,7 @@
 
 Здесь проверяем, что endpoint СУЩЕСТВУЕТ (не 404 Not Found).
 """
+
 from starlette.testclient import WebSocketDenialResponse
 
 

@@ -1,4 +1,5 @@
 """JST Engine v2.5 - multi-segment pitch, language, 4 models."""
+
 from __future__ import annotations
 
 import logging
@@ -10,6 +11,7 @@ from pathlib import Path
 
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
@@ -17,6 +19,7 @@ except ImportError:
 
 try:
     import torch
+
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
@@ -24,6 +27,7 @@ except ImportError:
 
 try:
     import librosa
+
     HAS_LIBROSA = True
 except ImportError:
     HAS_LIBROSA = False
@@ -42,7 +46,8 @@ if FINETUNING is None:
 sys.path.insert(0, str(FINETUNING))
 try:
     from cosyvoice.cli.cosyvoice import CosyVoice
-    from cosyvoice.utils.file_utils import load_wav
+    from cosyvoice.utils.file_utils import load_wav  # noqa: F401 — только для проверки HAS_COSYVOICE
+
     HAS_COSYVOICE = True
 except ImportError:
     HAS_COSYVOICE = False
@@ -58,6 +63,7 @@ _buf = _io.StringIO()
 with _ctx.redirect_stdout(_buf), _ctx.redirect_stderr(_buf):
     try:
         from qwen_tts import Qwen3TTSModel
+
         HAS_QWEN = True
     except ImportError:
         HAS_QWEN = False
@@ -65,6 +71,7 @@ with _ctx.redirect_stdout(_buf), _ctx.redirect_stderr(_buf):
 
 try:
     from voxcpm import VoxCPM
+
     HAS_VOXCPM = True
 except ImportError:
     HAS_VOXCPM = False
@@ -73,6 +80,7 @@ except ImportError:
 try:
     from src.chatterbox_.models.t3.t3 import T3
     from src.chatterbox_.tts import ChatterboxTTS
+
     HAS_CHATTERBOX = True
 except ImportError:
     HAS_CHATTERBOX = False
@@ -82,17 +90,20 @@ except ImportError:
 try:
     from openvoice import se_extractor
     from openvoice.api import ToneColorConverter
-    from openvoice.mel_processing import spectrogram_torch
+    from openvoice.mel_processing import spectrogram_torch  # noqa: F401 — только для проверки HAS_OPENVOICE
+
     HAS_OPENVOICE = True
 except ImportError:
     HAS_OPENVOICE = False
 
 try:
     from chatterbox.mtl_tts import ChatterboxMultilingualTTS
+
     HAS_MTL = True
 except ImportError:
     try:
         from src.chatterbox_.mtl_tts import ChatterboxMultilingualTTS
+
         HAS_MTL = True
     except ImportError:
         HAS_MTL = False
@@ -108,13 +119,38 @@ EAGER_LOAD = set()  # пример: {"qwen"}
 
 try:
     from .services.clone_engine import JSTCloneEngine
+
     HAS_CLONE = True
 except ImportError:
     HAS_CLONE = False
     JSTCloneEngine = None
 
 SUPPORTED_LANGUAGES = {"ru", "en"}  # core model
-ALL_LANGUAGES = {"ar","da","de","el","en","es","fi","fr","he","hi","it","ja","ko","ms","nl","no","pl","pt","ru","sv","sw","tr","zh"}  # multilingual model
+ALL_LANGUAGES = {
+    "ar",
+    "da",
+    "de",
+    "el",
+    "en",
+    "es",
+    "fi",
+    "fr",
+    "he",
+    "hi",
+    "it",
+    "ja",
+    "ko",
+    "ms",
+    "nl",
+    "no",
+    "pl",
+    "pt",
+    "ru",
+    "sv",
+    "sw",
+    "tr",
+    "zh",
+}  # multilingual model
 
 
 def _num(v, d=0.0):
@@ -166,26 +202,29 @@ class SynthSettings:
             if f in d and d[f] is not None:
                 safe[f] = d[f]
         return cls(**safe)
-    def to_dict(self): return asdict(self)
+
+    def to_dict(self):
+        return asdict(self)
 
 
 ACCENT_MODIFIERS = {
-    "neutral":   {"exag": 0.00, "temp": 0.00, "speed": 1.00, "pitch": 0},
-    "soft":      {"exag": -0.10, "temp": -0.05, "speed": 0.95, "pitch": -1},
+    "neutral": {"exag": 0.00, "temp": 0.00, "speed": 1.00, "pitch": 0},
+    "soft": {"exag": -0.10, "temp": -0.05, "speed": 0.95, "pitch": -1},
     "energetic": {"exag": 0.15, "temp": 0.05, "speed": 1.08, "pitch": +1},
-    "dramatic":  {"exag": 0.25, "temp": 0.10, "speed": 0.92, "pitch": -2},
-    "calm":      {"exag": -0.05, "temp": -0.10, "speed": 0.90, "pitch": -1},
-    "bright":    {"exag": 0.10, "temp": 0.03, "speed": 1.03, "pitch": +2},
+    "dramatic": {"exag": 0.25, "temp": 0.10, "speed": 0.92, "pitch": -2},
+    "calm": {"exag": -0.05, "temp": -0.10, "speed": 0.90, "pitch": -1},
+    "bright": {"exag": 0.10, "temp": 0.03, "speed": 1.03, "pitch": +2},
 }
 
 
 class Engine:
-    def __init__(self, base_model_dir=None, merged_t3=None,
-                 reference_wav=None, device="auto"):
+    def __init__(self, base_model_dir=None, merged_t3=None, reference_wav=None, device="auto"):
         self.device = self._pick(device)
         base = Path(base_model_dir) if base_model_dir else FINETUNING / "pretrained_models"
         merged = Path(merged_t3) if merged_t3 else ROOT / "t3_finetuned_merged.safetensors"
-        self.reference = Path(reference_wav) if reference_wav else ROOT / "output" / "merged_reference.wav"
+        self.reference = (
+            Path(reference_wav) if reference_wav else ROOT / "output" / "merged_reference.wav"
+        )
         if not base.exists():
             raise FileNotFoundError(f"Net bazy: {base}")
 
@@ -201,7 +240,8 @@ class Engine:
             self.merged_vocab = 2454
             for k, v in self.merged_t3_state.items():
                 if "text_emb" in k or "text_head" in k:
-                    self.merged_vocab = v.shape[0]; break
+                    self.merged_vocab = v.shape[0]
+                    break
             self.has_lora = True
         else:
             log.warning("merged_t3.net - LoRA/Pro rabotayut kak Core")
@@ -212,9 +252,12 @@ class Engine:
         self._apply_state(self.base_t3_state, self.base_vocab, "Core")
         self.current_mode = "core"
         # Гарантируем атрибуты моделей
-        if not hasattr(self, "mtl_engine"): self.mtl_engine = None
-        if not hasattr(self, "cosyvoice"): self.cosyvoice = None
-        if not hasattr(self, "qwen_tts"): self.qwen_tts = None
+        if not hasattr(self, "mtl_engine"):
+            self.mtl_engine = None
+        if not hasattr(self, "cosyvoice"):
+            self.cosyvoice = None
+        if not hasattr(self, "qwen_tts"):
+            self.qwen_tts = None
         self.clone_engine = None
         if HAS_CLONE:
             try:
@@ -231,7 +274,8 @@ class Engine:
         self._voxcpm_loaded = False
         if HAS_VOXCPM and (not LAZY_MODELS or "voxcpm" in EAGER_LOAD):
             self._load_voxcpm()
-        if not hasattr(self, "openvoice_converter"): self.openvoice_converter = None
+        if not hasattr(self, "openvoice_converter"):
+            self.openvoice_converter = None
         self.mtl_engine = None
         self.openvoice_converter = None
         if HAS_OPENVOICE:
@@ -239,7 +283,9 @@ class Engine:
             try:
                 ckpt = FINETUNING / "checkpoints" / "openvoice_v2"
                 if ckpt.exists():
-                    self.openvoice_converter = ToneColorConverter(str(ckpt / "converter" / "config.json"), device=self.device)
+                    self.openvoice_converter = ToneColorConverter(
+                        str(ckpt / "converter" / "config.json"), device=self.device
+                    )
                     self.openvoice_converter.load_ckpt(str(ckpt / "converter" / "checkpoint.pth"))
                     log.info("✅ OpenVoice V2 zagruzhen")
                 else:
@@ -250,16 +296,27 @@ class Engine:
         if HAS_MTL:
             log.info("Zagruzka ChatterboxMultilingualTTS...")
             try:
-                self.mtl_engine = ChatterboxMultilingualTTS.from_local(str(base), device=self.device)
+                self.mtl_engine = ChatterboxMultilingualTTS.from_local(
+                    str(base), device=self.device
+                )
                 log.info("✅ Multilingual zagruzhen")
             except Exception as e:
                 log.warning("Multilingual load failed: %s", e)
                 self.mtl_engine = None
         self.sr = self.engine.sr
         import inspect
-        self.supports_language_id = "language_id" in inspect.signature(self.engine.generate).parameters
-        log.info("Gotovo za %.1f s (sr=%d, %s, lang_id=%s, lora=%s)",
-                 time.time()-t0, self.sr, self.device, self.supports_language_id, self.has_lora)
+
+        self.supports_language_id = (
+            "language_id" in inspect.signature(self.engine.generate).parameters
+        )
+        log.info(
+            "Gotovo za %.1f s (sr=%d, %s, lang_id=%s, lora=%s)",
+            time.time() - t0,
+            self.sr,
+            self.device,
+            self.supports_language_id,
+            self.has_lora,
+        )
 
     def _apply_state(self, state, vocab, label):
         hp = self.engine.t3.hp
@@ -307,7 +364,9 @@ class Engine:
         elif mode in ("lora", "pro"):
             if not self.has_lora:
                 log.warning("[%s] not trained, fallback to Core weights", mode)
-                self._apply_state(self.base_t3_state, self.base_vocab, mode.capitalize() + " (fallback)")
+                self._apply_state(
+                    self.base_t3_state, self.base_vocab, mode.capitalize() + " (fallback)"
+                )
             else:
                 self._apply_state(self.merged_t3_state, self.merged_vocab, mode.capitalize())
         else:
@@ -316,9 +375,12 @@ class Engine:
 
     @staticmethod
     def _pick(pref):
-        if pref != "auto": return pref
-        if torch.cuda.is_available(): return "cuda"
-        if torch.backends.mps.is_available(): return "mps"
+        if pref != "auto":
+            return pref
+        if torch.cuda.is_available():
+            return "cuda"
+        if torch.backends.mps.is_available():
+            return "mps"
         return "cpu"
 
     @staticmethod
@@ -338,16 +400,18 @@ class Engine:
             raw = "".join(buf).strip()
             buf = []
             if raw or pause > 0 or pending_pause > 0:
-                segments.append({
-                    "text": raw,
-                    "pause": max(_num(pending_pause), _num(pause)),
-                    "emphasize": emph_pending,
-                    "language": cur_lang,
-                    "volume": cur_volume,
-                    "speed": cur_speed,
-                    "pitch": cur_pitch,
-                    "whisper": cur_whisper,
-                })
+                segments.append(
+                    {
+                        "text": raw,
+                        "pause": max(_num(pending_pause), _num(pause)),
+                        "emphasize": emph_pending,
+                        "language": cur_lang,
+                        "volume": cur_volume,
+                        "speed": cur_speed,
+                        "pitch": cur_pitch,
+                        "whisper": cur_whisper,
+                    }
+                )
                 pending_pause = 0.0
                 emph_pending = False
 
@@ -355,67 +419,118 @@ class Engine:
         while i < len(text):
             m = re.match(r"\[([a-z][a-z])\]", text[i:])
             if m:
-                flush(); cur_lang = m.group(1); i += m.end(); continue
+                flush()
+                cur_lang = m.group(1)
+                i += m.end()
+                continue
             m = re.match(r"[{]p:([0-9.]+)[}]", text[i:])
             if m:
-                flush(pause=_num(m.group(1))); i += m.end(); continue
+                flush(pause=_num(m.group(1)))
+                i += m.end()
+                continue
             m = re.match(r"<v:([0-9.]+)>", text[i:])
             if m:
-                flush(); cur_volume = _num(m.group(1), 1.0); i += m.end(); continue
-            if text[i:i+4] == "</v>":
-                flush(); cur_volume = 1.0; i += 4; continue
+                flush()
+                cur_volume = _num(m.group(1), 1.0)
+                i += m.end()
+                continue
+            if text[i : i + 4] == "</v>":
+                flush()
+                cur_volume = 1.0
+                i += 4
+                continue
             m = re.match(r"<s:([0-9.]+)>", text[i:])
             if m:
-                flush(); cur_speed = _num(m.group(1), 1.0); i += m.end(); continue
-            if text[i:i+4] == "</s>":
-                flush(); cur_speed = 1.0; i += 4; continue
+                flush()
+                cur_speed = _num(m.group(1), 1.0)
+                i += m.end()
+                continue
+            if text[i : i + 4] == "</s>":
+                flush()
+                cur_speed = 1.0
+                i += 4
+                continue
             m = re.match(r"<p:([+-]?[0-9.]+)>", text[i:])
             if m:
-                flush(); cur_pitch = _int(m.group(1), 0); i += m.end(); continue
-            if text[i:i+4] == "</p>":
-                flush(); cur_pitch = 0; i += 4; continue
-            if text[i:i+3] == "<w>":
-                flush(); cur_whisper = True; i += 3; continue
-            if text[i:i+4] == "</w>":
-                flush(); cur_whisper = False; i += 4; continue
-            if text[i:i+3] == "...":
-                buf.append("..."); pending_pause = max(pending_pause, 0.35); i += 3; continue
-            if text[i:i+2] == "//":
-                flush(pause=0.10); i += 2; continue
+                flush()
+                cur_pitch = _int(m.group(1), 0)
+                i += m.end()
+                continue
+            if text[i : i + 4] == "</p>":
+                flush()
+                cur_pitch = 0
+                i += 4
+                continue
+            if text[i : i + 3] == "<w>":
+                flush()
+                cur_whisper = True
+                i += 3
+                continue
+            if text[i : i + 4] == "</w>":
+                flush()
+                cur_whisper = False
+                i += 4
+                continue
+            if text[i : i + 3] == "...":
+                buf.append("...")
+                pending_pause = max(pending_pause, 0.35)
+                i += 3
+                continue
+            if text[i : i + 2] == "//":
+                flush(pause=0.10)
+                i += 2
+                continue
             if text[i] == "*":
-                j = text.find("*", i+1)
+                j = text.find("*", i + 1)
                 if j > i:
-                    buf.append(text[i+1:j]); emph_pending = True; i = j+1; continue
+                    buf.append(text[i + 1 : j])
+                    emph_pending = True
+                    i = j + 1
+                    continue
             if text[i] == "_":
-                j = text.find("_", i+1)
+                j = text.find("_", i + 1)
                 if j > i:
-                    flush(); buf.append(text[i+1:j]); flush(); i = j+1; continue
+                    flush()
+                    buf.append(text[i + 1 : j])
+                    flush()
+                    i = j + 1
+                    continue
             if text[i] == "~":
-                j = text.find("~", i+1)
+                j = text.find("~", i + 1)
                 if j > i:
-                    flush(); prev = cur_whisper; cur_whisper = True
-                    buf.append(text[i+1:j]); flush(); cur_whisper = prev
-                    i = j+1; continue
-            buf.append(text[i]); i += 1
+                    flush()
+                    prev = cur_whisper
+                    cur_whisper = True
+                    buf.append(text[i + 1 : j])
+                    flush()
+                    cur_whisper = prev
+                    i = j + 1
+                    continue
+            buf.append(text[i])
+            i += 1
         flush()
         return [s for s in segments if s["text"] or s["pause"] > 0]
 
     @staticmethod
     def split_into_sentences(text, style="medium"):
         text = (text or "").strip()
-        if not text: return []
-        if style == "long": return [text]
+        if not text:
+            return []
+        if style == "long":
+            return [text]
         max_chars = 120 if style == "short" else 220
         raw = re.split(r"(?<=[.!?])\s+", text)
         out = []
         for p in raw:
             p = p.strip()
-            if not p: continue
+            if not p:
+                continue
             if len(p) > max_chars:
                 subs = re.split(r"(?<=[,;:])\s+", p)
                 for s in subs:
                     s = s.strip()
-                    if s: out.append(s)
+                    if s:
+                        out.append(s)
             else:
                 out.append(p)
         merged = []
@@ -428,11 +543,13 @@ class Engine:
 
     def _post(self, wav, s, volume_mul=1.0, speed_mul=1.0, pitch_mul=0, whisper=False):
         y = np.asarray(wav, dtype=np.float32).squeeze()
-        if y.ndim > 1: y = y[0]
+        if y.ndim > 1:
+            y = y[0]
         total_speed = _num(s.speed, 1.0) * _num(speed_mul, 1.0)
         if abs(total_speed - 1.0) > 0.01:
             try:
                 import pyrubberband as pyrb
+
                 y = pyrb.time_stretch(y, self.sr, rate=total_speed)
             except ImportError:
                 y = librosa.effects.time_stretch(y, rate=total_speed)
@@ -440,28 +557,43 @@ class Engine:
         if total_pitch != 0:
             try:
                 import pyrubberband as pyrb
+
                 y = pyrb.pitch_shift(y, self.sr, n_steps=total_pitch)
             except ImportError:
                 # librosa требует именованные аргументы
                 y = librosa.effects.pitch_shift(y=y, sr=self.sr, n_steps=total_pitch)
         vol = _num(s.volume, 1.0) * _num(volume_mul, 1.0)
-        if whisper: vol *= 0.55
+        if whisper:
+            vol *= 0.55
         if abs(vol - 1.0) > 0.01:
             y = y * vol
             peak = float(np.max(np.abs(y))) + 1e-9
-            if peak > 0.99: y = y / peak * 0.95
+            if peak > 0.99:
+                y = y / peak * 0.95
         return y.astype(np.float32)
 
-    def synth_one(self, text, ref_audio, settings, emphasize=False,
-                  volume_mul=1.0, whisper=False, speed_mul=1.0, pitch_mul=0):
+    def synth_one(
+        self,
+        text,
+        ref_audio,
+        settings,
+        emphasize=False,
+        volume_mul=1.0,
+        whisper=False,
+        speed_mul=1.0,
+        pitch_mul=0,
+    ):
         accent = ACCENT_MODIFIERS.get(settings.accent or "neutral", ACCENT_MODIFIERS["neutral"])
         exag = _num(settings.exaggeration, 0.5) + (0.15 if emphasize else 0.0) + accent["exag"]
         temp = _num(settings.temperature, 0.8) + (0.03 if emphasize else 0.0) + accent["temp"]
         speed_mul = _num(speed_mul, 1.0) * accent["speed"]
         pitch_mul = _int(pitch_mul, 0) + accent["pitch"]
         if settings.mode == "pro":
-            exag = min(1.0, exag + 0.10); temp = min(1.5, temp + 0.05)
-        if whisper: exag = 0.30; temp = 0.85
+            exag = min(1.0, exag + 0.10)
+            temp = min(1.5, temp + 0.05)
+        if whisper:
+            exag = 0.30
+            temp = 0.85
         if settings.mode == "multi" and self.mtl_engine is not None:
             lang = settings.language if settings.language in ALL_LANGUAGES else "ru"
             wav = self.mtl_engine.generate(
@@ -486,8 +618,14 @@ class Engine:
             wav = self.engine.generate(text, **kwargs)
         if isinstance(wav, torch.Tensor):
             wav = wav.detach().cpu().numpy()
-        return self._post(wav, settings, volume_mul=volume_mul,
-                          speed_mul=speed_mul, pitch_mul=pitch_mul, whisper=whisper)
+        return self._post(
+            wav,
+            settings,
+            volume_mul=volume_mul,
+            speed_mul=speed_mul,
+            pitch_mul=pitch_mul,
+            whisper=whisper,
+        )
 
     def clone_with_openvoice(self, text, ref_audio, settings):
         """Клонирование через OpenVoice V2 (zero-shot)."""
@@ -499,13 +637,17 @@ class Engine:
         base_wav = self.synth_one(text, ref_audio, settings)
         # 3. Применяем tone color conversion
         import torch
-        from openvoice.mel_processing import spectrogram_torch
+        from openvoice.mel_processing import spectrogram_torch  # noqa: F401 — только для проверки HAS_OPENVOICE
+
         base_tensor = torch.from_numpy(base_wav).float().unsqueeze(0).to(self.device)
-        spec = spectrogram_torch(base_tensor, self.openvoice_converter.hps.data.filter_length,
-                                 self.openvoice_converter.hps.data.sampling_rate,
-                                 self.openvoice_converter.hps.data.hop_length,
-                                 self.openvoice_converter.hps.data.win_length,
-                                 center=False)
+        spec = spectrogram_torch(
+            base_tensor,
+            self.openvoice_converter.hps.data.filter_length,
+            self.openvoice_converter.hps.data.sampling_rate,
+            self.openvoice_converter.hps.data.hop_length,
+            self.openvoice_converter.hps.data.win_length,
+            center=False,
+        )
         converted = self.openvoice_converter.convert(
             spec, source_se, self.openvoice_converter.hps.data.sampling_rate
         )
@@ -520,13 +662,11 @@ class Engine:
         if not prompt_text:
             prompt_text = " "  # минимальный текст
         outputs = self.cosyvoice.inference_zero_shot(
-            text,
-            prompt_text,
-            str(ref_audio),
-            stream=False
+            text, prompt_text, str(ref_audio), stream=False
         )
         import torch
-        audio = torch.cat([o['tts_speech'] for o in outputs], dim=1).squeeze().cpu().numpy()
+
+        audio = torch.cat([o["tts_speech"] for o in outputs], dim=1).squeeze().cpu().numpy()
         return self._post(audio, settings)
 
     def synth_qwen(self, text, ref_audio, settings, prompt_text=""):
@@ -551,6 +691,7 @@ class Engine:
                 language=settings.language,
             )
         import torch
+
         audio = wav.squeeze().cpu().numpy() if isinstance(wav, torch.Tensor) else wav
         return self._post(audio, settings)
 
@@ -568,6 +709,7 @@ class Engine:
             inference_timesteps=10,
         )
         import torch
+
         audio = wav.squeeze().cpu().numpy() if isinstance(wav, torch.Tensor) else wav
         return self._post(audio, settings)
 

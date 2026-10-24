@@ -1,4 +1,5 @@
 """Middleware: security headers + request size limit."""
+
 from __future__ import annotations
 
 import logging
@@ -16,8 +17,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             response: _Resp = await call_next(request)
         except Exception:
             log.exception("middleware error")
-            return _Resp(content=b'{"error":"internal"}', status_code=500,
-                         media_type="application/json")
+            return _Resp(
+                content=b'{"error":"internal"}', status_code=500, media_type="application/json"
+            )
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
@@ -41,14 +43,21 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
     MAX_BODY = 100 * 1024 * 1024  # 100 MB
+
     async def dispatch(self, request: _Req, call_next):
         cl = request.headers.get("content-length")
         if cl:
             try:
                 if int(cl) > self.MAX_BODY:
-                    return _Resp(content=b'{"error":"payload too large"}', status_code=413,
-                                 media_type="application/json")
+                    return _Resp(
+                        content=b'{"error":"payload too large"}',
+                        status_code=413,
+                        media_type="application/json",
+                    )
             except ValueError:
-                return _Resp(content=b'{"error":"bad content-length"}', status_code=400,
-                             media_type="application/json")
+                return _Resp(
+                    content=b'{"error":"bad content-length"}',
+                    status_code=400,
+                    media_type="application/json",
+                )
         return await call_next(request)
