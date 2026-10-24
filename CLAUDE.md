@@ -122,3 +122,11 @@ local variable 's'` при каждом synthesize. Оставлен тольк�
   P3.10 (OpenAPI tags), P3.11 (удаление *.step*_bak). Не блокеры.
 
 Следующий — P4.1 (batch synthesis).
+
+## P4.1b — фикс BatchQueue.cancel (sync)
+
+- `cancel` был `async def`, но не содержал `await` → возвращал корутину,
+  тесты и API вызывали без `await` → CI на `419e9d6` красный.
+- Исправлено: `async def cancel` → `def cancel`, в `api/batch.py` убран `await`.
+- Локально: **59 passed**, coverage **55.20%** (гейт 54%).
+- CI на `df28d7c` — зелёный (проверено).
