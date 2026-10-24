@@ -1,5 +1,6 @@
 """Middleware: security headers + request size limit."""
 from __future__ import annotations
+
 import logging
 
 from fastapi import Request as _Req
@@ -13,7 +14,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: _Req, call_next):
         try:
             response: _Resp = await call_next(request)
-        except Exception as e:
+        except Exception:
             log.exception("middleware error")
             return _Resp(content=b'{"error":"internal"}', status_code=500,
                          media_type="application/json")

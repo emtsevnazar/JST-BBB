@@ -8,13 +8,14 @@
   5. Профессиональная пост-обработка (pitch stabilize, loudness, de-ess)
 """
 from __future__ import annotations
+
 import logging
 import time
 from pathlib import Path
-from typing import Optional
+
+import librosa
 import numpy as np
 import soundfile as sf
-import librosa
 import torch
 
 log = logging.getLogger("JST.Clone")
@@ -57,7 +58,7 @@ class JSTCloneEngine:
 
     SR = 24000  # единая частота
 
-    def __init__(self, cache_dir: Path, openvoice_ckpt: Optional[Path] = None):
+    def __init__(self, cache_dir: Path, openvoice_ckpt: Path | None = None):
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.device = "mps" if torch.backends.mps.is_available() else "cpu"
@@ -125,7 +126,7 @@ class JSTCloneEngine:
         return cache
 
     # ==================== STEP 2: Speaker embedding ====================
-    def get_speaker_embedding(self, clean_ref: Path, voice_name: str) -> Optional[np.ndarray]:
+    def get_speaker_embedding(self, clean_ref: Path, voice_name: str) -> np.ndarray | None:
         """Извлечь и закэшировать speaker embedding."""
         cache = self.cache_dir / f"emb_{voice_name}.npy"
         if cache.exists() and cache.stat().st_mtime > Path(clean_ref).stat().st_mtime:

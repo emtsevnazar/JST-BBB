@@ -1,7 +1,7 @@
 def test_csp_header(client):
     r = client.get("/health")
     assert r.status_code == 200
-    assert "content-security-policy" in {k.lower() for k in r.headers.keys()}
+    assert "content-security-policy" in {k.lower() for k in r.headers}
 
 
 def test_xframe_deny(client):

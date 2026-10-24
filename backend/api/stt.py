@@ -1,9 +1,13 @@
 """STT API: speech-to-text через openai-whisper (модель кэшируется в модуле)."""
 from __future__ import annotations
-import logging, shutil, subprocess, time
+
+import logging
+import shutil
+import subprocess
+import time
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, File, HTTPException, UploadFile
 
 from ..core.paths import OUTPUT
 
@@ -53,6 +57,6 @@ async def speech_to_text(file: UploadFile = File(...)):
             raise HTTPException(500, f"STT: {e}")
     finally:
         try: tmp_in.unlink(missing_ok=True)
-        except: pass
+        except Exception: pass
         try: tmp_wav.unlink(missing_ok=True)
-        except: pass
+        except Exception: pass

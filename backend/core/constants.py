@@ -1,7 +1,6 @@
 """Общие константы проекта."""
 from __future__ import annotations
 
-
 DEFAULT_PRESETS = {
     "clone_max":   {"exaggeration":0.50,"cfg_weight":0.50,"temperature":0.80,"repetition_penalty":1.20,"speed":1.0,"pitch_shift":0,"volume":1.0,"mode":"core","ref_length":10,"pause_between":0.20,"sentence_split":"medium"},
         "neutral":     {"exaggeration":0.50,"cfg_weight":0.50,"temperature":0.80,"repetition_penalty":1.20,"speed":1.0,"pitch_shift":0,"volume":1.0,"mode":"core","ref_length":15,"pause_between":0.15,"sentence_split":"medium"},

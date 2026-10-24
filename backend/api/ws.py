@@ -1,15 +1,20 @@
 """WebSocket synthesis endpoint (rate-limited by IP)."""
 from __future__ import annotations
-import asyncio, json, logging, time
+
+import asyncio
+import json
+import logging
+import time
+
 import numpy as np
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-from ..core.state import get_engine
-from ..core.utils import _num, _int
 from ..core.naming import NAMER
+from ..core.state import get_engine
+from ..core.utils import _int, _num
 from ..engine import SynthSettings
-from ..services.references import resolve_reference
 from ..services.output_service import save_output
+from ..services.references import resolve_reference
 
 log = logging.getLogger("JST")
 router = APIRouter()

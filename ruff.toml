@@ -1,0 +1,44 @@
+# ruff.toml — конфигурация линтера для JST Studio
+# Постепенно расширяем правила: E,F,W,I,N,UP,B,SIM (план P3.2)
+
+line-length = 100
+target-version = "py311"
+
+[lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes (неиспользуемые импорты/переменные)
+    "W",   # pycodestyle warnings
+    "I",   # isort (порядок импортов)
+    "N",   # pep8-naming
+    "UP",  # pyupgrade (устаревший синтаксис)
+    "B",   # flake8-bugbear (типичные баги)
+    "SIM", # flake8-simplify (упрощение кода)
+]
+ignore = [
+
+    # --- Осознанные паттерны проекта (P3.1) ---
+    "E701", "E702",  # `if x: y` на одной строке — стиль проекта (engine.py, ws.py)
+    "E402",          # импорт не в начале — sys.path.insert() перед chatterbox_import
+    "B023",          # loop-variable в ws.py — функции пересоздаются каждую итерацию while
+    "N806",          # UPPERCASE имена (ENGINE, MOOD_PARAMS) внутри функций — осознанно
+    "SIM105",        # try/except: pass — косметика, в P3.2
+    "BLE001",  # blind-except: осознанный best-effort в references.py/engine.py
+    "S110",    # try-except-pass: то же
+    "S112",    # try-except-continue: то же
+    "ASYNC221", "ASYNC230",  # blocking в async: осознанно в engine.py
+    "RUF012",  # mutable class default: ложные срабатывания
+    "TRY004", "C408",  # косметика
+
+    "E501",   # длина строки — не блокер (отформатирует ruff format)
+    "B008",   # Depends/Query в default args — норма для FastAPI
+    "B904",   # raise from — не критично
+    "SIM108", # тернарник — не всегда лучше if
+]
+
+[lint.isort]
+known-first-party = ["backend"]
+
+[format]
+quote-style = "double"
+indent-style = "space"

@@ -3,48 +3,38 @@
 Точка сборки приложения. main.py реэкспортирует `app` из этого модуля.
 """
 from __future__ import annotations
-import asyncio, json, logging, shutil, subprocess, time, zipfile, io
-from datetime import datetime
-from pathlib import Path
-from typing import Optional
-from contextlib import asynccontextmanager
-import numpy as np, soundfile as sf, librosa
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, UploadFile, File, Form
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import FileResponse, StreamingResponse
-from fastapi.staticfiles import StaticFiles
-from .core.config import settings
-from .engine import Engine, SynthSettings, HAS_OPENVOICE
-from .security.safety import (validate_text, validate_voice_name, validate_mode,
-                     validate_audio_file,
-                     validate_language, safe_path, limiter, safe_tts_call,
-                     startup_check, safe_log, breaker, safe_tts_call)
 
-from .security.middleware import (
-    SecurityHeadersMiddleware,
-    RequestSizeLimitMiddleware,
-)
-from .api.moods import router as moods_router
-from .api.system import router as system_router
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+
 from .api.health import router as health_router
-from .api.voices import router as voices_router
+from .api.moods import router as moods_router
 from .api.output import router as output_router
 from .api.stt import router as stt_router
+from .api.system import router as system_router
+from .api.voices import router as voices_router
 from .api.ws import router as ws_router
-from .services.jst_moods import apply_mood, detect_mood, list_moods
-from .services.output_service import save_output
+from .engine import Engine
+from .security.middleware import (
+    RequestSizeLimitMiddleware,
+    SecurityHeadersMiddleware,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("JST.API")
 
 from .core.paths import (
-    ROOT, FRONTEND, VOICES, OUTPUT, REFERENCE, SUPPORTED,
+    FRONTEND,
+    REFERENCE,
 )
-from .core.state import set_engine, get_engine
-from .services.references import build_reference, resolve_reference
-from .core.utils import _num, _int
+from .core.state import set_engine
 
 # Все известные языки
 
@@ -55,7 +45,6 @@ from .core.utils import _num, _int
 
 
 
-from .core.constants import DEFAULT_PRESETS
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -77,10 +66,6 @@ app.include_router(stt_router)
 app.include_router(ws_router)
 
 # === SECURITY MIDDLEWARE ===
-import hashlib as _hashlib
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.requests import Request as _Req
-from starlette.responses import Response as _Resp
 
 # Кэш /api/health: startup_check дорогой, вызывается на каждый GET
 

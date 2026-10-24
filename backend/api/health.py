@@ -3,14 +3,15 @@
 /health, /api/health, /api/models — все требуют get_engine() из core.state.
 """
 from __future__ import annotations
+
 import time
 from pathlib import Path
 
 from fastapi import APIRouter
 
-from ..core.state import get_engine
 from ..core.constants import MODEL_LANGS
-from ..security.safety import startup_check, limiter
+from ..core.state import get_engine
+from ..security.safety import limiter, startup_check
 
 ROOT = Path(__file__).resolve().parents[2]
 

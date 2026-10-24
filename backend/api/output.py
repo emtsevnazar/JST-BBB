@@ -1,7 +1,10 @@
 """Output API: list/get/clear/download-all-zip/download-all-merged."""
 from __future__ import annotations
-import io, logging, subprocess, zipfile
-from pathlib import Path
+
+import io
+import logging
+import subprocess
+import zipfile
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, StreamingResponse

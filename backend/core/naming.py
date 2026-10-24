@@ -1,7 +1,8 @@
 """Генератор имён для output-файлов (формат: P+YY+V+WD+NNN)."""
 from __future__ import annotations
+
 from datetime import datetime
-from pathlib import Path
+
 from .paths import OUTPUT
 
 

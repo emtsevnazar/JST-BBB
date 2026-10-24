@@ -1,8 +1,13 @@
 """JST Engine v2.5 - multi-segment pitch, language, 4 models."""
 from __future__ import annotations
-import logging, re, sys, time
-from dataclasses import dataclass, asdict
+
+import logging
+import re
+import sys
+import time
+from dataclasses import asdict, dataclass
 from pathlib import Path
+
 try:
     import numpy as np
     HAS_NUMPY = True
@@ -44,8 +49,11 @@ except ImportError:
     CosyVoice = None
 
 import warnings as _warnings
+
 _warnings.filterwarnings("ignore", message=".*flash.attn.*")
-import io as _io, contextlib as _ctx
+import contextlib as _ctx
+import io as _io
+
 _buf = _io.StringIO()
 with _ctx.redirect_stdout(_buf), _ctx.redirect_stderr(_buf):
     try:
@@ -63,8 +71,8 @@ except ImportError:
     VoxCPM = None
 
 try:
-    from src.chatterbox_.tts import ChatterboxTTS
     from src.chatterbox_.models.t3.t3 import T3
+    from src.chatterbox_.tts import ChatterboxTTS
     HAS_CHATTERBOX = True
 except ImportError:
     HAS_CHATTERBOX = False
@@ -101,7 +109,7 @@ EAGER_LOAD = set()  # пример: {"qwen"}
 try:
     from .services.clone_engine import JSTCloneEngine
     HAS_CLONE = True
-except ImportError as e:
+except ImportError:
     HAS_CLONE = False
     JSTCloneEngine = None
 

@@ -10,9 +10,12 @@ JST Safety Module v2.0
 - Fallback-цепочка
 """
 from __future__ import annotations
-import re, time, logging, unicodedata, hashlib, hmac
+
+import logging
+import re
+import time
+import unicodedata
 from pathlib import Path
-from typing import Optional, Callable, Any
 
 log = logging.getLogger("JST.Safety")
 

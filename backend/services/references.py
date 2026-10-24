@@ -1,5 +1,6 @@
 """Reference audio: собирает merged_reference_<voice>.wav из файлов профиля."""
 from __future__ import annotations
+
 import logging
 
 try:
@@ -23,7 +24,7 @@ except ImportError:
     HAS_SOUNDFILE = False
     sf = None
 
-from ..core.paths import VOICES, OUTPUT, SUPPORTED
+from ..core.paths import OUTPUT, SUPPORTED, VOICES
 from ..core.utils import _num
 
 log = logging.getLogger("JST")

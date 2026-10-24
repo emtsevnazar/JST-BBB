@@ -1,6 +1,8 @@
 """save_output: конвертирует samples в выбранный формат через ffmpeg."""
 from __future__ import annotations
-import logging, subprocess
+
+import logging
+import subprocess
 
 try:
     import numpy as np
@@ -24,7 +26,7 @@ except ImportError:
     sf = None
 
 from ..core.paths import OUTPUT
-from ..core.utils import _num, _int
+from ..core.utils import _int, _num
 
 log = logging.getLogger("JST")
 
