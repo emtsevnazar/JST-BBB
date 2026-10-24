@@ -1310,9 +1310,7 @@ window.addEventListener("load", init);
     let isDown = false, startX = 0, startScroll = 0;
     car.addEventListener("mousedown", function (e) {
       if (e.target.closest("button, a, .dropdown-menu")) return;
-      isDown = true;
-      startX = e.pageX - car.offsetLeft;
-      startScroll = car.scrollLeft;
+      isDown = true; startX = e.pageX - car.offsetLeft; startScroll = car.scrollLeft;
     });
     car.addEventListener("mouseleave", function () { isDown = false; });
     car.addEventListener("mouseup", function () { isDown = false; });
@@ -1322,33 +1320,27 @@ window.addEventListener("load", init);
       const x = e.pageX - car.offsetLeft;
       car.scrollLeft = startScroll - (x - startX) * 1.2;
     });
-    // Dropdown-меню — вынести из clip, чтобы не обрезались
     car.querySelectorAll(".dropdown").forEach(function (dd) {
       const menu = dd.querySelector(".dropdown-menu");
       const btn = dd.querySelector(":scope > .btn, :scope > button");
       if (!menu || !btn) return;
-      const setFixed = function (on) {
-        if (on) {
-          const r = btn.getBoundingClientRect();
-          menu.style.position = "fixed";
-          menu.style.top = (r.bottom + 6) + "px";
-          menu.style.left = Math.max(8, r.left) + "px";
-          menu.style.minWidth = Math.max(200, r.width) + "px";
-          menu.style.zIndex = "10000";
-          menu.style.display = "block";
-        } else {
-          menu.style.position = "";
-          menu.style.top = "";
-          menu.style.left = "";
-          menu.style.minWidth = "";
-          menu.style.zIndex = "";
-          menu.style.display = "";
-        }
+      const show = function () {
+        const r = btn.getBoundingClientRect();
+        menu.style.position = "fixed";
+        menu.style.top = (r.bottom + 6) + "px";
+        menu.style.left = Math.max(8, r.left) + "px";
+        menu.style.minWidth = Math.max(200, r.width) + "px";
+        menu.style.zIndex = "10000";
       };
-      dd.addEventListener("mouseenter", function () { setFixed(true); });
-      dd.addEventListener("mouseleave", function () { setFixed(dd.classList.contains("open")); });
-      const obs = new MutationObserver(function () { setFixed(dd.classList.contains("open")); });
-      obs.observe(dd, { attributes: true, attributeFilter: ["class"] });
+      const hide = function () {
+        menu.style.position = ""; menu.style.top = ""; menu.style.left = "";
+        menu.style.minWidth = ""; menu.style.zIndex = "";
+      };
+      dd.addEventListener("mouseenter", show);
+      dd.addEventListener("mouseleave", function () { if (!dd.classList.contains("open")) hide(); });
+      new MutationObserver(function () {
+        if (dd.classList.contains("open")) show(); else hide();
+      }).observe(dd, { attributes: true, attributeFilter: ["class"] });
     });
   }
 

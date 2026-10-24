@@ -5366,8 +5366,7 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
 
-/* === P6.2l: controls — track + arrows (чистая карусель) === */
-
+/* === P6.2m: controls carousel (own classes) === */
 .controls {
   display: flex !important;
   align-items: center !important;
@@ -5375,7 +5374,6 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   flex-wrap: nowrap !important;
   width: 100% !important;
 }
-
 .controls-track {
   display: flex !important;
   flex-direction: row !important;
@@ -5392,12 +5390,9 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
 }
 .controls-track::-webkit-scrollbar { display: none !important; }
 .controls-track > * { flex-shrink: 0 !important; }
-
 .controls-arrow {
   flex-shrink: 0 !important;
-  width: 34px !important;
-  height: 34px !important;
-  min-width: 34px !important;
+  width: 34px !important; height: 34px !important; min-width: 34px !important;
   border-radius: 50% !important;
   border: 1.5px solid var(--panel-border) !important;
   background: var(--panel-bg) !important;
@@ -5415,6 +5410,4 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   color: var(--gold) !important;
   box-shadow: 0 0 14px rgba(245,184,0,.4) !important;
 }
-
-/* Dropdown в track — не обрезается через JS (position: fixed) */
 .controls-track .dropdown { position: relative !important; flex-shrink: 0 !important; }
