@@ -5366,17 +5366,17 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
 
-/* === P6.2k: carousel controls + cloned preset/mood === */
+/* === P6.2l: controls — track + arrows (чистая карусель) === */
 
-/* 1. .controls как карусель с точками по бокам */
-.controls.carousel-wrap {
+.controls {
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
-  padding: 0 !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
   width: 100% !important;
 }
-.controls .carousel {
+
+.controls-track {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -5384,19 +5384,17 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: smooth !important;
-  padding: 4px 2px !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   flex: 1 1 auto !important;
   min-width: 0 !important;
+  padding: 2px !important;
 }
-.controls .carousel::-webkit-scrollbar { display: none !important; }
-.controls .carousel > * { flex-shrink: 0 !important; }
+.controls-track::-webkit-scrollbar { display: none !important; }
+.controls-track > * { flex-shrink: 0 !important; }
 
-/* 2. Кнопки-точки по бокам (используем существующий .carousel-btn) */
-.controls .carousel-btn {
+.controls-arrow {
   flex-shrink: 0 !important;
-  position: static !important;
   width: 34px !important;
   height: 34px !important;
   min-width: 34px !important;
@@ -5404,25 +5402,19 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   border: 1.5px solid var(--panel-border) !important;
   background: var(--panel-bg) !important;
   color: var(--text-dim) !important;
-  cursor: pointer !important;
   font-size: 12px !important;
+  cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all .25s !important;
+  user-select: none !important;
 }
-.controls .carousel-btn:hover {
+.controls-arrow:hover:not(:disabled) {
   border-color: var(--gold) !important;
   color: var(--gold) !important;
   box-shadow: 0 0 14px rgba(245,184,0,.4) !important;
 }
 
-/* 3. Dropdown внутри карусели — меню выйдет за clip через JS (fixed) */
-.controls .carousel .dropdown { position: relative !important; flex-shrink: 0 !important; }
-.controls .carousel .dropdown-menu {
-  /* базовые стили — пусть работают, JS переопределяет position/top/left */
-}
-
-/* 4. Панели mood/preset в клонированных настройках — тот же вид, что в sidebar */
-.batch-cloned .panel .select-wrap { width: 100% !important; }
-.batch-cloned .panel .select { width: 100% !important; }
+/* Dropdown в track — не обрезается через JS (position: fixed) */
+.controls-track .dropdown { position: relative !important; flex-shrink: 0 !important; }
