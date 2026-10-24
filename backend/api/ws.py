@@ -26,6 +26,18 @@ MAX_WS_PER_IP = 3
 _ws_active: dict[str, int] = {}
 
 
+def _try_register_ip(ip: str) -> bool:
+    """True, если под IP ещё есть слот (атомарно инкрементит)."""
+    if _ws_active.get(ip, 0) >= MAX_WS_PER_IP:
+        return False
+    _ws_active[ip] = _ws_active.get(ip, 0) + 1
+    return True
+
+
+def _unregister_ip(ip: str) -> None:
+    _ws_active[ip] = max(0, _ws_active.get(ip, 0) - 1)
+
+
 async def _ws_orig(ws: WebSocket):
     ENGINE = get_engine()
     await ws.accept()
@@ -262,15 +274,14 @@ async def _ws_orig(ws: WebSocket):
 @router.websocket("/ws/synthesize")
 async def ws_synthesize(ws: WebSocket):
     """Обёртка: ограничивает кол-во WS-соединений с одного IP."""
-    _ip = ws.client.host if ws.client else "unknown"
-    if _ws_active.get(_ip, 0) >= MAX_WS_PER_IP:
+    ip = ws.client.host if ws.client else "unknown"
+    if not _try_register_ip(ip):
         await ws.close(code=1008, reason="Too many WS connections")
         return
-    _ws_active[_ip] = _ws_active.get(_ip, 0) + 1
     try:
         await _ws_orig(ws)
     finally:
-        _ws_active[_ip] = max(0, _ws_active[_ip] - 1)
+        _unregister_ip(ip)
 
 
 def ws_active_count() -> int:

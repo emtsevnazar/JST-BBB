@@ -26,4 +26,4 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: pytest
-        run: pytest backend/tests -v --no-header --cov=backend --cov-report=term-missing --cov-config=.coveragerc --cov-fail-under=56
+        run: pytest backend/tests -v --no-header --cov=backend --cov-report=term-missing --cov-config=.coveragerc --cov-fail-under=58

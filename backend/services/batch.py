@@ -50,6 +50,7 @@ class BatchQueue:
         self._queue: asyncio.Queue[str] = asyncio.Queue()
         self._tasks: dict[str, BatchTask] = {}
         self._order: list[str] = []
+        self._subscribers: dict[str, list[asyncio.Queue]] = {}
         self._worker: asyncio.Task | None = None
         self._running = False
 
@@ -101,12 +102,44 @@ class BatchQueue:
         task.finished_at = time.time()
         if task._task is not None and not task._task.done():
             task._task.cancel()
+        self._notify(task_id)
         return True
 
     def _trim_history(self) -> None:
         while len(self._order) > self.MAX_HISTORY:
             old = self._order.pop(0)
             self._tasks.pop(old, None)
+
+    def subscribe(self, task_id: str) -> asyncio.Queue:
+        """Подписка на изменения статуса задачи (для WS)."""
+        q: asyncio.Queue = asyncio.Queue(maxsize=64)
+        self._subscribers.setdefault(task_id, []).append(q)
+        return q
+
+    def unsubscribe(self, task_id: str, q: asyncio.Queue) -> None:
+        subs = self._subscribers.get(task_id)
+        if not subs:
+            return
+        try:
+            subs.remove(q)
+        except ValueError:
+            return
+        if not subs:
+            self._subscribers.pop(task_id, None)
+
+    def _notify(self, task_id: str) -> None:
+        subs = self._subscribers.get(task_id)
+        if not subs:
+            return
+        task = self._tasks.get(task_id)
+        if task is None:
+            return
+        snap = task.to_dict()
+        for q in list(subs):
+            try:
+                q.put_nowait(snap)
+            except asyncio.QueueFull:
+                pass
 
     async def _run(self) -> None:
         while self._running:
@@ -123,6 +156,7 @@ class BatchQueue:
     async def _execute(self, task: BatchTask) -> None:
         task.status = "running"
         task.started_at = time.time()
+        self._notify(task.id)
         try:
             engine = get_engine()
             if engine is None:
@@ -146,6 +180,7 @@ class BatchQueue:
         finally:
             task.finished_at = time.time()
             task._task = None
+            self._notify(task.id)
             h = get_history()
             if h is not None and task.status in ("done", "error"):
                 try:
