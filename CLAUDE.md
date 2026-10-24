@@ -109,3 +109,16 @@ local variable 's'` при каждом synthesize. Оставлен тольк�
 - Добавлены: test_utils.py, test_naming.py, test_output_service.py,
   test_output_api.py (10), test_jst_moods.py (5).
 - Дальше — P3.7 (smoke-тесты в CI), ценнее +5% coverage.
+
+## P3 — закрыт (кроме P3.4/P3.8–P3.11)
+
+- P3.1 ruff + pre-commit (ruff, ruff-format, pytest-cov) — ✓
+- P3.3 /health observability — ✓
+- P3.5 graceful shutdown — ✓
+- P3.6 coverage 50.91% (pytest-cov, .coveragerc omit models) — ✓
+- P3.7a smoke через TestClient (47 тестов, все 7 роутеров) — ✓
+- P3.2 (правила E,F,W,I,N,UP,B,SIM) — ✓ (в ruff.toml)
+- Не делали: P3.4 (structured logging), P3.8 (mypy), P3.9 (API v1),
+  P3.10 (OpenAPI tags), P3.11 (удаление *.step*_bak). Не блокеры.
+
+Следующий — P4.1 (batch synthesis).
