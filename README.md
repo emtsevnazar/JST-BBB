@@ -156,3 +156,24 @@ GitHub Actions (`.github/workflows/pytest.yml`):
   pytest-cov, smoke) — закрыт.
 - P4 — batch synthesis (queue + 4 HTTP + WS-статус + SQLite-история + ZIP-экспорт) — закрыт.
 - P5 — гигиена репо, README, OpenAPI tags, real-engine smoke — в процессе.
+
+## Real-engine smoke (P5.4)
+
+78 юнит-тестов гоняют `FakeEngine` (`np.zeros`) — быстрые, без ML.
+Реальный путь `Engine.synth_one → save_output (ffmpeg) → history → export`
+проверяется отдельным файлом `tests/test_real_engine.py`, **пропущенным
+в CI** (`skipif not JST_REAL_ENGINE`).
+
+Перед релизом / при изменениях в `engine.py` / `services/output_service.py`:
+
+    cd backend
+    JST_REAL_ENGINE=1 /Users/nazar/Documents/AAC/code/bin/python3 \\
+        -m pytest tests/test_real_engine.py -v -s --no-cov
+
+Два теста:
+- `test_real_batch_wav_and_export` — batch → `done`, wav > 10 KB на диске,
+  history-запись, ZIP (audio + settings.json + metadata.json).
+- `test_real_batch_mp3_conversion` — `settings.output_format="mp3"` → `result_file`
+  оканчивается `.mp3` (ловит fallback wav, если ffmpeg не установлен).
+
+Требует: веса ~2GB + ffmpeg + 30–60 с на загрузку Engine. Не в CI.

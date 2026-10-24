@@ -64,3 +64,20 @@ def client(monkeypatch, tmp_path):
 
     with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
         yield c
+
+
+@pytest.fixture
+def real_client(monkeypatch, tmp_path):
+    """TestClient с НАСТОЯЩИМ Engine — для P5.4 real-engine smoke.
+
+    Используется только в тестах с @pytest.mark.real_engine (skipif
+    JST_REAL_ENGINE не выставлен). Подменяет только DB_PATH, чтобы не
+    трогать data/jst.db.
+    """
+    import backend.app as app_mod
+    from backend.services import history as history_mod
+
+    monkeypatch.setattr(history_mod, "DB_PATH", tmp_path / "jst.db")
+
+    with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
+        yield c

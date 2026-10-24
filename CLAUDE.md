@@ -188,3 +188,18 @@ CI: P4.4 (cb28069) — ✓ pytest (ожид.).
 - P5.4 (real-engine smoke) — отложен на отдельный заход.
 
 pytest: 78 passed, coverage 59.50% (гейт 59). ruff: All checks passed.
+
+## P5.4 — real-engine smoke (закрыт)
+
+- `tests/test_real_engine.py`: 2 теста под `@pytest.mark.real_engine`,
+  skipif `JST_REAL_ENGINE` не выставлен → в CI **не запускаются**.
+- Покрывает реальный путь, который не видят 78 юнит-тестов:
+  `Engine.synth_one → save_output (ffmpeg) → history → export ZIP`.
+- Тесты: batch wav + export ZIP (audio+settings+metadata, размеры совпадают),
+  batch mp3 (проверка ffmpeg-конвертации, ловит fallback на wav).
+- `conftest.py`: фикстура `real_client` — TestClient с настоящим Engine,
+  подменяет только `DB_PATH` (tmp), не трогает `data/jst.db`.
+- `pytest.ini`: маркер `real_engine` с инструкцией запуска.
+- README: раздел "Real-engine smoke" с одной командой.
+
+Локально: `JST_REAL_ENGINE=1 pytest tests/test_real_engine.py -v -s --no-cov`.
