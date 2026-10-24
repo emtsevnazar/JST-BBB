@@ -286,3 +286,11 @@ TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
   (2) `voice=""` → No reference
   (3) `asdict(_task)` → pickle
 Все три были бы в проде с любым реальным batch-синтезом.
+
+## P5.8 — стабилизация CI + ускорение
+
+- test_batch.py: `test_to_dict_with_live_task` — `threading.Lock()` вместо
+  `asyncio.current_task()`: deepcopy(Lock) тоже падает с TypeError,
+  но не требует event loop (в CI pytest-asyncio strict → RuntimeError).
+- .github/workflows/pytest.yml: `cache: 'pip'` — torch/transformers
+  качаются 2 мин при каждом push; с кэшем ~1 мин.

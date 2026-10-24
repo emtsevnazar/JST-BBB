@@ -123,16 +123,16 @@ def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
 
 
 def test_to_dict_with_live_task():
-    """Регрессия P5.7: asdict(deepcopy) падал на живом asyncio.Task.
+    """Регрессия P5.7: asdict(deepcopy) падал на несериализуемом _task.
 
-    В real-engine синтез идёт секунды, _task живой → GET /api/batch/{id}
-    на этом окне падал 500. FakeEngine не ловил, т.к. синтез 0 ms.
+    Используем threading.Lock() вместо asyncio.Task: deepcopy(Lock)
+    тоже падает с TypeError, но не требует event loop (в CI pytest-asyncio
+    strict-режим → asyncio.current_task() без loop → RuntimeError).
     """
-    import asyncio
+    import threading
 
     task = BatchTask(id="live", text="t", voice="", settings={})
-    # эмуляция «живого» Task — именно то, что было в _run
-    task._task = asyncio.current_task()
+    task._task = threading.Lock()  # несериализуемое поле (как живой asyncio.Task)
     d = task.to_dict()
     assert d["id"] == "live"
     assert "_task" not in d
