@@ -1892,7 +1892,7 @@ window.addEventListener("load", init);
     const target = modal.querySelector(".batch-cloned");
     if (!target) return;
     target.innerHTML = "";
-    ["settings", "extra", "save"].forEach(function (key) {
+    ["preset", "mood", "settings", "extra", "save"].forEach(function (key) {
       let src = null;
       document.querySelectorAll(".sidebar .panel").forEach(function (p) {
         if (src) return;
@@ -2058,6 +2058,8 @@ window.addEventListener("load", init);
     };
     return {
       mode: modelEl.value || "core",
+      preset: fromMain("preset", ""),
+      mood: fromMain("mood", "auto"),
       exaggeration: parseFloat(fromMain("exaggeration", 0.5)),
       cfg_weight: parseFloat(fromMain("cfg_weight", 0.5)),
       temperature: parseFloat(fromMain("temperature", 0.8)),

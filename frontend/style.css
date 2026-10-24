@@ -5238,22 +5238,7 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
 }
 
 /* 2. Пакет — убрать rgba(0,0,0,0.25), дать тот же цвет рамки, что у Случайного */
-#btn-batch.btn.btn-ghost {
-  border: 1.5px solid var(--panel-border) !important;
-  background: var(--panel-bg) !important;
-  color: var(--text) !important;
-}
-#btn-batch.btn.btn-ghost:hover:not(:disabled) {
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
-}
-[data-theme="night"] #btn-batch.btn.btn-ghost:hover:not(:disabled) {
-  color: #FFC72C !important;
-  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
-}
-
-/* 3. «В очередь» — hover явно для day и night */
+[data-theme="night"] /* 3. «В очередь» — hover явно для day и night */
 .batch-submit:hover:not(:disabled) {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
