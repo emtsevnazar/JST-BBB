@@ -5117,8 +5117,16 @@ html body #help-modal.help-modal.open::after {
 [data-theme="night"] .batch-download{background:var(--gold);color:var(--navy-dark)}
 .batch-download:hover{transform:scale(1.05);opacity:.9}
 
-/* === P6.2b: Пакет = Случайный, glow, close-крестик === */
-/* «Пакет» — идентична «Случайный» (btn btn-ghost), + жёлтый glow на hover */
+/* === P6.2c: btn-batch = btn-random (night), glow, close = help === */
+/* «Пакет» в дневной и ночной теме — идентична «Случайному» */
+#btn-batch,
+#btn-random {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--panel-border);
+  cursor: pointer;
+  transition: all .25s;
+}
 #btn-batch:hover,
 #btn-random:hover {
   border-color: var(--gold) !important;
@@ -5126,37 +5134,26 @@ html body #help-modal.help-modal.open::after {
   box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
 }
 
-/* Крестик закрытия модалки: день — синий в синем, ночь — жёлтый в жёлтом */
-.batch-close {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: rgba(26,42,94,.15);
-  color: #1a2a5e;
-  font-size: 22px;
-  line-height: 1;
-  font-family: inherit;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all .25s;
+/* Ночь: явно продублировать стиль «Случайного» для «Пакета» */
+[data-theme="night"] #btn-batch,
+[data-theme="night"] #btn-random {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--panel-border) !important;
 }
-.batch-close:hover {
-  background: rgba(26,42,94,.25);
-  box-shadow: 0 0 14px rgba(26,42,94,.35);
-  transform: scale(1.06);
+[data-theme="night"] #btn-batch:hover,
+[data-theme="night"] #btn-random:hover {
+  background: transparent !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.55) !important;
 }
-[data-theme="night"] .batch-close {
-  background: rgba(245,184,0,.22);
-  color: #F5B800;
-}
-[data-theme="night"] .batch-close:hover {
-  background: rgba(245,184,0,.32);
-  box-shadow: 0 0 14px rgba(245,184,0,.55);
-  transform: scale(1.06);
+
+/* Крестик модалки Пакета — как в help-модалке (класс .help-modal-close
+   уже определён в style.css, применятся его родные стили; здесь только
+   фикс позиционирования, если help-modal-close предполагает absolute) */
+#batch-modal .help-modal-close {
+  position: static;
+  margin-left: auto;
+  align-self: flex-start;
 }

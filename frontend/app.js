@@ -1886,7 +1886,7 @@ window.addEventListener("load", init);
       <div class="batch-dialog" role="dialog" aria-modal="true">
         <div class="batch-header">
           <h2 data-i18n="batch_title">Пакетный синтез</h2>
-          <button class="batch-close" title="×">×</button>
+          <button class="help-modal-close" title="×">×</button>
         </div>
         <div class="batch-body">
           <div class="batch-row">
@@ -1937,7 +1937,7 @@ window.addEventListener("load", init);
     listEl = modal.querySelector(".batch-list");
 
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
-    modal.querySelector(".batch-close").addEventListener("click", closeModal);
+    modal.querySelector(".help-modal-close").addEventListener("click", closeModal);
     submitBtn.addEventListener("click", onSubmit);
     return modal;
   }

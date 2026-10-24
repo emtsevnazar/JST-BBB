@@ -374,3 +374,17 @@ pytest backend: 80 passed, 2 skipped. JS/CSS не затронуты теста�
   ночь: фон rgba(245,184,0,.22), крест #F5B800 (жёлтый в жёлтом);
   hover → темнее фон + glow + scale(1.06)
 - index.html: cache-busting `?v=` bump
+
+## P6.2c — крестик = help-modal-close, «Пакет» = «Случайный» в night
+
+- app.js: `<button class="batch-close">` → `<button class="help-modal-close">`
+  (крестик модалки Пакета теперь наследует стили из help-модалки);
+  обработчик `modal.querySelector(".help-modal-close")` тоже обновлён
+- style.css: `.batch-close` удалён (больше не нужен);
+  `#btn-batch, #btn-random` → общий блок стилей (transparent фон,
+  var(--text), var(--panel-border), transition) → **идентичны** и днём, и ночью;
+  `:hover` — жёлтая рамка + glow 18px rgba(245,184,0,.45);
+  `[data-theme="night"]` — форсированное дублирование для обоих;
+  `#batch-modal .help-modal-close` — position:static, чтобы не ломалось
+  из-за absolute в родительской модалке
+- index.html: cache-busting bump
