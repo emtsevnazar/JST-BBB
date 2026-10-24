@@ -5238,7 +5238,22 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
 }
 
 /* 2. Пакет — убрать rgba(0,0,0,0.25), дать тот же цвет рамки, что у Случайного */
-[data-theme="night"] /* 3. «В очередь» — hover явно для day и night */
+#btn-batch.btn.btn-ghost {
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+}
+#btn-batch.btn.btn-ghost:hover:not(:disabled) {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+[data-theme="night"] #btn-batch.btn.btn-ghost:hover:not(:disabled) {
+  color: #FFC72C !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
+}
+
+/* 3. «В очередь» — hover явно для day и night */
 .batch-submit:hover:not(:disabled) {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
@@ -5365,49 +5380,3 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
-
-/* === P6.2m: controls carousel (own classes) === */
-.controls {
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  flex-wrap: nowrap !important;
-  width: 100% !important;
-}
-.controls-track {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 8px !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  scroll-behavior: smooth !important;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  padding: 2px !important;
-}
-.controls-track::-webkit-scrollbar { display: none !important; }
-.controls-track > * { flex-shrink: 0 !important; }
-.controls-arrow {
-  flex-shrink: 0 !important;
-  width: 34px !important; height: 34px !important; min-width: 34px !important;
-  border-radius: 50% !important;
-  border: 1.5px solid var(--panel-border) !important;
-  background: var(--panel-bg) !important;
-  color: var(--text-dim) !important;
-  font-size: 12px !important;
-  cursor: pointer !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: all .25s !important;
-  user-select: none !important;
-}
-.controls-arrow:hover:not(:disabled) {
-  border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  box-shadow: 0 0 14px rgba(245,184,0,.4) !important;
-}
-.controls-track .dropdown { position: relative !important; flex-shrink: 0 !important; }

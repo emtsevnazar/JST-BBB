@@ -999,7 +999,6 @@ async function uploadVoice() {
 
 // === INIT ===
 async function init() {
-    initControlsCarousel();
   console.log("[JST] init start");
   applyLanguage();
   await loadModels();
@@ -1297,51 +1296,6 @@ window.addEventListener("load", init);
   function showHeader() {
     var header = document.getElementById("help-header-fixed");
     if (header) header.style.setProperty("display", "inline-flex", "important");
-  }
-
-  function initControlsCarousel() {
-    const car = document.getElementById("controls-carousel");
-    const prev = document.getElementById("controls-prev");
-    const next = document.getElementById("controls-next");
-    if (!car || !prev || !next) return;
-    const step = function () { return Math.max(220, Math.round(car.clientWidth * 0.8)); };
-    prev.addEventListener("click", function (e) { e.preventDefault(); car.scrollBy({ left: -step(), behavior: "smooth" }); });
-    next.addEventListener("click", function (e) { e.preventDefault(); car.scrollBy({ left: step(), behavior: "smooth" }); });
-    let isDown = false, startX = 0, startScroll = 0;
-    car.addEventListener("mousedown", function (e) {
-      if (e.target.closest("button, a, .dropdown-menu")) return;
-      isDown = true; startX = e.pageX - car.offsetLeft; startScroll = car.scrollLeft;
-    });
-    car.addEventListener("mouseleave", function () { isDown = false; });
-    car.addEventListener("mouseup", function () { isDown = false; });
-    car.addEventListener("mousemove", function (e) {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - car.offsetLeft;
-      car.scrollLeft = startScroll - (x - startX) * 1.2;
-    });
-    car.querySelectorAll(".dropdown").forEach(function (dd) {
-      const menu = dd.querySelector(".dropdown-menu");
-      const btn = dd.querySelector(":scope > .btn, :scope > button");
-      if (!menu || !btn) return;
-      const show = function () {
-        const r = btn.getBoundingClientRect();
-        menu.style.position = "fixed";
-        menu.style.top = (r.bottom + 6) + "px";
-        menu.style.left = Math.max(8, r.left) + "px";
-        menu.style.minWidth = Math.max(200, r.width) + "px";
-        menu.style.zIndex = "10000";
-      };
-      const hide = function () {
-        menu.style.position = ""; menu.style.top = ""; menu.style.left = "";
-        menu.style.minWidth = ""; menu.style.zIndex = "";
-      };
-      dd.addEventListener("mouseenter", show);
-      dd.addEventListener("mouseleave", function () { if (!dd.classList.contains("open")) hide(); });
-      new MutationObserver(function () {
-        if (dd.classList.contains("open")) show(); else hide();
-      }).observe(dd, { attributes: true, attributeFilter: ["class"] });
-    });
   }
 
   function init() {
@@ -1938,7 +1892,7 @@ window.addEventListener("load", init);
     const target = modal.querySelector(".batch-cloned");
     if (!target) return;
     target.innerHTML = "";
-    ["preset", "mood", "settings", "extra", "save"].forEach(function (key) {
+    ["settings", "extra", "save"].forEach(function (key) {
       let src = null;
       document.querySelectorAll(".sidebar .panel").forEach(function (p) {
         if (src) return;
@@ -2104,8 +2058,6 @@ window.addEventListener("load", init);
     };
     return {
       mode: modelEl.value || "core",
-      preset: fromMain("preset", ""),
-      mood: fromMain("mood", "auto"),
       exaggeration: parseFloat(fromMain("exaggeration", 0.5)),
       cfg_weight: parseFloat(fromMain("cfg_weight", 0.5)),
       temperature: parseFloat(fromMain("temperature", 0.8)),
