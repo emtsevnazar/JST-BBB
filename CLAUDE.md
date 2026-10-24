@@ -83,3 +83,17 @@ backend/api/ws.py: удалён дублирующий блок mood (14 стр�
 до `s = SynthSettings.from_dict(...)`. Симптом: `UnboundLocalError: cannot access
 local variable 's'` при каждом synthesize. Оставлен только второй блок (после
 создания s). Коммит e889e36. Бэкап: ws.py.step_fix_ws_unbound_bak.
+
+## P3.5 (graceful shutdown) — закрыт
+- app.py: lifespan в try/finally, при shutdown ждёт WS до 5 с, engine.cleanup(),
+  set_engine(None), gc.collect(). Логи: "Shutdown завершён за X.X с". Коммит 14938c9.
+- engine.py: cleanup() снимает ссылки на модели (engine, mtl_engine, cosyvoice,
+  voxcpm, qwen_tts, clone_engine, openvoice_converter) + gc.collect().
+- Проверено вручную: `Ctrl+C` → `Shutdown завершён за 0.2 с`, без leaked semaphore.
+
+## P3.6 (coverage) — в работе
+- pytest-cov, .coveragerc с omit для engine.py, services/clone_engine.py,
+  main.py, core/config.py (требуют реальных моделей / тонкие реэкспорты).
+- pytest.ini: --cov-fail-under=55.
+- CI: pytest.yml с --cov.
+- Добавлены unit-тесты: test_utils.py, test_naming.py, test_output_service.py.
