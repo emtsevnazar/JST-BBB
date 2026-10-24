@@ -5,7 +5,9 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -22,6 +24,7 @@ from .api.stt import router as stt_router
 from .api.system import router as system_router
 from .api.voices import router as voices_router
 from .api.ws import router as ws_router
+from .api.ws import ws_active_count
 from .engine import Engine
 from .security.middleware import (
     RequestSizeLimitMiddleware,
@@ -37,6 +40,8 @@ from .core.paths import (
 )
 from .core.state import set_engine
 
+WS_SHUTDOWN_MAX_WAIT = 5.0
+
 # Все известные языки
 
 # Что каждая модель МОЖЕТ поддерживать (независимо от загрузки весов)
@@ -44,11 +49,47 @@ from .core.state import set_engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup/shutdown: инициализация Engine."""
+    """Startup/shutdown: инициализация Engine + graceful shutdown (P3.5)."""
+    t_startup = time.time()
     log.info("Инициализация Engine…")
-    set_engine(Engine(device="auto", reference_wav=str(REFERENCE)))
-    log.info("Engine готов")
-    yield
+    engine = Engine(device="auto", reference_wav=str(REFERENCE))
+    set_engine(engine)
+    log.info("Engine готов за %.1f с", time.time() - t_startup)
+    try:
+        yield
+    finally:
+        # P3.5: graceful shutdown — дождаться активных WS, освободить Engine
+        t_shutdown = time.time()
+        active = ws_active_count()
+        log.info("Shutdown: %d активных WS, ожидание до %.0f с…", active, WS_SHUTDOWN_MAX_WAIT)
+        deadline = time.time() + WS_SHUTDOWN_MAX_WAIT
+        while ws_active_count() > 0 and time.time() < deadline:
+            await asyncio.sleep(0.1)
+        remaining = ws_active_count()
+        if remaining > 0:
+            log.warning(
+                "Shutdown: %d WS не закрылись за %.0f с, продолжаем",
+                remaining,
+                WS_SHUTDOWN_MAX_WAIT,
+            )
+
+        cleanup = getattr(engine, "cleanup", None)
+        if cleanup is not None:
+            try:
+                result = cleanup()
+                if asyncio.iscoroutine(result):
+                    await asyncio.wait_for(result, timeout=2.0)
+            except Exception as e:
+                log.warning("engine.cleanup: %s", e)
+
+        set_engine(None)
+        try:
+            import gc
+
+            gc.collect()
+        except Exception:
+            pass
+        log.info("Shutdown завершён за %.1f с", time.time() - t_shutdown)
 
 
 app = FastAPI(title="JST Studio", lifespan=lifespan)

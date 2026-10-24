@@ -777,6 +777,29 @@ class Engine:
             self.qwen_tts = None
         return self.qwen_tts
 
+    def cleanup(self) -> None:
+        """P3.5: освободить ссылки на модели перед shutdown."""
+        for attr in (
+            "engine",
+            "mtl_engine",
+            "cosyvoice",
+            "voxcpm",
+            "qwen_tts",
+            "clone_engine",
+            "openvoice_converter",
+        ):
+            try:
+                setattr(self, attr, None)
+            except Exception:
+                pass
+        try:
+            import gc
+
+            gc.collect()
+        except Exception:
+            pass
+        log.info("[Engine] cleanup: ссылки на модели сняты")
+
     def _load_cosyvoice(self):
         """Ленивая загрузка CosyVoice3."""
         if self._cosy_loaded or self.cosyvoice is not None:
