@@ -332,3 +332,35 @@ TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
   queued → running → done (цвет) → кнопка ZIP → `/api/history/{id}/export`
 
 Не трогает layout, help, вкладки, существующие `fetch()`/`ws`.
+
+## P6.2 — кнопка «Пакет» (в стиле проекта) + полная модалка
+
+- index.html: `<button id="btn-batch" class="btn btn-ghost">` после
+  `#history-dropdown`, `<span data-i18n="batch">Пакет</span>` (убрана 📦)
+- app.js i18n ru/en: +19 ключей `batch_*` (`batch_title`, `batch_model`,
+  `batch_voice`, `batch_settings`, `batch_adv`, `batch_submit`, `batch_download`,
+  `batch_in_queue`, `batch_running`, `batch_done`, `batch_error`,
+  `batch_cancelled`, `batch_from_main`, `batch_models_loading`,
+  `batch_no_voices`, `batch_no_models`, `batch_text`, `batch_need_text`,
+  `batch_send_err`)
+- app.js IIFE P6.2: `<select class="batch-model">` (из `/api/models`),
+  `<select class="batch-voice">` (из `/api/voices`), `<textarea>`,
+  `<details>` «Дополнительно» с 15 полями (`exaggeration`, `cfg_weight`,
+  `temperature`, `repetition_penalty`, `speed`, `pitch_shift`, `volume`,
+  `ref_length`, `pause_between`, `sentence_split`, `output_format`,
+  `output_sr`, `bit_depth`, `fade_in_sec`, `fade_out_sec`),
+  галочка «настройки из главного экрана» (по умолчанию ON),
+  `collectSettings()` — берёт из главного UI или из полей модалки,
+  кнопка «→ В очередь» → `POST /api/batch` → WS-статус → ZIP
+- style.css: `.batch-modal`, `.batch-dialog` (820px), `.batch-row`,
+  `.batch-sliders` (grid 2 cols), `.batch-task` — на существующих
+  `--panel-bg`, `--gold`, `--navy`, `--input-bg`, `--accent`
+- i18n: перевод заголовка/кнопок/статусов через `data-i18n` — работает
+  для RU↔EN по общему механизму
+
+Язык: явный `language` в `settings` **не передаём** (на бэке `SynthSettings`
+не имеет такого поля). Язык определяется моделью: `core` — EN,
+`multi` — RU+EN, `voxcpm` — RU+EN. Явный language — P6.3 (потребует
+правок в `engine.py` + `services/batch.py`).
+
+pytest backend: 80 passed, 2 skipped. JS/CSS не затронуты тестами.

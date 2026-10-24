@@ -3,6 +3,15 @@
 const I18N = {
   ru: {
     mood:"Настроение",
+    batch:"Пакет", batch_title:"Пакетный синтез", batch_text:"Текст",
+    batch_voice:"Голос", batch_model:"Модель", batch_settings:"Настройки",
+    batch_adv:"Дополнительно", batch_submit:"→ В очередь", batch_download:"ZIP",
+    batch_empty:"Задач пока нет", batch_in_queue:"в очереди", batch_running:"синтез…",
+    batch_done:"готово", batch_error:"ошибка", batch_cancelled:"отменено",
+    batch_send_err:"Ошибка отправки: ", batch_need_text:"Введите текст",
+    batch_from_main:"Брать настройки из главного экрана", batch_models_loading:"(загрузка…)",
+    batch_no_voices:"(нет голосов — загрузите в основном UI)",
+    batch_no_models:"(модели не загружены)",
     tagline:"Just Start Transform", org:"Justice Solidarity Tolerance",
     voice:"Голос", model:"Модель", language:"Язык синтеза", accent:"Акцент / Стиль",
     preset:"Пресет", settings:"Настройки", extra:"Дополнительно", save:"Сохранение",
@@ -47,6 +56,15 @@ const I18N = {
   },
   en: {
     mood:"Mood",
+    batch:"Batch", batch_title:"Batch synthesis", batch_text:"Text",
+    batch_voice:"Voice", batch_model:"Model", batch_settings:"Settings",
+    batch_adv:"Extra", batch_submit:"→ Queue", batch_download:"ZIP",
+    batch_empty:"No tasks yet", batch_in_queue:"queued", batch_running:"synthesizing…",
+    batch_done:"done", batch_error:"error", batch_cancelled:"cancelled",
+    batch_send_err:"Send error: ", batch_need_text:"Enter text",
+    batch_from_main:"Use settings from main screen", batch_models_loading:"(loading…)",
+    batch_no_voices:"(no voices — upload in main UI)",
+    batch_no_models:"(models not loaded)",
     tagline:"Just Start Transform", org:"Justice Solidarity Tolerance",
     voice:"Voice", model:"Model", language:"Synthesis language", accent:"Accent / Style",
     preset:"Preset", settings:"Settings", extra:"Extra", save:"Save",
@@ -1830,17 +1848,16 @@ window.addEventListener("load", init);
     }
 })();
 
-
-/* === P6.1: Batch UI === */
+/* === P6.2: Batch UI (full) === */
 (function () {
   "use strict";
 
-  const STATUS_LABEL = {
-    queued: "в очереди",
-    running: "синтез…",
-    done: "готово",
-    error: "ошибка",
-    cancelled: "отменено",
+  const STATUS_LABEL_KEYS = {
+    queued: "batch_in_queue",
+    running: "batch_running",
+    done: "batch_done",
+    error: "batch_error",
+    cancelled: "batch_cancelled",
   };
   const STATUS_COLOR = {
     queued: "#888",
@@ -1851,11 +1868,13 @@ window.addEventListener("load", init);
   };
 
   let modal = null;
-  let listEl = null;
-  let textareaEl = null;
-  let voiceEl = null;
-  let submitBtn = null;
-  const taskRows = new Map(); // task_id -> { row, statusEl, fileEl }
+  let listEl, textareaEl, voiceEl, modelEl, submitBtn, useMainChk;
+  const rows = new Map();
+
+  function t(key) {
+    const lang = (document.documentElement.lang === "en") ? "en" : "ru";
+    return (window.I18N && I18N[lang] && I18N[lang][key]) || key;
+  }
 
   function ensureModal() {
     if (modal) return modal;
@@ -1864,26 +1883,57 @@ window.addEventListener("load", init);
     modal.className = "batch-modal";
     modal.innerHTML = `
       <div class="batch-backdrop"></div>
-      <div class="batch-dialog" role="dialog" aria-modal="true" aria-label="Пакетный синтез">
+      <div class="batch-dialog" role="dialog" aria-modal="true">
         <div class="batch-header">
-          <h2>Пакетный синтез</h2>
-          <button class="batch-close" title="Закрыть">×</button>
+          <h2 data-i18n="batch_title">Пакетный синтез</h2>
+          <button class="batch-close" title="×">×</button>
         </div>
         <div class="batch-body">
-          <label class="batch-label">Текст
-            <textarea class="batch-textarea" rows="4" placeholder="Введите текст для синтеза…"></textarea>
+          <div class="batch-row">
+            <label class="batch-label"><span data-i18n="batch_model">Модель</span>
+              <select class="batch-model"><option data-i18n="batch_models_loading">(загрузка…)</option></select>
+            </label>
+            <label class="batch-label"><span data-i18n="batch_voice">Голос</span>
+              <select class="batch-voice"><option data-i18n="batch_no_voices">(нет голосов)</option></select>
+            </label>
+          </div>
+          <label class="batch-label"><span data-i18n="batch_text">Текст</span>
+            <textarea class="batch-textarea" rows="3" placeholder="Введите текст…"></textarea>
           </label>
-          <label class="batch-label">Голос
-            <select class="batch-voice"><option value="">(загрузка…)</option></select>
+          <label class="batch-check">
+            <input type="checkbox" class="batch-use-main" checked>
+            <span data-i18n="batch_from_main">Брать настройки из главного экрана</span>
           </label>
-          <button class="batch-submit" type="button">→ В очередь</button>
+          <details class="batch-adv">
+            <summary data-i18n="batch_adv">Дополнительно</summary>
+            <div class="batch-sliders">
+              <label>Выразительность <input type="range" class="m-exag" min="0" max="1" step="0.05" value="0.5"></label>
+              <label>Близость <input type="range" class="m-cfg" min="0" max="1" step="0.05" value="0.5"></label>
+              <label>Температура <input type="range" class="m-temp" min="0.1" max="1.5" step="0.05" value="0.8"></label>
+              <label>Штраф <input type="range" class="m-rep" min="1" max="2" step="0.05" value="1.2"></label>
+              <label>Скорость <input type="range" class="m-speed" min="0.5" max="2" step="0.05" value="1"></label>
+              <label>Высота <input type="range" class="m-pitch" min="-12" max="12" step="1" value="0"></label>
+              <label>Громкость <input type="range" class="m-vol" min="0" max="2" step="0.05" value="1"></label>
+              <label>Референс (сек) <input type="number" class="m-ref" min="6" max="30" value="15"></label>
+              <label>Пауза (сек) <input type="number" class="m-pause" min="0.05" max="1" step="0.05" value="0.2"></label>
+              <label>Формат <select class="m-fmt"><option>wav</option><option>mp3</option><option>flac</option><option>ogg</option><option>m4a</option><option>opus</option></select></label>
+              <label>Частота <input type="number" class="m-sr" value="44100"></label>
+              <label>Битность <input type="number" class="m-bits" min="8" max="32" value="16"></label>
+              <label>Fade in <input type="number" class="m-fi" min="0" max="2" step="0.1" value="0"></label>
+              <label>Fade out <input type="number" class="m-fo" min="0" max="2" step="0.1" value="0"></label>
+              <label>Дробление <select class="m-split"><option value="short">short</option><option value="medium" selected>medium</option><option value="long">long</option></select></label>
+            </div>
+          </details>
+          <button class="batch-submit" type="button" data-i18n="batch_submit">→ В очередь</button>
         </div>
         <div class="batch-list" aria-live="polite"></div>
       </div>`;
     document.body.appendChild(modal);
-    textareaEl = modal.querySelector(".batch-textarea");
+    modelEl = modal.querySelector(".batch-model");
     voiceEl = modal.querySelector(".batch-voice");
+    textareaEl = modal.querySelector(".batch-textarea");
     submitBtn = modal.querySelector(".batch-submit");
+    useMainChk = modal.querySelector(".batch-use-main");
     listEl = modal.querySelector(".batch-list");
 
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
@@ -1894,13 +1944,42 @@ window.addEventListener("load", init);
 
   function openModal() {
     ensureModal();
+    applyLangTo(modal);
     modal.style.display = "flex";
+    loadModels();
     loadVoices();
     setTimeout(() => textareaEl && textareaEl.focus(), 50);
   }
+  function closeModal() { if (modal) modal.style.display = "none"; }
 
-  function closeModal() {
-    if (modal) modal.style.display = "none";
+  function applyLangTo(root) {
+    const lang = (document.documentElement.lang === "en") ? "en" : "ru";
+    if (!window.I18N) return;
+    root.querySelectorAll("[data-i18n]").forEach(function (el) {
+      const key = el.getAttribute("data-i18n");
+      const val = I18N[lang] && I18N[lang][key];
+      if (val) el.textContent = val;
+    });
+  }
+
+  async function loadModels() {
+    if (modelEl.dataset.loaded === "1") return;
+    try {
+      const r = await fetch("/api/models");
+      const d = await r.json();
+      const models = (d.models || []).filter(m => m.loaded !== false);
+      if (!models.length) {
+        modelEl.innerHTML = `<option value="core">core</option>`;
+      } else {
+        const cur = (typeof currentMode !== "undefined" && currentMode) || "core";
+        modelEl.innerHTML = models.map(m =>
+          `<option value="${escapeAttr(m.code)}"${m.code === cur ? " selected" : ""}>${escapeHtml(m.code)}</option>`
+        ).join("");
+      }
+      modelEl.dataset.loaded = "1";
+    } catch (e) {
+      modelEl.innerHTML = `<option value="core">core</option>`;
+    }
   }
 
   async function loadVoices() {
@@ -1908,124 +1987,131 @@ window.addEventListener("load", init);
     try {
       const r = await fetch("/api/voices");
       const d = await r.json();
-      const voices = (d.voices || d.profiles || []).map(v => v.name || v.id || v);
-      if (!voices.length) {
-        voiceEl.innerHTML = '<option value="">(нет голосов — загрузите в основном UI)</option>';
-      } else {
-        voiceEl.innerHTML = voices.map(n =>
-          `<option value="${escapeAttr(n)}">${escapeAttr(n)}</option>`
-        ).join("");
-      }
+      const vs = (d.voices || d.profiles || []).map(v => v.name || v.id || v);
+      voiceEl.innerHTML = vs.length
+        ? vs.map(n => `<option value="${escapeAttr(n)}">${escapeHtml(n)}</option>`).join("")
+        : `<option value="">${t("batch_no_voices")}</option>`;
       voiceEl.dataset.loaded = "1";
     } catch (e) {
-      voiceEl.innerHTML = '<option value="">(ошибка загрузки голосов)</option>';
+      voiceEl.innerHTML = `<option value="">(error)</option>`;
     }
+  }
+
+  function collectSettings() {
+    const main = useMainChk.checked;
+    const g = id => document.getElementById(id);
+    const fromMain = (id, cls, def) => {
+      const el = main ? g(id) : modal.querySelector(cls);
+      return el ? el.value : def;
+    };
+    const settings = {
+      mode: modelEl.value || "core",
+      exaggeration: parseFloat(fromMain("exaggeration", ".m-exag", 0.5)),
+      cfg_weight: parseFloat(fromMain("cfg_weight", ".m-cfg", 0.5)),
+      temperature: parseFloat(fromMain("temperature", ".m-temp", 0.8)),
+      repetition_penalty: parseFloat(fromMain("repetition_penalty", ".m-rep", 1.2)),
+      speed: parseFloat(fromMain("speed", ".m-speed", 1.0)),
+      pitch_shift: parseFloat(fromMain("pitch_shift", ".m-pitch", 0)),
+      volume: parseFloat(fromMain("volume", ".m-vol", 1.0)),
+      ref_length: parseInt(fromMain("ref_length", ".m-ref", 15), 10),
+      pause_between: parseFloat(fromMain("pause_between", ".m-pause", 0.2)),
+      sentence_split: fromMain("sentence_split", ".m-split", "medium"),
+      output_format: fromMain("output_format", ".m-fmt", "wav"),
+      output_sr: parseInt(fromMain("output_sr", ".m-sr", 44100), 10),
+      bit_depth: parseInt(fromMain("bit_depth", ".m-bits", 16), 10),
+      fade_in_sec: parseFloat(fromMain("fade_in_sec", ".m-fi", 0)),
+      fade_out_sec: parseFloat(fromMain("fade_out_sec", ".m-fo", 0)),
+    };
+    return settings;
   }
 
   async function onSubmit() {
     const text = textareaEl.value.trim();
     if (!text) { textareaEl.focus(); return; }
     submitBtn.disabled = true;
-    submitBtn.textContent = "Отправка…";
     try {
       const r = await fetch("/api/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text,
-          voice: voiceEl.value || "",
-          settings: {},
-        }),
+        body: JSON.stringify({ text, voice: voiceEl.value || "", settings: collectSettings() }),
       });
       if (!r.ok) throw new Error("HTTP " + r.status);
       const d = await r.json();
       if (!d.ok || !d.task_id) throw new Error("no task_id");
-      addTaskRow(d.task_id, text);
-      watchTask(d.task_id);
+      addRow(d.task_id, text, modelEl.value);
+      watch(d.task_id);
       textareaEl.value = "";
     } catch (e) {
-      alert("Ошибка отправки: " + e.message);
+      alert(t("batch_send_err") + e.message);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = "→ В очередь";
     }
   }
 
-  function addTaskRow(taskId, text) {
+  function addRow(taskId, text, mode) {
     const row = document.createElement("div");
     row.className = "batch-task";
-    const shortText = text.length > 60 ? text.slice(0, 60) + "…" : text;
+    const short = text.length > 60 ? text.slice(0, 60) + "…" : text;
     row.innerHTML = `
       <div class="batch-task-main">
-        <div class="batch-task-text" title="${escapeAttr(text)}">${escapeHtml(shortText)}</div>
+        <div class="batch-task-text" title="${escapeAttr(text)}">${escapeHtml(short)}</div>
         <div class="batch-task-meta">
+          <span class="batch-mode">[${escapeHtml(mode)}]</span>
           <span class="batch-status">—</span>
           <span class="batch-id">#${escapeHtml(taskId.slice(0, 8))}</span>
         </div>
       </div>
-      <a class="batch-download" style="display:none" target="_blank" rel="noopener">ZIP</a>`;
+      <a class="batch-download" style="display:none" target="_blank" rel="noopener"
+         data-i18n="batch_download">ZIP</a>`;
     listEl.prepend(row);
-    taskRows.set(taskId, {
+    rows.set(taskId, {
       row,
       statusEl: row.querySelector(".batch-status"),
       fileEl: row.querySelector(".batch-download"),
     });
-    updateRow(taskId, { id: taskId, status: "queued", text });
+    applyLangTo(row);
+    updateRow(taskId, { id: taskId, status: "queued", result_file: null });
   }
 
   function updateRow(taskId, task) {
-    const t = taskRows.get(taskId);
-    if (!t) return;
+    const r = rows.get(taskId);
+    if (!r) return;
     const st = task.status || "queued";
-    t.statusEl.textContent = STATUS_LABEL[st] || st;
-    t.statusEl.style.color = STATUS_COLOR[st] || "#888";
+    r.statusEl.textContent = t(STATUS_LABEL_KEYS[st] || st);
+    r.statusEl.style.color = STATUS_COLOR[st] || "#888";
     if (st === "done" && task.result_file) {
-      t.fileEl.href = "/api/history/" + encodeURIComponent(taskId) + "/export";
-      t.fileEl.style.display = "inline-block";
-      t.fileEl.title = task.result_file;
+      r.fileEl.href = "/api/history/" + encodeURIComponent(taskId) + "/export";
+      r.fileEl.style.display = "inline-block";
+      r.fileEl.title = task.result_file;
     }
-    if (st === "error" && task.error) {
-      t.statusEl.title = String(task.error);
-    }
+    if (st === "error" && task.error) r.statusEl.title = String(task.error);
   }
 
-  function watchTask(taskId) {
+  function watch(taskId) {
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     let ws;
-    try {
-      ws = new WebSocket(proto + "//" + location.host + "/ws/batch/" + encodeURIComponent(taskId));
-    } catch (e) {
-      return;
-    }
-    ws.addEventListener("message", (ev) => {
+    try { ws = new WebSocket(proto + "//" + location.host + "/ws/batch/" + encodeURIComponent(taskId)); }
+    catch (e) { return; }
+    ws.addEventListener("message", ev => {
       try {
-        const msg = JSON.parse(ev.data);
-        if (msg.type === "status" && msg.task) updateRow(taskId, msg.task);
+        const m = JSON.parse(ev.data);
+        if (m.type === "status" && m.task) updateRow(taskId, m.task);
       } catch (e) { /* ignore */ }
     });
-    ws.addEventListener("close", () => { /* terminal state or network */ });
-    ws.addEventListener("error", () => { /* silent */ });
   }
 
   function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    })[c]);
+    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
   }
-  function escapeAttr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
+  function escapeAttr(s) { return escapeHtml(s); }
 
   function init() {
-    const btn = document.getElementById("batch-toggle");
+    const btn = document.getElementById("btn-batch");
     if (!btn) return;
     btn.addEventListener("click", openModal);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeModal();
-    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
 })();
