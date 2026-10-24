@@ -72,3 +72,7 @@ logs/
 
 # Локальный симлинк на голоса
 voices
+
+# coverage.py
+.coverage
+htmlcov/
