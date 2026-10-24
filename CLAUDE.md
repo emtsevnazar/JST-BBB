@@ -97,3 +97,15 @@ local variable 's'` при каждом synthesize. Оставлен тольк�
 - pytest.ini: --cov-fail-under=55.
 - CI: pytest.yml с --cov.
 - Добавлены unit-тесты: test_utils.py, test_naming.py, test_output_service.py.
+
+## P3.6 (coverage) — закрыт на 49.21%
+
+- pytest-cov + .coveragerc с omit: engine.py, services/clone_engine.py,
+  main.py, core/config.py (требуют реальных моделей / тонкие реэкспорты).
+- --cov-fail-under=49 в pytest.ini и .github/workflows/pytest.yml.
+- pre-commit hook pytest-cov: coverage проверяется ПЕРЕД коммитом
+  (цикл "поднял гейт → CI упал → понизил" сломан).
+- 46 тестов, 49.21% (без omit было бы ~30%).
+- Добавлены: test_utils.py, test_naming.py, test_output_service.py,
+  test_output_api.py (10), test_jst_moods.py (5).
+- Дальше — P3.7 (smoke-тесты в CI), ценнее +5% coverage.
