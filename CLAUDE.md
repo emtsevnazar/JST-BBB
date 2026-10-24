@@ -77,3 +77,9 @@ CPU-only torch/torchaudio). `podman run` стартует, но Engine пада�
 
 Dockerfile, .dockerignore, docker-compose.yml — закоммичены, готовы к использованию
 на Linux-инфраструктуре.
+
+## Fix 2026-10-24: WebSocket UnboundLocalError
+backend/api/ws.py: удалён дублирующий блок mood (14 строк), который обращался к `s`
+до `s = SynthSettings.from_dict(...)`. Симптом: `UnboundLocalError: cannot access
+local variable 's'` при каждом synthesize. Оставлен только второй блок (после
+создания s). Коммит e889e36. Бэкап: ws.py.step_fix_ws_unbound_bak.
