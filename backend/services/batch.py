@@ -15,6 +15,7 @@ from typing import Any
 
 from ..core.state import get_engine
 from ..engine import SynthSettings
+from .history import get_history
 from .output_service import save_output
 
 log = logging.getLogger("JST.Batch")
@@ -145,3 +146,9 @@ class BatchQueue:
         finally:
             task.finished_at = time.time()
             task._task = None
+            h = get_history()
+            if h is not None and task.status in ("done", "error"):
+                try:
+                    await asyncio.to_thread(h.save_task, task.to_dict())
+                except Exception as e:
+                    log.warning("batch: history save failed: %s", e)

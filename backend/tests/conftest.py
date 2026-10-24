@@ -48,7 +48,7 @@ class FakeEngine:
 
 
 @pytest.fixture
-def client(monkeypatch):
+def client(monkeypatch, tmp_path):
     """TestClient с FakeEngine — startup не загружает реальную модель.
 
     base_url=http://127.0.0.1 — чтобы TrustedHostMiddleware пропускал запросы
@@ -56,9 +56,11 @@ def client(monkeypatch):
     """
     import backend.app as app_mod
     from backend.core import state as state_mod
+    from backend.services import history as history_mod
 
     monkeypatch.setattr(app_mod, "Engine", FakeEngine)
     monkeypatch.setattr(state_mod, "_engine", None)
+    monkeypatch.setattr(history_mod, "DB_PATH", tmp_path / "jst.db")
 
     with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
         yield c
