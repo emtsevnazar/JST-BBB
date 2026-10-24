@@ -35,20 +35,6 @@ async def _ws_orig(ws: WebSocket):
             except Exception as _e:
                 await ws.send_text(json.dumps({"type":"error","message":str(_e)}))
                 continue
-            _mood = (getattr(s, "mood", None) or "auto").strip()
-            try:
-                from ..services.jst_moods import detect_mood as _dm, MOOD_PARAMS as _MP
-                if _mood == "auto":
-                    _mood = _dm(text)
-                _mp = _MP.get(_mood)
-                if _mp:
-                    s.exaggeration = _mp["exaggeration"]
-                    s.cfg_weight = _mp["cfg_weight"]
-                    s.temperature = _mp["temperature"]
-                    s.speed = _mp["speed"]
-                    log.info("[mood] %s -> exag=%.2f speed=%.2f", _mood, s.exaggeration, s.speed)
-            except Exception as _e:
-                log.warning("mood apply: %s", _e)
             voice = data.get("voice", "") or ""
             s = SynthSettings.from_dict(data.get("settings", {}))
 
