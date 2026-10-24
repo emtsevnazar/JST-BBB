@@ -271,3 +271,8 @@ async def ws_synthesize(ws: WebSocket):
         await _ws_orig(ws)
     finally:
         _ws_active[_ip] = max(0, _ws_active[_ip] - 1)
+
+
+def ws_active_count() -> int:
+    """Суммарное число активных WS-подключений (для /health)."""
+    return sum(_ws_active.values()) if _ws_active else 0

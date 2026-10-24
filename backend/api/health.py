@@ -10,9 +10,11 @@ from pathlib import Path
 
 from fastapi import APIRouter
 
+from .. import __version__
 from ..core.constants import MODEL_LANGS
-from ..core.state import get_engine
+from ..core.state import GIT_SHA, get_engine, uptime_sec
 from ..security.safety import limiter, startup_check
+from .ws import ws_active_count
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -44,10 +46,14 @@ async def health():
     ENGINE = get_engine()
     return {
         "ok": True,
+        "version": __version__,
+        "git_sha": GIT_SHA,
+        "uptime_sec": uptime_sec(),
         "engine_ready": ENGINE is not None,
         "sr": ENGINE.sr if ENGINE else None,
         "device": ENGINE.device if ENGINE else None,
         "mode": ENGINE.current_mode if ENGINE else None,
+        "ws_active": ws_active_count(),
     }
 
 
