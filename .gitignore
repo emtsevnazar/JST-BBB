@@ -76,3 +76,10 @@ voices
 # coverage.py
 .coverage
 htmlcov/
+
+# Ruff cache
+.ruff_cache/
+
+# Local SQLite (jst.db) and runtime data
+data/
+backend/data/

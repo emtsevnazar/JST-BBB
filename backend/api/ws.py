@@ -18,7 +18,7 @@ from ..services.output_service import save_output
 from ..services.references import resolve_reference
 
 log = logging.getLogger("JST")
-router = APIRouter()
+router = APIRouter(tags=["Synthesis"])
 
 
 MAX_WS_PER_IP = 3

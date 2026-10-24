@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 
 from . import ws as ws_mod
 
-router = APIRouter()
+router = APIRouter(tags=["Batch"])
 
 
 class BatchRequest(BaseModel):

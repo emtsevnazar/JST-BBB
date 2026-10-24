@@ -16,7 +16,7 @@ from ..security.safety import safe_path, validate_audio_file, validate_voice_nam
 from ..services.references import build_reference
 
 log = logging.getLogger("JST")
-router = APIRouter()
+router = APIRouter(tags=["Voices"])
 
 
 @router.get("/api/voices")

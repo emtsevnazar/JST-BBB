@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from ..core.paths import OUTPUT
 
 log = logging.getLogger("JST")
-router = APIRouter()
+router = APIRouter(tags=["Output"])
 
 
 @router.get("/api/output")

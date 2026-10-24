@@ -5,7 +5,7 @@ from fastapi import APIRouter, Form, HTTPException
 from ..core.constants import DEFAULT_PRESETS
 from ..core.state import get_engine
 
-router = APIRouter()
+router = APIRouter(tags=["System"])
 
 
 @router.get("/api/presets")

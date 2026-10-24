@@ -18,7 +18,7 @@ from .ws import ws_active_count
 
 ROOT = Path(__file__).resolve().parents[2]
 
-router = APIRouter()
+router = APIRouter(tags=["Health"])
 
 
 _health_cache: dict = {"data": None, "ts": 0.0}

@@ -14,7 +14,7 @@ from fastapi import APIRouter, HTTPException, Request, Response
 
 from ..services import output_service
 
-router = APIRouter()
+router = APIRouter(tags=["History"])
 
 
 def _db(request: Request):

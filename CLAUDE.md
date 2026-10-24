@@ -175,3 +175,16 @@ CI: P4.4 (cb28069) — ✓ pytest (ожид.).
 - --cov-fail-under: 50 → 59
 
 Следующий этап — ревизия перед P5 (гигиена, docs, real-engine smoke).
+
+## P5.1–P5.3 — гигиена + README + OpenAPI (в процессе)
+
+- P5.1: удалено ~55 `*.step*_bak` / `*.bak` / `*.orig` / `*.before_*` /
+  `.DS_Store` / `.ruff_cache/` / `voices.symlink.bak`; `.gitignore` дополнен
+  `.ruff_cache/` и `data/` (+ `backend/data/`).
+- P5.2: README переписан — актуальная карта `backend/`, таблица 20 эндпоинтов,
+  пример batch → history → export, testing (78 passed, 59.50%, гейт 59), roadmap P0–P5.
+- P5.3: OpenAPI tags на 9 роутерах (`Health/Moods/Output/STT/System/Voices/
+  Synthesis/Batch/History`) — /docs группирует эндпоинты по разделам.
+- P5.4 (real-engine smoke) — отложен на отдельный заход.
+
+pytest: 78 passed, coverage 59.50% (гейт 59). ruff: All checks passed.

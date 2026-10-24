@@ -13,7 +13,7 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 from ..core.paths import OUTPUT
 
 log = logging.getLogger("JST")
-router = APIRouter()
+router = APIRouter(tags=["STT"])
 
 _STT_MODEL = None
 
