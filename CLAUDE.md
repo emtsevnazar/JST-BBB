@@ -314,3 +314,21 @@ TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
 Почему mock правильный: `test_batch_end_to_end` проверяет **queue mechanics**
 (submit → running → done), не output. Output покрыт отдельно.
 Тест больше не флейкует и не платформо-зависим.
+
+## P6.1 — Frontend UI: пакетный синтез (модалка)
+
+Пользователь впервые **видит** фичи P4–P5 (batch, WS-статус, ZIP) — раньше
+только через curl. Модалка создаётся программно в JS (минимум изменений
+в HTML: одна кнопка 📦 в header).
+
+- index.html: `<button id="batch-toggle">📦</button>` в `.header-buttons`;
+  cache-busting `?v=<ts>` для style.css и app.js
+- app.js: IIFE `P6.1: Batch UI` в конце — `ensureModal()`, `openModal()`,
+  `loadVoices()` (из `/api/voices`), `onSubmit()` (`POST /api/batch`),
+  `watchTask()` (`WS /ws/batch/{id}`), `updateRow()` (цвет по status)
+- style.css: `.batch-modal`, `.batch-dialog`, `.batch-task` (~60 строк,
+  использует существующие `--panel-bg`, `--gold`, `--navy`, `--input-bg`)
+- UI-flow: 📦 → модалка → textarea + voice + «→ В очередь» →
+  queued → running → done (цвет) → кнопка ZIP → `/api/history/{id}/export`
+
+Не трогает layout, help, вкладки, существующие `fetch()`/`ws`.

@@ -1829,3 +1829,203 @@ window.addEventListener("load", init);
         setTimeout(init, 120);
     }
 })();
+
+
+/* === P6.1: Batch UI === */
+(function () {
+  "use strict";
+
+  const STATUS_LABEL = {
+    queued: "в очереди",
+    running: "синтез…",
+    done: "готово",
+    error: "ошибка",
+    cancelled: "отменено",
+  };
+  const STATUS_COLOR = {
+    queued: "#888",
+    running: "#1a73e8",
+    done: "#1a8f3a",
+    error: "#c62828",
+    cancelled: "#b8860b",
+  };
+
+  let modal = null;
+  let listEl = null;
+  let textareaEl = null;
+  let voiceEl = null;
+  let submitBtn = null;
+  const taskRows = new Map(); // task_id -> { row, statusEl, fileEl }
+
+  function ensureModal() {
+    if (modal) return modal;
+    modal = document.createElement("div");
+    modal.id = "batch-modal";
+    modal.className = "batch-modal";
+    modal.innerHTML = `
+      <div class="batch-backdrop"></div>
+      <div class="batch-dialog" role="dialog" aria-modal="true" aria-label="Пакетный синтез">
+        <div class="batch-header">
+          <h2>Пакетный синтез</h2>
+          <button class="batch-close" title="Закрыть">×</button>
+        </div>
+        <div class="batch-body">
+          <label class="batch-label">Текст
+            <textarea class="batch-textarea" rows="4" placeholder="Введите текст для синтеза…"></textarea>
+          </label>
+          <label class="batch-label">Голос
+            <select class="batch-voice"><option value="">(загрузка…)</option></select>
+          </label>
+          <button class="batch-submit" type="button">→ В очередь</button>
+        </div>
+        <div class="batch-list" aria-live="polite"></div>
+      </div>`;
+    document.body.appendChild(modal);
+    textareaEl = modal.querySelector(".batch-textarea");
+    voiceEl = modal.querySelector(".batch-voice");
+    submitBtn = modal.querySelector(".batch-submit");
+    listEl = modal.querySelector(".batch-list");
+
+    modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
+    modal.querySelector(".batch-close").addEventListener("click", closeModal);
+    submitBtn.addEventListener("click", onSubmit);
+    return modal;
+  }
+
+  function openModal() {
+    ensureModal();
+    modal.style.display = "flex";
+    loadVoices();
+    setTimeout(() => textareaEl && textareaEl.focus(), 50);
+  }
+
+  function closeModal() {
+    if (modal) modal.style.display = "none";
+  }
+
+  async function loadVoices() {
+    if (voiceEl.dataset.loaded === "1") return;
+    try {
+      const r = await fetch("/api/voices");
+      const d = await r.json();
+      const voices = (d.voices || d.profiles || []).map(v => v.name || v.id || v);
+      if (!voices.length) {
+        voiceEl.innerHTML = '<option value="">(нет голосов — загрузите в основном UI)</option>';
+      } else {
+        voiceEl.innerHTML = voices.map(n =>
+          `<option value="${escapeAttr(n)}">${escapeAttr(n)}</option>`
+        ).join("");
+      }
+      voiceEl.dataset.loaded = "1";
+    } catch (e) {
+      voiceEl.innerHTML = '<option value="">(ошибка загрузки голосов)</option>';
+    }
+  }
+
+  async function onSubmit() {
+    const text = textareaEl.value.trim();
+    if (!text) { textareaEl.focus(); return; }
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Отправка…";
+    try {
+      const r = await fetch("/api/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          voice: voiceEl.value || "",
+          settings: {},
+        }),
+      });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const d = await r.json();
+      if (!d.ok || !d.task_id) throw new Error("no task_id");
+      addTaskRow(d.task_id, text);
+      watchTask(d.task_id);
+      textareaEl.value = "";
+    } catch (e) {
+      alert("Ошибка отправки: " + e.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "→ В очередь";
+    }
+  }
+
+  function addTaskRow(taskId, text) {
+    const row = document.createElement("div");
+    row.className = "batch-task";
+    const shortText = text.length > 60 ? text.slice(0, 60) + "…" : text;
+    row.innerHTML = `
+      <div class="batch-task-main">
+        <div class="batch-task-text" title="${escapeAttr(text)}">${escapeHtml(shortText)}</div>
+        <div class="batch-task-meta">
+          <span class="batch-status">—</span>
+          <span class="batch-id">#${escapeHtml(taskId.slice(0, 8))}</span>
+        </div>
+      </div>
+      <a class="batch-download" style="display:none" target="_blank" rel="noopener">ZIP</a>`;
+    listEl.prepend(row);
+    taskRows.set(taskId, {
+      row,
+      statusEl: row.querySelector(".batch-status"),
+      fileEl: row.querySelector(".batch-download"),
+    });
+    updateRow(taskId, { id: taskId, status: "queued", text });
+  }
+
+  function updateRow(taskId, task) {
+    const t = taskRows.get(taskId);
+    if (!t) return;
+    const st = task.status || "queued";
+    t.statusEl.textContent = STATUS_LABEL[st] || st;
+    t.statusEl.style.color = STATUS_COLOR[st] || "#888";
+    if (st === "done" && task.result_file) {
+      t.fileEl.href = "/api/history/" + encodeURIComponent(taskId) + "/export";
+      t.fileEl.style.display = "inline-block";
+      t.fileEl.title = task.result_file;
+    }
+    if (st === "error" && task.error) {
+      t.statusEl.title = String(task.error);
+    }
+  }
+
+  function watchTask(taskId) {
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    let ws;
+    try {
+      ws = new WebSocket(proto + "//" + location.host + "/ws/batch/" + encodeURIComponent(taskId));
+    } catch (e) {
+      return;
+    }
+    ws.addEventListener("message", (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === "status" && msg.task) updateRow(taskId, msg.task);
+      } catch (e) { /* ignore */ }
+    });
+    ws.addEventListener("close", () => { /* terminal state or network */ });
+    ws.addEventListener("error", () => { /* silent */ });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[c]);
+  }
+  function escapeAttr(s) { return escapeHtml(s).replace(/"/g, "&quot;"); }
+
+  function init() {
+    const btn = document.getElementById("batch-toggle");
+    if (!btn) return;
+    btn.addEventListener("click", openModal);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
