@@ -25,3 +25,14 @@ webrtcvad
 tqdm
 regex
 pyyaml
+
+# Зависимости chatterbox_ (watermarker от ResembleAI)
+perth
+vocos
+einops
+conformer
+s3tokenizer
+pyloudnorm
+omegaconf
+hydra-core
+matplotlib

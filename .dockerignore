@@ -1,0 +1,48 @@
+.git
+.gitignore
+.github
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+*.step*_bak
+*.step*.bak
+*.before_*
+*.pre-compress.bak
+*.presets_fail
+*.overlay_broken
+.DS_Store
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+code/bin/
+backend/tests/
+docs/
+*.md
+!README.md
+
+# Монтируются как volumes в compose — в образе не нужны
+
+voices
+output
+
+voices
+output
+
+# venv-директории (любые)
+.venv*/
+venv*/
+*.venv/
+
+# Кэши и служебные файлы
+.cache/
+.locks/
+*.safetensors
+*.pt
+
+# Временные артефакты шагов
+*.step*_bak
+*.step*.bak

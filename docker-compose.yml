@@ -1,0 +1,30 @@
+services:
+  api:
+    build: .
+    image: jst-studio:local
+    container_name: jst-studio
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      HOME: /root
+      PYTORCH_ENABLE_MPS_FALLBACK: "0"
+      HF_HOME: /app/.cache/huggingface
+    volumes:
+      - ./voices:/app/voices
+      - ./output:/app/output
+      - hf-cache:/app/.cache/huggingface
+      # engine.py ищет FINETUNING / "pretrained_models"
+      # FINETUNING = Path.home() / "Documents/AAC/main" = /root/Documents/AAC/main
+      - ${MODELS_DIR}:/root/Documents/AAC/main/pretrained_models:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  hf-cache:

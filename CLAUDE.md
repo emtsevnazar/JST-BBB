@@ -55,3 +55,25 @@
   - 3.11 (docs) — сейчас
   - 3.12 (GitHub Actions)
   - 3.13 (Docker)
+
+## Docker/Podman (3.13) — статус на 2026-10-24
+
+Образ `localhost/jst-studio:local` собирается (2.36 GB, Podman 6.1.4, aarch64,
+CPU-only torch/torchaudio). `podman run` стартует, но Engine падает на
+`ChatterboxTTS = None` — приватный пакет `~/Documents/AAC/main/src/chatterbox_`
+требует всё новые зависимости из своего окружения (по одной: perth → omegaconf → ...).
+Хвост длинный, в публичный requirements.txt его тащить нецелесообразно.
+
+### Что работает
+- Локальный uvicorn на MPS: Engine готов за ~36 сек, `engine_ready: true`.
+- CI: `syntax` + `pytest` зелёные (GitHub Actions, 2m47s).
+- 20 pytest-тестов зелёные.
+
+### Что делать с Docker
+- Для деплоя: собирать образ на Linux-сервере, где `src/chatterbox_` и его
+  полное окружение (`perf, vocos, omegaconf, ...`) уже установлены рядом.
+- Либо `docker save` с машины, где контейнер работает.
+- Локально для разработки контейнер не нужен — CPU в 5–10 раз медленнее MPS.
+
+Dockerfile, .dockerignore, docker-compose.yml — закоммичены, готовы к использованию
+на Linux-инфраструктуре.
