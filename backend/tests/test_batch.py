@@ -2,7 +2,7 @@
 
 import time
 
-from backend.services.batch import BatchQueue
+from backend.services.batch import BatchQueue, BatchTask
 
 # --- BatchQueue (без запуска worker) ---
 
@@ -120,3 +120,28 @@ def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
     assert task["result_file"] is not None
     assert task["result_file"].endswith(".wav")
     assert (tmp_path / task["result_file"]).exists()
+
+
+def test_to_dict_with_live_task():
+    """Регрессия P5.7: asdict(deepcopy) падал на живом asyncio.Task.
+
+    В real-engine синтез идёт секунды, _task живой → GET /api/batch/{id}
+    на этом окне падал 500. FakeEngine не ловил, т.к. синтез 0 ms.
+    """
+    import asyncio
+
+    task = BatchTask(id="live", text="t", voice="", settings={})
+    # эмуляция «живого» Task — именно то, что было в _run
+    task._task = asyncio.current_task()
+    d = task.to_dict()
+    assert d["id"] == "live"
+    assert "_task" not in d
+    assert d["settings"] == {}
+
+
+def test_to_dict_settings_is_copy():
+    """settings в to_dict — копия, мутация исходного не протекает."""
+    task = BatchTask(id="x", text="t", voice="", settings={"a": 1})
+    d = task.to_dict()
+    task.settings["a"] = 999
+    assert d["settings"] == {"a": 1}

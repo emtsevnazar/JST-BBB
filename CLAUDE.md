@@ -241,3 +241,48 @@ fake_ref_path. Реальный путь проверяется P5.4 (JST_REAL_E
   а не голый `KeyError: 'task'`.
 - Причина P5.5-флейка: поллинг 5s под coverage-инструментацией иногда
   не укладывался; тест хрупкий, а не сломанный.
+
+## P5.7 — to_dict без asdict (третий слой, найден real-engine)
+
+**Багу нашёл P5.6 real-engine smoke.** `BatchTask.to_dict()` делал
+`asdict(self)`, а `asdict` рекурсивно `deepcopy`-ит все поля, включая
+`_task: asyncio.Task`. Пока `_task` живой (синтез идёт секунды в real-engine),
+`GET /api/batch/{id}` и WS-нотификация падали с
+`TypeError: cannot pickle '_asyncio.Task' object`. FakeEngine скрывал —
+синтез 0 ms, `_task = None` до первого `to_dict()`.
+
+- services/batch.py: `to_dict()` — явный dict (без `asdict`),
+  `settings` через `dict(self.settings)` (копия); убран неиспользуемый
+  импорт `asdict`
+- tests/test_batch.py: +2 регрессионных теста
+  (`test_to_dict_with_live_task` — эмулирует живой `_task`,
+  `test_to_dict_settings_is_copy` — копия settings)
+- pytest: 80 passed, 2 skipped, coverage ~60.5%
+- real-engine (локально): 2 passed
+
+Итого три слоя, найденных real-engine: (1) `synth_one(text, settings)` —
+TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
+Все три были бы в проде с любым реальным batch-синтезом.
+
+## P5.7 — to_dict без asdict (третий production-баг, найден real-engine)
+
+**Real-engine `2 passed` в 161.87s** — все три слоя багов закрыты.
+`BatchTask.to_dict()` делал `asdict(self)`, а `asdict` рекурсивно `deepcopy`-ит
+все поля, включая `_task: asyncio.Task`. Пока `_task` живой (реальный синтез
+идёт секунды), `GET /api/batch/{id}` и WS-нотификация падали с
+`TypeError: cannot pickle '_asyncio.Task' object`. FakeEngine скрывал
+(синтез 0 ms, `_task = None` до первого `to_dict()`).
+
+- services/batch.py: `to_dict()` → явный dict, `settings` через
+  `dict(self.settings)` (копия); убран неиспользуемый `asdict`
+- tests/test_batch.py: +2 регрессионных теста
+  (`test_to_dict_with_live_task` — живой `_task` через `asyncio.current_task()`,
+  `test_to_dict_settings_is_copy` — копия settings); импорт `BatchTask`
+- pytest: 80 passed, 2 skipped, coverage ~60.5%
+- real-engine (локально): 2 passed в 161.87s (wav+export ZIP, mp3 через ffmpeg)
+
+Итого три слоя от real-engine smoke:
+  (1) `synth_one(text, settings)` → TypeError
+  (2) `voice=""` → No reference
+  (3) `asdict(_task)` → pickle
+Все три были бы в проде с любым реальным batch-синтезом.

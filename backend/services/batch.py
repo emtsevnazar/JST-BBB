@@ -10,7 +10,7 @@ import asyncio
 import logging
 import time
 import uuid
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from typing import Any
 
 from ..core.state import get_engine
@@ -38,9 +38,22 @@ class BatchTask:
     _task: asyncio.Task | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        d = asdict(self)
-        d.pop("_task", None)
-        return d
+        # Явный dict, а НЕ asdict(): asdict делает deepcopy всех полей,
+        # включая _task (живой asyncio.Task) → TypeError: cannot pickle.
+        # Это ломалось в real-engine, где синтез идёт секунды и _task
+        # живой на момент GET /api/batch/{id} / WS-нотификации.
+        return {
+            "id": self.id,
+            "text": self.text,
+            "voice": self.voice,
+            "settings": dict(self.settings),
+            "status": self.status,
+            "result_file": self.result_file,
+            "error": self.error,
+            "created_at": self.created_at,
+            "started_at": self.started_at,
+            "finished_at": self.finished_at,
+        }
 
 
 class BatchQueue:
