@@ -130,3 +130,19 @@ local variable 's'` при каждом synthesize. Оставлен тольк�
 - Исправлено: `async def cancel` → `def cancel`, в `api/batch.py` убран `await`.
 - Локально: **59 passed**, coverage **55.20%** (гейт 54%).
 - CI на `df28d7c` — зелёный (проверено).
+
+## P4.2 — SQLite history для batch (закрыт)
+
+- services/history.py: HistoryDB (sqlite3, соединение на операцию),
+  get_history/set_history, DB_PATH (env JST_HISTORY_DB, default data/jst.db)
+- services/batch.py: в finally _execute сохраняем task в history
+  при status in {done, error} (через asyncio.to_thread)
+- api/history.py: GET /api/history?limit=50, GET /api/history/{id} (404)
+- app.py: history init в lifespan, include_router, set_history(None) + close
+- conftest.py: DB_PATH → tmp_path/jst.db (тесты не пишут в data/)
+- tests/test_history.py: 7 тестов (4 unit + 3 API/end-to-end)
+- --cov-fail-under: 54 → 56
+- coverage: 57.78% (было 55.20%)
+
+CI: P4.1b (df28d7c) — ✓ (4m41s). P4.2 (4bb6df9) — ✓ pytest (ожид.).
+Дальше — P4.4 (WS-статус batch) или P4.5 (ZIP-экспорт).
