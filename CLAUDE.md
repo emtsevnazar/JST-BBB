@@ -146,3 +146,19 @@ local variable 's'` при каждом synthesize. Оставлен тольк�
 
 CI: P4.1b (df28d7c) — ✓ (4m41s). P4.2 (4bb6df9) — ✓ pytest (ожид.).
 Дальше — P4.4 (WS-статус batch) или P4.5 (ZIP-экспорт).
+
+## P4.4 — WS-статус batch (закрыт)
+
+- services/batch.py: subscribe/unsubscribe/_notify на asyncio.Queue;
+  _execute и cancel() уведомляют подписчиков при смене status
+- api/ws.py: вынесены публичные _try_register_ip/_unregister_ip
+  (rate-limit по IP); ws_synthesize отрефакторен на них
+- api/batch.py: WS /ws/batch/{task_id} — accept → initial state →
+  updates → close 1000 на терминале; 4404 если task нет; 1008 при лимите;
+  ping каждые 30 с
+- tests/test_batch_ws.py: 8 тестов (1 endpoint registered + 7 pub/sub unit)
+- --cov-fail-under: 56 → 58
+- coverage: 58.32% (было 57.78%)
+
+CI: P4.4 (cb28069) — ✓ pytest (ожид.).
+Дальше — P4.5 (ZIP-экспорт) или P3.4 (structured logging).
