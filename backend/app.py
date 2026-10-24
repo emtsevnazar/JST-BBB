@@ -17,6 +17,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from .api.batch import router as batch_router
 from .api.health import router as health_router
 from .api.moods import router as moods_router
 from .api.output import router as output_router
@@ -39,6 +40,7 @@ from .core.paths import (
     REFERENCE,
 )
 from .core.state import set_engine
+from .services.batch import BatchQueue
 
 WS_SHUTDOWN_MAX_WAIT = 5.0
 
@@ -55,11 +57,15 @@ async def lifespan(app: FastAPI):
     engine = Engine(device="auto", reference_wav=str(REFERENCE))
     set_engine(engine)
     log.info("Engine готов за %.1f с", time.time() - t_startup)
+    batch_queue = BatchQueue()
+    await batch_queue.start()
+    app.state.batch_queue = batch_queue
     try:
         yield
     finally:
         # P3.5: graceful shutdown — дождаться активных WS, освободить Engine
         t_shutdown = time.time()
+        await batch_queue.stop()
         active = ws_active_count()
         log.info("Shutdown: %d активных WS, ожидание до %.0f с…", active, WS_SHUTDOWN_MAX_WAIT)
         deadline = time.time() + WS_SHUTDOWN_MAX_WAIT
@@ -101,6 +107,7 @@ app.include_router(voices_router)
 app.include_router(output_router)
 app.include_router(stt_router)
 app.include_router(ws_router)
+app.include_router(batch_router)
 
 # === SECURITY MIDDLEWARE ===
 
