@@ -1876,6 +1876,72 @@ window.addEventListener("load", init);
     return (window.I18N && I18N[lang] && I18N[lang][key]) || key;
   }
 
+
+  const OUT_MAP = {
+    exaggeration: "o-exag",
+    cfg_weight: "o-cfg",
+    temperature: "o-temp",
+    repetition_penalty: "o-rep",
+    speed: "o-speed",
+    pitch_shift: "o-pitch",
+    volume: "o-vol",
+  };
+
+  function cloneSettingsPanels() {
+    if (!modal) return;
+    const target = modal.querySelector(".batch-cloned");
+    if (!target) return;
+    target.innerHTML = "";
+    ["settings", "extra", "save"].forEach(function (key) {
+      let src = null;
+      document.querySelectorAll(".sidebar .panel").forEach(function (p) {
+        if (src) return;
+        const t = p.querySelector('[data-i18n="' + key + '"]');
+        if (t) src = p;
+      });
+      if (!src) return;
+      const clone = src.cloneNode(true);
+      clone.querySelectorAll("[id]").forEach(function (el) {
+        el.id = "m-" + el.id;
+      });
+      clone.querySelectorAll("label[for]").forEach(function (el) {
+        el.setAttribute("for", "m-" + el.getAttribute("for"));
+      });
+      target.appendChild(clone);
+    });
+    Object.keys(OUT_MAP).forEach(function (sliderId) {
+      const inp = modal.querySelector("#m-" + sliderId);
+      const outp = modal.querySelector("#m-" + OUT_MAP[sliderId]);
+      if (inp && outp) {
+        const sync = function () { outp.textContent = inp.value; };
+        inp.addEventListener("input", sync);
+        sync();
+      }
+    });
+  }
+
+  function syncMainToModal() {
+    if (!modal) return;
+    const ids = [
+      "exaggeration", "cfg_weight", "temperature", "repetition_penalty",
+      "speed", "pitch_shift", "volume", "ref_length", "pause_between",
+      "sentence_split", "output_format", "output_sr", "bit_depth",
+      "fade_in_sec", "fade_out_sec",
+    ];
+    ids.forEach(function (id) {
+      const mainEl = document.getElementById(id);
+      const modalEl = modal.querySelector("#m-" + id);
+      if (mainEl && modalEl) {
+        modalEl.value = mainEl.value;
+        const outId = OUT_MAP[id];
+        if (outId) {
+          const outp = modal.querySelector("#m-" + outId);
+          if (outp) outp.textContent = modalEl.value;
+        }
+      }
+    });
+  }
+
   function ensureModal() {
     if (modal) return modal;
     modal = document.createElement("div");
@@ -1891,10 +1957,10 @@ window.addEventListener("load", init);
         <div class="batch-body">
           <div class="batch-row">
             <label class="batch-label"><span data-i18n="batch_model">Модель</span>
-              <select class="batch-model"><option data-i18n="batch_models_loading">(загрузка…)</option></select>
+              <select class="batch-model"></select>
             </label>
             <label class="batch-label"><span data-i18n="batch_voice">Голос</span>
-              <select class="batch-voice"><option data-i18n="batch_no_voices">(нет голосов)</option></select>
+              <select class="batch-voice"></select>
             </label>
           </div>
           <label class="batch-label"><span data-i18n="batch_text">Текст</span>
@@ -1906,23 +1972,7 @@ window.addEventListener("load", init);
           </label>
           <details class="batch-adv">
             <summary data-i18n="batch_adv">Дополнительно</summary>
-            <div class="batch-sliders">
-              <label>Выразительность <input type="range" class="m-exag" min="0" max="1" step="0.05" value="0.5"></label>
-              <label>Близость <input type="range" class="m-cfg" min="0" max="1" step="0.05" value="0.5"></label>
-              <label>Температура <input type="range" class="m-temp" min="0.1" max="1.5" step="0.05" value="0.8"></label>
-              <label>Штраф <input type="range" class="m-rep" min="1" max="2" step="0.05" value="1.2"></label>
-              <label>Скорость <input type="range" class="m-speed" min="0.5" max="2" step="0.05" value="1"></label>
-              <label>Высота <input type="range" class="m-pitch" min="-12" max="12" step="1" value="0"></label>
-              <label>Громкость <input type="range" class="m-vol" min="0" max="2" step="0.05" value="1"></label>
-              <label>Референс (сек) <input type="number" class="m-ref" min="6" max="30" value="15"></label>
-              <label>Пауза (сек) <input type="number" class="m-pause" min="0.05" max="1" step="0.05" value="0.2"></label>
-              <label>Формат <select class="m-fmt"><option>wav</option><option>mp3</option><option>flac</option><option>ogg</option><option>m4a</option><option>opus</option></select></label>
-              <label>Частота <input type="number" class="m-sr" value="44100"></label>
-              <label>Битность <input type="number" class="m-bits" min="8" max="32" value="16"></label>
-              <label>Fade in <input type="number" class="m-fi" min="0" max="2" step="0.1" value="0"></label>
-              <label>Fade out <input type="number" class="m-fo" min="0" max="2" step="0.1" value="0"></label>
-              <label>Дробление <select class="m-split"><option value="short">short</option><option value="medium" selected>medium</option><option value="long">long</option></select></label>
-            </div>
+            <div class="batch-cloned"></div>
           </details>
           <button class="batch-submit" type="button" data-i18n="batch_submit">В очередь</button>
         </div>
@@ -1936,6 +1986,8 @@ window.addEventListener("load", init);
     useMainChk = modal.querySelector(".batch-use-main");
     listEl = modal.querySelector(".batch-list");
 
+    cloneSettingsPanels();
+
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
     modal.querySelector(".help-modal-close").addEventListener("click", closeModal);
     submitBtn.addEventListener("click", onSubmit);
@@ -1944,6 +1996,7 @@ window.addEventListener("load", init);
 
   function openModal() {
     ensureModal();
+    syncMainToModal();
     applyLangTo(modal);
     modal.style.display = "flex";
     loadModels();
@@ -1999,30 +2052,28 @@ window.addEventListener("load", init);
 
   function collectSettings() {
     const main = useMainChk.checked;
-    const g = id => document.getElementById(id);
-    const fromMain = (id, cls, def) => {
-      const el = main ? g(id) : modal.querySelector(cls);
+    const fromMain = function (id, def) {
+      const el = main ? document.getElementById(id) : modal.querySelector("#m-" + id);
       return el ? el.value : def;
     };
-    const settings = {
+    return {
       mode: modelEl.value || "core",
-      exaggeration: parseFloat(fromMain("exaggeration", ".m-exag", 0.5)),
-      cfg_weight: parseFloat(fromMain("cfg_weight", ".m-cfg", 0.5)),
-      temperature: parseFloat(fromMain("temperature", ".m-temp", 0.8)),
-      repetition_penalty: parseFloat(fromMain("repetition_penalty", ".m-rep", 1.2)),
-      speed: parseFloat(fromMain("speed", ".m-speed", 1.0)),
-      pitch_shift: parseFloat(fromMain("pitch_shift", ".m-pitch", 0)),
-      volume: parseFloat(fromMain("volume", ".m-vol", 1.0)),
-      ref_length: parseInt(fromMain("ref_length", ".m-ref", 15), 10),
-      pause_between: parseFloat(fromMain("pause_between", ".m-pause", 0.2)),
-      sentence_split: fromMain("sentence_split", ".m-split", "medium"),
-      output_format: fromMain("output_format", ".m-fmt", "wav"),
-      output_sr: parseInt(fromMain("output_sr", ".m-sr", 44100), 10),
-      bit_depth: parseInt(fromMain("bit_depth", ".m-bits", 16), 10),
-      fade_in_sec: parseFloat(fromMain("fade_in_sec", ".m-fi", 0)),
-      fade_out_sec: parseFloat(fromMain("fade_out_sec", ".m-fo", 0)),
+      exaggeration: parseFloat(fromMain("exaggeration", 0.5)),
+      cfg_weight: parseFloat(fromMain("cfg_weight", 0.5)),
+      temperature: parseFloat(fromMain("temperature", 0.8)),
+      repetition_penalty: parseFloat(fromMain("repetition_penalty", 1.2)),
+      speed: parseFloat(fromMain("speed", 1.0)),
+      pitch_shift: parseFloat(fromMain("pitch_shift", 0)),
+      volume: parseFloat(fromMain("volume", 1.0)),
+      ref_length: parseInt(fromMain("ref_length", 15), 10),
+      pause_between: parseFloat(fromMain("pause_between", 0.2)),
+      sentence_split: fromMain("sentence_split", "medium"),
+      output_format: fromMain("output_format", "wav"),
+      output_sr: parseInt(fromMain("output_sr", 44100), 10),
+      bit_depth: parseInt(fromMain("bit_depth", 16), 10),
+      fade_in_sec: parseFloat(fromMain("fade_in_sec", 0)),
+      fade_out_sec: parseFloat(fromMain("fade_out_sec", 0)),
     };
-    return settings;
   }
 
   async function onSubmit() {

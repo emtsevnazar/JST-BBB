@@ -5196,3 +5196,101 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
+
+/* === P6.2h: крестик внутри шапки, border-color, hover submit day, панели === */
+
+/* 1. Крестик — в правом верхнем углу шапки, ВНУТРИ блока */
+.batch-header { position: relative !important; }
+.batch-header h2 { padding-right: 50px !important; margin: 0 !important; }
+
+#batch-modal .help-modal-close {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 10 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--input-bg) !important;
+  color: var(--text) !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all .25s !important;
+}
+#batch-modal .help-modal-close:hover {
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+  background: rgba(230,57,70,0.08) !important;
+}
+[data-theme="night"] #batch-modal .help-modal-close {
+  background: rgba(245,184,0,0.14) !important;
+  color: #FFC72C !important;
+  border-color: rgba(245,184,0,0.3) !important;
+}
+[data-theme="night"] #batch-modal .help-modal-close:hover {
+  color: #ff6673 !important;
+  border-color: #ff6673 !important;
+}
+
+/* 2. Пакет — убрать rgba(0,0,0,0.25), дать тот же цвет рамки, что у Случайного */
+#btn-batch.btn.btn-ghost {
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+}
+#btn-batch.btn.btn-ghost:hover:not(:disabled) {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+[data-theme="night"] #btn-batch.btn.btn-ghost:hover:not(:disabled) {
+  color: #FFC72C !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
+}
+
+/* 3. «В очередь» — hover явно для day и night */
+.batch-submit:hover:not(:disabled) {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+[data-theme="day"] .batch-submit:hover:not(:disabled),
+html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
+  color: var(--gold) !important;
+}
+[data-theme="night"] .batch-submit:hover:not(:disabled) {
+  color: #FFC72C !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
+}
+
+/* 4. Клон панелей (Настройки/Дополнительно/Сохранение) в модалке */
+.batch-cloned {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-right: 4px;
+}
+.batch-cloned .panel {
+  background: var(--panel-bg) !important;
+  backdrop-filter: blur(24px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  border: 1.5px solid var(--panel-border) !important;
+  box-shadow: var(--panel-shadow) !important;
+}
+.batch-cloned .panel-title {
+  font-family: var(--font-heading) !important;
+  font-size: 18px !important;
+  color: var(--accent) !important;
+  margin-bottom: 10px !important;
+}
+.batch-cloned .slider,
+.batch-cloned .extra-row,
+.batch-cloned .save-row,
+.batch-cloned .select-wrap { width: 100% !important; }
