@@ -5257,12 +5257,7 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
 .batch-submit:hover:not(:disabled) {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
-}
-[data-theme="day"] .batch-submit:hover:not(:disabled),
-html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
-  color: var(--gold) !important;
-}
-[data-theme="night"] .batch-submit:hover:not(:disabled) {
+}[data-theme="night"] .batch-submit:hover:not(:disabled) {
   color: #FFC72C !important;
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
 }
@@ -5294,3 +5289,94 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
 .batch-cloned .extra-row,
 .batch-cloned .save-row,
 .batch-cloned .select-wrap { width: 100% !important; }
+
+/* === P6.2i: scroll в модалке + details === */
+
+/* 1. Диалог — flex-колонка, всё распределено, никакого visible */
+.batch-dialog {
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 88vh !important;
+}
+.batch-header { flex: 0 0 auto !important; position: relative !important; }
+
+/* 2. body — прокручивается при раскрытии details */
+.batch-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  padding: 16px 22px !important;
+  gap: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 3. list — не даёт «съесть» место, свой скролл, max 35vh */
+.batch-list {
+  flex: 0 1 auto !important;
+  max-height: 35vh !important;
+  overflow-y: auto !important;
+  border-top: 1.5px solid var(--panel-border) !important;
+  padding: 12px 22px !important;
+}
+
+/* 4. details — панели одна под другой, кликабельны */
+.batch-adv {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+}
+.batch-adv[open] { padding-bottom: 8px; }
+.batch-adv > summary {
+  cursor: pointer !important;
+  padding: 8px 0 !important;
+  user-select: none;
+}
+
+/* 5. Внутри деталей — нормальная колонка, ничего не перекрывает */
+.batch-cloned {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+  width: 100% !important;
+}
+.batch-cloned .panel {
+  width: 100% !important;
+  pointer-events: auto !important;
+}
+.batch-cloned .panel input,
+.batch-cloned .panel select,
+.batch-cloned .panel button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+.batch-cloned .panel input[type="range"] { cursor: pointer !important; }
+
+/* 6. «В очередь» — не обрезается внизу */
+.batch-submit { flex: 0 0 auto !important; margin-top: 4px !important; }
+
+/* === P6.2j: hover text НЕ меняется, только рамка+glow === */
+
+/* «В очередь»: базовый текст — var(--text) */
+.batch-submit {
+  color: var(--text) !important;
+}
+
+/* Hover день: цвет текста НЕ меняется, только рамка + glow */
+[data-theme="day"] .batch-submit:hover:not(:disabled),
+html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
+  color: var(--text) !important;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
+}
+
+/* Ночь: базовый текст жёлтый (как ghost), hover — цвет не меняется */
+[data-theme="night"] .batch-submit {
+  color: #FFC72C !important;
+}
+[data-theme="night"] .batch-submit:hover:not(:disabled) {
+  color: #FFC72C !important;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
+}
