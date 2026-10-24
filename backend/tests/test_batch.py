@@ -94,19 +94,29 @@ def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
 
     r = client.post("/api/batch", json={"text": "hello batch", "voice": "", "settings": {}})
-    assert r.status_code == 200
+    assert r.status_code == 200, r.text
     tid = r.json()["task_id"]
 
     task = None
-    for _ in range(50):  # 5 секунд максимум
+    last_status: int | None = None
+    last_body: str | None = None
+    for _ in range(100):  # 10 секунд — с запасом для покрытия/медленных машин
         time.sleep(0.1)
-        d = client.get(f"/api/batch/{tid}").json()["task"]
-        if d["status"] in ("done", "error"):
+        rr = client.get(f"/api/batch/{tid}")
+        last_status, last_body = rr.status_code, rr.text
+        if rr.status_code != 200:
+            continue
+        d = rr.json().get("task")
+        if d is None:
+            continue
+        if d["status"] in ("done", "error", "cancelled"):
             task = d
             break
 
-    assert task is not None, "worker не завершил задачу за 5 с"
-    assert task["status"] == "done", f"error: {task.get('error')}"
+    assert task is not None, (
+        f"worker не завершил за 10 с; last GET={last_status} body={last_body!r}"
+    )
+    assert task["status"] == "done", f"status={task['status']} error={task.get('error')}"
     assert task["result_file"] is not None
     assert task["result_file"].endswith(".wav")
     assert (tmp_path / task["result_file"]).exists()

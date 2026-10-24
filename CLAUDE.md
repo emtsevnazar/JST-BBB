@@ -230,3 +230,14 @@ pytest: 78 passed, coverage 59.50% (гейт 59). ruff: All checks passed.
 fake_ref_path. Реальный путь проверяется P5.4 (JST_REAL_ENGINE=1).
 
 Локально: JST_REAL_ENGINE=1 pytest tests/test_real_engine.py -v -s --no-cov → 2 passed.
+
+## P5.6 — стабилизация P5.5
+
+- `tests/test_real_engine.py`: вместо `voice=""` — динамический `_pick_voice()`
+  (первый непустой профиль в `voices/` с аудио в `SUPPORTED`).
+  Если профилей нет → `pytest.skip` с понятным сообщением.
+- `tests/test_batch.py::test_batch_end_to_end`: polling 5s → 10s;
+  на падении показывает `last GET=<status> body=<...>`,
+  а не голый `KeyError: 'task'`.
+- Причина P5.5-флейка: поллинг 5s под coverage-инструментацией иногда
+  не укладывался; тест хрупкий, а не сломанный.

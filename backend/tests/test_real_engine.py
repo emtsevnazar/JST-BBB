@@ -33,6 +33,23 @@ pytestmark = pytest.mark.skipif(
 )
 
 
+def _pick_voice() -> str:
+    """Имя первого непустого профиля в voices/ (с аудио в SUPPORTED)."""
+    from backend.core.paths import SUPPORTED, VOICES
+
+    if not VOICES.is_dir():
+        return ""
+    for d in sorted(VOICES.iterdir()):
+        if not d.is_dir():
+            continue
+        if any(f.suffix.lower() in SUPPORTED for f in d.iterdir()):
+            return d.name
+    return ""
+
+
+VOICE = _pick_voice()
+
+
 def _wait_done(client, task_id: str, timeout: float = 180.0) -> dict:
     deadline = time.time() + timeout
     last = None
@@ -50,6 +67,8 @@ def test_real_batch_wav_and_export(real_client):
     # 1) health + engine готов
     r = real_client.get("/health")
     assert r.status_code == 200, r.text
+    if not VOICE:
+        pytest.skip("в voices/ нет профилей с аудио — real-engine smoke невозможен")
     h = r.json()
     assert h["ok"] is True
     assert h["engine_ready"] is True
@@ -57,7 +76,7 @@ def test_real_batch_wav_and_export(real_client):
     # 2) batch → done
     r = real_client.post(
         "/api/batch",
-        json={"text": "Проверка реального движка. Раз, два, три.", "voice": "", "settings": {}},
+        json={"text": "Проверка реального движка. Раз, два, три.", "voice": VOICE, "settings": {}},
     )
     assert r.status_code == 200, r.text
     tid = r.json()["task_id"]
@@ -103,7 +122,7 @@ def test_real_batch_mp3_conversion(real_client):
         "/api/batch",
         json={
             "text": "Конвертация в mp3.",
-            "voice": "",
+            "voice": VOICE,
             "settings": {"output_format": "mp3"},
         },
     )
