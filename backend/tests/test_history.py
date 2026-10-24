@@ -5,6 +5,15 @@ import time
 from backend.services.history import HistoryDB
 
 
+def _fake_save_output(tmp_path):
+    def _save(audio, sr, s, base):
+        p = tmp_path / f"{base}.wav"
+        p.write_bytes(b"RIFF" + b"\x00" * 96)
+        return p.name
+
+    return _save
+
+
 def _make_task(tid: str, status: str = "done") -> dict:
     return {
         "id": tid,
@@ -86,13 +95,14 @@ def test_api_history_get_404(client):
 
 def test_api_history_after_batch(client, monkeypatch, tmp_path, fake_ref_path):
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
+    monkeypatch.setattr("backend.services.batch.save_output", _fake_save_output(tmp_path))
 
     r = client.post("/api/batch", json={"text": "hist test", "voice": "", "settings": {}})
     assert r.status_code == 200
     tid = r.json()["task_id"]
 
     task = None
-    for _ in range(50):
+    for _ in range(150):
         time.sleep(0.1)
         rr = client.get(f"/api/history/{tid}")
         if rr.status_code == 200:
@@ -147,13 +157,14 @@ def test_export_ok(client, monkeypatch, tmp_path, fake_ref_path):
     import zipfile
 
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
+    monkeypatch.setattr("backend.services.batch.save_output", _fake_save_output(tmp_path))
 
     r = client.post("/api/batch", json={"text": "export test", "voice": "", "settings": {}})
     assert r.status_code == 200
     tid = r.json()["task_id"]
 
     task = None
-    for _ in range(50):
+    for _ in range(150):
         time.sleep(0.1)
         rr = client.get(f"/api/history/{tid}")
         if rr.status_code == 200:

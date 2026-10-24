@@ -7,6 +7,23 @@ from backend.services.batch import BatchQueue, BatchTask
 # --- BatchQueue (без запуска worker) ---
 
 
+def _fake_save_output(tmp_path):
+    """Быстрый save_output: пишет 100 байт вместо librosa.resample + sf.write.
+
+    save_output покрыт test_output_service.py (реальный) и
+    test_real_engine.py (реальный ffmpeg). Здесь тест проверяет
+    queue mechanics, а не output — mock ускоряет в ~20x и убирает
+    платформенную зависимость (librosa+sf.write на CI = 10-20s).
+    """
+
+    def _save(audio, sr, s, base):
+        p = tmp_path / f"{base}.wav"
+        p.write_bytes(b"RIFF" + b"\x00" * 96)
+        return p.name
+
+    return _save
+
+
 def test_queue_submit_get_status():
     q = BatchQueue()
     tid = q.submit("hello", "voice1", {"output_format": "wav"})
@@ -92,6 +109,7 @@ def test_api_cancel_not_found(client):
 def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
     """POST -> poll -> done -> файл в OUTPUT (tmp_path)."""
     monkeypatch.setattr("backend.services.output_service.OUTPUT", tmp_path)
+    monkeypatch.setattr("backend.services.batch.save_output", _fake_save_output(tmp_path))
 
     r = client.post("/api/batch", json={"text": "hello batch", "voice": "", "settings": {}})
     assert r.status_code == 200, r.text
@@ -100,7 +118,7 @@ def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
     task = None
     last_status: int | None = None
     last_body: str | None = None
-    for _ in range(100):  # 10 секунд — с запасом для покрытия/медленных машин
+    for _ in range(150):  # 15s — с запасом на медленный CI
         time.sleep(0.1)
         rr = client.get(f"/api/batch/{tid}")
         last_status, last_body = rr.status_code, rr.text
@@ -114,7 +132,7 @@ def test_batch_end_to_end(client, monkeypatch, tmp_path, fake_ref_path):
             break
 
     assert task is not None, (
-        f"worker не завершил за 10 с; last GET={last_status} body={last_body!r}"
+        f"worker не завершил за 15 с; last GET={last_status} body={last_body!r}"
     )
     assert task["status"] == "done", f"status={task['status']} error={task.get('error')}"
     assert task["result_file"] is not None

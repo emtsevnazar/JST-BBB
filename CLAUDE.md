@@ -294,3 +294,23 @@ TypeError, (2) `voice=""` — No reference, (3) `asdict(_task)` — pickle.
   но не требует event loop (в CI pytest-asyncio strict → RuntimeError).
 - .github/workflows/pytest.yml: `cache: 'pip'` — torch/transformers
   качаются 2 мин при каждом push; с кэшем ~1 мин.
+
+## P5.9 — тесты не зависят от librosa/sf.write (флейк на CI)
+
+**Багу нашёл CI на P5.8.** `test_batch_end_to_end` падал с
+`worker не завершил за 10 с; last GET=200 status=running` — worker взял
+задачу, но `_execute` не дошёл до `done`. Причина: `save_output` реально
+делает `librosa.resample(24000→44100)` + `sf.write` → на 2-vCPU CI
+10–20s, локально (M-series) <1s. Mock `save_output` (пишет 100 байт
+вместо librosa+sf.write) + polling 10→15s.
+
+- `test_batch.py`: + `_fake_save_output(tmp_path)` (100-байтный WAV),
+  `test_batch_end_to_end` использует mock, polling 15s
+- `test_history.py`: + `_fake_save_output`, `test_api_history_after_batch` и
+  `test_export_ok` используют mock, polling 15s
+- `save_output` остаётся покрытым реально в `test_output_service.py` и
+  `test_real_engine.py` (ffmpeg на 2GB весах)
+
+Почему mock правильный: `test_batch_end_to_end` проверяет **queue mechanics**
+(submit → running → done), не output. Output покрыт отдельно.
+Тест больше не флейкует и не платформо-зависим.
