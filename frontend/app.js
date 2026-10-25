@@ -2211,6 +2211,7 @@ window.addEventListener("load", init);
     scale: 1.0,
     opacity: 1.0,
     fill: false,
+    glow: 14,
   };
 
   function loadPlayerSettings() {
@@ -2308,19 +2309,21 @@ window.addEventListener("load", init);
 
     const night = isNight();
     const c = night ? COLOR.night : COLOR.day;
-    const lineColor = isPlayingState ? c.playing : c.idle;
+    const idleColor = c.idle;
+    const playedColor = c.playing;
     const headColor = c.playhead;
 
     const peaks = peakData.data;
     const n = peaks.length;
     const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
-    const progressX = dur > 0 ? (currentTime / dur) * w : 0;
+    const progressX = dur > 0 ? Math.max(0, Math.min(w, (currentTime / dur) * w)) : 0;
     const mid = h / 2;
     const amp = h * 0.42 * (PLAYER_SETTINGS.scale || 1.0);
     const alpha = PLAYER_SETTINGS.opacity || 1.0;
     const thickness = Math.max(1, PLAYER_SETTINGS.thickness || 2);
+    const glow = Math.max(0, PLAYER_SETTINGS.glow != null ? PLAYER_SETTINGS.glow : 14);
+    const style = PLAYER_SETTINGS.style || "neon";
 
-    // === Сетка (осциллограф-стиль) ===
     if (PLAYER_SETTINGS.grid) {
       ctx.save();
       ctx.strokeStyle = night ? "rgba(245,184,0,0.05)" : "rgba(26,42,94,0.05)";
@@ -2337,121 +2340,152 @@ window.addEventListener("load", init);
       ctx.restore();
     }
 
-    const style = PLAYER_SETTINGS.style || "neon";
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const x = (i / Math.max(1, n - 1)) * w;
+      const y = mid - peaks[i] * amp;
+      pts.push({ x, y, v: peaks[i] });
+    }
 
-    // ============================================
-    // СТИЛЬ "BARS" — столбики (как раньше)
-    // ============================================
-    if (style === "bars") {
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = lineColor;
-      ctx.shadowColor = lineColor;
-      ctx.shadowBlur = isPlayingState ? 10 : 4;
-      const barW = w / n;
-      for (let i = 0; i < n; i++) {
-        const px = i * barW;
-        const v = peaks[i] * mid * 0.92;
-        ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
-      }
-      ctx.restore();
-    }
-    // ============================================
-    // СТИЛЬ "DOTS" — точки
-    // ============================================
-    else if (style === "dots") {
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = lineColor;
-      ctx.shadowColor = lineColor;
-      ctx.shadowBlur = isPlayingState ? 12 : 5;
-      const step = Math.max(1, Math.floor(n / 180));
-      for (let i = 0; i < n; i += step) {
-        const x = (i / Math.max(1, n - 1)) * w;
-        const y = mid - peaks[i] * amp;
-        const y2 = mid + peaks[i] * amp;
-        ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(x, y2, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.restore();
-    }
-    // ============================================
-    // СТИЛЬ "NEON" — неоновая волна (по умолчанию)
-    // Только ЛИНИЯ, никаких заливок и фонов
-    // ============================================
-    else {
-      const pts = [];
-      for (let i = 0; i < n; i++) {
-        const x = (i / Math.max(1, n - 1)) * w;
-        const y = mid - peaks[i] * amp;
-        pts.push({ x, y });
-      }
+    function buildPath(target) {
       if (pts.length < 2) return;
+      target.beginPath();
+      target.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const xc = (pts[i].x + pts[i + 1].x) / 2;
+        const yc = (pts[i].y + pts[i + 1].y) / 2;
+        target.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+      }
+      target.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+    }
 
-      function buildPath(target) {
-        target.beginPath();
-        target.moveTo(pts[0].x, pts[0].y);
+    function paint(color) {
+      if (pts.length < 2) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.shadowColor = color;
+
+      if (style === "neon") {
+        ctx.shadowBlur = glow;
+        ctx.lineWidth = thickness + 1;
+        buildPath(ctx); ctx.stroke();
+        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+        buildPath(ctx); ctx.stroke();
+        ctx.restore();
+        ctx.shadowBlur = Math.max(2, glow / 2);
+        ctx.strokeStyle = night ? "#FFF6C0" : "#EAF1FF";
+        ctx.lineWidth = Math.max(1, thickness - 0.8);
+        buildPath(ctx); ctx.stroke();
+        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+        buildPath(ctx); ctx.stroke();
+        ctx.restore();
+      } else if (style === "line") {
+        ctx.shadowBlur = Math.max(0, glow / 2);
+        ctx.lineWidth = thickness;
+        buildPath(ctx); ctx.stroke();
+        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+        buildPath(ctx); ctx.stroke();
+        ctx.restore();
+      } else if (style === "mirror") {
+        ctx.shadowBlur = Math.max(0, glow / 2);
+        ctx.lineWidth = thickness;
+        buildPath(ctx); ctx.stroke();
+      } else if (style === "bars") {
+        ctx.shadowBlur = glow * 0.5;
+        const barW = w / n;
+        for (let i = 0; i < n; i++) {
+          const px = i * barW;
+          const v = peaks[i] * mid * 0.92;
+          ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
+        }
+      } else if (style === "dots") {
+        ctx.shadowBlur = glow * 0.6;
+        const step = Math.max(1, Math.floor(n / 180));
+        for (let i = 0; i < n; i += step) {
+          const x = (i / Math.max(1, n - 1)) * w;
+          const y = mid - peaks[i] * amp;
+          const y2 = mid + peaks[i] * amp;
+          ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(x, y2, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
+        }
+      } else if (style === "step") {
+        ctx.shadowBlur = Math.max(0, glow / 2);
+        ctx.lineWidth = thickness;
+        const stepSize = 8;
+        ctx.beginPath();
+        let py = mid - (peaks[0] || 0) * amp;
+        ctx.moveTo(0, py);
+        for (let x = stepSize; x <= w; x += stepSize) {
+          const idx = Math.min(n - 1, Math.floor((x / w) * n));
+          py = mid - (peaks[idx] || 0) * amp;
+          ctx.lineTo(x, py);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        py = mid + (peaks[0] || 0) * amp;
+        ctx.moveTo(0, py);
+        for (let x = stepSize; x <= w; x += stepSize) {
+          const idx = Math.min(n - 1, Math.floor((x / w) * n));
+          py = mid + (peaks[idx] || 0) * amp;
+          ctx.lineTo(x, py);
+        }
+        ctx.stroke();
+      } else if (style === "ribbon") {
+        ctx.shadowBlur = Math.max(0, glow / 2);
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
         for (let i = 1; i < pts.length - 1; i++) {
           const xc = (pts[i].x + pts[i + 1].x) / 2;
           const yc = (pts[i].y + pts[i + 1].y) / 2;
-          target.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
         }
-        target.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+        ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+        ctx.lineTo(pts[pts.length - 1].x, h - pts[pts.length - 1].y);
+        for (let i = pts.length - 2; i > 0; i--) {
+          const xc = (pts[i].x + pts[i - 1].x) / 2;
+          const yc = ((h - pts[i].y) + (h - pts[i - 1].y)) / 2;
+          ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
+        }
+        ctx.lineTo(pts[0].x, h - pts[0].y);
+        ctx.closePath();
+        ctx.globalAlpha = alpha * 0.35;
+        ctx.fill();
       }
-
-      // --- Слой 1: цветная аура (неон) ---
-      ctx.save();
-      ctx.globalAlpha = alpha * 0.85;
-      ctx.strokeStyle = lineColor;
-      ctx.shadowColor = lineColor;
-      ctx.shadowBlur = isPlayingState ? 28 : 14;
-      ctx.lineWidth = thickness + 1;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      buildPath(ctx);
-      ctx.stroke();
-
-      // Второй проход — усилить glow
-      ctx.shadowBlur = isPlayingState ? 20 : 8;
-      ctx.globalAlpha = alpha * 0.7;
-      buildPath(ctx);
-      ctx.stroke();
-      ctx.restore();
-
-      // --- Слой 2: яркая сердцевина (белёсая) ---
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = night ? "#FFF6C0" : "#EAF1FF";
-      ctx.shadowColor = lineColor;
-      ctx.shadowBlur = 6;
-      ctx.lineWidth = Math.max(1, thickness - 0.8);
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      buildPath(ctx);
-      ctx.stroke();
       ctx.restore();
     }
 
-    // === Ось по центру (едва заметно) ===
+    paint(idleColor);
+    if (progressX > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 0, progressX, h);
+      ctx.clip();
+      paint(playedColor);
+      ctx.restore();
+    }
+
     ctx.save();
-    ctx.globalAlpha = 0.08;
-    ctx.strokeStyle = lineColor;
+    ctx.globalAlpha = 0.06;
+    ctx.strokeStyle = idleColor;
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
     ctx.restore();
 
-    // === Playhead ===
-    if (dur > 0) {
+    if (dur > 0 && progressX > 0 && progressX < w) {
       ctx.save();
       ctx.strokeStyle = headColor;
       ctx.lineWidth = Math.max(1.5, w / 800);
-      ctx.globalAlpha = 0.95;
+      ctx.globalAlpha = 0.9;
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = 10;
       ctx.beginPath(); ctx.moveTo(progressX, 0); ctx.lineTo(progressX, h); ctx.stroke();
 
       const r = Math.max(5, w / 220);
-      ctx.globalAlpha = 1;
-      ctx.shadowColor = headColor;
-      ctx.shadowBlur = 8;
+      ctx.shadowBlur = 14;
       ctx.fillStyle = headColor;
       ctx.beginPath(); ctx.arc(progressX, h / 2, r, 0, Math.PI * 2); ctx.fill();
       ctx.shadowBlur = 0;
@@ -2725,7 +2759,18 @@ window.addEventListener("load", init);
       if (optScaleVal) optScaleVal.textContent = PLAYER_SETTINGS.scale.toFixed(1) + "×";
       redraw();
     });
-    if (optOpacity) optOpacity.addEventListener("input", () => {
+        const optGlow = document.getElementById("jstp-opt-glow");
+    const optGlowVal = document.getElementById("jstp-opt-glow-val");
+    if (optGlow) {
+      if (optGlowVal) optGlowVal.textContent = String(PLAYER_SETTINGS.glow);
+      optGlow.value = String(PLAYER_SETTINGS.glow);
+      optGlow.addEventListener("input", () => {
+        PLAYER_SETTINGS.glow = parseInt(optGlow.value, 10) || 0;
+        if (optGlowVal) optGlowVal.textContent = String(PLAYER_SETTINGS.glow);
+        redraw();
+      });
+    }
+if (optOpacity) optOpacity.addEventListener("input", () => {
       PLAYER_SETTINGS.opacity = parseFloat(optOpacity.value) || 1;
       if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
       redraw();
@@ -2742,4 +2787,102 @@ window.addEventListener("load", init);
   } else {
     bind();
   }
+
+  // === P6.14-fix8: Player i18n ===
+  const PLAYER_I18N = {
+    ru: {
+      restart: "В начало", back5: "-5 сек", play: "Play/Pause", fwd5: "+5 сек",
+      loop: "Зациклить", boost: "Усилить ×2.5", preserve: "Питч сохраняется",
+      download: "Скачать файл", filename: "Текущий файл",
+      style: "Стиль", thickness: "Толщина", grid: "Сетка",
+      scale: "Масштаб", opacity: "Прозрачность", glow: "Свечение",
+      s_neon: "Неон", s_line: "Линия", s_mirror: "Только верх",
+      s_bars: "Бары", s_dots: "Точки", s_step: "Ступеньки", s_ribbon: "Лента",
+    },
+    en: {
+      restart: "Restart", back5: "-5s", play: "Play/Pause", fwd5: "+5s",
+      loop: "Loop", boost: "Boost ×2.5", preserve: "Preserve pitch",
+      download: "Download", filename: "Current file",
+      style: "Style", thickness: "Thickness", grid: "Grid",
+      scale: "Scale", opacity: "Opacity", glow: "Glow",
+      s_neon: "Neon", s_line: "Line", s_mirror: "Top only",
+      s_bars: "Bars", s_dots: "Dots", s_step: "Step", s_ribbon: "Ribbon",
+    },
+  };
+
+  function detectPlayerLang() {
+    const l = (document.documentElement.getAttribute("lang") ||
+               document.documentElement.getAttribute("data-lang") ||
+               localStorage.getItem("lang") ||
+               localStorage.getItem("i18n-lang") ||
+               "ru").slice(0, 2).toLowerCase();
+    return l === "en" ? "en" : "ru";
+  }
+
+  function applyPlayerLang() {
+    const dict = PLAYER_I18N[detectPlayerLang()];
+    const setTitle = (id, key) => {
+      const el = document.getElementById(id);
+      if (!el || !dict[key]) return;
+      el.title = dict[key];
+      el.setAttribute("aria-label", dict[key]);
+    };
+    setTitle("jstp-restart", "restart");
+    setTitle("jstp-back5", "back5");
+    setTitle("jstp-play", "play");
+    setTitle("jstp-fwd5", "fwd5");
+    setTitle("jstp-loop", "loop");
+    setTitle("jstp-boost", "boost");
+    setTitle("jstp-preserve", "preserve");
+    setTitle("jstp-download", "download");
+
+    const setLabel = (inputId, key) => {
+      const input = document.getElementById(inputId);
+      if (!input || !dict[key]) return;
+      const item = input.closest(".jstp-set-item");
+      if (!item) return;
+      const lbl = item.querySelector(".jstp-set-label");
+      if (!lbl) return;
+      const em = lbl.querySelector("em");
+      if (em) {
+        for (const node of lbl.childNodes) {
+          if (node.nodeType === 3) {
+            node.textContent = dict[key] + " ";
+            break;
+          }
+        }
+      } else {
+        lbl.textContent = dict[key];
+      }
+    };
+    setLabel("jstp-opt-style", "style");
+    setLabel("jstp-opt-thickness", "thickness");
+    setLabel("jstp-opt-grid", "grid");
+    setLabel("jstp-opt-scale", "scale");
+    setLabel("jstp-opt-opacity", "opacity");
+    setLabel("jstp-opt-glow", "glow");
+
+    const setOpt = (sel, key) => {
+      if (!dict[key]) return;
+      document.querySelectorAll(sel).forEach(o => { o.textContent = dict[key]; });
+    };
+    setOpt('option[value="neon"]', "s_neon");
+    setOpt('option[value="line"]', "s_line");
+    setOpt('option[value="mirror"]', "s_mirror");
+    setOpt('option[value="bars"]', "s_bars");
+    setOpt('option[value="dots"]', "s_dots");
+    setOpt('option[value="step"]', "s_step");
+    setOpt('option[value="ribbon"]', "s_ribbon");
+  }
+
+  setTimeout(applyPlayerLang, 100);
+  setTimeout(applyPlayerLang, 800);
+  try {
+    const langObs = new MutationObserver(() => applyPlayerLang());
+    langObs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang", "data-lang"],
+    });
+  } catch (e) { /* ignore */ }
+
 })();
