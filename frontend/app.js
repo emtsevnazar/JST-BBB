@@ -465,6 +465,13 @@ function finishStreaming(file) {
     const dl = $("btn-download"), pv = $("preview-player");
     if (dl) { dl.href = "/output/" + file; dl.download = file; }
     if (pv) { pv.style.display = "block"; pv.src = "/output/" + file; pv.load(); }
+    // P6.14-fix: сообщить новому SVG-плееру
+    try {
+      const ta = document.getElementById("text");
+      window.dispatchEvent(new CustomEvent("jst:load-audio", {
+        detail: { url: "/output/" + file, text: ta ? ta.value : "" }
+      }));
+    } catch (e) { console.warn("jst:load-audio dispatch failed", e); }
     refreshHistory();
   }
   if (activeSources.length === 0) { const b = $("btn-stop"); if (b) b.disabled = true; }
@@ -1974,7 +1981,7 @@ window.addEventListener("load", init);
     ensureModal();
     syncMainToModal();
     cloneSettingsPanels();
-    if (typeof applyLangTo === 'function') applyLangTo(modal);
+    
     applyLangTo(modal);
     modal.style.display = "flex";
     loadModels().then(function() { loadLangs(); });
@@ -2180,13 +2187,21 @@ window.addEventListener("load", init);
   else init();
 })();
 
-/* === P6.9: JST custom player + waveform === */
+
+/* === P6.14: JST player (SVG) + waveform 2-layer + история === */
 (function () {
   "use strict";
 
-  let audio, player, fill, cur, tot, playBtn, back5, fwd5, vol, rate, canvas;
-  let drawnForSrc = null; // кэш waveform по src
-  const audioCtx = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
+  const isNight = () => document.documentElement.getAttribute("data-theme") === "night";
+  const COLOR = {
+    day:   { base: "rgba(26,42,94,0.20)",  played: "#1a2a5e", playhead: "#1a2a5e" },
+    night: { base: "rgba(245,184,0,0.20)", played: "#F5B800", playhead: "#F5B800" },
+  };
+
+  let audio, player, canvas, ctx, progressEl, wrap;
+  let curEl, totEl, playBtn, iconPlay, iconPause;
+  let back5, fwd5, restart, vol, rate;
+  let peakData = null, peakSrc = null, isDragging = false, dpr = 1;
 
   function fmt(sec) {
     if (!isFinite(sec) || sec < 0) sec = 0;
@@ -2198,122 +2213,238 @@ window.addEventListener("load", init);
   function ensure() {
     audio = document.getElementById("preview-player");
     player = document.getElementById("jst-player");
-    fill = document.getElementById("jst-progress-fill");
-    cur = document.getElementById("jst-cur");
-    tot = document.getElementById("jst-tot");
-    playBtn = document.getElementById("jst-play");
-    back5 = document.getElementById("jst-back5");
-    fwd5 = document.getElementById("jst-fwd5");
-    vol = document.getElementById("jst-vol");
-    rate = document.getElementById("jst-rate");
     canvas = document.getElementById("waveform");
-    return audio && player;
+    curEl = document.getElementById("jstp-cur");
+    totEl = document.getElementById("jstp-tot");
+    playBtn = document.getElementById("jstp-play");
+    iconPlay = document.getElementById("jstp-icon-play");
+    iconPause = document.getElementById("jstp-icon-pause");
+    back5 = document.getElementById("jstp-back5");
+    fwd5 = document.getElementById("jstp-fwd5");
+    restart = document.getElementById("jstp-restart");
+    vol = document.getElementById("jstp-vol");
+    rate = document.getElementById("jstp-rate");
+    progressEl = document.getElementById("jstp-progress");
+    wrap = document.getElementById("jstp-wave-wrap");
+    if (canvas && !ctx) ctx = canvas.getContext("2d");
+    return audio && player && canvas && wrap;
+  }
+
+  function resizeCanvas() {
+    if (!canvas || !wrap) return;
+    dpr = window.devicePixelRatio || 1;
+    const rect = wrap.getBoundingClientRect();
+    const w = Math.max(100, Math.floor(rect.width * dpr));
+    const h = Math.max(60, Math.floor(rect.height * dpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  async function buildPeaks() {
+    if (!audio || !audio.src) return;
+    if (peakSrc === audio.src && peakData) return;
+    peakSrc = audio.src;
+    peakData = null;
+    try {
+      const resp = await fetch(audio.src);
+      const ab = await resp.arrayBuffer();
+      const actx = new (window.AudioContext || window.webkitAudioContext)();
+      const buf = await actx.decodeAudioData(ab);
+      const ch = buf.getChannelData(0);
+      const nBars = Math.min(1600, Math.max(200, Math.floor(ch.length / 200)));
+      const block = Math.floor(ch.length / nBars) || 1;
+      const peaks = new Float32Array(nBars);
+      for (let i = 0; i < nBars; i++) {
+        let mx = 0;
+        const s = i * block;
+        const e = Math.min(s + block, ch.length);
+        for (let j = s; j < e; j += 8) {
+          const v = Math.abs(ch[j]);
+          if (v > mx) mx = v;
+        }
+        peaks[i] = mx;
+      }
+      let pmax = 0.001;
+      for (let i = 0; i < nBars; i++) if (peaks[i] > pmax) pmax = peaks[i];
+      for (let i = 0; i < nBars; i++) peaks[i] /= pmax;
+      peakData = { data: peaks };
+      resizeCanvas();
+      drawWave(audio.currentTime || 0);
+    } catch (e) {
+      // silent
+    }
+  }
+
+  function drawWave(currentTime) {
+    if (!canvas || !ctx) return;
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    if (!peakData) return;
+
+    const c = isNight() ? COLOR.night : COLOR.day;
+    const peaks = peakData.data;
+    const n = peaks.length;
+    const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
+    const progressX = dur > 0 ? Math.floor((currentTime / dur) * w) : 0;
+    const barW = w / n;
+    const mid = h / 2;
+
+    // base
+    ctx.fillStyle = c.base;
+    for (let i = 0; i < n; i++) {
+      const px = i * barW;
+      const amp = peaks[i] * mid * 0.92;
+      ctx.fillRect(px, mid - amp, Math.max(1, barW * 0.7), amp * 2);
+    }
+
+    // played (highlight)
+    if (progressX > 0) {
+      ctx.fillStyle = c.played;
+      for (let i = 0; i < n; i++) {
+        const px = i * barW;
+        if (px > progressX) break;
+        const amp = peaks[i] * mid * 0.92;
+        ctx.fillRect(px, mid - amp, Math.max(1, barW * 0.7), amp * 2);
+      }
+    }
+
+    // playhead line + knob
+    if (dur > 0) {
+      ctx.strokeStyle = c.playhead;
+      ctx.lineWidth = Math.max(1.5, w / 800);
+      ctx.beginPath();
+      ctx.moveTo(progressX, 0);
+      ctx.lineTo(progressX, h);
+      ctx.stroke();
+
+      const r = Math.max(5, w / 220);
+      ctx.fillStyle = c.playhead;
+      ctx.beginPath();
+      ctx.arc(progressX, h / 2, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = isNight() ? "#0d1a3f" : "#fff";
+      ctx.beginPath();
+      ctx.arc(progressX, h / 2, r * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function setPlayingUI(playing) {
+    if (!iconPlay || !iconPause) return;
+    iconPlay.style.display = playing ? "none" : "";
+    iconPause.style.display = playing ? "" : "none";
+  }
+
+  function seekFromEvent(ev) {
+    if (!audio || !audio.duration) return;
+    const rect = canvas.getBoundingClientRect();
+    const clientX = (ev.touches && ev.touches[0]) ? ev.touches[0].clientX : ev.clientX;
+    const x = clientX - rect.left;
+    const frac = Math.max(0, Math.min(1, x / rect.width));
+    audio.currentTime = frac * audio.duration;
+    drawWave(audio.currentTime);
   }
 
   function showPlayer() {
-    if (audio.src && player) player.classList.add("visible");
+    if (player) player.classList.add("visible");
+  }
+  function hidePlayer() {
+    if (player) player.classList.remove("visible");
+  }
+
+  function loadAudioFromUrl(url, text) {
+    if (!url) return;
+    audio.src = url;
+    audio.load();
+    if (typeof text === "string" && text) {
+      const ta = document.getElementById("text");
+      if (ta) ta.value = text;
+    }
+    showPlayer();
+    // waveform сброшен — новый src, дождёмся canplay/loadedmetadata
+    peakSrc = null;
+    peakData = null;
   }
 
   function bind() {
     if (!ensure()) return;
 
-    // Клик по progress
-    document.getElementById("jst-progress-wrap").addEventListener("click", (e) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const p = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      if (audio.duration) audio.currentTime = audio.duration * p;
-    });
-
     playBtn.addEventListener("click", () => {
       if (audio.paused) audio.play().catch(() => {});
       else audio.pause();
     });
-
     back5.addEventListener("click", () => { audio.currentTime = Math.max(0, audio.currentTime - 5); });
     fwd5.addEventListener("click", () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5); });
+    restart.addEventListener("click", () => { audio.currentTime = 0; });
 
     vol.addEventListener("input", () => { audio.volume = parseFloat(vol.value); });
     rate.addEventListener("change", () => { audio.playbackRate = parseFloat(rate.value); });
 
+    canvas.addEventListener("click", seekFromEvent);
+    canvas.addEventListener("mousedown", (ev) => { isDragging = true; seekFromEvent(ev); });
+    window.addEventListener("mousemove", (ev) => { if (isDragging) seekFromEvent(ev); });
+    window.addEventListener("mouseup", () => { isDragging = false; });
+    canvas.addEventListener("touchstart", (ev) => { isDragging = true; seekFromEvent(ev); }, { passive: true });
+    canvas.addEventListener("touchmove", (ev) => { if (isDragging) seekFromEvent(ev); }, { passive: true });
+    canvas.addEventListener("touchend", () => { isDragging = false; });
+
     audio.addEventListener("loadedmetadata", () => {
       showPlayer();
-      tot.textContent = fmt(audio.duration);
-      fill.style.width = "0%";
-      cur.textContent = "0:00";
+      totEl.textContent = fmt(audio.duration);
+      curEl.textContent = "0:00";
+      progressEl.style.width = "0%";
+      resizeCanvas();
+      buildPeaks();
     });
 
-    audio.addEventListener("timeupdate", () => {
-      if (audio.duration) {
-        fill.style.width = (audio.currentTime / audio.duration * 100) + "%";
-        cur.textContent = fmt(audio.currentTime);
-      }
-    });
-
-    audio.addEventListener("play", () => {
-      playBtn.textContent = "⏸";
-      drawWaveformIfNeeded();
-    });
-    audio.addEventListener("pause", () => { playBtn.textContent = "▶"; });
-    audio.addEventListener("ended", () => { playBtn.textContent = "▶"; });
+    audio.addEventListener("play", () => { setPlayingUI(true); buildPeaks(); });
+    audio.addEventListener("pause", () => setPlayingUI(false));
+    audio.addEventListener("ended", () => setPlayingUI(false));
     audio.addEventListener("volumechange", () => { vol.value = audio.volume; });
 
-    // Слушаем смену src — показываем плеер
-    const origSrc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
-    // — не переопределяем; просто при canplay
-    audio.addEventListener("canplay", showPlayer);
-  }
+    audio.addEventListener("timeupdate", () => {
+      const dur = audio.duration || 0;
+      const cur = audio.currentTime || 0;
+      curEl.textContent = fmt(cur);
+      const pct = dur > 0 ? (cur / dur) * 100 : 0;
+      progressEl.style.width = pct + "%";
+      drawWave(cur);
+    });
 
-  async function drawWaveformIfNeeded() {
-    if (!canvas || !audio.src) return;
-    if (drawnForSrc === audio.src) return;
-    drawnForSrc = audio.src;
-    try {
-      const resp = await fetch(audio.src);
-      const ab = await resp.arrayBuffer();
-      if (!audioCtx) return;
-      const buf = await audioCtx.decodeAudioData(ab);
-      const data = buf.getChannelData(0);
-      const w = canvas.width, h = canvas.height;
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, w, h);
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      if (peakData) drawWave(audio.currentTime || 0);
+    });
 
-      // Стиль как у старой waveform — линия + заливка
-      const isNight = document.documentElement.getAttribute("data-theme") === "night";
-      const stroke = isNight ? "#F5B800" : "#1a2a5e";
-      const glow = isNight ? "rgba(245,184,0,.35)" : "rgba(26,42,94,.25)";
-
-      ctx.strokeStyle = stroke;
-      ctx.lineWidth = 1.5;
-      ctx.shadowColor = glow;
-      ctx.shadowBlur = 4;
-      ctx.beginPath();
-      const step = Math.max(1, Math.floor(data.length / w));
-      const mid = h / 2;
-      for (let x = 0; x < w; x++) {
-        let min = 1, max = -1;
-        const start = x * step;
-        for (let i = 0; i < step && start + i < data.length; i += Math.max(1, Math.floor(step / 24))) {
-          const v = data[start + i];
-          if (v < min) min = v;
-          if (v > max) max = v;
-        }
-        const y1 = mid + min * mid * 0.9;
-        const y2 = mid + max * mid * 0.9;
-        ctx.moveTo(x + 0.5, y1);
-        ctx.lineTo(x + 0.5, y2);
-      }
-      ctx.stroke();
-      // центральная линия
-      ctx.strokeStyle = glow;
-      ctx.beginPath();
-      ctx.moveTo(0, mid);
-      ctx.lineTo(w, mid);
-      ctx.stroke();
-    } catch (e) {
-      // silent — waveform не критична
+    // Hook на историю — клик по записи открывает её в плеере
+    const hist = document.getElementById("history");
+    if (hist) {
+      hist.addEventListener("click", (ev) => {
+        const row = ev.target.closest("[data-file], [data-output]");
+        if (!row) return;
+        const file = row.getAttribute("data-file") || row.getAttribute("data-output");
+        const text = row.getAttribute("data-text") || "";
+        if (!file) return;
+        const url = file.startsWith("/") || file.startsWith("http")
+          ? file
+          : "/output/" + file;
+        loadAudioFromUrl(url, text);
+        ev.preventDefault();
+      });
     }
+
+    // Кастомный event для внешних вызовов (например, после синтеза)
+    window.addEventListener("jst:load-audio", (ev) => {
+      const { url, text } = ev.detail || {};
+      loadAudioFromUrl(url, text);
+    });
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
-  else bind();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bind);
+  } else {
+    bind();
+  }
 })();

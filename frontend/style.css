@@ -5545,133 +5545,6 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
 }
 
 /* Busy: не мерцает, но при hover/active — красная рамка */
-/* === P6.9: JST player + тонкие настройки + summary ● статика === */
-
-/* 1. Кнопка Озвучить не темнеет (убрал opacity у is-busy) */
-/* 2. Точка ● у summary — фиксированный цвет (день синий, ночь жёлтый) */
-.batch-adv > summary::before {
-  color: var(--navy) !important;
-  transition: transform .25s ease !important;
-}
-[data-theme="night"] .batch-adv > summary::before {
-  color: #FFC72C !important;
-}
-.batch-adv[open] > summary::before {
-  transform: rotate(90deg) !important;
-  color: var(--navy) !important;
-}
-[data-theme="night"] .batch-adv[open] > summary::before {
-  color: #FFC72C !important;
-}
-
-/* 3. Тонкие настройки — плавность слайдеров */
-.slider input[type="range"],
-.batch-cloned .panel input[type="range"] {
-  transition: box-shadow .15s ease !important;
-}
-.slider input[type="range"]:focus,
-.batch-cloned .panel input[type="range"]:focus {
-  box-shadow: 0 0 0 3px rgba(245,184,0,.25) !important;
-  outline: none !important;
-}
-
-/* 4. JST Player (свой) */
-.jst-player {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1.5px solid var(--panel-border);
-  background: var(--panel-bg);
-  box-shadow: var(--panel-shadow);
-  font-family: var(--font-body);
-}
-.jst-player.visible { display: flex; }
-
-.jst-progress-wrap {
-  width: 100%;
-  height: 8px;
-  background: var(--input-bg);
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.jst-progress-fill {
-  position: absolute;
-  left: 0; top: 0;
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--gold-light), var(--gold));
-  border-radius: 4px;
-  transition: width .08s linear;
-}
-
-.jst-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.jst-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  border: 1.5px solid var(--panel-border);
-  background: var(--input-bg);
-  color: var(--text);
-  cursor: pointer;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s;
-  padding: 0;
-}
-.jst-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 12px rgba(245,184,0,.35); }
-.jst-btn.jst-play {
-  width: 40px; height: 40px;
-  background: linear-gradient(135deg, var(--gold-light), var(--gold));
-  color: var(--navy-dark);
-  border-color: transparent;
-  font-size: 16px;
-}
-.jst-btn.jst-play:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 14px rgba(245,184,0,.45);
-}
-.jst-time {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-variant-numeric: tabular-nums;
-  min-width: 84px;
-}
-.jst-time .jst-cur { color: var(--text); font-weight: 600; }
-
-.jst-ctrl-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--text-dim);
-}
-.jst-ctrl-label input[type="range"] {
-  width: 80px;
-  accent-color: var(--gold);
-}
-.jst-rate {
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1.5px solid var(--panel-border);
-  background: var(--input-bg);
-  color: var(--text);
-  font-size: 12px;
-  cursor: pointer;
-}
-.jst-rate:hover { border-color: var(--gold); }
-
 /* === P6.10a: is-busy красная рамка + guard === */
 /* Пока синтез идёт — Озвучить красная, некликабельна, НЕ темнеет */
 /* Стоп — активен только когда синтез/стриминг идёт */
@@ -5743,19 +5616,272 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
 /* День: фон var(--input-bg) (белый полупрозрачный), текст var(--navy-dark), рамка красная */
 /* Ночь: фон rgba(13,26,63,0.55) (как disabled Stop), текст жёлтый, рамка красная */
 
-/* === P6.12e: Озвучить disabled — фон как Stop, текст navy/FFC72C, рамка RED === */
+/* === P6.14: плеер (скрыт по умолчанию) + waveform 2-layer + адаптивность === */
 
-/* Убираем внутреннюю декоративную рамку (.btn-primary::before) */
-html body #btn-synth.is-busy::before,
-html body #btn-synth.is-busy:hover::before,
-html body #btn-synth.is-busy:focus::before,
-html body #btn-synth.is-busy:active::before {
-  display: none !important;
-  content: none !important;
-  visibility: hidden !important;
+/* 1. Плеер — ЖЁСТКО скрыт пока нет .visible */
+#jst-player, .jst-player { display: none !important; }
+#jst-player.visible, .jst-player.visible { display: flex !important; }
+
+.jst-player {
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  font-family: var(--font-body);
+  width: 100%;
+  min-width: 0;
 }
 
-/* День: фон как disabled Stop, текст синий, рамка красная */
+/* 2. Waveform wrap */
+.jstp-wave-wrap {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  border-radius: 10px;
+  background: var(--input-bg, rgba(255,255,255,0.55));
+  overflow: hidden;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.jstp-wave-wrap canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.jstp-progress {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0%;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(245,184,0,0.06), rgba(245,184,0,0.14));
+  border-right: 2px solid var(--gold, #F5B800);
+  box-sizing: border-box;
+}
+
+/* 3. Controls */
+.jstp-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.jstp-btn {
+  width: 36px; height: 36px; min-width: 36px;
+  border-radius: 10px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--input-bg);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.jstp-btn:hover:not(:disabled) {
+  border-color: var(--gold, #F5B800);
+  color: var(--gold, #F5B800);
+  box-shadow: 0 0 12px rgba(245,184,0,0.35);
+}
+.jstp-btn:disabled { opacity: .5; cursor: not-allowed; }
+.jstp-btn.jstp-play {
+  width: 44px; height: 44px; min-width: 44px;
+  background: linear-gradient(135deg, var(--gold-light, #FFC72C), var(--gold, #F5B800));
+  color: var(--navy-dark, #0d1a3f);
+  border-color: transparent;
+}
+.jstp-btn.jstp-play:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(245,184,0,0.45);
+  color: var(--navy-dark, #0d1a3f);
+}
+.jstp-time {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  min-width: 84px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+.jstp-time .jstp-cur { color: var(--text); font-weight: 600; }
+.jstp-ctrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.jstp-ctrl input[type="range"] { width: 80px; accent-color: var(--gold, #F5B800); }
+.jstp-rate {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.jstp-rate:hover { border-color: var(--gold, #F5B800); }
+[data-theme="night"] .jstp-wave-wrap { background: rgba(0,0,0,0.35); }
+
+/* 4. АДАПТИВНОСТЬ — правильный скролл + масштабирование */
+
+/* Базовое: ничто не вылезает за пределы */
+* { min-width: 0; }
+body { overflow-x: hidden; }
+.app { box-sizing: border-box; }
+.main { min-height: 0; }
+.sidebar, .workspace { min-height: 0; }
+.panel { min-width: 0; }
+button, select, textarea, input { max-width: 100%; }
+
+/* Телефон / мини (≤ 479px) */
+@media (max-width: 479px) {
+  html, body { overflow: auto !important; height: auto !important; }
+  .app {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+  .main {
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 8px !important;
+  }
+  .sidebar {
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 0 !important;
+  }
+  .workspace {
+    overflow: visible !important;
+    padding-right: 0 !important;
+  }
+  .header {
+    padding: 8px 12px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    border-radius: 16px !important;
+  }
+  .logo-img { height: 34px !important; }
+  .logo-text h1 { font-size: 18px !important; letter-spacing: 2px !important; }
+  .logo-text p { font-size: 8px !important; letter-spacing: 2px !important; }
+  .org-badge { display: none !important; }
+  .icon-btn { min-width: 36px !important; height: 36px !important; padding: 0 8px !important; font-size: 11px !important; }
+  .panel { padding: 10px !important; border-radius: 12px !important; }
+  .panel-title { font-size: 16px !important; margin-bottom: 8px !important; }
+  .footer { font-size: 10px !important; padding: 6px !important; }
+  .controls { gap: 4px !important; flex-wrap: wrap !important; }
+  .controls .btn, .btn { padding: 8px 10px !important; font-size: 12px !important; min-height: 38px !important; }
+  .controls .dropdown > .btn { padding: 8px 10px !important; font-size: 12px !important; }
+  .batch-row-3, .batch-row-2, .batch-row { grid-template-columns: 1fr !important; }
+  .jstp-wave-wrap { height: 90px !important; }
+  .jstp-controls { gap: 4px !important; }
+  .jstp-btn { width: 32px !important; height: 32px !important; min-width: 32px !important; }
+  .jstp-btn.jstp-play { width: 40px !important; height: 40px !important; min-width: 40px !important; }
+  .jstp-time { font-size: 11px !important; min-width: 70px !important; }
+  .jstp-ctrl input[type="range"] { width: 60px !important; }
+  textarea#text { min-height: 100px !important; font-size: 13px !important; }
+  .batch-modal .batch-dialog { width: 100vw !important; max-width: 100vw !important;
+    height: 100dvh !important; max-height: 100dvh !important; border-radius: 0 !important; }
+  .batch-modal .batch-body { max-height: calc(100dvh - 60px) !important; padding: 12px 14px !important; }
+  .batch-modal .batch-list { max-height: 30dvh !important; }
+  .batch-cloned .panel { padding: 8px 10px !important; }
+  .help-modal-content { width: 96vw !important; max-width: 96vw !important; max-height: 92dvh !important; }
+  .history-menu { max-width: 90vw !important; }
+}
+
+/* Телефон альбом / планшет портрет (480–767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .app { height: auto !important; min-height: 100dvh !important; overflow: visible !important; padding: 10px !important; }
+  html, body { overflow: auto !important; }
+  .main { grid-template-columns: 1fr !important; overflow: visible !important; height: auto !important; }
+  .sidebar { max-height: none !important; overflow: visible !important; }
+  .workspace { overflow: visible !important; }
+  .batch-row-3 { grid-template-columns: 1fr 1fr !important; }
+  .batch-row-3 > label:last-child { grid-column: 1 / -1 !important; }
+  .batch-modal .batch-dialog { width: min(640px, 96vw) !important; max-height: 92dvh !important; }
+  .icon-btn { min-width: 40px !important; height: 40px !important; }
+}
+
+/* Планшет (768–1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main { grid-template-columns: 260px 1fr !important; gap: 10px !important; }
+  .sidebar .panel { padding: 10px !important; }
+  .batch-modal .batch-dialog { width: min(720px, 92vw) !important; }
+  .jstp-wave-wrap { height: 110px !important; }
+}
+
+/* Большой монитор (1440–1919px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .main { grid-template-columns: 380px 1fr !important; }
+  #jst-player .jstp-wave-wrap { height: 140px !important; }
+}
+
+/* Проектор / ТВ (1920–2559px) */
+@media (min-width: 1920px) and (max-width: 2559px) {
+  .app { max-width: 2000px; margin: 0 auto; width: 100%; }
+  .main { grid-template-columns: 420px 1fr !important; gap: 20px !important; }
+  .logo-text h1 { font-size: 32px !important; }
+  .logo-img { height: 60px !important; }
+  .panel-title { font-size: 20px !important; }
+  .btn { font-size: 15px !important; padding: 12px 18px !important; }
+  #jst-player .jstp-wave-wrap { height: 180px !important; }
+  .jstp-controls { gap: 10px !important; }
+  .jstp-btn { width: 40px !important; height: 40px !important; min-width: 40px !important; }
+  .jstp-btn.jstp-play { width: 50px !important; height: 50px !important; min-width: 50px !important; }
+  .batch-modal .batch-dialog { width: min(1200px, 90vw) !important; }
+}
+
+/* 4K / кино (≥ 2560px) */
+@media (min-width: 2560px) {
+  .app { max-width: 2400px; margin: 0 auto; width: 100%; padding: 32px; }
+  .main { grid-template-columns: 500px 1fr !important; gap: 32px !important; }
+  .logo-text h1 { font-size: 44px !important; }
+  .logo-img { height: 80px !important; }
+  .panel-title { font-size: 24px !important; }
+  .btn { font-size: 18px !important; padding: 16px 24px !important; }
+  #jst-player .jstp-wave-wrap { height: 240px !important; }
+  .jstp-btn { width: 48px !important; height: 48px !important; min-width: 48px !important; }
+  .jstp-btn.jstp-play { width: 60px !important; height: 60px !important; min-width: 60px !important; }
+  textarea#text { font-size: 20px !important; min-height: 200px !important; }
+  .batch-modal .batch-dialog { width: min(1600px, 85vw) !important; }
+}
+
+/* Мини-высота */
+@media (max-height: 600px) {
+  .app { padding: 8px !important; gap: 6px !important; }
+  .sidebar { max-height: 50vh !important; }
+  #jst-player .jstp-wave-wrap { height: 80px !important; }
+}
+
+/* Альбомный телефон / landscape */
+@media (orientation: landscape) and (max-height: 500px) {
+  .app { height: auto !important; min-height: 100dvh !important; overflow: auto !important; }
+  .main { grid-template-columns: 240px 1fr !important; gap: 8px !important; }
+  .sidebar { max-height: 88dvh !important; overflow-y: auto !important; }
+  #jst-player .jstp-wave-wrap { height: 70px !important; }
+}
+
+/* === P6.14-fix: Озвучить disabled (bg как Stop, text navy/FFC72C, border red, no ::before) === */
+html body #btn-synth.is-busy::before,
+html body #btn-synth.is-busy:hover::before {
+  display: none !important;
+  content: none !important;
+}
+
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6),
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):hover,
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):focus,
@@ -5771,13 +5897,11 @@ html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4)
   opacity: 1 !important;
   transform: none !important;
 }
-html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6) *,
-html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):hover * {
+html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6) * {
   color: var(--navy, #1a2a5e) !important;
   fill: var(--navy, #1a2a5e) !important;
 }
 
-/* Ночь: фон тёмный (как Stop ночью), текст жёлтый, рамка красная */
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6),
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):hover,
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):focus,
@@ -5793,8 +5917,22 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
   opacity: 1 !important;
   transform: none !important;
 }
-html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6) *,
-html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):hover * {
+html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6) * {
   color: #FFC72C !important;
   fill: #FFC72C !important;
+}
+
+/* Status после плеера — не вылезает */
+.workspace > #status,
+.workspace > .status {
+  width: 100% !important;
+  min-width: 0 !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+  margin-top: 8px !important;
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  background: var(--panel-bg) !important;
+  border: 1.5px solid var(--panel-border) !important;
+  box-sizing: border-box !important;
 }

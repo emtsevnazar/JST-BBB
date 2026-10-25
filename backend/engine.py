@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import re
 import sys
+import threading
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -821,3 +822,36 @@ class Engine:
 
     def silence(self, sec):
         return np.zeros(int(_num(sec, 0.0) * self.sr), dtype=np.float32)
+
+
+# === P7.1: сериализация synth_* (chatterbox alignment_stream_analyzer не потокобезопасен) ===
+_ENGINE_SYNTH_LOCK = threading.Lock()
+
+
+def _wrap_engine_synth_methods():
+    """Обернуть все synth_* методы Engine в threading.Lock.
+
+    Без этого параллельные вызовы (WS producer + batch worker) ломают
+    chatterbox.alignment_stream_analyzer → TypeError/NoneType или
+    RuntimeError: stack expects each tensor to be equal size.
+    """
+    import functools as _ft
+
+    _names = ("synth_one", "synth_jst_clone", "synth_qwen", "synth_voxcpm", "synth_cosyvoice")
+    for _name in _names:
+        if not hasattr(Engine, _name):
+            continue
+        _orig = getattr(Engine, _name)
+        if getattr(_orig, "__jst_locked__", False):
+            continue
+
+        @_ft.wraps(_orig)
+        def _wrapped(self, *args, _orig=_orig, **kw):
+            with _ENGINE_SYNTH_LOCK:
+                return _orig(self, *args, **kw)
+
+        _wrapped.__jst_locked__ = True
+        setattr(Engine, _name, _wrapped)
+
+
+_wrap_engine_synth_methods()
