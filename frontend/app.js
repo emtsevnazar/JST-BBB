@@ -2204,6 +2204,28 @@ window.addEventListener("load", init);
   let back5, fwd5, restart, vol, rate;
   let peakData = null, peakSrc = null, isDragging = false, dpr = 1;
 
+  const PLAYER_SETTINGS = {
+    style: "line",
+    thickness: 2,
+    grid: true,
+    scale: 1.0,
+    opacity: 1.0,
+    fill: false,
+  };
+
+  function loadPlayerSettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("jstp-settings") || "{}");
+      Object.assign(PLAYER_SETTINGS, saved);
+    } catch (e) { /* ignore */ }
+  }
+  function savePlayerSettings() {
+    try {
+      localStorage.setItem("jstp-settings", JSON.stringify(PLAYER_SETTINGS));
+    } catch (e) { /* ignore */ }
+  }
+  loadPlayerSettings();
+
   function fmt(sec) {
     if (!isFinite(sec) || sec < 0) sec = 0;
     const m = Math.floor(sec / 60);
@@ -2294,89 +2316,122 @@ window.addEventListener("load", init);
     const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
     const progressX = dur > 0 ? (currentTime / dur) * w : 0;
     const mid = h / 2;
-    const amp = h * 0.44;
+    const amp = h * 0.42 * (PLAYER_SETTINGS.scale || 1.0);
 
-    const pts = [];
-    for (let i = 0; i < n; i++) {
-      const x = (i / Math.max(1, n - 1)) * w;
-      const y = mid - peaks[i] * amp;
-      pts.push({ x, y });
-    }
-    if (pts.length < 2) return;
-
-    function buildLine() {
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length - 1; i++) {
-        const xc = (pts[i].x + pts[i + 1].x) / 2;
-        const yc = (pts[i].y + pts[i + 1].y) / 2;
-        ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+    // === Сетка (осциллограф-стиль) ===
+    if (PLAYER_SETTINGS.grid) {
+      ctx.save();
+      ctx.strokeStyle = night ? "rgba(245,184,0,0.06)" : "rgba(26,42,94,0.06)";
+      ctx.lineWidth = 1;
+      const cols = 12, rows = 4;
+      for (let i = 1; i < cols; i++) {
+        const x = (w / cols) * i;
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
       }
-      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
-    }
-    function buildTopArea() {
-      ctx.beginPath();
-      ctx.moveTo(0, mid);
-      ctx.lineTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length - 1; i++) {
-        const xc = (pts[i].x + pts[i + 1].x) / 2;
-        const yc = (pts[i].y + pts[i + 1].y) / 2;
-        ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+      for (let j = 1; j < rows; j++) {
+        const y = (h / rows) * j;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
       }
-      ctx.lineTo(w, mid);
-      ctx.closePath();
-    }
-    function buildBotArea() {
-      ctx.beginPath();
-      ctx.moveTo(0, mid);
-      ctx.lineTo(pts[0].x, h - pts[0].y);
-      for (let i = 1; i < pts.length - 1; i++) {
-        const xc = (pts[i].x + pts[i + 1].x) / 2;
-        const yc = ((h - pts[i].y) + (h - pts[i + 1].y)) / 2;
-        ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
-      }
-      ctx.lineTo(w, mid);
-      ctx.closePath();
+      ctx.restore();
     }
 
-    const fillAlpha = night ? "rgba(245,184,0,0.12)" : "rgba(26,42,94,0.10)";
-    const fillZero  = night ? "rgba(245,184,0,0)"    : "rgba(26,42,94,0)";
+    const style = PLAYER_SETTINGS.style || "line";
+    const thickness = Math.max(1, PLAYER_SETTINGS.thickness || 2);
+    const alpha = PLAYER_SETTINGS.opacity || 1.0;
+    const fillOn = !!PLAYER_SETTINGS.fill;
 
     ctx.save();
-    buildTopArea();
-    const gT = ctx.createLinearGradient(0, 0, 0, mid);
-    gT.addColorStop(0, fillAlpha); gT.addColorStop(1, fillZero);
-    ctx.fillStyle = gT; ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-    buildBotArea();
-    const gB = ctx.createLinearGradient(0, h, 0, mid);
-    gB.addColorStop(0, fillAlpha); gB.addColorStop(1, fillZero);
-    ctx.fillStyle = gB; ctx.fill();
-    ctx.restore();
-
-    const lw = Math.max(2, h / 50);
-    ctx.save();
-    ctx.shadowColor = lineColor;
-    ctx.shadowBlur = isPlayingState ? 18 : 8;
+    ctx.globalAlpha = alpha;
     ctx.strokeStyle = lineColor;
-    ctx.lineWidth = lw;
+    ctx.fillStyle = lineColor;
+    ctx.lineWidth = thickness;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    buildLine(); ctx.stroke();
-    ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
-    buildLine(); ctx.stroke();
-    ctx.restore();
+    ctx.shadowColor = lineColor;
+    ctx.shadowBlur = isPlayingState ? 14 : 6;
+
+    if (style === "bars") {
+      const barW = w / n;
+      for (let i = 0; i < n; i++) {
+        const px = i * barW;
+        const v = peaks[i] * mid * 0.92;
+        ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
+      }
+    } else if (style === "dots") {
+      for (let i = 0; i < n; i += Math.max(1, Math.floor(n / 160))) {
+        const x = (i / Math.max(1, n - 1)) * w;
+        const y = mid - peaks[i] * amp;
+        const y2 = mid + peaks[i] * amp;
+        ctx.beginPath(); ctx.arc(x, y, thickness, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y2, thickness, 0, Math.PI * 2); ctx.fill();
+      }
+    } else {
+      // === Плавная линия (контур сверху + зеркально снизу) ===
+      const pts = [];
+      for (let i = 0; i < n; i++) {
+        const x = (i / Math.max(1, n - 1)) * w;
+        const y = mid - peaks[i] * amp;
+        pts.push({ x, y });
+      }
+      if (pts.length < 2) { ctx.restore(); return; }
+
+      function buildLine() {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length - 1; i++) {
+          const xc = (pts[i].x + pts[i + 1].x) / 2;
+          const yc = (pts[i].y + pts[i + 1].y) / 2;
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+        }
+        ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+      }
+
+      // Опциональная заливка — по настройке, НЕ зависит от playing
+      if (fillOn) {
+        const fillColor = night ? "rgba(245,184,0,0.10)" : "rgba(26,42,94,0.08)";
+        ctx.save();
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(0, mid);
+        ctx.lineTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length - 1; i++) {
+          const xc = (pts[i].x + pts[i + 1].x) / 2;
+          const yc = (pts[i].y + pts[i + 1].y) / 2;
+          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+        }
+        ctx.lineTo(w, mid); ctx.closePath();
+        ctx.fillStyle = fillColor; ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(0, mid);
+        ctx.lineTo(pts[0].x, h - pts[0].y);
+        for (let i = 1; i < pts.length - 1; i++) {
+          const xc = (pts[i].x + pts[i + 1].x) / 2;
+          const yc = ((h - pts[i].y) + (h - pts[i + 1].y)) / 2;
+          ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
+        }
+        ctx.lineTo(w, mid); ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Контур сверху
+      buildLine(); ctx.stroke();
+      // Контур снизу (зеркально)
+      ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+      buildLine(); ctx.stroke();
+      ctx.restore();
+    }
     ctx.restore();
 
+    // === Ось по центру ===
     ctx.save();
-    ctx.globalAlpha = 0.1;
-    ctx.strokeStyle = headColor;
+    ctx.globalAlpha = 0.08;
+    ctx.strokeStyle = lineColor;
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
     ctx.restore();
 
+    // === Playhead ===
     if (dur > 0) {
       ctx.save();
       ctx.strokeStyle = headColor;
