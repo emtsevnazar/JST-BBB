@@ -627,30 +627,6 @@ async function loadModels() {
   catch(e) { console.error("models:", e); }
 }
 
-function loadLangs() {
-    if (!langEl) return;
-    const m = (typeof MODELS !== "undefined" ? MODELS : []).find(x => x.code === (modelEl && modelEl.value));
-    const supported = new Set(m ? (m.languages || []) : ["en"]);
-    const names = (typeof LANG_NAMES !== "undefined") ? LANG_NAMES : {};
-    const current = langEl.value || (typeof currentLang !== "undefined" ? currentLang : "ru");
-    langEl.innerHTML = "";
-    let firstAvailable = null;
-    Object.keys(names).forEach(code => {
-      if (!supported.has(code)) return;
-      if (!firstAvailable) firstAvailable = code;
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = code.toUpperCase() + " · " + names[code];
-      if (code === current) opt.selected = true;
-      langEl.appendChild(opt);
-    });
-    // Если текущий язык не в списке — выбрать первый доступный
-    const hasCurrent = Array.from(langEl.options).some(o => o.value === current);
-    if (!hasCurrent && firstAvailable) {
-      langEl.value = firstAvailable;
-    }
-  }
-
 async function loadVoices() {
   try {
     const r = await fetch("/api/voices"); const d = await r.json();
@@ -729,7 +705,6 @@ if (!window.__moodsLangObserver) {
   window.__moodsLangObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 }
 
-
 async function loadPresets() {
   try {
     const r = await fetch("/api/presets"); const d = await r.json();
@@ -757,8 +732,6 @@ function bindUI() {
     });
   });
 
-
-
   const textEl = $("text");
   if (textEl) textEl.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") synthesize();
@@ -766,6 +739,8 @@ function bindUI() {
 
   // Random text
   const btnR = $("btn-random");
+  const _btnSynth = $("btn-synth"); if (_btnSynth) _btnSynth.addEventListener("click", synthesize);
+  const _btnStop = $("btn-stop"); if (_btnStop) _btnStop.addEventListener("click", stopPlayback);
   if (btnR) btnR.addEventListener("click", () => {
     const SAMPLES = {
       ru: [
@@ -1857,7 +1832,6 @@ window.addEventListener("load", init);
     return (window.I18N && I18N[lang] && I18N[lang][key]) || key;
   }
 
-
   const OUT_MAP = {
     exaggeration: "o-exag",
     cfg_weight: "o-cfg",
@@ -1965,7 +1939,7 @@ window.addEventListener("load", init);
             </label>
           </div>
           <label class="batch-label"><span data-i18n="batch_text">Текст</span>
-            <textarea class="batch-textarea" rows="3" placeholder="Введите текст…"></textarea>
+            <textarea class="batch-textarea" rows="3" placeholder="Введите текст…" data-i18n-placeholder="text_ph"></textarea>
           </label>
           <label class="batch-check">
             <input type="checkbox" class="batch-use-main" checked>
@@ -2016,6 +1990,11 @@ window.addEventListener("load", init);
       const val = I18N[lang] && I18N[lang][key];
       if (val) el.textContent = val;
     });
+    root.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+      const key = el.getAttribute("data-i18n-placeholder");
+      const val = I18N[lang] && I18N[lang][key];
+      if (val) el.placeholder = val;
+    });
   }
 
   async function loadModels() {
@@ -2036,6 +2015,27 @@ window.addEventListener("load", init);
     } catch (e) {
       modelEl.innerHTML = `<option value="core">core</option>`;
     }
+  }
+
+  function loadLangs() {
+    if (!langEl) return;
+    const m = (typeof MODELS !== "undefined" ? MODELS : []).find(x => x.code === (modelEl && modelEl.value));
+    const supported = new Set(m ? (m.languages || []) : ["en"]);
+    const names = (typeof LANG_NAMES !== "undefined") ? LANG_NAMES : {};
+    const current = langEl.value || (typeof currentLang !== "undefined" ? currentLang : "ru");
+    langEl.innerHTML = "";
+    let firstAvailable = null;
+    Object.keys(names).forEach(function (code) {
+      if (!supported.has(code)) return;
+      if (!firstAvailable) firstAvailable = code;
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = code.toUpperCase() + " · " + names[code];
+      if (code === current) opt.selected = true;
+      langEl.appendChild(opt);
+    });
+    const hasCurrent = Array.from(langEl.options).some(o => o.value === current);
+    if (!hasCurrent && firstAvailable) langEl.value = firstAvailable;
   }
 
   async function loadVoices() {
@@ -2172,7 +2172,6 @@ window.addEventListener("load", init);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
-
 
 /* === P6.9: JST custom player + waveform === */
 (function () {
