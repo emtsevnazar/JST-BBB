@@ -408,54 +408,33 @@ function getSettings() {
 
 // === SYNTHESIS ===
 function synthesize() {
-  // P6.10a: guard от параллельного запуска
-  const _btnS = $("btn-synth");
-  const _btnT = $("btn-stop");
-  if (_btnS && _btnS.classList.contains("is-busy")) {
-    if (typeof showToast === "function") showToast(t("status_synth") + " — подождите");
+  const btnS = $("btn-synth"), btnT = $("btn-stop");
+
+  // 1. Guard: если уже идёт — toast, выходим
+  if (btnS && btnS.classList.contains("is-busy")) {
+    if (typeof showToast === "function") showToast((t("status_synth") || "Идёт синтез") + " — подождите");
     return;
   }
-  if (_btnS) _btnS.classList.add("is-busy");
-  if (_btnT) _btnT.disabled = false;
-  const _clearBusy = () => {
-    if (_btnS) _btnS.classList.remove("is-busy");
-    if (_btnT) _btnT.disabled = true;
-  };
-  // После создания WS — подписаться на close/error, чтобы снять блокировку
-  setTimeout(() => {
-    const w = (typeof ws !== "undefined" ? ws : window.ws);
-    if (!w) return;
-    const prevClose = w.onclose;
-    const prevErr = w.onerror;
-    w.addEventListener("close", () => _clearBusy(), { once: true });
-    w.addEventListener("error", () => _clearBusy(), { once: true });
-    if (typeof prevClose === "function") {
-      w.onclose = function (ev) { _clearBusy(); try { prevClose.call(this, ev); } catch (e) {} };
-    }
-    if (typeof prevErr === "function") {
-      w.onerror = function (ev) { _clearBusy(); try { prevErr.call(this, ev); } catch (e) {} };
-    }
-  }, 0);
   if (isStreaming) return;
+
+  // 2. Проверки данных — ДО блокировки
   const textEl = $("text"), voiceEl = $("voice");
   if (!textEl || !voiceEl) return;
   const text = textEl.value.trim();
   const voice = voiceEl.value;
-  if (!text || !voice) { setStatus("Нужен текст и голос", "error"); return; }
+  if (!text) { setStatus(t("text_ph") || "Введите текст", "error"); textEl.focus(); return; }
+  if (!voice) { setStatus("Выберите голос", "error"); return; }
+
+  // 3. Все проверки пройдены — блокируем
+  if (btnS) { btnS.disabled = false; btnS.classList.add("is-busy"); }
+  if (btnT) btnT.disabled = false;
 
   if (!audioCtx) audioCtx = new AudioContext();
   if (audioCtx.state === "suspended") audioCtx.resume();
 
   resetPlayback();
   isStreaming = true;
-  const btnS = $("btn-synth"), btnT = $("btn-stop"), pv = $("preview-player");
-  if (btnS) btnS.addEventListener("click", synthesize);
-  if (btnT) btnT.addEventListener("click", stopPlayback);
-  if (pv) pv.addEventListener("click", () => {
-    if (pv.paused) pv.play(); else pv.pause();
-  });
-  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.add("is-busy"); }
-  if (btnT) btnT.disabled = false;
+  const pv = $("preview-player");
   if (pv) pv.style.display = "none";
   setStatus(t("status_synth") + "...", "busy");
 
@@ -468,7 +447,7 @@ function synthesize() {
       const m = JSON.parse(ev.data);
       if (m.type === "start") { currentSR = m.sr; setStatus("Запуск: " + m.sentences + " фраз", "busy"); }
       else if (m.type === "stage") {
-        const prefix = { prepare:"Подготовка: ", synth:"Синтез: ", post:"Постобработка: " }[m.stage] || "";
+        const prefix = { prepare: "Подготовка: ", synth: "Синтез: ", post: "Постобработка: " }[m.stage] || "";
         setStatus(prefix + (m.detail || "работаю"), "busy");
       }
       else if (m.type === "done") { setStatus(t("status_done") + " · " + m.file, ""); finishStreaming(m.file); }
@@ -477,39 +456,6 @@ function synthesize() {
   };
   ws.onerror = () => { setStatus(t("status_err"), "error"); finishStreaming(null); };
   ws.onclose = () => { if (isStreaming) finishStreaming(null); };
-}
-
-function handleAudioChunk(buf) {
-  const floats = new Float32Array(buf);
-  allChunks.push(floats); totalSamples += floats.length;
-  if (!audioCtx) return;
-  const ab = audioCtx.createBuffer(1, floats.length, currentSR);
-  ab.copyToChannel(floats, 0);
-  const src = audioCtx.createBufferSource();
-  src.buffer = ab; src.connect(audioCtx.destination);
-  const now = audioCtx.currentTime;
-  if (nextStartTime < now) nextStartTime = now + 0.03;
-  src.start(nextStartTime);
-  nextStartTime += ab.duration;
-  activeSources.push(src);
-  src.onended = () => {
-    activeSources = activeSources.filter(s => s !== src);
-    if (activeSources.length === 0 && !isStreaming) { const b = $("btn-stop"); if (b) b.disabled = true; }
-  };
-  updateProgress();
-}
-
-function updateProgress() {
-  if (!audioCtx || !isStreaming) { if (animFrame) cancelAnimationFrame(animFrame); return; }
-  const totalDur = totalSamples / currentSR;
-  const played = Math.max(0, audioCtx.currentTime - (nextStartTime - totalDur));
-  const r = Math.min(1, played / totalDur);
-  const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
-  if (prog) prog.style.width = (r * 100) + "%";
-  if (pt) pt.textContent = fmt(played);
-  if (ptt) ptt.textContent = fmt(totalDur);
-  drawWaveform(allChunks);
-  if (r < 1) animFrame = requestAnimationFrame(updateProgress);
 }
 
 function finishStreaming(file) {
@@ -1947,7 +1893,7 @@ window.addEventListener("load", init);
 
     // Пресет + Настроение — в 2 колонки (как model+voice)
     const twoCol = document.createElement("div");
-    twoCol.className = "batch-row";
+    twoCol.className = "batch-row-2";
     ["preset", "mood"].forEach(function (key) {
       const src = findSrc(key);
       if (src) twoCol.appendChild(clonePanel(src));
@@ -2007,12 +1953,15 @@ window.addEventListener("load", init);
           <button class="help-modal-close" title="×">×</button>
         </div>
         <div class="batch-body">
-          <div class="batch-row">
+          <div class="batch-row-3">
             <label class="batch-label"><span data-i18n="batch_model">Модель</span>
               <select class="batch-model"></select>
             </label>
             <label class="batch-label"><span data-i18n="batch_voice">Голос</span>
               <select class="batch-voice"></select>
+            </label>
+            <label class="batch-label"><span data-i18n="batch_lang">Язык</span>
+              <select class="batch-lang"></select>
             </label>
           </div>
           <label class="batch-label"><span data-i18n="batch_text">Текст</span>

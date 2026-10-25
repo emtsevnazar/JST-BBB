@@ -5738,59 +5738,55 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   box-shadow: 0 0 16px rgba(230, 57, 70, 0.5) !important;
 }
 
-/* === P6.10b: 3 колонки + summary без hover-цвета === */
+/* === P6.10b-fix: batch-row-2 / batch-row-3 + summary без hover-цвета === */
 
-/* 1. .batch-row → 3 колонки: Model | Voice | Language */
-.batch-row {
+/* 2 колонки (Пресет | Настроение) */
+.batch-row-2 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+/* 3 колонки (Модель | Голос | Язык) */
+.batch-row-3 {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr !important;
   gap: 12px !important;
   width: 100% !important;
 }
 @media (max-width: 720px) {
-  .batch-row {
-    grid-template-columns: 1fr 1fr !important;
-  }
-  .batch-row > label:last-child {
-    grid-column: 1 / -1 !important;
-  }
+  .batch-row-3 { grid-template-columns: 1fr 1fr !important; }
+  .batch-row-3 > label:last-child { grid-column: 1 / -1 !important; }
 }
 
-/* 2. Summary: hover — только рамка + glow, БЕЗ смены color и ::before color */
+/* Старый .batch-row — оставить 2 кол для обратной совместимости */
+.batch-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+/* Summary: hover — только рамка + glow, БЕЗ color и ::before color */
 .batch-adv > summary:hover {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.45) !important;
-  /* color — НЕ меняем */
-}
-.batch-adv > summary:hover::before {
-  /* цвет ● НЕ меняем на hover */
-  transform: none !important;
+  color: var(--text) !important;
 }
 [data-theme="night"] .batch-adv > summary:hover {
   border-color: var(--gold) !important;
   box-shadow: 0 0 18px rgba(245,184,0,.6) !important;
-  /* color — НЕ меняем */
-}
-[data-theme="night"] .batch-adv > summary:hover::before {
-  /* цвет ● НЕ меняем */
+  color: #FFC72C !important;
 }
 
-/* Фиксированный цвет ●: день синий, ночь жёлтый (без изменений на hover) */
+/* Точка ●: день — синий, ночь — жёлтый. Не меняется на hover и [open] */
 .batch-adv > summary::before,
-.batch-adv > summary:hover::before {
+.batch-adv > summary:hover::before,
+.batch-adv[open] > summary::before {
   color: var(--navy) !important;
 }
 [data-theme="night"] .batch-adv > summary::before,
-[data-theme="night"] .batch-adv > summary:hover::before {
-  color: #FFC72C !important;
-}
-.batch-adv[open] > summary::before {
-  transform: rotate(90deg) !important;
-}
-/* Цвет текста summary — не меняется на hover */
-.batch-adv > summary:hover {
-  color: var(--text) !important;
-}
-[data-theme="night"] .batch-adv > summary:hover {
+[data-theme="night"] .batch-adv > summary:hover::before,
+[data-theme="night"] .batch-adv[open] > summary::before {
   color: #FFC72C !important;
 }
