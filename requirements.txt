@@ -42,3 +42,4 @@ pip-audit
 bandit
 
 websockets>=14,<15
+psutil>=5.9
