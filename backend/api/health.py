@@ -136,3 +136,70 @@ async def list_models():
             },
         ]
     }
+
+
+# === P7.6: healthz + metrics ===
+from pathlib import Path
+
+from ..core.paths import OUTPUT
+
+
+def _output_stats() -> dict:
+    """Возвращает размер и количество файлов в output/."""
+    try:
+        files = list(OUTPUT.glob("*.wav"))
+        total = sum(f.stat().st_size for f in files)
+        return {
+            "files": len(files),
+            "mb": round(total / 1024 / 1024, 2),
+        }
+    except Exception:
+        return {"files": 0, "mb": 0.0}
+
+
+@router.get("/healthz")
+async def healthz():
+    """Простой healthcheck для docker-compose / мониторинга."""
+    from ..engine import get_engine
+    from .ws import ws_active_count
+
+    engine_ok = get_engine() is not None
+    stats = _output_stats()
+    return {
+        "status": "ok" if engine_ok else "degraded",
+        "engine": engine_ok,
+        "output_mb": stats["mb"],
+        "output_files": stats["files"],
+        "ws_active": ws_active_count(),
+    }
+
+
+@router.get("/api/metrics")
+async def metrics(request):
+    """Расширенные метрики (только localhost)."""
+    from starlette.responses import JSONResponse
+
+    ip = request.client.host if request.client else "unknown"
+    if ip not in ("127.0.0.1", "::1", "localhost"):
+        return JSONResponse({"error": "forbidden"}, status_code=403)
+
+    from .. import history as history_mod
+    from ..engine import get_engine
+    from .ws import ws_active_count
+
+    engine_ok = get_engine() is not None
+    stats = _output_stats()
+
+    try:
+        db = getattr(history_mod, "_db", None) or history_mod.get_history()
+        total_syntheses = len(db.list(limit=100000)) if db else 0
+    except Exception:
+        total_syntheses = 0
+
+    return {
+        "engine": engine_ok,
+        "syntheses_total": total_syntheses,
+        "output_files": stats["files"],
+        "output_mb": stats["mb"],
+        "ws_active": ws_active_count(),
+    }
