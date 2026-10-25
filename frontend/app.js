@@ -2393,7 +2393,7 @@ window.addEventListener("load", init);
     // BARS — столбики, цвет по X-позиции
     // ============================================
     if (style === "bars") {
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = glow * 0.5;
       const barW = w / n;
       for (let i = 0; i < n; i++) {
@@ -2407,7 +2407,7 @@ window.addEventListener("load", init);
     // DOTS — точки
     // ============================================
     else if (style === "dots") {
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = glow * 0.6;
       const step = Math.max(1, Math.floor(n / 180));
       for (let i = 0; i < n; i += step) {
@@ -2423,7 +2423,7 @@ window.addEventListener("load", init);
     // RIBBON — закрашенная лента (fill тоже с градиентом)
     // ============================================
     else if (style === "ribbon") {
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = glow * 0.5;
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
@@ -2449,7 +2449,7 @@ window.addEventListener("load", init);
     // STEP — ступеньки (stroke с градиентом)
     // ============================================
     else if (style === "step") {
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = Math.max(0, glow / 2);
       ctx.lineWidth = thickness;
       ctx.strokeStyle = grad;
@@ -2477,7 +2477,7 @@ window.addEventListener("load", init);
     // LINE / MIRROR / NEON — плавная кривая с градиентом
     // ============================================
     else {
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = glow;
       ctx.strokeStyle = grad;
       ctx.lineWidth = thickness;
@@ -2496,8 +2496,8 @@ window.addEventListener("load", init);
         // Светлая сердцевина (тоже с градиентом, но светлее)
         function makeCoreGradient() {
           const g = ctx.createLinearGradient(0, 0, w, 0);
-          const lightPlayed = night ? "#FFF6C0" : "#FFF4D6";
-          const lightIdle = night ? "#FFF6C0" : "#EAF1FF";
+          const lightPlayed = "#FFF6C0";
+        const lightIdle = "#FFF6C0";
           if (ratio <= 0.0001) {
             g.addColorStop(0, lightIdle);
             g.addColorStop(1, lightIdle);
@@ -2541,7 +2541,7 @@ window.addEventListener("load", init);
       ctx.strokeStyle = headColor;
       ctx.lineWidth = Math.max(1.5, w / 800);
       ctx.globalAlpha = 0.9;
-      ctx.shadowColor = playedColor;
+      ctx.shadowColor = "#FFF6C0";
       ctx.shadowBlur = 10;
       ctx.beginPath(); ctx.moveTo(progressX, 0); ctx.lineTo(progressX, h); ctx.stroke();
 
@@ -2573,7 +2573,17 @@ window.addEventListener("load", init);
   }
 
   function showPlayer() {
-    if (player) player.classList.add("visible");
+    if (player) {
+      player.classList.add("visible");
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          try {
+            resizeCanvas();
+            drawWave(audio.currentTime || 0);
+          } catch (e) { /* */ }
+        });
+      });
+    }
   }
   function hidePlayer() {
     if (player) player.classList.remove("visible");
@@ -2793,6 +2803,7 @@ window.addEventListener("load", init);
     function syncSettingsUI() {
       if (optStyle) optStyle.value = PLAYER_SETTINGS.style;
       if (optThickness) optThickness.value = String(PLAYER_SETTINGS.thickness);
+      {const _tv = document.getElementById("jstp-opt-thickness-val"); if (_tv) _tv.textContent = String(PLAYER_SETTINGS.thickness);}
       if (optGrid) optGrid.checked = !!PLAYER_SETTINGS.grid;
       if (optScale) optScale.value = String(PLAYER_SETTINGS.scale);
       if (optScaleVal) optScaleVal.textContent = Number(PLAYER_SETTINGS.scale).toFixed(1) + "×";
@@ -2809,8 +2820,12 @@ window.addEventListener("load", init);
     if (optStyle) optStyle.addEventListener("change", () => {
       PLAYER_SETTINGS.style = optStyle.value; redraw();
     });
-    if (optThickness) optThickness.addEventListener("change", () => {
-      PLAYER_SETTINGS.thickness = parseInt(optThickness.value, 10) || 2; redraw();
+    const optThicknessVal = document.getElementById("jstp-opt-thickness-val");
+    if (optThicknessVal) optThicknessVal.textContent = String(PLAYER_SETTINGS.thickness);
+    if (optThickness) optThickness.addEventListener("input", () => {
+      PLAYER_SETTINGS.thickness = parseInt(optThickness.value, 10) || 2;
+      if (optThicknessVal) optThicknessVal.textContent = String(PLAYER_SETTINGS.thickness);
+      redraw();
     });
     if (optGrid) optGrid.addEventListener("change", () => {
       PLAYER_SETTINGS.grid = optGrid.checked; redraw();
@@ -2836,6 +2851,24 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
       redraw();
     });
+
+    // === Шестерёнка: toggle #jstp-settings ===
+    const settingsToggle = document.getElementById("jstp-settings-toggle");
+    const settingsPanel = document.getElementById("jstp-settings");
+    if (settingsToggle && settingsPanel) {
+      settingsToggle.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        const vis = settingsPanel.classList.toggle("visible");
+        settingsToggle.classList.toggle("active", vis);
+      });
+      document.addEventListener("click", (ev) => {
+        if (!settingsPanel.classList.contains("visible")) return;
+        if (settingsPanel.contains(ev.target)) return;
+        if (settingsToggle.contains(ev.target)) return;
+        settingsPanel.classList.remove("visible");
+        settingsToggle.classList.remove("active");
+      });
+    }
 
     window.addEventListener("jst:load-audio", (ev) => {
       const { url, text } = ev.detail || {};

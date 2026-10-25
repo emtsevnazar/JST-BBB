@@ -6060,3 +6060,42 @@ html[data-theme="night"] .jstp-set-item select {
   .jstp-set-item select { min-width: 70px; }
   .jstp-set-item.jstp-set-range input[type="range"] { width: 60px; }
 }
+
+/* === P6.14-fix10: play button — только glow, без bg === */
+.jstp-btn.jstp-play {
+  transition: box-shadow 0.15s ease;
+}
+.jstp-btn.jstp-play:hover,
+.jstp-btn.jstp-play:focus-visible {
+  box-shadow: 0 0 10px rgba(255, 246, 192, 0.5);
+}
+.jstp-btn.jstp-play:active {
+  box-shadow: 0 0 6px rgba(255, 246, 192, 0.35);
+}
+
+/* === P6.14-fix10: настройки скрыты, показываются шестерёнкой === */
+.jstp-settings {
+  display: none;
+}
+.jstp-settings.visible {
+  display: flex;
+  animation: jstpSlideDown 0.2s ease;
+}
+@keyframes jstpSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === P6.14-fix10: canvas заполняет wrap и центрируется === */
+.jstp-wave-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: hidden;
+}
+.jstp-wave-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
