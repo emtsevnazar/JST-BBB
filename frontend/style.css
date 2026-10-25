@@ -5936,3 +5936,22 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
   border: 1.5px solid var(--panel-border) !important;
   box-sizing: border-box !important;
 }
+
+/* === P6.14-fix3: активные Loop / Boost === */
+.jstp-btn.active,
+.jstp-btn.active:hover {
+  background: var(--gold, #F5B800) !important;
+  color: #1a2a5e !important;
+  border-color: var(--gold, #F5B800) !important;
+  box-shadow: 0 0 12px rgba(245,184,0,0.5) !important;
+}
+.jstp-btn.active svg {
+  stroke: #1a2a5e !important;
+}
+html[data-theme="night"] .jstp-btn.active,
+html[data-theme="night"] .jstp-btn.active:hover {
+  background: var(--gold, #F5B800) !important;
+  color: #1a2a5e !important;
+  border-color: var(--gold, #F5B800) !important;
+  box-shadow: 0 0 16px rgba(245,184,0,0.7) !important;
+}

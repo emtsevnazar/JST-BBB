@@ -2194,9 +2194,10 @@ window.addEventListener("load", init);
 
   const isNight = () => document.documentElement.getAttribute("data-theme") === "night";
   const COLOR = {
-    day:   { base: "rgba(26,42,94,0.20)",  played: "#1a2a5e", playhead: "#1a2a5e" },
-    night: { base: "rgba(245,184,0,0.20)", played: "#F5B800", playhead: "#F5B800" },
+    day:   { idle: "#1a2a5e",              playing: "#F5B800", playhead: "#1a2a5e" },
+    night: { idle: "rgba(245,184,0,0.55)", playing: "#e63946", playhead: "#F5B800" },
   };
+  let isPlayingState = false;
 
   let audio, player, canvas, ctx, progressEl, wrap;
   let curEl, totEl, playBtn, iconPlay, iconPause;
@@ -2283,36 +2284,74 @@ window.addEventListener("load", init);
     ctx.clearRect(0, 0, w, h);
     if (!peakData) return;
 
-    const c = isNight() ? COLOR.night : COLOR.day;
+    const night = isNight();
+    const c = night ? COLOR.night : COLOR.day;
+    const lineColor = isPlayingState ? c.playing : c.idle;
+    const headColor = c.playhead;
+
     const peaks = peakData.data;
     const n = peaks.length;
     const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
-    const progressX = dur > 0 ? Math.floor((currentTime / dur) * w) : 0;
-    const barW = w / n;
+    const progressX = dur > 0 ? (currentTime / dur) * w : 0;
     const mid = h / 2;
+    const amp = h * 0.42;
 
-    // base
-    ctx.fillStyle = c.base;
+    const pts = [];
     for (let i = 0; i < n; i++) {
-      const px = i * barW;
-      const amp = peaks[i] * mid * 0.92;
-      ctx.fillRect(px, mid - amp, Math.max(1, barW * 0.7), amp * 2);
+      const x = (i / Math.max(1, n - 1)) * w;
+      const y = mid - peaks[i] * amp;
+      pts.push({ x, y });
     }
+    if (pts.length < 2) return;
 
-    // played (highlight)
-    if (progressX > 0) {
-      ctx.fillStyle = c.played;
-      for (let i = 0; i < n; i++) {
-        const px = i * barW;
-        if (px > progressX) break;
-        const amp = peaks[i] * mid * 0.92;
-        ctx.fillRect(px, mid - amp, Math.max(1, barW * 0.7), amp * 2);
+    function buildPath() {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const xc = (pts[i].x + pts[i + 1].x) / 2;
+        const yc = (pts[i].y + pts[i + 1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
       }
+      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
     }
 
-    // playhead line + knob
+    const lw = Math.max(2, h / 45);
+
+    // === Плавная волна (сверху + зеркально снизу), один цвет ===
+    ctx.save();
+    ctx.shadowColor = lineColor;
+    ctx.shadowBlur = isPlayingState ? 14 : 6;
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = lw;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+
+    buildPath();
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(0, h);
+    ctx.scale(1, -1);
+    buildPath();
+    ctx.stroke();
+    ctx.restore();
+    ctx.restore();
+
+    // === Ось по центру (едва заметно) ===
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.strokeStyle = headColor;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, mid);
+    ctx.lineTo(w, mid);
+    ctx.stroke();
+    ctx.restore();
+
+    // === Playhead ===
     if (dur > 0) {
-      ctx.strokeStyle = c.playhead;
+      ctx.save();
+      ctx.strokeStyle = headColor;
       ctx.lineWidth = Math.max(1.5, w / 800);
       ctx.beginPath();
       ctx.moveTo(progressX, 0);
@@ -2320,14 +2359,15 @@ window.addEventListener("load", init);
       ctx.stroke();
 
       const r = Math.max(5, w / 220);
-      ctx.fillStyle = c.playhead;
+      ctx.fillStyle = headColor;
       ctx.beginPath();
       ctx.arc(progressX, h / 2, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = isNight() ? "#0d1a3f" : "#fff";
+      ctx.fillStyle = night ? "#0d1a3f" : "#ffffff";
       ctx.beginPath();
       ctx.arc(progressX, h / 2, r * 0.45, 0, Math.PI * 2);
       ctx.fill();
+      ctx.restore();
     }
   }
 
@@ -2399,9 +2439,22 @@ window.addEventListener("load", init);
       buildPeaks();
     });
 
-    audio.addEventListener("play", () => { setPlayingUI(true); buildPeaks(); });
-    audio.addEventListener("pause", () => setPlayingUI(false));
-    audio.addEventListener("ended", () => setPlayingUI(false));
+    audio.addEventListener("play", () => {
+      isPlayingState = true;
+      setPlayingUI(true);
+      buildPeaks();
+      drawWave(audio.currentTime);
+    });
+    audio.addEventListener("pause", () => {
+      isPlayingState = false;
+      setPlayingUI(false);
+      drawWave(audio.currentTime);
+    });
+    audio.addEventListener("ended", () => {
+      isPlayingState = false;
+      setPlayingUI(false);
+      drawWave(audio.currentTime);
+    });
     audio.addEventListener("volumechange", () => { vol.value = audio.volume; });
 
     audio.addEventListener("timeupdate", () => {
@@ -2436,6 +2489,40 @@ window.addEventListener("load", init);
     }
 
     // Кастомный event для внешних вызовов (например, после синтеза)
+    // === Loop ===
+    const loopBtn = document.getElementById("jstp-loop");
+    if (loopBtn) {
+      loopBtn.addEventListener("click", () => {
+        audio.loop = !audio.loop;
+        loopBtn.classList.toggle("active", audio.loop);
+      });
+    }
+
+    // === Boost (Web Audio, +2.5x) ===
+    let boostCtx = null, boostGain = null, boostOn = false;
+    const boostBtn = document.getElementById("jstp-boost");
+    if (boostBtn) {
+      boostBtn.addEventListener("click", () => {
+        try {
+          if (!boostCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            boostCtx = new AC();
+            const src = boostCtx.createMediaElementSource(audio);
+            boostGain = boostCtx.createGain();
+            boostGain.gain.value = 1.0;
+            src.connect(boostGain);
+            boostGain.connect(boostCtx.destination);
+          }
+          if (boostCtx.state === "suspended") boostCtx.resume();
+          boostOn = !boostOn;
+          boostGain.gain.value = boostOn ? 2.5 : 1.0;
+          boostBtn.classList.toggle("active", boostOn);
+        } catch (e) {
+          console.warn("Boost недоступен:", e);
+        }
+      });
+    }
+
     window.addEventListener("jst:load-audio", (ev) => {
       const { url, text } = ev.detail || {};
       loadAudioFromUrl(url, text);

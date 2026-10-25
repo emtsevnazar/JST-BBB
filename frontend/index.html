@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Merienda:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=1792936766">
+<link rel="stylesheet" href="/static/style.css?v=1792937482">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -218,6 +218,10 @@
     <button id="btn-clear-history" class="btn btn-ghost">
       <span data-i18n="clear_history">Очистить</span>
     </button>
+    <button id="btn-batch" class="btn btn-ghost">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span data-i18n="batch">Пакет</span>
+    </button>
     <div class="dropdown" id="dl-dropdown">
       <button class="btn btn-ghost" id="btn-download-toggle">
         <span data-i18n="download">Скачать</span>
@@ -270,6 +274,12 @@
         <option value="1.5">1.5×</option>
         <option value="2">2×</option>
       </select>
+      <button class="jstp-btn" id="jstp-loop" title="Зациклить" aria-label="Loop">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </button>
+      <button class="jstp-btn" id="jstp-boost" title="Усилить ×2.5" aria-label="Boost">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </button>
     </div>
   </div>
 
@@ -295,6 +305,6 @@
   </div>
 </div>
 
-<script src="/static/app.js?v=1792936766"></script>
+<script src="/static/app.js?v=1792937482"></script>
 </body>
 </html>
