@@ -2565,6 +2565,7 @@ window.addEventListener("load", init);
 
   function loadAudioFromUrl(url, text) {
     if (!url) return;
+    try { localStorage.setItem("jstp-last-audio", JSON.stringify({ url, text: text || "" })); } catch (e) {}
     audio.src = url;
     audio.load();
     const fnEl = document.getElementById("jstp-filename");
@@ -3009,6 +3010,9 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   try { st = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) { st = {}; }
 
   const DEFAULTS = {
+    eqLow: 0,
+    eqMid: 0,
+    eqHigh: 0,
     pitch: 0,
     fadeIn: 0,
     fadeOut: 0,
@@ -3042,6 +3046,9 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
     });
   }
 
+  bind("jstp-opt-eq-low",   "eqLow",   v => String(Math.round(v)));
+  bind("jstp-opt-eq-mid",   "eqMid",   v => String(Math.round(v)));
+  bind("jstp-opt-eq-high",  "eqHigh",  v => String(Math.round(v)));
   bind("jstp-opt-pitch",    "pitch",   v => String(Math.round(v)));
   bind("jstp-opt-fade-in",  "fadeIn",  v => Number(v).toFixed(1));
   bind("jstp-opt-fade-out", "fadeOut", v => Number(v).toFixed(1));
@@ -3052,4 +3059,25 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   // Экспортируем getter наружу (пригодится в Step D — Web Audio)
   window.JST_FX_SETTINGS = st;
   window.JST_FX_SAVE = save;
+})();
+
+// === v1.1.2: restore last audio on reload ===
+(function () {
+  "use strict";
+  if (window.__jstpLastAudioRestore) return;
+  window.__jstpLastAudioRestore = true;
+  window.addEventListener("DOMContentLoaded", () => {
+    try {
+      const raw = localStorage.getItem("jstp-last-audio");
+      if (!raw) return;
+      const { url, text } = JSON.parse(raw);
+      if (!url) return;
+      // Дадим другим IIFE зарегистрировать слушателя jst:load-audio
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("jst:load-audio", {
+          detail: { url, text: text || "" }
+        }));
+      }, 500);
+    } catch (e) { /* ignore */ }
+  });
 })();
