@@ -324,6 +324,10 @@ function rebuildModelCarousel() {
         return;
       }
       currentMode = m.code;
+      if (m.languages && m.languages.length && !m.languages.includes(currentLang)) {
+        currentLang = m.languages.includes("en") ? "en" : m.languages[0];
+        showToast(t("toast_switched") + " " + currentLang.toUpperCase());
+      }
       document.querySelectorAll(".model-card").forEach(x => x.classList.remove("active"));
       c.classList.add("active");
       updateModelInfo();
@@ -353,7 +357,6 @@ function renderLanguages() {
   const grid = $("lang-grid"); if (!grid) return;
   const m = MODELS.find(x => x.code === currentMode);
   const supported = new Set(m ? (m.languages || []) : ["en"]);
-  const alwaysOn = new Set(["ru"]); // RU всегда доступен, авто-переключение
   grid.innerHTML = "";
   Object.keys(LANG_NAMES).forEach(code => {
     const c = document.createElement("div");
@@ -361,31 +364,12 @@ function renderLanguages() {
     c.setAttribute("data-code", code);
     c.innerHTML = '<div class="lang-code">' + code.toUpperCase() + '</div>' +
                   '<div class="lang-name">' + LANG_NAMES[code] + '</div>';
-    const isSupported = supported.has(code) || alwaysOn.has(code);
+    const isSupported = supported.has(code);
     if (!isSupported) {
       c.classList.add("unavailable");
       c.onclick = () => showToast((typeof LANG !== "undefined" && LANG === "ru" ? "Скоро: " : "Soon: ") + LANG_NAMES[code]);
     } else {
       c.onclick = () => {
-        // Если RU выбран, но модель не поддерживает — авто-переключение на подходящую модель
-        if (alwaysOn.has(code) && !supported.has(code)) {
-          const fallback = MODELS.find(x => x.loaded && x.languages && x.languages.includes(code));
-          if (fallback) {
-            currentMode = fallback.code;
-            document.querySelectorAll(".model-card").forEach(x => x.classList.remove("active"));
-            const fEl = document.querySelector('.model-card[data-code="' + fallback.code + '"]');
-            if (fEl) fEl.classList.add("active");
-            updateModelInfo();
-            showToast(t("toast_switched") + " " + fallback.name + " (RU)");
-            const fd = new FormData(); fd.append("mode", fallback.code);
-            fetch("/api/mode", { method: "POST", body: fd }).catch(() => {});
-            setTimeout(() => renderLanguages(), 100);
-            return;
-          } else {
-            showToast("Нет загруженной модели с поддержкой RU. Скачайте Multi (t3_mtl23ls_v2).");
-            return;
-          }
-        }
         document.querySelectorAll(".lang-card").forEach(x => x.classList.remove("active"));
         c.classList.add("active");
         currentLang = code;

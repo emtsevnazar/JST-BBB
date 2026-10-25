@@ -5448,3 +5448,51 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch):focus,
 html[data-theme="night"] body :is(#btn-random, #btn-batch):active {
   box-shadow: 0 0 18px rgba(245, 184, 0, 0.6) !important;
 }
+
+/* === P6.6: Пакет=Случайный рамка + unavailable hover === */
+
+/* В покое: у Пакета и Случайного — одинаковая рамка var(--panel-border) */
+html body #btn-random.btn.btn-ghost,
+html body #btn-batch.btn.btn-ghost,
+html[data-theme="day"] body #btn-random.btn.btn-ghost,
+html[data-theme="day"] body #btn-batch.btn.btn-ghost,
+html[data-theme="night"] body #btn-random.btn.btn-ghost,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost {
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--panel-bg) !important;
+  color: var(--text) !important;
+}
+
+/* Ночь: жёлтый текст у обеих (как было) */
+html[data-theme="night"] body #btn-random.btn.btn-ghost,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost,
+html[data-theme="night"] body #btn-random.btn.btn-ghost *,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost * {
+  color: #FFC72C !important;
+}
+
+/* Hover/focus/active: жёлтая рамка + glow (обе кнопки) */
+html body #btn-random.btn.btn-ghost:hover,
+html body #btn-batch.btn.btn-ghost:hover,
+html body #btn-random.btn.btn-ghost:focus,
+html body #btn-batch.btn.btn-ghost:focus,
+html body #btn-random.btn.btn-ghost:active,
+html body #btn-batch.btn.btn-ghost:active {
+  border-color: rgb(245, 184, 0) !important;
+  box-shadow: 0 0 18px rgba(245, 184, 0, 0.45) !important;
+}
+html[data-theme="night"] body #btn-random.btn.btn-ghost:hover,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost:hover,
+html[data-theme="night"] body #btn-random.btn.btn-ghost:focus,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost:focus,
+html[data-theme="night"] body #btn-random.btn.btn-ghost:active,
+html[data-theme="night"] body #btn-batch.btn.btn-ghost:active {
+  box-shadow: 0 0 18px rgba(245, 184, 0, 0.6) !important;
+}
+
+/* Недоступные модель/язык: при hover — красная рамка */
+.lang-card.unavailable:hover,
+.model-card.unavailable:hover {
+  border-color: var(--red) !important;
+  cursor: not-allowed !important;
+}
