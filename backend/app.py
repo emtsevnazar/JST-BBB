@@ -264,6 +264,28 @@ async def jst_audit_middleware(request, call_next):
             pass
 
 
+# === v1.4.0: PWA endpoints (root-level for proper SW scope) ===
+@app.api_route("/manifest.json", methods=["GET", "HEAD"])
+async def serve_manifest():
+    return FileResponse(
+        FRONTEND / "manifest.json",
+        media_type="application/manifest+json",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
+@app.api_route("/sw.js", methods=["GET", "HEAD"])
+async def serve_sw():
+    return FileResponse(
+        FRONTEND / "sw.js",
+        media_type="application/javascript",
+        headers={
+            "Service-Worker-Allowed": "/",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+        },
+    )
+
+
 app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")
 
 

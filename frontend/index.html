@@ -5,10 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JST · Just Start Transform</title>
 <link rel="icon" href="/static/img/poster_b.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/static/img/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JST">
+<meta name="theme-color" content="#0a0e1a">
+<meta name="application-name" content="JST Studio">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Merienda:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=1792951092">
+<link rel="stylesheet" href="/static/style.css?v=1792953144">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -390,7 +397,17 @@
   </div>
 </div>
 
-<script src="/static/test_phrases.js?v=1792951092"></script>
-<script src="/static/app.js?v=1792951092"></script>
+<script src="/static/test_phrases.js?v=1792953144"></script>
+<script src="/static/app.js?v=1792953144"></script>
+<script>
+// v1.4.0: PWA — регистрация service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then((reg) => console.log('[PWA] SW registered:', reg.scope))
+      .catch((err) => console.warn('[PWA] SW registration failed:', err));
+  });
+}
+</script>
 </body>
 </html>
