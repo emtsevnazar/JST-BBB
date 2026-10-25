@@ -2717,6 +2717,7 @@ window.addEventListener("load", init);
     if (!ensure()) return;
 
     playBtn.addEventListener("click", () => {
+      ensureFxChain();
       if (audio.paused) audio.play().catch(() => {});
       else audio.pause();
     });
@@ -2819,27 +2820,124 @@ window.addEventListener("load", init);
     }
 
     // === Boost (Web Audio, +2.5x) ===
-    let boostCtx = null, boostGain = null, boostOn = false;
+
+    // === v0.9.4: FX handlers (заменяют старый Boost) ===
     const boostBtn = document.getElementById("jstp-boost");
     if (boostBtn) {
       boostBtn.addEventListener("click", () => {
-        try {
-          if (!boostCtx) {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            boostCtx = new AC();
-            const src = boostCtx.createMediaElementSource(audio);
-            boostGain = boostCtx.createGain();
-            boostGain.gain.value = 1.0;
-            src.connect(boostGain);
-            boostGain.connect(boostCtx.destination);
-          }
-          if (boostCtx.state === "suspended") boostCtx.resume();
-          boostOn = !boostOn;
-          boostGain.gain.value = boostOn ? 2.5 : 1.0;
-          boostBtn.classList.toggle("active", boostOn);
-        } catch (e) {
-          console.warn("Boost недоступен:", e);
+        const fx = ensureFxChain();
+        if (!fx) return;
+        const on = fx.boostGain.gain.value < 2.0;
+        fx.boostGain.gain.value = on ? 2.5 : 1.0;
+        boostBtn.classList.toggle("active", on);
+      });
+    }
+
+    // EQ Low
+    const eqLow = document.getElementById("jstp-opt-eq-low");
+    const eqLowVal = document.getElementById("jstp-opt-eq-low-val");
+    if (eqLow) {
+      eqLow.value = String(FX_SETTINGS.eqLow);
+      if (eqLowVal) eqLowVal.textContent = String(FX_SETTINGS.eqLow);
+      eqLow.addEventListener("input", () => {
+        FX_SETTINGS.eqLow = parseFloat(eqLow.value) || 0;
+        if (eqLowVal) eqLowVal.textContent = FX_SETTINGS.eqLow.toFixed(0);
+        const fx = ensureFxChain();
+        if (fx) fx.eqLow.gain.value = FX_SETTINGS.eqLow;
+        saveFxSettings();
+      });
+    }
+    // EQ Mid
+    const eqMid = document.getElementById("jstp-opt-eq-mid");
+    const eqMidVal = document.getElementById("jstp-opt-eq-mid-val");
+    if (eqMid) {
+      eqMid.value = String(FX_SETTINGS.eqMid);
+      if (eqMidVal) eqMidVal.textContent = String(FX_SETTINGS.eqMid);
+      eqMid.addEventListener("input", () => {
+        FX_SETTINGS.eqMid = parseFloat(eqMid.value) || 0;
+        if (eqMidVal) eqMidVal.textContent = FX_SETTINGS.eqMid.toFixed(0);
+        const fx = ensureFxChain();
+        if (fx) fx.eqMid.gain.value = FX_SETTINGS.eqMid;
+        saveFxSettings();
+      });
+    }
+    // EQ High
+    const eqHigh = document.getElementById("jstp-opt-eq-high");
+    const eqHighVal = document.getElementById("jstp-opt-eq-high-val");
+    if (eqHigh) {
+      eqHigh.value = String(FX_SETTINGS.eqHigh);
+      if (eqHighVal) eqHighVal.textContent = String(FX_SETTINGS.eqHigh);
+      eqHigh.addEventListener("input", () => {
+        FX_SETTINGS.eqHigh = parseFloat(eqHigh.value) || 0;
+        if (eqHighVal) eqHighVal.textContent = FX_SETTINGS.eqHigh.toFixed(0);
+        const fx = ensureFxChain();
+        if (fx) fx.eqHigh.gain.value = FX_SETTINGS.eqHigh;
+        saveFxSettings();
+      });
+    }
+    // Noise reduction
+    const nrToggle = document.getElementById("jstp-opt-nr");
+    if (nrToggle) {
+      nrToggle.checked = FX_SETTINGS.noiseReduction;
+      nrToggle.addEventListener("change", () => {
+        FX_SETTINGS.noiseReduction = nrToggle.checked;
+        const fx = ensureFxChain();
+        if (fx) {
+          fx.hp.frequency.value = FX_SETTINGS.noiseReduction ? 120 : 20;
+          fx.lp.frequency.value = FX_SETTINGS.noiseReduction ? 8000 : 20000;
         }
+        saveFxSettings();
+      });
+    }
+    // Noise add
+    const noiseSl = document.getElementById("jstp-opt-noise");
+    const noiseVal = document.getElementById("jstp-opt-noise-val");
+    if (noiseSl) {
+      noiseSl.value = String(FX_SETTINGS.noiseAdd);
+      if (noiseVal) noiseVal.textContent = String(FX_SETTINGS.noiseAdd);
+      noiseSl.addEventListener("input", () => {
+        FX_SETTINGS.noiseAdd = parseFloat(noiseSl.value) || 0;
+        if (noiseVal) noiseVal.textContent = FX_SETTINGS.noiseAdd.toFixed(0);
+        const fx = ensureFxChain();
+        if (fx) fx.noiseGain.gain.value = FX_SETTINGS.noiseAdd / 100 * 0.1;
+        saveFxSettings();
+      });
+    }
+    // Reverb
+    const reverbSl = document.getElementById("jstp-opt-reverb");
+    const reverbVal = document.getElementById("jstp-opt-reverb-val");
+    if (reverbSl) {
+      reverbSl.value = String(FX_SETTINGS.reverb);
+      if (reverbVal) reverbVal.textContent = String(FX_SETTINGS.reverb);
+      reverbSl.addEventListener("input", () => {
+        FX_SETTINGS.reverb = parseFloat(reverbSl.value) || 0;
+        if (reverbVal) reverbVal.textContent = FX_SETTINGS.reverb.toFixed(0);
+        const fx = ensureFxChain();
+        if (fx) fx.wetGain.gain.value = FX_SETTINGS.reverb / 100 * 0.5;
+        saveFxSettings();
+      });
+    }
+    // Compressor
+    const compToggle = document.getElementById("jstp-opt-comp");
+    if (compToggle) {
+      compToggle.checked = FX_SETTINGS.compressor;
+      compToggle.addEventListener("change", () => {
+        FX_SETTINGS.compressor = compToggle.checked;
+        const fx = ensureFxChain();
+        if (fx) fx.comp.ratio.value = FX_SETTINGS.compressor ? 4 : 1;
+        saveFxSettings();
+      });
+    }
+    // Fade
+    const fadeSl = document.getElementById("jstp-opt-fade");
+    const fadeVal = document.getElementById("jstp-opt-fade-val");
+    if (fadeSl) {
+      fadeSl.value = String(FX_SETTINGS.fade);
+      if (fadeVal) fadeVal.textContent = FX_SETTINGS.fade.toFixed(1);
+      fadeSl.addEventListener("input", () => {
+        FX_SETTINGS.fade = parseFloat(fadeSl.value) || 0;
+        if (fadeVal) fadeVal.textContent = FX_SETTINGS.fade.toFixed(1);
+        saveFxSettings();
       });
     }
 
@@ -2995,6 +3093,171 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       loadAudioFromUrl(url, text);
     });
   }
+
+  // === v0.9.4: FX engine ===
+  const FX_DEFAULTS = {
+    eqLow: 0, eqMid: 0, eqHigh: 0,
+    noiseReduction: false, noiseAdd: 0,
+    reverb: 0, compressor: false,
+    fade: 0.2,
+  };
+  const FX_SETTINGS = Object.assign({}, FX_DEFAULTS,
+    JSON.parse(localStorage.getItem("jstp-fx") || "{}"));
+  function saveFxSettings() {
+    try { localStorage.setItem("jstp-fx", JSON.stringify(FX_SETTINGS)); } catch (e) {}
+  }
+
+  let fxCtx = null;
+  let fxNodes = null;
+
+  function ensureFxChain() {
+    if (fxNodes) {
+      if (fxCtx.state === "suspended") fxCtx.resume().catch(() => {});
+      return fxNodes;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC || !audio) return null;
+    try {
+      fxCtx = new AC();
+      const src = fxCtx.createMediaElementSource(audio);
+
+      const eqLow = fxCtx.createBiquadFilter();
+      eqLow.type = "lowshelf"; eqLow.frequency.value = 200; eqLow.gain.value = FX_SETTINGS.eqLow;
+
+      const eqMid = fxCtx.createBiquadFilter();
+      eqMid.type = "peaking"; eqMid.frequency.value = 1000; eqMid.Q.value = 1; eqMid.gain.value = FX_SETTINGS.eqMid;
+
+      const eqHigh = fxCtx.createBiquadFilter();
+      eqHigh.type = "highshelf"; eqHigh.frequency.value = 4000; eqHigh.gain.value = FX_SETTINGS.eqHigh;
+
+      const hp = fxCtx.createBiquadFilter();
+      hp.type = "highpass"; hp.frequency.value = FX_SETTINGS.noiseReduction ? 120 : 20; hp.Q.value = 0.7;
+
+      const lp = fxCtx.createBiquadFilter();
+      lp.type = "lowpass"; lp.frequency.value = FX_SETTINGS.noiseReduction ? 8000 : 20000; lp.Q.value = 0.7;
+
+      const noiseBuf = fxCtx.createBuffer(1, fxCtx.sampleRate * 2, fxCtx.sampleRate);
+      const nd = noiseBuf.getChannelData(0);
+      for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+      const noiseSrc = fxCtx.createBufferSource();
+      noiseSrc.buffer = noiseBuf; noiseSrc.loop = true;
+      const noiseGain = fxCtx.createGain();
+      noiseGain.gain.value = FX_SETTINGS.noiseAdd / 100 * 0.1;
+      noiseSrc.connect(noiseGain);
+
+      const comp = fxCtx.createDynamicsCompressor();
+      comp.threshold.value = -24; comp.knee.value = 30;
+      comp.ratio.value = FX_SETTINGS.compressor ? 4 : 1;
+      comp.attack.value = 0.005; comp.release.value = 0.2;
+
+      const irLen = Math.floor(fxCtx.sampleRate * 1.5);
+      const ir = fxCtx.createBuffer(2, irLen, fxCtx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = ir.getChannelData(ch);
+        for (let i = 0; i < irLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / irLen, 3);
+      }
+      const convolver = fxCtx.createConvolver();
+      convolver.buffer = ir;
+
+      const dryGain = fxCtx.createGain(); dryGain.gain.value = 1;
+      const wetGain = fxCtx.createGain(); wetGain.gain.value = FX_SETTINGS.reverb / 100 * 0.5;
+
+      const boostGain = fxCtx.createGain(); boostGain.gain.value = 1;
+      const fadeGain = fxCtx.createGain(); fadeGain.gain.value = 1;
+
+      const analyser = fxCtx.createAnalyser(); analyser.fftSize = 256;
+
+      src.connect(eqLow);
+      eqLow.connect(eqMid);
+      eqMid.connect(eqHigh);
+      eqHigh.connect(hp);
+      hp.connect(lp);
+      lp.connect(dryGain);
+      lp.connect(convolver);
+      convolver.connect(wetGain);
+      dryGain.connect(boostGain);
+      wetGain.connect(boostGain);
+      noiseGain.connect(boostGain);
+      boostGain.connect(fadeGain);
+      fadeGain.connect(comp);
+      comp.connect(analyser);
+      analyser.connect(fxCtx.destination);
+
+      noiseSrc.start();
+
+      fxNodes = { src, eqLow, eqMid, eqHigh, hp, lp,
+                  noiseSrc, noiseGain, comp, dryGain, wetGain, convolver,
+                  boostGain, fadeGain, analyser };
+      return fxNodes;
+    } catch (e) {
+      console.warn("FX chain недоступен:", e);
+      return null;
+    }
+  }
+
+  let _peakFrameId = null;
+  let _peakBuf = null;
+  function _startPeakMeter() {
+    if (_peakFrameId) return;
+    const tick = () => {
+      if (!audio || audio.paused || audio.ended) {
+        _peakFrameId = null;
+        const pm = document.getElementById("jstp-peak-meter");
+        if (pm) pm.value = 0;
+        return;
+      }
+      const pm = document.getElementById("jstp-peak-meter");
+      if (pm && fxNodes && fxNodes.analyser) {
+        if (!_peakBuf || _peakBuf.length !== fxNodes.analyser.fftSize) {
+          _peakBuf = new Uint8Array(fxNodes.analyser.fftSize);
+        }
+        fxNodes.analyser.getByteTimeDomainData(_peakBuf);
+        let pk = 0;
+        for (let i = 0; i < _peakBuf.length; i++) {
+          const v = Math.abs(_peakBuf[i] - 128) / 128;
+          if (v > pk) pk = v;
+        }
+        pm.value = pk;
+      }
+      _peakFrameId = requestAnimationFrame(tick);
+    };
+    _peakFrameId = requestAnimationFrame(tick);
+  }
+  function _stopPeakMeter() {
+    if (_peakFrameId) { cancelAnimationFrame(_peakFrameId); _peakFrameId = null; }
+    const pm = document.getElementById("jstp-peak-meter");
+    if (pm) pm.value = 0;
+  }
+
+  // Fade in on play + peak meter + ensureFxChain safety
+  audio.addEventListener("play", () => {
+    ensureFxChain();
+    const fadeSec = FX_SETTINGS.fade;
+    if (fxNodes && fadeSec > 0) {
+      const now = fxCtx.currentTime;
+      fxNodes.fadeGain.gain.cancelScheduledValues(now);
+      fxNodes.fadeGain.gain.setValueAtTime(0, now);
+      fxNodes.fadeGain.gain.linearRampToValueAtTime(1, now + fadeSec);
+    } else if (fxNodes) {
+      fxNodes.fadeGain.gain.cancelScheduledValues(fxCtx.currentTime);
+      fxNodes.fadeGain.gain.value = 1;
+    }
+    _startPeakMeter();
+  });
+  audio.addEventListener("pause", () => {
+    _stopPeakMeter();
+    if (fxNodes) {
+      fxNodes.fadeGain.gain.cancelScheduledValues(fxCtx.currentTime);
+      fxNodes.fadeGain.gain.value = 1;
+    }
+  });
+  audio.addEventListener("ended", () => {
+    _stopPeakMeter();
+    if (fxNodes) {
+      fxNodes.fadeGain.gain.cancelScheduledValues(fxCtx.currentTime);
+      fxNodes.fadeGain.gain.value = 1;
+    }
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", bind);

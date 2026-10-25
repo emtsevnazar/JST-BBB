@@ -6171,3 +6171,42 @@ html[data-theme="night"] body .jstp-btn.jstp-play:focus-visible {
   will-change: width;
   pointer-events: none;
 }
+
+/* === v0.9.4: play button BULLETPROOF (#jstp-play ID) === */
+#jstp-play,
+#jstp-play:not(:disabled),
+#jstp-play:hover:not(:disabled),
+#jstp-play:focus:not(:disabled),
+#jstp-play:active:not(:disabled),
+#jstp-play:focus-visible:not(:disabled) {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  color: #1a2a5e !important;
+  border: 1.5px solid #1a2a5e !important;
+  box-shadow: none !important;
+  transform: none !important;
+  outline: none !important;
+}
+#jstp-play:hover:not(:disabled),
+#jstp-play:focus-visible:not(:disabled) {
+  box-shadow: 0 0 14px rgba(26, 42, 94, 0.55) !important;
+}
+#jstp-play svg, #jstp-play svg * {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+html[data-theme="night"] #jstp-play,
+html[data-theme="night"] #jstp-play:not(:disabled),
+html[data-theme="night"] #jstp-play:hover:not(:disabled),
+html[data-theme="night"] #jstp-play:focus:not(:disabled),
+html[data-theme="night"] #jstp-play:active:not(:disabled),
+html[data-theme="night"] #jstp-play:focus-visible:not(:disabled) {
+  color: #F5B800 !important;
+  border: 1.5px solid #F5B800 !important;
+}
+html[data-theme="night"] #jstp-play:hover:not(:disabled),
+html[data-theme="night"] #jstp-play:focus-visible:not(:disabled) {
+  box-shadow: 0 0 14px rgba(245, 184, 0, 0.65) !important;
+}
