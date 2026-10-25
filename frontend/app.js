@@ -746,151 +746,19 @@ function bindUI() {
 
   // Random text
   const btnR = $("btn-random");
-  const _btnSynth = $("btn-synth"); if (_btnSynth) _btnSynth.addEventListener("click", synthesize);
-  const _btnStop = $("btn-stop"); if (_btnStop) _btnStop.addEventListener("click", stopPlayback);
   if (btnR) btnR.addEventListener("click", () => {
-    const SAMPLES = {
-      ru: [
-        "Привет! Это тестовая озвучка обученным голосом. Слышно ли различие с оригиналом?",
-        "Сегодня прекрасная погода, а завтра обещают дождь и сильный ветер.",
-        "Космос — это бесконечность, полная загадок и удивительных открытий.",
-        "Он сказал очень громко, а потом тихо прошептал: не рассказывай никому.",
-        "Первый закон робототехники гласит: не навреди человеку своими действиями.",
-        "Утренний кофе бодрит лучше, чем любой будильник, и это научный факт.",
-        "В тихом омуте черти водятся, но иногда там просто очень спокойные лягушки.",
-        "Программист — это человек, который решает проблему, о существовании которой не знал.",
-        "Книга — лучший подарок, особенно если её выбрал кто-то, кто тебя знает.",
-        "Москва не сразу строилась, но и сносилась она тоже не за один день.",
-        "Искусственный интеллект не заменит человека, но заменит его рутинные задачи.",
-        "Слушай внимательно, говори спокойно, думай тщательно — три правила мудреца.",
-        "Наука — это не про ответы, наука — это про правильные вопросы.",
-        "Осень в этом году выдалась на удивление тёплой и очень красивой.",
-        "Хороший сон — это половина здоровья, а вторая половина — это хороший обед.",
-        "Иногда, чтобы идти вперёд, нужно остановиться и посмотреть по сторонам.",
-        "Слово не воробей, вылетит — не поймаешь, особенно в прямом эфире.",
-        "Все великие открытия начинались с простого вопроса: а что если?",
-        "Путешествие в тысячу миль начинается с первого шага, и это правда.",
-        "Молчание — золото, но иногда тишина стоит дороже любых слов."
-      ],
-      en: [
-        "Hello! This is a test recording with a trained voice. Can you hear the difference?",
-        "The weather is wonderful today, and rain is expected tomorrow with strong winds.",
-        "Space is an infinity full of mysteries and wonderful discoveries.",
-        "He said it very loudly, then whispered softly: don't tell anyone.",
-        "The first law of robotics says: do not harm a human being through your actions.",
-        "Morning coffee wakes you up better than any alarm clock, and that's a scientific fact.",
-        "Still waters run deep, but sometimes they just have very calm frogs in them.",
-        "A programmer is someone who solves a problem that didn't know existed.",
-        "A book is the best gift, especially if it was chosen by someone who knows you.",
-        "Rome wasn't built in a day, but it wasn't demolished in one either.",
-        "Artificial intelligence won't replace humans, but it will replace their routine tasks.",
-        "Listen carefully, speak calmly, think thoroughly — three rules of a wise man.",
-        "Science isn't about answers, science is about the right questions.",
-        "Autumn this year turned out surprisingly warm and very beautiful.",
-        "Good sleep is half of health, and the other half is a good meal.",
-        "Sometimes, to move forward, you need to stop and look around.",
-        "A word is not a sparrow, once it flies out you can't catch it, especially live.",
-        "All great discoveries started with a simple question: what if?",
-        "A journey of a thousand miles begins with the first step, and that's true.",
-        "Silence is golden, but sometimes silence costs more than any words."
-      ],
-      de: [
-        "Hallo! Dies ist eine Testaufnahme mit einer trainierten Stimme. Hört man den Unterschied?",
-        "Das Wetter ist heute wunderschön, morgen regnet es und es wird windig.",
-        "Der Weltraum ist eine Unendlichkeit voller Geheimnisse und Entdeckungen.",
-        "Er sagte es sehr laut und flüsterte dann leise: erzähl es niemandem.",
-        "Das erste Robotergesetz lautet: füge einem Menschen keinen Schaden zu.",
-        "Morgenkaffee weckt besser als jeder Wecker, und das ist eine Tatsache.",
-        "Stille Wasser sind tief, aber manchmal haben sie einfach nur ruhige Frösche.",
-        "Ein Programmierer ist jemand, der ein Problem löst, das nicht existierte.",
-        "Ein Buch ist das beste Geschenk, besonders wenn es jemand ausgewählt hat, der dich kennt.",
-        "Rom wurde nicht an einem Tag erbaut, aber auch nicht an einem abgerissen."
-      ],
-      fr: [
-        "Bonjour ! Ceci est un test avec une voix entraînée. Entendez-vous la différence ?",
-        "Le temps est magnifique aujourd'hui, la pluie et le vent sont prévus demain.",
-        "L'espace est une infinité pleine de mystères et de découvertes étonnantes.",
-        "Il l'a dit très fort, puis a chuchoté doucement : ne le dis à personne.",
-        "La première loi de la robotique dit : ne fais pas de mal à un être humain.",
-        "Le café du matin réveille mieux que n'importe quel réveil, c'est un fait.",
-        "Les eaux calmes sont profondes, mais parfois elles ont juste des grenouilles tranquilles.",
-        "Un programmeur est quelqu'un qui résout un problème qui n'existait pas.",
-        "Un livre est le meilleur cadeau, surtout s'il a été choisi par quelqu'un qui te connaît.",
-        "Rome ne s'est pas faite en un jour, mais elle ne s'est pas démolie en un jour non plus."
-      ],
-      es: [
-        "¡Hola! Esta es una grabación de prueba con una voz entrenada. ¿Se nota la diferencia?",
-        "El tiempo es maravilloso hoy, mañana lloverá y hará mucho viento.",
-        "El espacio es una infinitud llena de misterios y descubrimientos asombrosos.",
-        "Lo dijo muy alto y luego susurró suavemente: no se lo cuentes a nadie.",
-        "La primera ley de la robótica dice: no dañes a un ser humano.",
-        "El café de la mañana despierta mejor que cualquier despertador, es un hecho.",
-        "Las aguas tranquilas son profundas, pero a veces solo tienen ranas muy tranquilas.",
-        "Un programador es alguien que resuelve un problema que no existía.",
-        "Un libro es el mejor regalo, especialmente si lo eligió alguien que te conoce.",
-        "Roma no se construyó en un día, pero tampoco se derribó en uno."
-      ],
-      it: [
-        "Ciao! Questa è una registrazione di prova con una voce addestrata. Si sente la differenza?",
-        "Il tempo è meraviglioso oggi, domani pioverà e ci sarà molto vento.",
-        "Lo spazio è un'infinità piena di misteri e scoperte sorprendenti.",
-        "Lo disse molto forte, poi sussurrò piano: non dirlo a nessuno.",
-        "La prima legge della robotica dice: non fare del male a un essere umano.",
-        "Il caffè del mattino sveglia meglio di qualsiasi sveglia, è un dato di fatto."
-      ],
-      pt: [
-        "Olá! Esta é uma gravação de teste com uma voz treinada. Nota a diferença?",
-        "O tempo está maravilhoso hoje, amanhã vai chover e fazer muito vento.",
-        "O espaço é uma infinidade cheia de mistérios e descobertas surpreendentes.",
-        "Ele disse bem alto e depois sussurrou baixinho: não conte a ninguém.",
-        "A primeira lei da robótica diz: não cause dano a um ser humano."
-      ],
-      pl: [
-        "Cześć! To jest nagranie testowe z wytrenowanym głosem. Słyszysz różnicę?",
-        "Pogoda jest dziś wspaniała, jutro będzie padać i mocno wiać.",
-        "Kosmos to nieskończoność pełna tajemnic i zdumiewających odkryć.",
-        "Powiedział to bardzo głośno, a potem cicho szepnął: nikomu nie mów."
-      ],
-      tr: [
-        "Merhaba! Bu, eğitilmiş bir sesle yapılan bir test kaydıdır. Farkı duyuyor musunuz?",
-        "Bugün hava harika, yarın yağmur ve kuvvetli rüzgar bekleniyor.",
-        "Uzay, gizemler ve şaşırtıcı keşiflerle dolu bir sonsuzluktur.",
-        "Bunu çok yüksek sesle söyledi, sonra sessizce fısıldadı: kimseye söyleme."
-      ],
-      zh: [
-        "你好！这是用训练过的声音做的测试录音。你听得出区别吗？",
-        "今天天气非常好，明天预计会下雨并伴有大风。",
-        "宇宙是充满奥秘和惊人发现的无限空间。",
-        "他很大声地说了出来，然后轻声耳语：不要告诉任何人。"
-      ],
-      ja: [
-        "こんにちは！これはトレーニングされた声でのテスト録音です。違いが分かりますか？",
-        "今日はとても良い天気ですが、明日は雨と強風が予想されます。",
-        "宇宙は謎と驚くべき発見に満ちた無限の空間です。",
-        "彼はとても大きな声で言ってから、静かにささやきました：誰にも言わないで。"
-      ],
-      ko: [
-        "안녕하세요! 훈련된 음성으로 만든 테스트 녹음입니다. 차이가 들리시나요?",
-        "오늘 날씨는 정말 좋지만 내일은 비와 강한 바람이 예상됩니다.",
-        "우주는 신비와 놀라운 발견으로 가득 찬 무한한 공간입니다.",
-        "그는 아주 크게 말한 뒤 조용히 속삭였습니다: 아무에게도 말하지 마."
-      ],
-      ar: [
-        "مرحباً! هذا تسجيل تجريبي بصوت مدرب. هل تسمع الفرق؟",
-        "الطقس رائع اليوم، ومن المتوقع المطر والرياح القوية غداً.",
-        "الفضاء لانهاية مليئة بالأسرار والاكتشافات المذهلة.",
-        "قالها بصوت عالٍ جداً ثم همس بهدوء: لا تخبر أحداً."
-      ]
-    };
-    // Защита: если для языка нет банка фраз — берём английский
-    const arr = SAMPLES[currentLang] || SAMPLES.en;
-    // Избегаем повтора последней фразы
-    let picked = arr[Math.floor(Math.random() * arr.length)];
-    if (textEl && textEl.value === picked && arr.length > 1) {
-      const idx = arr.indexOf(picked);
-      picked = arr[(idx + 1 + Math.floor(Math.random() * (arr.length - 1))) % arr.length];
+    const lang = (document.documentElement.lang || "ru").toLowerCase();
+    const bank = (window.JST_TEST_PHRASES && window.JST_TEST_PHRASES[lang]) || [];
+    if (!bank.length) {
+      console.warn("[JST] JST_TEST_PHRASES пуст для lang=", lang);
+      return;
     }
-    if (textEl) textEl.value = picked;
+    const phrase = bank[Math.floor(Math.random() * bank.length)];
+    const ta = $("text");
+    if (ta) {
+      ta.value = phrase;
+      ta.dispatchEvent(new Event("input", { bubbles: true }));
+    }
   });
 
   // Clear — очищает textarea
@@ -3129,4 +2997,57 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   }
 
   setTimeout(freezePlayButton, 300);
+})();
+
+// === v1.1.0: FX settings UI bindings (только UI + localStorage) ===
+(function () {
+  "use strict";
+  const STORE_KEY = "jstp-fx-settings";
+  let st = {};
+  try { st = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch (e) { st = {}; }
+
+  const DEFAULTS = {
+    pitch: 0,
+    fadeIn: 0,
+    fadeOut: 0,
+    mono: false,
+    width: 1,
+    limiter: false,
+  };
+  for (const k in DEFAULTS) {
+    if (st[k] == null) st[k] = DEFAULTS[k];
+  }
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(st)); } catch (e) {}
+  }
+
+  function bind(id, key, formatVal, isCheckbox) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const valEl = document.getElementById(id + "-val");
+    if (isCheckbox) {
+      el.checked = !!st[key];
+    } else {
+      el.value = String(st[key]);
+      if (valEl && formatVal) valEl.textContent = formatVal(st[key]);
+    }
+    const ev = isCheckbox ? "change" : "input";
+    el.addEventListener(ev, () => {
+      st[key] = isCheckbox ? !!el.checked : parseFloat(el.value);
+      if (valEl && formatVal) valEl.textContent = formatVal(st[key]);
+      save();
+    });
+  }
+
+  bind("jstp-opt-pitch",    "pitch",   v => String(Math.round(v)));
+  bind("jstp-opt-fade-in",  "fadeIn",  v => Number(v).toFixed(1));
+  bind("jstp-opt-fade-out", "fadeOut", v => Number(v).toFixed(1));
+  bind("jstp-opt-mono",     "mono",    null, true);
+  bind("jstp-opt-width",    "width",   v => Number(v).toFixed(1));
+  bind("jstp-opt-limiter",  "limiter", null, true);
+
+  // Экспортируем getter наружу (пригодится в Step D — Web Audio)
+  window.JST_FX_SETTINGS = st;
+  window.JST_FX_SAVE = save;
 })();
