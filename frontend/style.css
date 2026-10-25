@@ -5955,3 +5955,19 @@ html[data-theme="night"] .jstp-btn.active:hover {
   border-color: var(--gold, #F5B800) !important;
   box-shadow: 0 0 16px rgba(245,184,0,0.7) !important;
 }
+
+/* === P6.14-fix4: имя файла в плеере === */
+.jstp-filename {
+  font-size: 11px;
+  color: var(--text-dim, #888);
+  padding: 2px 8px;
+  margin: 4px 0 2px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.7;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.jstp-filename:empty { display: none; }

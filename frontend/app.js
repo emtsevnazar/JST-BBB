@@ -2195,7 +2195,7 @@ window.addEventListener("load", init);
   const isNight = () => document.documentElement.getAttribute("data-theme") === "night";
   const COLOR = {
     day:   { idle: "#1a2a5e",              playing: "#F5B800", playhead: "#1a2a5e" },
-    night: { idle: "rgba(245,184,0,0.55)", playing: "#e63946", playhead: "#F5B800" },
+    night: { idle: "rgba(245,184,0,0.55)", playing: "#FFD700", playhead: "#F5B800" },
   };
   let isPlayingState = false;
 
@@ -2294,7 +2294,7 @@ window.addEventListener("load", init);
     const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
     const progressX = dur > 0 ? (currentTime / dur) * w : 0;
     const mid = h / 2;
-    const amp = h * 0.42;
+    const amp = h * 0.44;
 
     const pts = [];
     for (let i = 0; i < n; i++) {
@@ -2304,7 +2304,7 @@ window.addEventListener("load", init);
     }
     if (pts.length < 2) return;
 
-    function buildPath() {
+    function buildLine() {
       ctx.beginPath();
       ctx.moveTo(pts[0].x, pts[0].y);
       for (let i = 1; i < pts.length - 1; i++) {
@@ -2314,59 +2314,82 @@ window.addEventListener("load", init);
       }
       ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
     }
+    function buildTopArea() {
+      ctx.beginPath();
+      ctx.moveTo(0, mid);
+      ctx.lineTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const xc = (pts[i].x + pts[i + 1].x) / 2;
+        const yc = (pts[i].y + pts[i + 1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+      }
+      ctx.lineTo(w, mid);
+      ctx.closePath();
+    }
+    function buildBotArea() {
+      ctx.beginPath();
+      ctx.moveTo(0, mid);
+      ctx.lineTo(pts[0].x, h - pts[0].y);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const xc = (pts[i].x + pts[i + 1].x) / 2;
+        const yc = ((h - pts[i].y) + (h - pts[i + 1].y)) / 2;
+        ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
+      }
+      ctx.lineTo(w, mid);
+      ctx.closePath();
+    }
 
-    const lw = Math.max(2, h / 45);
+    const fillAlpha = night ? "rgba(245,184,0,0.12)" : "rgba(26,42,94,0.10)";
+    const fillZero  = night ? "rgba(245,184,0,0)"    : "rgba(26,42,94,0)";
 
-    // === Плавная волна (сверху + зеркально снизу), один цвет ===
+    ctx.save();
+    buildTopArea();
+    const gT = ctx.createLinearGradient(0, 0, 0, mid);
+    gT.addColorStop(0, fillAlpha); gT.addColorStop(1, fillZero);
+    ctx.fillStyle = gT; ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    buildBotArea();
+    const gB = ctx.createLinearGradient(0, h, 0, mid);
+    gB.addColorStop(0, fillAlpha); gB.addColorStop(1, fillZero);
+    ctx.fillStyle = gB; ctx.fill();
+    ctx.restore();
+
+    const lw = Math.max(2, h / 50);
     ctx.save();
     ctx.shadowColor = lineColor;
-    ctx.shadowBlur = isPlayingState ? 14 : 6;
+    ctx.shadowBlur = isPlayingState ? 18 : 8;
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = lw;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-
-    buildPath();
-    ctx.stroke();
-
-    ctx.save();
-    ctx.translate(0, h);
-    ctx.scale(1, -1);
-    buildPath();
-    ctx.stroke();
+    buildLine(); ctx.stroke();
+    ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+    buildLine(); ctx.stroke();
     ctx.restore();
     ctx.restore();
 
-    // === Ось по центру (едва заметно) ===
     ctx.save();
-    ctx.globalAlpha = 0.12;
+    ctx.globalAlpha = 0.1;
     ctx.strokeStyle = headColor;
     ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, mid);
-    ctx.lineTo(w, mid);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
     ctx.restore();
 
-    // === Playhead ===
     if (dur > 0) {
       ctx.save();
       ctx.strokeStyle = headColor;
       ctx.lineWidth = Math.max(1.5, w / 800);
-      ctx.beginPath();
-      ctx.moveTo(progressX, 0);
-      ctx.lineTo(progressX, h);
-      ctx.stroke();
+      ctx.globalAlpha = 0.95;
+      ctx.beginPath(); ctx.moveTo(progressX, 0); ctx.lineTo(progressX, h); ctx.stroke();
 
       const r = Math.max(5, w / 220);
+      ctx.globalAlpha = 1;
       ctx.fillStyle = headColor;
-      ctx.beginPath();
-      ctx.arc(progressX, h / 2, r, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(progressX, h / 2, r, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = night ? "#0d1a3f" : "#ffffff";
-      ctx.beginPath();
-      ctx.arc(progressX, h / 2, r * 0.45, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(progressX, h / 2, r * 0.45, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
   }
@@ -2398,6 +2421,12 @@ window.addEventListener("load", init);
     if (!url) return;
     audio.src = url;
     audio.load();
+    const fnEl = document.getElementById("jstp-filename");
+    if (fnEl) {
+      const name = url.split("/").pop() || "";
+      fnEl.textContent = name;
+      fnEl.title = name;
+    }
     if (typeof text === "string" && text) {
       const ta = document.getElementById("text");
       if (ta) ta.value = text;
@@ -2522,6 +2551,73 @@ window.addEventListener("load", init);
         }
       });
     }
+
+    // === Filename ===
+    const filenameEl = document.getElementById("jstp-filename");
+
+    // === Preserve pitch ===
+    const preserveBtn = document.getElementById("jstp-preserve");
+    if (preserveBtn) {
+      const getP = () => {
+        if ("preservesPitch" in audio) return audio.preservesPitch;
+        if ("mozPreservesPitch" in audio) return audio.mozPreservesPitch;
+        if ("webkitPreservesPitch" in audio) return audio.webkitPreservesPitch;
+        return true;
+      };
+      const setP = (v) => {
+        if ("preservesPitch" in audio) audio.preservesPitch = v;
+        if ("mozPreservesPitch" in audio) audio.mozPreservesPitch = v;
+        if ("webkitPreservesPitch" in audio) audio.webkitPreservesPitch = v;
+      };
+      setP(true);
+      preserveBtn.classList.add("active");
+      preserveBtn.addEventListener("click", () => {
+        const next = !getP();
+        setP(next);
+        preserveBtn.classList.toggle("active", next);
+        preserveBtn.title = next ? "Питч сохраняется" : "Питч меняется со скоростью";
+      });
+    }
+
+    // === Download from player ===
+    const dlBtn = document.getElementById("jstp-download");
+    if (dlBtn) {
+      dlBtn.addEventListener("click", () => {
+        if (!audio || !audio.src) return;
+        const a = document.createElement("a");
+        a.href = audio.src;
+        a.download = audio.src.split("/").pop() || "audio.wav";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    }
+
+    // === Keyboard shortcuts ===
+    document.addEventListener("keydown", (ev) => {
+      const tag = (ev.target.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if (!player || !player.classList.contains("visible")) return;
+      if (ev.code === "Space") {
+        ev.preventDefault();
+        if (audio.paused) audio.play().catch(() => {});
+        else audio.pause();
+      } else if (ev.code === "ArrowLeft") {
+        ev.preventDefault();
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+      } else if (ev.code === "ArrowRight") {
+        ev.preventDefault();
+        audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5);
+      } else if (ev.code === "ArrowUp") {
+        ev.preventDefault();
+        audio.volume = Math.min(1, audio.volume + 0.1);
+        if (vol) vol.value = audio.volume;
+      } else if (ev.code === "ArrowDown") {
+        ev.preventDefault();
+        audio.volume = Math.max(0, audio.volume - 0.1);
+        if (vol) vol.value = audio.volume;
+      }
+    });
 
     window.addEventListener("jst:load-audio", (ev) => {
       const { url, text } = ev.detail || {};
