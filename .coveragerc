@@ -1,19 +1,13 @@
 [run]
 source = backend
-# Модули, которые нельзя покрыть unit-тестами (требуют реальных моделей/весов,
-# либо это тонкие реэкспорты). Проверяются smoke-тестами (P3.7) и вручную.
 omit =
-    */test_real_engine.py
-    backend/engine.py
-    backend/services/clone_engine.py
-    backend/main.py
-    backend/core/config.py
     backend/tests/*
+    backend/__pycache__/*
+    */__pycache__/*
 
 [report]
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
-    if TYPE_CHECKING:
     if __name__ == .__main__.:
-show_missing = True
+    if TYPE_CHECKING:
