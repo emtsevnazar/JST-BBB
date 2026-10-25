@@ -3,7 +3,7 @@
 const I18N = {
   ru: {
     mood:"Настроение",
-    batch:"Пакет", batch_lang:"Язык", text_ph:"Введите текст", batch_title:"Пакетный синтез", batch_text:"Текст",
+    batch:"Пакет", batch_lang:"Язык", text_ph:"Введите текст…", synth_wait:"Идёт синтез — подождите", batch_title:"Пакетный синтез", batch_text:"Текст",
     batch_voice:"Голос", batch_model:"Модель", batch_settings:"Настройки",
     batch_adv:"Дополнительно", batch_submit:"В очередь", batch_download:"ZIP",
     batch_empty:"Задач пока нет", batch_in_queue:"в очереди", batch_running:"синтез…",
@@ -56,7 +56,7 @@ const I18N = {
   },
   en: {
     mood:"Mood",
-    batch:"Batch", batch_lang:"Language", text_ph:"Enter text", batch_title:"Batch synthesis", batch_text:"Text",
+    batch:"Batch", batch_lang:"Language", text_ph:"Enter text…", synth_wait:"Synthesis in progress — please wait", batch_title:"Batch synthesis", batch_text:"Text",
     batch_voice:"Voice", batch_model:"Model", batch_settings:"Settings",
     batch_adv:"Extra", batch_submit:"Queue", batch_download:"ZIP",
     batch_empty:"No tasks yet", batch_in_queue:"queued", batch_running:"synthesizing…",
@@ -412,7 +412,7 @@ function synthesize() {
 
   // 1. Guard: если уже идёт — toast, выходим
   if (btnS && btnS.classList.contains("is-busy")) {
-    if (typeof showToast === "function") showToast((t("status_synth") || "Идёт синтез") + " — подождите");
+    if (typeof showToast === "function") showToast(t("synth_wait") || "Идёт синтез — подождите");
     return;
   }
   if (isStreaming) return;
@@ -1929,13 +1929,13 @@ window.addEventListener("load", init);
         <div class="batch-body">
           <div class="batch-row-3">
             <label class="batch-label"><span data-i18n="batch_model">Модель</span>
-              <select class="batch-model"></select>
+              <div class="select-wrap"><select class="select batch-model"></select></div>
             </label>
             <label class="batch-label"><span data-i18n="batch_voice">Голос</span>
-              <select class="batch-voice"></select>
+              <div class="select-wrap"><select class="select batch-voice"></select></div>
             </label>
             <label class="batch-label"><span data-i18n="batch_lang">Язык</span>
-              <select class="batch-lang"></select>
+              <div class="select-wrap"><select class="select batch-lang"></select></div>
             </label>
           </div>
           <label class="batch-label"><span data-i18n="batch_text">Текст</span>
