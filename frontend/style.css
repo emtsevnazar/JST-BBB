@@ -5496,3 +5496,26 @@ html[data-theme="night"] body #btn-batch.btn.btn-ghost:active {
   border-color: var(--red) !important;
   cursor: not-allowed !important;
 }
+
+/* === P6.7: bright-yellow hover (побеждает :not(#p1..5)) === */
+
+/* Норма (день+ночь): нейтральная рамка var(--panel-border).
+   Специфичность (7,3,0,2) > (6,3,0,2) у rules 3614/3618. */
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f) {
+  border-color: var(--panel-border) !important;
+}
+html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f) {
+  border-color: var(--panel-border) !important;
+}
+
+/* Hover/focus/active (день+ночь): ярко-жёлтая рамка + glow.
+   Специфичность (7,3,1,2). */
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):focus,
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):active,
+html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):hover,
+html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):focus,
+html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):active {
+  border-color: rgb(245, 184, 0) !important;
+  box-shadow: 0 0 18px rgba(245, 184, 0, 0.55) !important;
+}
