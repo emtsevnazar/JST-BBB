@@ -2315,8 +2315,9 @@ window.addEventListener("load", init);
 
     const peaks = peakData.data;
     const n = peaks.length;
-    const dur = audio && isFinite(audio.duration) ? audio.duration : 0;
-    const progressX = dur > 0 ? Math.max(0, Math.min(w, (currentTime / dur) * w)) : 0;
+    const dur = audio && isFinite(audio.duration) && audio.duration > 0 ? audio.duration : 0;
+    const ratio = dur > 0 ? Math.max(0, Math.min(1, currentTime / dur)) : 0;
+    const progressX = w * ratio;
     const mid = h / 2;
     const amp = h * 0.42 * (PLAYER_SETTINGS.scale || 1.0);
     const alpha = PLAYER_SETTINGS.opacity || 1.0;
@@ -2324,27 +2325,49 @@ window.addEventListener("load", init);
     const glow = Math.max(0, PLAYER_SETTINGS.glow != null ? PLAYER_SETTINGS.glow : 14);
     const style = PLAYER_SETTINGS.style || "neon";
 
+    // === Сетка ===
     if (PLAYER_SETTINGS.grid) {
       ctx.save();
       ctx.strokeStyle = night ? "rgba(245,184,0,0.05)" : "rgba(26,42,94,0.05)";
       ctx.lineWidth = 1;
       const cols = 12, rows = 4;
-      for (let i = 1; i < cols; i++) {
-        const x = (w / cols) * i;
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      for (let gi = 1; gi < cols; gi++) {
+        const gx = (w / cols) * gi;
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
       }
-      for (let j = 1; j < rows; j++) {
-        const y = (h / rows) * j;
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      for (let gj = 1; gj < rows; gj++) {
+        const gy = (h / rows) * gj;
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
       }
       ctx.restore();
     }
 
+    // === Геометрия волны ===
     const pts = [];
     for (let i = 0; i < n; i++) {
       const x = (i / Math.max(1, n - 1)) * w;
       const y = mid - peaks[i] * amp;
-      pts.push({ x, y, v: peaks[i] });
+      pts.push({ x, y });
+    }
+
+    // === Градиент: слева playedColor, справа idleColor, граница на progressX ===
+    function makeGradient() {
+      const g = ctx.createLinearGradient(0, 0, w, 0);
+      if (ratio <= 0.0001) {
+        g.addColorStop(0, idleColor);
+        g.addColorStop(1, idleColor);
+      } else if (ratio >= 0.9999) {
+        g.addColorStop(0, playedColor);
+        g.addColorStop(1, playedColor);
+      } else {
+        const p1 = Math.max(0, ratio - 0.003);
+        const p2 = Math.min(1, ratio + 0.003);
+        g.addColorStop(0, playedColor);
+        g.addColorStop(p1, playedColor);
+        g.addColorStop(p2, idleColor);
+        g.addColorStop(1, idleColor);
+      }
+      return g;
     }
 
     function buildPath(target) {
@@ -2359,115 +2382,152 @@ window.addEventListener("load", init);
       target.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
     }
 
-    function paint(color) {
-      if (pts.length < 2) return;
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.shadowColor = color;
+    const grad = makeGradient();
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+
+    // ============================================
+    // BARS — столбики, цвет по X-позиции
+    // ============================================
+    if (style === "bars") {
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = glow * 0.5;
+      const barW = w / n;
+      for (let i = 0; i < n; i++) {
+        const px = i * barW;
+        const v = peaks[i] * mid * 0.92;
+        ctx.fillStyle = (px < progressX) ? playedColor : idleColor;
+        ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
+      }
+    }
+    // ============================================
+    // DOTS — точки
+    // ============================================
+    else if (style === "dots") {
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = glow * 0.6;
+      const step = Math.max(1, Math.floor(n / 180));
+      for (let i = 0; i < n; i += step) {
+        const x = (i / Math.max(1, n - 1)) * w;
+        const y = mid - peaks[i] * amp;
+        const y2 = mid + peaks[i] * amp;
+        ctx.fillStyle = (x < progressX) ? playedColor : idleColor;
+        ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y2, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    // ============================================
+    // RIBBON — закрашенная лента (fill тоже с градиентом)
+    // ============================================
+    else if (style === "ribbon") {
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = glow * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const xc = (pts[i].x + pts[i + 1].x) / 2;
+        const yc = (pts[i].y + pts[i + 1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+      }
+      ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+      ctx.lineTo(pts[pts.length - 1].x, h - pts[pts.length - 1].y);
+      for (let i = pts.length - 2; i > 0; i--) {
+        const xc = (pts[i].x + pts[i - 1].x) / 2;
+        const yc = ((h - pts[i].y) + (h - pts[i - 1].y)) / 2;
+        ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
+      }
+      ctx.lineTo(pts[0].x, h - pts[0].y);
+      ctx.closePath();
+      ctx.globalAlpha = alpha * 0.4;
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+    // ============================================
+    // STEP — ступеньки (stroke с градиентом)
+    // ============================================
+    else if (style === "step") {
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = Math.max(0, glow / 2);
+      ctx.lineWidth = thickness;
+      ctx.strokeStyle = grad;
+      const stepSize = 8;
+      ctx.beginPath();
+      let py = mid - (peaks[0] || 0) * amp;
+      ctx.moveTo(0, py);
+      for (let sx = stepSize; sx <= w; sx += stepSize) {
+        const idx = Math.min(n - 1, Math.floor((sx / w) * n));
+        py = mid - (peaks[idx] || 0) * amp;
+        ctx.lineTo(sx, py);
+      }
+      ctx.stroke();
+      ctx.beginPath();
+      py = mid + (peaks[0] || 0) * amp;
+      ctx.moveTo(0, py);
+      for (let sx = stepSize; sx <= w; sx += stepSize) {
+        const idx = Math.min(n - 1, Math.floor((sx / w) * n));
+        py = mid + (peaks[idx] || 0) * amp;
+        ctx.lineTo(sx, py);
+      }
+      ctx.stroke();
+    }
+    // ============================================
+    // LINE / MIRROR / NEON — плавная кривая с градиентом
+    // ============================================
+    else {
+      ctx.shadowColor = playedColor;
+      ctx.shadowBlur = glow;
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = thickness;
+      buildPath(ctx); ctx.stroke();
+
+      if (style !== "mirror") {
+        // Зеркальная нижняя половина
+        ctx.save();
+        ctx.translate(0, h);
+        ctx.scale(1, -1);
+        buildPath(ctx); ctx.stroke();
+        ctx.restore();
+      }
 
       if (style === "neon") {
-        ctx.shadowBlur = glow;
-        ctx.lineWidth = thickness + 1;
-        buildPath(ctx); ctx.stroke();
-        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
-        buildPath(ctx); ctx.stroke();
-        ctx.restore();
+        // Светлая сердцевина (тоже с градиентом, но светлее)
+        function makeCoreGradient() {
+          const g = ctx.createLinearGradient(0, 0, w, 0);
+          const lightPlayed = night ? "#FFF6C0" : "#FFF4D6";
+          const lightIdle = night ? "#FFF6C0" : "#EAF1FF";
+          if (ratio <= 0.0001) {
+            g.addColorStop(0, lightIdle);
+            g.addColorStop(1, lightIdle);
+          } else if (ratio >= 0.9999) {
+            g.addColorStop(0, lightPlayed);
+            g.addColorStop(1, lightPlayed);
+          } else {
+            const p1 = Math.max(0, ratio - 0.003);
+            const p2 = Math.min(1, ratio + 0.003);
+            g.addColorStop(0, lightPlayed);
+            g.addColorStop(p1, lightPlayed);
+            g.addColorStop(p2, lightIdle);
+            g.addColorStop(1, lightIdle);
+          }
+          return g;
+        }
         ctx.shadowBlur = Math.max(2, glow / 2);
-        ctx.strokeStyle = night ? "#FFF6C0" : "#EAF1FF";
+        ctx.strokeStyle = makeCoreGradient();
         ctx.lineWidth = Math.max(1, thickness - 0.8);
         buildPath(ctx); ctx.stroke();
-        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
+        ctx.save();
+        ctx.translate(0, h);
+        ctx.scale(1, -1);
         buildPath(ctx); ctx.stroke();
         ctx.restore();
-      } else if (style === "line") {
-        ctx.shadowBlur = Math.max(0, glow / 2);
-        ctx.lineWidth = thickness;
-        buildPath(ctx); ctx.stroke();
-        ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
-        buildPath(ctx); ctx.stroke();
-        ctx.restore();
-      } else if (style === "mirror") {
-        ctx.shadowBlur = Math.max(0, glow / 2);
-        ctx.lineWidth = thickness;
-        buildPath(ctx); ctx.stroke();
-      } else if (style === "bars") {
-        ctx.shadowBlur = glow * 0.5;
-        const barW = w / n;
-        for (let i = 0; i < n; i++) {
-          const px = i * barW;
-          const v = peaks[i] * mid * 0.92;
-          ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
-        }
-      } else if (style === "dots") {
-        ctx.shadowBlur = glow * 0.6;
-        const step = Math.max(1, Math.floor(n / 180));
-        for (let i = 0; i < n; i += step) {
-          const x = (i / Math.max(1, n - 1)) * w;
-          const y = mid - peaks[i] * amp;
-          const y2 = mid + peaks[i] * amp;
-          ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
-          ctx.beginPath(); ctx.arc(x, y2, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
-        }
-      } else if (style === "step") {
-        ctx.shadowBlur = Math.max(0, glow / 2);
-        ctx.lineWidth = thickness;
-        const stepSize = 8;
-        ctx.beginPath();
-        let py = mid - (peaks[0] || 0) * amp;
-        ctx.moveTo(0, py);
-        for (let x = stepSize; x <= w; x += stepSize) {
-          const idx = Math.min(n - 1, Math.floor((x / w) * n));
-          py = mid - (peaks[idx] || 0) * amp;
-          ctx.lineTo(x, py);
-        }
-        ctx.stroke();
-        ctx.beginPath();
-        py = mid + (peaks[0] || 0) * amp;
-        ctx.moveTo(0, py);
-        for (let x = stepSize; x <= w; x += stepSize) {
-          const idx = Math.min(n - 1, Math.floor((x / w) * n));
-          py = mid + (peaks[idx] || 0) * amp;
-          ctx.lineTo(x, py);
-        }
-        ctx.stroke();
-      } else if (style === "ribbon") {
-        ctx.shadowBlur = Math.max(0, glow / 2);
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length - 1; i++) {
-          const xc = (pts[i].x + pts[i + 1].x) / 2;
-          const yc = (pts[i].y + pts[i + 1].y) / 2;
-          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
-        }
-        ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
-        ctx.lineTo(pts[pts.length - 1].x, h - pts[pts.length - 1].y);
-        for (let i = pts.length - 2; i > 0; i--) {
-          const xc = (pts[i].x + pts[i - 1].x) / 2;
-          const yc = ((h - pts[i].y) + (h - pts[i - 1].y)) / 2;
-          ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
-        }
-        ctx.lineTo(pts[0].x, h - pts[0].y);
-        ctx.closePath();
-        ctx.globalAlpha = alpha * 0.35;
-        ctx.fill();
       }
-      ctx.restore();
     }
+    ctx.restore();
 
-    paint(idleColor);
-    if (progressX > 0) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 0, progressX, h);
-      ctx.clip();
-      paint(playedColor);
-      ctx.restore();
-    }
-
+    // === Ось по центру ===
     ctx.save();
     ctx.globalAlpha = 0.06;
     ctx.strokeStyle = idleColor;
@@ -2475,6 +2535,7 @@ window.addEventListener("load", init);
     ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke();
     ctx.restore();
 
+    // === Playhead ===
     if (dur > 0 && progressX > 0 && progressX < w) {
       ctx.save();
       ctx.strokeStyle = headColor;
