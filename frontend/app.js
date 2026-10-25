@@ -29,6 +29,15 @@ const I18N = {
     history:"История", status_ready:"Готов к работе", status_synth:"Синтез",
     status_stream:"Стриминг", status_done:"Готово", status_stop:"Остановлено",
     status_err:"Ошибка", help_title:"Инструкция",
+    status_plan:"План", status_phrases:"фраз",
+    status_stage_prepare:"Подготовка", status_stage_synth:"Синтез",
+    status_stage_post:"Постобработка", status_voice_select:"Выберите голос",
+    status_listening:"Слушаю...", status_stt_fail:"Не удалось",
+    status_rec_loading:"Загружаю запись", status_rec_saved:"Голос записан",
+    status_rec_timer:"Запись", status_rec_timer_hint:"Нажмите для остановки",
+    status_mic_error:"Микрофон", status_upload_required:"Имя и файлы обязательны",
+    status_uploading:"Загрузка", status_ref_building:"Сборка референса...",
+    status_uploaded:"Готово",
     footer:"© 2026 · JST (Justice Solidarity Tolerance) · Director: Emtsev Nazar · EU (France)",
     toast_not_loaded:"Модель не загружена, fallback на Core",
     toast_lang_unavailable:"Модель не поддерживает этот язык",
@@ -82,6 +91,15 @@ const I18N = {
     history:"History", status_ready:"Ready", status_synth:"Synthesizing",
     status_stream:"Streaming", status_done:"Done", status_stop:"Stopped",
     status_err:"Error", help_title:"Help",
+    status_plan:"Plan", status_phrases:"phrases",
+    status_stage_prepare:"Preparing", status_stage_synth:"Synthesizing",
+    status_stage_post:"Post-processing", status_voice_select:"Select a voice",
+    status_listening:"Listening...", status_stt_fail:"Failed",
+    status_rec_loading:"Loading recording", status_rec_saved:"Voice recorded",
+    status_rec_timer:"Recording", status_rec_timer_hint:"Click to stop",
+    status_mic_error:"Microphone", status_upload_required:"Name and files required",
+    status_uploading:"Uploading", status_ref_building:"Building reference...",
+    status_uploaded:"Done",
     footer:"© 2026 · JST (Justice Solidarity Tolerance) · Director: Emtsev Nazar · EU (France)",
     toast_not_loaded:"Model not loaded, using Core fallback",
     toast_lang_unavailable:"Model doesn't support this language",
@@ -183,6 +201,7 @@ let currentAccent = "neutral";
 let isStreaming = false;
 let audioCtx = null;
 let ws = null;
+let wsTimeoutTimer = null;
 let currentSR = 24000;
 let nextStartTime = 0;
 let totalSamples = 0;
@@ -461,7 +480,7 @@ function synthesize() {
   const text = textEl.value.trim();
   const voice = voiceEl.value;
   if (!text) { setStatus(t("text_ph") || "Введите текст", "error"); textEl.focus(); return; }
-  if (!voice) { setStatus("Выберите голос", "error"); return; }
+  if (!voice) { setStatus(t("status_voice_select"), "error"); return; }
 
   // 3. Все проверки пройдены — блокируем
   if (btnS) { btnS.disabled = false; btnS.classList.add("is-busy"); }
@@ -479,30 +498,57 @@ function synthesize() {
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
   ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize");
   ws.binaryType = "arraybuffer";
-  ws.onopen = () => ws.send(JSON.stringify({ type: "synthesize", text, voice, settings: getSettings() }));
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ type: "synthesize", text, voice, settings: getSettings() }));
+    // v1.5.3: таймаут на WS — если сервер не ответил за 10 мин — принудительно закрыть
+    wsTimeoutTimer = setTimeout(() => {
+      console.warn("[JST] WS timeout — 600s без ответа, закрываю");
+      setStatus(t("status_err") + ": timeout", "error");
+      try { ws.close(); } catch (e) {}
+      finishStreaming(null);
+    }, 600000);
+  };
   ws.onmessage = (ev) => {
     if (typeof ev.data === "string") {
       const m = JSON.parse(ev.data);
-      if (m.type === "start") { currentSR = m.sr; setStatus("Запуск: " + m.sentences + " фраз", "busy"); }
+      if (m.type === "start") { currentSR = m.sr; setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy"); }
       else if (m.type === "stage") {
-        const prefix = { prepare: "Подготовка: ", synth: "Синтез: ", post: "Постобработка: " }[m.stage] || "";
-        setStatus(prefix + (m.detail || "работаю"), "busy");
+        const stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];
+        setStatus((stageKey ? t(stageKey) + ": " : "") + (m.detail || ""), "busy");
       }
       else if (m.type === "done") { setStatus(t("status_done") + " · " + m.file, ""); finishStreaming(m.file); }
       else if (m.type === "error") { setStatus(t("status_err") + ": " + m.message, "error"); finishStreaming(null); }
     } else handleAudioChunk(ev.data);
   };
   ws.onerror = () => { setStatus(t("status_err"), "error"); finishStreaming(null); };
-  ws.onclose = () => { if (isStreaming) finishStreaming(null); };
+  ws.onclose = (ev) => {
+    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
+    if (isStreaming) {
+      console.warn("[JST] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
+      finishStreaming(null);
+    }
+  };
 }
 
 function finishStreaming(file) {
   isStreaming = false;
+  if (typeof wsTimeoutTimer !== "undefined" && wsTimeoutTimer) {
+    clearTimeout(wsTimeoutTimer);
+    wsTimeoutTimer = null;
+  }
   const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
   if (file) {
     const dl = $("btn-download"), pv = $("preview-player");
     if (dl) { dl.href = "/output/" + file; dl.download = file; }
-    if (pv) { pv.style.display = "block"; pv.src = "/output/" + file; pv.load(); }
+    if (pv) {
+      pv.onerror = () => {
+        console.error("[JST] preview-player load error for " + file);
+        setStatus(t("status_err") + ": audio load failed", "error");
+      };
+      pv.style.display = "block";
+      pv.src = "/output/" + file;
+      pv.load();
+    }
     // P6.14-fix: сообщить новому SVG-плееру
     try {
       const ta = document.getElementById("text");
@@ -606,7 +652,7 @@ function initSTT() {
     recognition.interimResults = true;
     const textEl = $("text");
     let base = textEl ? textEl.value : "";
-    recognition.onstart = () => { sttActive = true; btn.style.background = "var(--red)"; setStatus("Слушаю...", "busy"); };
+    recognition.onstart = () => { sttActive = true; btn.style.background = "var(--red)"; setStatus(t("status_listening"), "busy"); };
     recognition.onresult = (ev) => {
       let interim = "", final = "";
       for (let i = ev.resultIndex; i < ev.results.length; i++) {
@@ -618,9 +664,9 @@ function initSTT() {
         else if (interim) textEl.value = base + (base ? " " : "") + interim;
       }
     };
-    recognition.onerror = (ev) => setStatus("Ошибка: " + ev.error, "error");
-    recognition.onend = () => { sttActive = false; btn.style.background = ""; setStatus("Готово к работе", ""); };
-    try { recognition.start(); } catch(e) { setStatus("Не удалось: " + e.message, "error"); }
+    recognition.onerror = (ev) => setStatus(t("status_err") + ": " + ev.error, "error");
+    recognition.onend = () => { sttActive = false; btn.style.background = ""; setStatus(t("status_ready"), ""); };
+    try { recognition.start(); } catch(e) { setStatus(t("status_stt_fail") + ": " + e.message, "error"); }
   });
 }
 
@@ -640,7 +686,7 @@ function initRecordButton() {
         btn.style.background = ""; btn.style.color = "";
         const blob = new Blob(recordedChunks, { type: "audio/webm" });
         const dur = ((Date.now() - recordStartTime) / 1000).toFixed(1);
-        setStatus("Загружаю запись (" + dur + "с)...", "busy");
+        setStatus(t("status_rec_loading") + " (" + dur + "s)...", "busy");
         const nv = $("new-voice");
         let name = nv ? nv.value.trim() : "";
         if (!name) { name = "recorded_" + Date.now(); if (nv) nv.value = name; }
@@ -654,15 +700,15 @@ function initRecordButton() {
           await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
           await loadVoices();
           const v = $("voice"); if (v) v.value = name;
-          setStatus("Голос записан: " + name, "");
+          setStatus(t("status_rec_saved") + ": " + name, "");
         } catch(e) { setStatus("Ошибка: " + e.message, "error"); }
       };
       mediaRecorder.start();
       recordStartTime = Date.now();
       btn.style.background = "var(--red)"; btn.style.color = "#fff";
       let sec = 0;
-      recordTimer = setInterval(() => { sec++; setStatus("Запись: " + sec + "с. Нажмите для остановки", "busy"); }, 1000);
-    } catch(e) { setStatus("Микрофон: " + e.message, "error"); }
+      recordTimer = setInterval(() => { sec++; setStatus(t("status_rec_timer") + ": " + sec + "s. " + t("status_rec_timer_hint"), "busy"); }, 1000);
+    } catch(e) { setStatus(t("status_mic_error") + ": " + e.message, "error"); }
   });
 }
 
@@ -787,7 +833,7 @@ function bindUI() {
   const _btnSynth = $("btn-synth"); if (_btnSynth) _btnSynth.addEventListener("click", synthesize);
   const _btnStop = $("btn-stop"); if (_btnStop) _btnStop.addEventListener("click", stopPlayback);
   if (btnR) btnR.addEventListener("click", () => {
-    const lang = (currentLang || "ru").toLowerCase();  // v1.5.1: язык синтеза
+    const lang = (currentLang || LANG || "ru").toLowerCase();  // v1.5.2: currentLang → LANG → "ru"
     const bank = (window.JST_TEST_PHRASES && window.JST_TEST_PHRASES[lang]) || [];
     if (!bank.length) {
       console.warn("[JST] JST_TEST_PHRASES пуст для lang=", lang);
@@ -847,23 +893,23 @@ async function uploadVoice() {
   if (!nv || !vf || !bu) return;
   const name = nv.value.trim();
   const files = vf.files;
-  if (!name || !files.length) { setStatus("Имя и файлы обязательны", "error"); return; }
+  if (!name || !files.length) { setStatus(t("status_upload_required"), "error"); return; }
   bu.disabled = true;
   try {
     const fd = new FormData(); fd.append("name", name);
     await fetch("/api/voices/create", { method: "POST", body: fd });
     for (let i = 0; i < files.length; i++) {
-      setStatus("Загрузка " + (i+1) + "/" + files.length, "busy");
+      setStatus(t("status_uploading") + " " + (i+1) + "/" + files.length, "busy");
       const ffd = new FormData(); ffd.append("file", files[i]);
       await fetch("/api/voices/" + encodeURIComponent(name) + "/upload", { method: "POST", body: ffd });
     }
-    setStatus("Сборка референса...", "busy");
+    setStatus(t("status_ref_building"), "busy");
     const fd2 = new FormData(); fd2.append("ref_length", ($("ref_length")||{}).value || "15");
     await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
     await loadVoices();
     const v = $("voice"); if (v) v.value = name;
     nv.value = ""; vf.value = "";
-    setStatus("Готово: " + name, "");
+    setStatus(t("status_uploaded") + ": " + name, "");
   } catch(e) { setStatus("Ошибка: " + e.message, "error"); }
   finally { bu.disabled = false; }
 }

@@ -34,6 +34,13 @@ SYS_FREE_MIN = float(os.getenv("JST_SYS_FREE_MIN_PCT", "10"))
 MEMORY_LOG = Path("logs/memory.log")
 MEMORY_LOG.parent.mkdir(exist_ok=True)
 
+# v1.5.2: grace period после старта + streak для sys_free
+GRACE_SEC = float(os.getenv("JST_GUARD_GRACE_SEC", "120"))
+SYS_LOW_MAX_STREAK = int(os.getenv("JST_SYS_LOW_MAX_STREAK", "3"))
+_sys_low_streak = 0
+_startup_time = time.time()
+MEMORY_LOG.parent.mkdir(exist_ok=True)
+
 
 def _system_mem() -> dict:
     """Кроссплатформенно: free/total MB и free_pct через psutil."""
@@ -75,12 +82,23 @@ async def memory_guard_loop() -> None:
                 os.kill(os.getpid(), signal.SIGTERM)
                 return
 
-            if mem["free_pct"] < SYS_FREE_MIN:
-                action = f"sys_free_low({mem['free_pct']:.1f}<{SYS_FREE_MIN})"
-                logger.error("[guard] %s → SIGTERM", action)
-                _log_mem(rss_gb, mem, action)
-                os.kill(os.getpid(), signal.SIGTERM)
-                return
+            uptime = time.time() - _startup_time
+            is_grace = uptime < GRACE_SEC
+            if not is_grace and mem["free_pct"] < SYS_FREE_MIN:
+                global _sys_low_streak
+                _sys_low_streak += 1
+                if _sys_low_streak >= SYS_LOW_MAX_STREAK:
+                    action = f"sys_free_low({mem['free_pct']:.1f}<{SYS_FREE_MIN}, streak={_sys_low_streak})"
+                    logger.error("[guard] %s → SIGTERM", action)
+                    _log_mem(rss_gb, mem, action)
+                    os.kill(os.getpid(), signal.SIGTERM)
+                    return
+                else:
+                    action = f"sys_free_warn({mem['free_pct']:.1f}, streak={_sys_low_streak})"
+                    logger.warning("[guard] %s", action)
+                    _log_mem(rss_gb, mem, action)
+            else:
+                _sys_low_streak = 0
 
             _log_mem(rss_gb, mem, action)
         except asyncio.CancelledError:
