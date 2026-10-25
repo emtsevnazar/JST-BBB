@@ -426,7 +426,7 @@ function synthesize() {
   if (pv) pv.addEventListener("click", () => {
     if (pv.paused) pv.play(); else pv.pause();
   });
-  if (btnS) btnS.disabled = true;
+  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.add("is-busy"); }
   if (btnT) btnT.disabled = false;
   if (pv) pv.style.display = "none";
   setStatus(t("status_synth") + "...", "busy");
@@ -486,7 +486,7 @@ function updateProgress() {
 
 function finishStreaming(file) {
   isStreaming = false;
-  const btnS = $("btn-synth"); if (btnS) btnS.disabled = false;
+  const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
   if (file) {
     const dl = $("btn-download"), pv = $("preview-player");
     if (dl) { dl.href = "/output/" + file; dl.download = file; }
@@ -502,7 +502,7 @@ function stopPlayback() {
   if (ws) { try { ws.close(); } catch(e) {} ws = null; }
   isStreaming = false;
   const btnS = $("btn-synth"), btnT = $("btn-stop");
-  if (btnS) btnS.disabled = false;
+  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
   if (btnT) btnT.disabled = true;
   setStatus(t("status_stop"), "");
   if (animFrame) cancelAnimationFrame(animFrame);

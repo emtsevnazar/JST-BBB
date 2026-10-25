@@ -5519,3 +5519,45 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   border-color: rgb(245, 184, 0) !important;
   box-shadow: 0 0 18px rgba(245, 184, 0, 0.55) !important;
 }
+
+/* === P6.8: is-busy для btn-synth + анти-мерцание === */
+
+/* Анти-мерцание: у #btn-synth не transition на background (градиент не transition-ится) */
+#btn-synth {
+  transition: box-shadow .2s ease, transform .15s ease, opacity .2s ease !important;
+}
+
+/* Явно фиксируем градиент на всех состояниях (day+night) */
+#btn-synth.btn.btn-primary,
+#btn-synth.btn.btn-primary:hover,
+#btn-synth.btn.btn-primary:focus,
+#btn-synth.btn.btn-primary:active,
+[data-theme="night"] #btn-synth.btn.btn-primary,
+[data-theme="night"] #btn-synth.btn.btn-primary:hover,
+[data-theme="night"] #btn-synth.btn.btn-primary:focus,
+[data-theme="night"] #btn-synth.btn.btn-primary:active {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  background-color: var(--gold) !important;
+  color: var(--navy-dark) !important;
+}
+#btn-synth.btn.btn-primary *,
+[data-theme="night"] #btn-synth.btn.btn-primary * {
+  color: var(--navy-dark) !important;
+  fill: var(--navy-dark) !important;
+}
+
+/* Busy: не мерцает, но при hover/active — красная рамка */
+#btn-synth.is-busy {
+  opacity: .75 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: 0 4px 14px rgba(245,184,0,.2) !important;
+}
+#btn-synth.is-busy:hover,
+#btn-synth.is-busy:focus,
+#btn-synth.is-busy:active {
+  border: 1.5px solid var(--red) !important;
+  box-shadow: 0 0 18px rgba(230, 57, 70, 0.5) !important;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  transform: none !important;
+}
