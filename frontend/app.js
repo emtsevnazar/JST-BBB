@@ -408,6 +408,34 @@ function getSettings() {
 
 // === SYNTHESIS ===
 function synthesize() {
+  // P6.10a: guard от параллельного запуска
+  const _btnS = $("btn-synth");
+  const _btnT = $("btn-stop");
+  if (_btnS && _btnS.classList.contains("is-busy")) {
+    if (typeof showToast === "function") showToast(t("status_synth") + " — подождите");
+    return;
+  }
+  if (_btnS) _btnS.classList.add("is-busy");
+  if (_btnT) _btnT.disabled = false;
+  const _clearBusy = () => {
+    if (_btnS) _btnS.classList.remove("is-busy");
+    if (_btnT) _btnT.disabled = true;
+  };
+  // После создания WS — подписаться на close/error, чтобы снять блокировку
+  setTimeout(() => {
+    const w = (typeof ws !== "undefined" ? ws : window.ws);
+    if (!w) return;
+    const prevClose = w.onclose;
+    const prevErr = w.onerror;
+    w.addEventListener("close", () => _clearBusy(), { once: true });
+    w.addEventListener("error", () => _clearBusy(), { once: true });
+    if (typeof prevClose === "function") {
+      w.onclose = function (ev) { _clearBusy(); try { prevClose.call(this, ev); } catch (e) {} };
+    }
+    if (typeof prevErr === "function") {
+      w.onerror = function (ev) { _clearBusy(); try { prevErr.call(this, ev); } catch (e) {} };
+    }
+  }, 0);
   if (isStreaming) return;
   const textEl = $("text"), voiceEl = $("voice");
   if (!textEl || !voiceEl) return;
@@ -759,8 +787,7 @@ function bindUI() {
     });
   });
 
-  const btnS = $("btn-synth"); if (btnS) btnS.addEventListener("click", synthesize);
-  const btnT = $("btn-stop"); if (btnT) btnT.addEventListener("click", stopPlayback);
+
 
   const textEl = $("text");
   if (textEl) textEl.addEventListener("keydown", e => {

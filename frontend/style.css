@@ -5701,3 +5701,39 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   cursor: pointer;
 }
 .jst-rate:hover { border-color: var(--gold); }
+
+/* === P6.10a: is-busy красная рамка + guard === */
+/* Пока синтез идёт — Озвучить красная, некликабельна, НЕ темнеет */
+#btn-synth.is-busy {
+  opacity: 1 !important;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
+  color: var(--navy-dark) !important;
+  border: 1.5px solid var(--red) !important;
+  box-shadow: 0 0 16px rgba(230, 57, 70, 0.5) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+#btn-synth.is-busy:hover,
+#btn-synth.is-busy:focus,
+#btn-synth.is-busy:active {
+  border: 1.5px solid var(--red) !important;
+  box-shadow: 0 0 20px rgba(230, 57, 70, 0.65) !important;
+  transform: none !important;
+}
+#btn-synth.is-busy * {
+  color: var(--navy-dark) !important;
+  fill: var(--navy-dark) !important;
+}
+
+/* Стоп — активен только когда синтез/стриминг идёт */
+#btn-stop:disabled {
+  opacity: .55 !important;
+  cursor: not-allowed !important;
+}
+#btn-stop:not(:disabled) {
+  border-color: var(--red) !important;
+  color: var(--red) !important;
+}
+#btn-stop:not(:disabled):hover {
+  box-shadow: 0 0 16px rgba(230, 57, 70, 0.5) !important;
+}
