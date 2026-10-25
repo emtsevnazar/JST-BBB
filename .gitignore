@@ -83,3 +83,12 @@ htmlcov/
 # Local SQLite (jst.db) and runtime data
 data/
 backend/data/
+
+# v0.9.0
+**/.DS_Store
+*.pyc
+*.pyo
+backend/.coverage
+*.perf_*_bak
+*.sec*_bak
+.venv312/

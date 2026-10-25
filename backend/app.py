@@ -131,7 +131,7 @@ app.add_middleware(RequestSizeLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://127.0.0.1:8000", "http://localhost:8000"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -140,6 +140,70 @@ app.add_middleware(
     allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:8000", "localhost:8000"],
 )
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+
+# === v0.9.1-fix: Audit + rate limit ===
+import time as _t
+from collections import defaultdict as _defaultdict
+from collections import deque as _deque
+
+from starlette.responses import JSONResponse as _JSONResponse
+
+from .audit import log_event as _log_event
+
+_RL_BUCKETS = _defaultdict(lambda: _deque(maxlen=200))
+_RL_LIMITS = {
+    "/api/": (120, 60),
+    "/ws/": (20, 60),
+}
+
+
+def _rl_check(ip, path):
+    now = _t.time()
+    for prefix, (limit, window) in _RL_LIMITS.items():
+        if path.startswith(prefix):
+            bucket = _RL_BUCKETS[ip]
+            while bucket and now - bucket[0] > window:
+                bucket.popleft()
+            if len(bucket) >= limit:
+                return False
+            bucket.append(now)
+            return True
+    return True
+
+
+@app.middleware("http")
+async def jst_rate_limit(request, call_next):
+    ip = request.client.host if request.client else "unknown"
+    if not _rl_check(ip, request.url.path):
+        return _JSONResponse(
+            {"error": "rate_limit_exceeded", "detail": "Слишком много запросов"},
+            status_code=429,
+        )
+    return await call_next(request)
+
+
+@app.middleware("http")
+async def jst_audit_middleware(request, call_next):
+    t0 = _t.time()
+    status = 500
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+    finally:
+        dur = (_t.time() - t0) * 1000
+        try:
+            _log_event(
+                ip=request.client.host if request.client else "unknown",
+                method=request.method,
+                path=request.url.path,
+                status=status,
+                duration_ms=dur,
+                user_agent=request.headers.get("user-agent", ""),
+            )
+        except Exception:
+            pass
 
 
 app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")

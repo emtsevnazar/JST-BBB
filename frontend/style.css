@@ -6099,3 +6099,75 @@ html[data-theme="night"] .jstp-set-item select {
   width: 100% !important;
   height: 100% !important;
 }
+
+/* === v0.9.0: play button frozen (JS sets --jstp-play-* vars) === */
+body.jstp-play-frozen #jstp-play,
+body.jstp-play-frozen #jstp-play:hover,
+body.jstp-play-frozen #jstp-play:focus,
+body.jstp-play-frozen #jstp-play:active,
+body.jstp-play-frozen #jstp-play:focus-visible {
+  background-color: var(--jstp-play-bg, inherit) !important;
+  background: var(--jstp-play-bg, inherit) !important;
+  color: var(--jstp-play-fg, inherit) !important;
+  border-color: var(--jstp-play-bd, inherit) !important;
+  transform: none !important;
+}
+body.jstp-play-frozen #jstp-play:hover,
+body.jstp-play-frozen #jstp-play:focus-visible {
+  box-shadow: 0 0 14px rgba(255, 246, 192, 0.55) !important;
+}
+body.jstp-play-frozen #jstp-play svg,
+body.jstp-play-frozen #jstp-play:hover svg,
+body.jstp-play-frozen #jstp-play:focus-visible svg {
+  fill: var(--jstp-play-fg, currentColor) !important;
+  stroke: var(--jstp-play-fg, currentColor) !important;
+}
+
+/* === v0.9.1-fix: play button override gold gradient === */
+html body .jstp-btn.jstp-play,
+html body .jstp-btn.jstp-play:hover,
+html body .jstp-btn.jstp-play:focus,
+html body .jstp-btn.jstp-play:active,
+html body .jstp-btn.jstp-play:focus-visible,
+html body .jstp-btn.jstp-play:hover:not(:disabled) {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  color: var(--navy, #1a2a5e) !important;
+  border: 1.5px solid var(--navy, #1a2a5e) !important;
+  outline: none !important;
+  transform: none !important;
+}
+html body .jstp-btn.jstp-play:hover,
+html body .jstp-btn.jstp-play:focus-visible {
+  box-shadow: 0 0 14px rgba(26, 42, 94, 0.45) !important;
+}
+html body .jstp-btn.jstp-play svg,
+html body .jstp-btn.jstp-play svg * {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+html[data-theme="night"] body .jstp-btn.jstp-play,
+html[data-theme="night"] body .jstp-btn.jstp-play:hover,
+html[data-theme="night"] body .jstp-btn.jstp-play:focus,
+html[data-theme="night"] body .jstp-btn.jstp-play:active,
+html[data-theme="night"] body .jstp-btn.jstp-play:focus-visible,
+html[data-theme="night"] body .jstp-btn.jstp-play:hover:not(:disabled) {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  color: var(--gold, #F5B800) !important;
+  border: 1.5px solid var(--gold, #F5B800) !important;
+}
+html[data-theme="night"] body .jstp-btn.jstp-play:hover,
+html[data-theme="night"] body .jstp-btn.jstp-play:focus-visible {
+  box-shadow: 0 0 14px rgba(245, 184, 0, 0.65) !important;
+}
+
+/* === v0.9.3: progressEl 60fps без transition === */
+.jstp-progress {
+  transition: none !important;
+  will-change: width;
+  pointer-events: none;
+}

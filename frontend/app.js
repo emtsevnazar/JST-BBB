@@ -141,7 +141,7 @@ const ACCENTS = [
   { code:"bright", ru:"Яркий", en:"Bright", ru_d:"Выше", en_d:"Brighter" }
 ];
 
-let LANG = localStorage.getItem("jst-lang") || "ru";
+let LANG = localStorage.getItem("jst-lang") || "en";
 let MODELS = [];
 let PRESETS = {};
 let currentMode = "core";
@@ -2204,6 +2204,110 @@ window.addEventListener("load", init);
   let back5, fwd5, restart, vol, rate;
   let peakData = null, peakSrc = null, isDragging = false, dpr = 1;
 
+  // === v0.9.1-fix: performance caches ===
+  let _ptsCache = null;
+  let _ptsKey = "";
+  let _gradCache = null;
+  let _gradKey = "";
+  let _drawScheduled = false;
+
+  function _buildPtsKey() {
+    if (!peakData) return "";
+    const w = canvas ? canvas.width : 0;
+    const h = canvas ? canvas.height : 0;
+    return (peakSrc || "") + "|" + w + "|" + h + "|" + (PLAYER_SETTINGS.scale || 1);
+  }
+  function _ensurePts() {
+    const key = _buildPtsKey();
+    if (_ptsKey === key && _ptsCache) return;
+    _ptsKey = key;
+    if (!peakData) { _ptsCache = null; return; }
+    const peaks = peakData.data;
+    const n = peaks.length;
+    const w = canvas.width, h = canvas.height;
+    const mid = h / 2;
+    const amp = h * 0.42 * (PLAYER_SETTINGS.scale || 1.0);
+    const arr = new Float32Array(n * 2);
+    for (let i = 0; i < n; i++) {
+      arr[i * 2] = (i / Math.max(1, n - 1)) * w;
+      arr[i * 2 + 1] = mid - peaks[i] * amp;
+    }
+    _ptsCache = arr;
+  }
+  function _buildPath(target) {
+    const p = _ptsCache;
+    if (!p) return;
+    const n = p.length / 2;
+    target.beginPath();
+    target.moveTo(p[0], p[1]);
+    for (let i = 1; i < n - 1; i++) {
+      const x = p[i * 2], y = p[i * 2 + 1];
+      const x2 = p[(i + 1) * 2], y2 = p[(i + 1) * 2 + 1];
+      target.quadraticCurveTo(x, y, (x + x2) / 2, (y + y2) / 2);
+    }
+    target.lineTo(p[(n - 1) * 2], p[(n - 1) * 2 + 1]);
+  }
+  function _makeGradient(ratio) {
+    const rounded = Math.round(ratio * 200) / 200;
+    const key = rounded + "|" + (isNight() ? "n" : "d");
+    if (_gradCache && _gradKey === key) return _gradCache;
+    const w = canvas.width;
+    const c = isNight() ? COLOR.night : COLOR.day;
+    const g = ctx.createLinearGradient(0, 0, w, 0);
+    if (ratio <= 0.0001) { g.addColorStop(0, c.idle); g.addColorStop(1, c.idle); }
+    else if (ratio >= 0.9999) { g.addColorStop(0, c.playing); g.addColorStop(1, c.playing); }
+    else {
+      const p1 = Math.max(0, ratio - 0.003);
+      const p2 = Math.min(1, ratio + 0.003);
+      g.addColorStop(0, c.playing);
+      g.addColorStop(p1, c.playing);
+      g.addColorStop(p2, c.idle);
+      g.addColorStop(1, c.idle);
+    }
+    _gradCache = g;
+    _gradKey = key;
+    return g;
+  }
+  function scheduleDraw() {
+    if (_drawScheduled) return;
+    _drawScheduled = true;
+    requestAnimationFrame(() => {
+      _drawScheduled = false;
+      drawWave(audio.currentTime || 0);
+    });
+  }
+
+  // === v0.9.2: плавный playhead через rAF loop ===
+  let _animFrameId = null;
+  function _startAnimLoop() {
+    if (_animFrameId) return;
+    const tick = () => {
+      if (!audio || audio.paused || audio.ended) {
+        _animFrameId = null;
+        return;
+      }
+      const _d = audio.duration || 0;
+      const _c = audio.currentTime || 0;
+      if (progressEl && _d > 0) {
+        progressEl.style.width = (_c / _d * 100).toFixed(2) + "%";
+      }
+      if (curEl) curEl.textContent = fmt(_c);
+      try { drawWave(_c); } catch (e) { /* */ }
+      _animFrameId = requestAnimationFrame(tick);
+    };
+    _animFrameId = requestAnimationFrame(tick);
+  }
+  function _stopAnimLoop() {
+    if (_animFrameId) {
+      cancelAnimationFrame(_animFrameId);
+      _animFrameId = null;
+    }
+  }
+  function invalidateWaveCache() {
+    _ptsKey = "";
+    _gradKey = "";
+  }
+
   const PLAYER_SETTINGS = {
     style: "neon",
     thickness: 2,
@@ -2536,7 +2640,7 @@ window.addEventListener("load", init);
     ctx.restore();
 
     // === Playhead ===
-    if (dur > 0 && progressX > 0 && progressX < w) {
+    if (dur > 0) {
       ctx.save();
       ctx.strokeStyle = headColor;
       ctx.lineWidth = Math.max(1.5, w / 800);
@@ -2644,27 +2748,42 @@ window.addEventListener("load", init);
       isPlayingState = true;
       setPlayingUI(true);
       buildPeaks();
-      drawWave(audio.currentTime);
+      _startAnimLoop();
     });
     audio.addEventListener("pause", () => {
       isPlayingState = false;
       setPlayingUI(false);
-      drawWave(audio.currentTime);
+      _stopAnimLoop();
+      drawWave(audio.currentTime || 0);
     });
     audio.addEventListener("ended", () => {
       isPlayingState = false;
       setPlayingUI(false);
-      drawWave(audio.currentTime);
+      _stopAnimLoop();
+      drawWave(audio.duration || 0);
     });
     audio.addEventListener("volumechange", () => { vol.value = audio.volume; });
+
+    audio.addEventListener("seeked", () => {
+      const cur = audio.currentTime || 0;
+      const dur = audio.duration || 0;
+      if (dur > 0 && progressEl) {
+        progressEl.style.width = (cur / dur * 100).toFixed(2) + "%";
+      }
+      if (curEl) curEl.textContent = fmt(cur);
+      if (audio.paused) drawWave(cur);
+    });
 
     audio.addEventListener("timeupdate", () => {
       const dur = audio.duration || 0;
       const cur = audio.currentTime || 0;
-      curEl.textContent = fmt(cur);
-      const pct = dur > 0 ? (cur / dur) * 100 : 0;
-      progressEl.style.width = pct + "%";
-      drawWave(cur);
+      if (totEl && dur > 0) totEl.textContent = fmt(dur);
+      // При play progressEl и curEl обновляются в _startAnimLoop (60fps).
+      // Здесь — только fallback для paused (после seek например).
+      if (audio.paused) {
+        if (curEl) curEl.textContent = fmt(cur);
+        if (progressEl && dur > 0) progressEl.style.width = (cur / dur * 100).toFixed(2) + "%";
+      }
     });
 
     window.addEventListener("resize", () => {
@@ -2813,6 +2932,7 @@ window.addEventListener("load", init);
     syncSettingsUI();
 
     function redraw() {
+      invalidateWaveCache();
       savePlayerSettings();
       try { drawWave(audio.currentTime || 0); } catch (e) { /* */ }
     }
@@ -2979,4 +3099,34 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
     });
   } catch (e) { /* ignore */ }
 
+
+  // === v0.9.0: freeze play button base colors ===
+  function freezePlayButton() {
+    const p = document.getElementById("jstp-play");
+    if (!p) return;
+
+    const capture = () => {
+      if (p.matches(":hover") || p.matches(":active") || p.matches(":focus")) return false;
+      // force reflow while not hovered
+      void p.offsetHeight;
+      const cs = window.getComputedStyle(p);
+      document.documentElement.style.setProperty("--jstp-play-bg", cs.backgroundColor);
+      document.documentElement.style.setProperty("--jstp-play-fg", cs.color);
+      document.documentElement.style.setProperty("--jstp-play-bd", cs.borderTopColor);
+      document.body.classList.add("jstp-play-frozen");
+      return true;
+    };
+
+    if (!capture()) {
+      p.addEventListener("mouseleave", capture, { once: true });
+      p.addEventListener("blur", capture, { once: true });
+      p.addEventListener("touchend", capture, { once: true });
+    }
+
+    // Re-capture on theme switch
+    const themeObs = new MutationObserver(() => setTimeout(capture, 60));
+    themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
+  setTimeout(freezePlayButton, 300);
 })();

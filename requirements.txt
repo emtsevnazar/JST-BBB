@@ -36,3 +36,7 @@ pyloudnorm
 omegaconf
 hydra-core
 matplotlib
+
+# v0.9.0: security tooling (dev)
+pip-audit
+bandit
