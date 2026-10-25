@@ -2169,3 +2169,142 @@ window.addEventListener("load", init);
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
+
+
+/* === P6.9: JST custom player + waveform === */
+(function () {
+  "use strict";
+
+  let audio, player, fill, cur, tot, playBtn, back5, fwd5, vol, rate, canvas;
+  let drawnForSrc = null; // кэш waveform по src
+  const audioCtx = (window.AudioContext || window.webkitAudioContext) ? new (window.AudioContext || window.webkitAudioContext)() : null;
+
+  function fmt(sec) {
+    if (!isFinite(sec) || sec < 0) sec = 0;
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function ensure() {
+    audio = document.getElementById("preview-player");
+    player = document.getElementById("jst-player");
+    fill = document.getElementById("jst-progress-fill");
+    cur = document.getElementById("jst-cur");
+    tot = document.getElementById("jst-tot");
+    playBtn = document.getElementById("jst-play");
+    back5 = document.getElementById("jst-back5");
+    fwd5 = document.getElementById("jst-fwd5");
+    vol = document.getElementById("jst-vol");
+    rate = document.getElementById("jst-rate");
+    canvas = document.getElementById("waveform");
+    return audio && player;
+  }
+
+  function showPlayer() {
+    if (audio.src && player) player.classList.add("visible");
+  }
+
+  function bind() {
+    if (!ensure()) return;
+
+    // Клик по progress
+    document.getElementById("jst-progress-wrap").addEventListener("click", (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const p = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      if (audio.duration) audio.currentTime = audio.duration * p;
+    });
+
+    playBtn.addEventListener("click", () => {
+      if (audio.paused) audio.play().catch(() => {});
+      else audio.pause();
+    });
+
+    back5.addEventListener("click", () => { audio.currentTime = Math.max(0, audio.currentTime - 5); });
+    fwd5.addEventListener("click", () => { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 5); });
+
+    vol.addEventListener("input", () => { audio.volume = parseFloat(vol.value); });
+    rate.addEventListener("change", () => { audio.playbackRate = parseFloat(rate.value); });
+
+    audio.addEventListener("loadedmetadata", () => {
+      showPlayer();
+      tot.textContent = fmt(audio.duration);
+      fill.style.width = "0%";
+      cur.textContent = "0:00";
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (audio.duration) {
+        fill.style.width = (audio.currentTime / audio.duration * 100) + "%";
+        cur.textContent = fmt(audio.currentTime);
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      playBtn.textContent = "⏸";
+      drawWaveformIfNeeded();
+    });
+    audio.addEventListener("pause", () => { playBtn.textContent = "▶"; });
+    audio.addEventListener("ended", () => { playBtn.textContent = "▶"; });
+    audio.addEventListener("volumechange", () => { vol.value = audio.volume; });
+
+    // Слушаем смену src — показываем плеер
+    const origSrc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
+    // — не переопределяем; просто при canplay
+    audio.addEventListener("canplay", showPlayer);
+  }
+
+  async function drawWaveformIfNeeded() {
+    if (!canvas || !audio.src) return;
+    if (drawnForSrc === audio.src) return;
+    drawnForSrc = audio.src;
+    try {
+      const resp = await fetch(audio.src);
+      const ab = await resp.arrayBuffer();
+      if (!audioCtx) return;
+      const buf = await audioCtx.decodeAudioData(ab);
+      const data = buf.getChannelData(0);
+      const w = canvas.width, h = canvas.height;
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, w, h);
+
+      // Стиль как у старой waveform — линия + заливка
+      const isNight = document.documentElement.getAttribute("data-theme") === "night";
+      const stroke = isNight ? "#F5B800" : "#1a2a5e";
+      const glow = isNight ? "rgba(245,184,0,.35)" : "rgba(26,42,94,.25)";
+
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = glow;
+      ctx.shadowBlur = 4;
+      ctx.beginPath();
+      const step = Math.max(1, Math.floor(data.length / w));
+      const mid = h / 2;
+      for (let x = 0; x < w; x++) {
+        let min = 1, max = -1;
+        const start = x * step;
+        for (let i = 0; i < step && start + i < data.length; i += Math.max(1, Math.floor(step / 24))) {
+          const v = data[start + i];
+          if (v < min) min = v;
+          if (v > max) max = v;
+        }
+        const y1 = mid + min * mid * 0.9;
+        const y2 = mid + max * mid * 0.9;
+        ctx.moveTo(x + 0.5, y1);
+        ctx.lineTo(x + 0.5, y2);
+      }
+      ctx.stroke();
+      // центральная линия
+      ctx.strokeStyle = glow;
+      ctx.beginPath();
+      ctx.moveTo(0, mid);
+      ctx.lineTo(w, mid);
+      ctx.stroke();
+    } catch (e) {
+      // silent — waveform не критична
+    }
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind);
+  else bind();
+})();

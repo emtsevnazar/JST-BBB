@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Merienda:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=1792929446">
+<link rel="stylesheet" href="/static/style.css?v=1792930129">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -92,19 +92,19 @@
     <h3 class="panel-title" data-i18n="settings">Настройки</h3>
     <div class="sliders">
       <div class="slider"><label><span data-i18n="s_exag">Выразительность</span> <output id="o-exag">0.50</output></label>
-        <input type="range" id="exaggeration" min="0" max="1" step="0.05" value="0.50"></div>
+        <input type="range" id="exaggeration" min="0" max="1" step="0.01" value="0.50"></div>
       <div class="slider"><label><span data-i18n="s_cfg">Близость</span> <output id="o-cfg">0.50</output></label>
-        <input type="range" id="cfg_weight" min="0" max="1" step="0.05" value="0.50"></div>
+        <input type="range" id="cfg_weight" min="0" max="1" step="0.01" value="0.50"></div>
       <div class="slider"><label><span data-i18n="s_temp">Температура</span> <output id="o-temp">0.80</output></label>
-        <input type="range" id="temperature" min="0.1" max="1.5" step="0.05" value="0.80"></div>
+        <input type="range" id="temperature" min="0.1" max="1.5" step="0.01" value="0.80"></div>
       <div class="slider"><label><span data-i18n="s_rep">Штраф</span> <output id="o-rep">1.20</output></label>
-        <input type="range" id="repetition_penalty" min="1" max="2" step="0.05" value="1.20"></div>
+        <input type="range" id="repetition_penalty" min="1" max="2" step="0.01" value="1.20"></div>
       <div class="slider"><label><span data-i18n="s_speed">Скорость</span> <output id="o-speed">1.00</output></label>
-        <input type="range" id="speed" min="0.5" max="2" step="0.05" value="1.0"></div>
+        <input type="range" id="speed" min="0.5" max="2" step="0.01" value="1.0"></div>
       <div class="slider"><label><span data-i18n="s_pitch">Высота</span> <output id="o-pitch">0</output></label>
-        <input type="range" id="pitch_shift" min="-12" max="12" step="1" value="0"></div>
+        <input type="range" id="pitch_shift" min="-12" max="12" step="0.5" value="0"></div>
       <div class="slider"><label><span data-i18n="s_vol">Громкость</span> <output id="o-vol">1.00</output></label>
-        <input type="range" id="volume" min="0" max="2" step="0.05" value="1.0"></div>
+        <input type="range" id="volume" min="0" max="2" step="0.01" value="1.0"></div>
     </div>
   </div>
 
@@ -249,7 +249,31 @@
       <div class="progress"><div class="progress-fill" id="progress"></div></div>
       <span id="player-total">0:00.0</span>
     </div>
-    <audio id="preview-player" controls style="display:none;width:100%;margin-top:8px"></audio>
+    <audio id="preview-player" style="display:none"></audio>
+    <div class="jst-player" id="jst-player">
+      <div class="jst-progress-wrap" id="jst-progress-wrap">
+        <div class="jst-progress-fill" id="jst-progress-fill"></div>
+      </div>
+      <div class="jst-controls">
+        <button class="jst-btn" id="jst-back5" title="-5 сек" aria-label="Назад 5 секунд">⏪</button>
+        <button class="jst-btn jst-play" id="jst-play" title="Play/Pause" aria-label="Играть">▶</button>
+        <button class="jst-btn" id="jst-fwd5" title="+5 сек" aria-label="Вперёд 5 секунд">⏩</button>
+        <span class="jst-time"><span class="jst-cur" id="jst-cur">0:00</span> / <span id="jst-tot">0:00</span></span>
+        <label class="jst-ctrl-label" title="Громкость">
+          🔊 <input type="range" id="jst-vol" min="0" max="1" step="0.01" value="1">
+        </label>
+        <label class="jst-ctrl-label" title="Скорость">
+          <select class="jst-rate" id="jst-rate">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+        </label>
+      </div>
+    </div>
     <div class="status" id="status">
       <span class="status-dot"></span>
       <span id="status-text" data-i18n="status_ready">Готов к работе</span>
@@ -271,6 +295,6 @@
   </div>
 </div>
 
-<script src="/static/app.js?v=1792929446"></script>
+<script src="/static/app.js?v=1792930129"></script>
 </body>
 </html>

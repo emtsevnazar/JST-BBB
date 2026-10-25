@@ -5561,3 +5561,143 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   background: linear-gradient(135deg, var(--gold-light), var(--gold)) !important;
   transform: none !important;
 }
+
+/* === P6.9: JST player + тонкие настройки + summary ● статика === */
+
+/* 1. Кнопка Озвучить не темнеет (убрал opacity у is-busy) */
+#btn-synth.is-busy {
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+#btn-synth.is-busy:hover,
+#btn-synth.is-busy:focus,
+#btn-synth.is-busy:active {
+  border: 1.5px solid var(--red) !important;
+  box-shadow: 0 0 18px rgba(230, 57, 70, 0.5) !important;
+  transform: none !important;
+}
+
+/* 2. Точка ● у summary — фиксированный цвет (день синий, ночь жёлтый) */
+.batch-adv > summary::before {
+  color: var(--navy) !important;
+  transition: transform .25s ease !important;
+}
+[data-theme="night"] .batch-adv > summary::before {
+  color: #FFC72C !important;
+}
+.batch-adv[open] > summary::before {
+  transform: rotate(90deg) !important;
+  color: var(--navy) !important;
+}
+[data-theme="night"] .batch-adv[open] > summary::before {
+  color: #FFC72C !important;
+}
+
+/* 3. Тонкие настройки — плавность слайдеров */
+.slider input[type="range"],
+.batch-cloned .panel input[type="range"] {
+  transition: box-shadow .15s ease !important;
+}
+.slider input[type="range"]:focus,
+.batch-cloned .panel input[type="range"]:focus {
+  box-shadow: 0 0 0 3px rgba(245,184,0,.25) !important;
+  outline: none !important;
+}
+
+/* 4. JST Player (свой) */
+.jst-player {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: var(--panel-shadow);
+  font-family: var(--font-body);
+}
+.jst-player.visible { display: flex; }
+
+.jst-progress-wrap {
+  width: 100%;
+  height: 8px;
+  background: var(--input-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.jst-progress-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-light), var(--gold));
+  border-radius: 4px;
+  transition: width .08s linear;
+}
+
+.jst-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.jst-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--input-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  padding: 0;
+}
+.jst-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 12px rgba(245,184,0,.35); }
+.jst-btn.jst-play {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: var(--navy-dark);
+  border-color: transparent;
+  font-size: 16px;
+}
+.jst-btn.jst-play:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(245,184,0,.45);
+}
+.jst-time {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  min-width: 84px;
+}
+.jst-time .jst-cur { color: var(--text); font-weight: 600; }
+
+.jst-ctrl-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.jst-ctrl-label input[type="range"] {
+  width: 80px;
+  accent-color: var(--gold);
+}
+.jst-rate {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1.5px solid var(--panel-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.jst-rate:hover { border-color: var(--gold); }
