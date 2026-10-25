@@ -32,18 +32,28 @@ def _get_output_dir() -> Path:
         return Path("output")
 
 
+_PROTECTED_PREFIXES = (
+    "merged_reference_",  # v1.6.9: кеш референса — не удалять (пересборка 15-20с)
+)
+
+
 def _is_audio(p: Path) -> bool:
     try:
-        return p.is_file() and p.suffix.lower() in _AUDIO_EXTS
+        if not p.is_file():
+            return False
+        if p.suffix.lower() not in _AUDIO_EXTS:
+            return False
+        # v1.6.9: НЕ трогать кеш референсов
+        return not any(p.name.startswith(pref) for pref in _PROTECTED_PREFIXES)
     except Exception:
         return False
 
 
 async def cleanup_once(ttl_days: int | None = None, max_mb: int | None = None) -> dict:
     if ttl_days is None:
-        ttl_days = int(os.getenv("JST_OUTPUT_TTL_DAYS", "7"))
+        ttl_days = int(os.getenv("JST_OUTPUT_TTL_DAYS", "3"))
     if max_mb is None:
-        max_mb = int(os.getenv("JST_OUTPUT_MAX_MB", "500"))
+        max_mb = int(os.getenv("JST_OUTPUT_MAX_MB", "200"))
 
     out_dir = _get_output_dir()
     if not out_dir.exists():
@@ -147,12 +157,17 @@ async def cleanup_once(ttl_days: int | None = None, max_mb: int | None = None) -
     except Exception as e:
         log.warning(f"cleanup orphan: {e}")
 
+    try:
+        files_after = sum(1 for p in out_dir.iterdir() if _is_audio(p))
+    except Exception:
+        files_after = 0
     res = {
         "deleted_by_ttl": deleted_ttl,
         "deleted_by_size": deleted_size,
         "deleted_orphan": deleted_orphan,
         "freed_mb": round(freed / 1024 / 1024, 2),
         "total_mb": round(total_after / 1024 / 1024, 2),
+        "files_after": files_after,
         "ttl_days": ttl_days,
         "max_mb": max_mb,
     }
@@ -160,7 +175,7 @@ async def cleanup_once(ttl_days: int | None = None, max_mb: int | None = None) -
         log.info(
             f"cleanup: удалено {deleted_ttl + deleted_size + deleted_orphan} файлов "
             f"(TTL={ttl_days}d, max={max_mb}MB), освобождено {res['freed_mb']} MB, "
-            f"осталось {res['total_mb']} MB"
+            f"осталось {res['files_after']} файлов / {res['total_mb']} MB"
         )
     return res
 
