@@ -8,9 +8,10 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from .. import __version__
+from .. import history as history_mod
 from ..core.constants import MODEL_LANGS
 from ..core.state import GIT_SHA, get_engine, uptime_sec
 from ..security.safety import limiter, startup_check
@@ -160,8 +161,6 @@ def _output_stats() -> dict:
 @router.get("/healthz")
 async def healthz():
     """Простой healthcheck для docker-compose / мониторинга."""
-    from ..engine import get_engine
-    from .ws import ws_active_count
 
     engine_ok = get_engine() is not None
     stats = _output_stats()
@@ -175,17 +174,13 @@ async def healthz():
 
 
 @router.get("/api/metrics")
-async def metrics(request):
+async def metrics(request: Request):
     """Расширенные метрики (только localhost)."""
     from starlette.responses import JSONResponse
 
     ip = request.client.host if request.client else "unknown"
     if ip not in ("127.0.0.1", "::1", "localhost"):
         return JSONResponse({"error": "forbidden"}, status_code=403)
-
-    from .. import history as history_mod
-    from ..engine import get_engine
-    from .ws import ws_active_count
 
     engine_ok = get_engine() is not None
     stats = _output_stats()
