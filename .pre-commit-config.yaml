@@ -15,3 +15,20 @@ repos:
         language: system
         pass_filenames: false
         files: ^backend/.*\.py$
+
+      # v1.6.0: security — bandit на каждый коммит (~5 сек)
+      - id: bandit
+        name: bandit (security static analysis)
+        entry: bandit -r backend/ -ll -q
+        language: system
+        pass_filenames: false
+        files: ^backend/.*\.py$
+
+      # v1.6.0: pip-audit — manual (~2 мин, запускать перед релизом)
+      - id: pip-audit
+        name: pip-audit (CVE scan, manual)
+        entry: bash -c 'pip-audit --desc off 2>&1 | head -30'
+        language: system
+        pass_filenames: false
+        files: ^(requirements.*\.txt|pyproject\.toml)$
+        stages: [manual]
