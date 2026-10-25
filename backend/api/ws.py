@@ -6,14 +6,17 @@ import asyncio
 import json
 import logging
 import time
+from pathlib import Path
 
 import numpy as np
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from ..core.naming import NAMER
+from ..core.paths import OUTPUT
 from ..core.state import get_engine
 from ..core.utils import _int, _num
 from ..engine import SynthSettings
+from ..services import tts_cache
 from ..services.output_service import save_output
 from ..services.references import resolve_reference
 
@@ -138,6 +141,29 @@ async def _ws_orig(ws: WebSocket):
                 t_all = time.time()
                 try:
                     send_stage("prepare", "")
+
+                    # === v1.6.6: cache hit только для одной фразы, mode != multi ===
+                    _cache_key_ok = len(plan) == 1 and s.mode != "multi"
+                    if _cache_key_ok:
+                        try:
+                            _cache_hit = tts_cache.get(plan[0]["text"], voice, s.to_dict())
+                        except Exception as _e:
+                            log.warning("[cache] get failed: %s", _e)
+                            _cache_hit = None
+                        if _cache_hit is not None:
+                            try:
+                                base = NAMER.next_name()
+                                dst = Path(OUTPUT) / f"{base}.wav"
+                                import shutil as _sh
+
+                                _sh.copy2(str(_cache_hit), str(dst))
+                                fname = dst.name
+                                log.info("[cache] HIT -> %s (0.0s)", fname)
+                                asyncio.run_coroutine_threadsafe(queue.put(("done", fname)), loop)
+                                return
+                            except Exception as _e:
+                                log.warning("[cache] copy failed: %s", _e)
+
                     chunks = []
                     for i, item in enumerate(plan):
                         if not item["text"]:
@@ -186,6 +212,14 @@ async def _ws_orig(ws: WebSocket):
                     full = np.concatenate(chunks) if chunks else np.zeros(1, np.float32)
                     base = NAMER.next_name()
                     fname = save_output(full, ENGINE.sr, s, base)
+                    # === v1.6.6: положить в кеш (только 1 фраза, mode != multi) ===
+                    if len(plan) == 1 and s.mode != "multi":
+                        try:
+                            _cache_wav = Path(OUTPUT) / fname
+                            if _cache_wav.exists():
+                                tts_cache.put(plan[0]["text"], voice, s.to_dict(), _cache_wav)
+                        except Exception as _e:
+                            log.warning("[cache] put failed: %s", _e)
                     asyncio.run_coroutine_threadsafe(queue.put(("done", fname)), loop)
                     log.info(
                         "OK %.1fs -> %s (%.2fs audio)",
