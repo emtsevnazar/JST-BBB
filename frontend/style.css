@@ -5743,9 +5743,9 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
 /* День: фон var(--input-bg) (белый полупрозрачный), текст var(--navy-dark), рамка красная */
 /* Ночь: фон rgba(13,26,63,0.55) (как disabled Stop), текст жёлтый, рамка красная */
 
-/* === P6.12d: Озвучить disabled — фон как Stop disabled, текст/рамка синие(день)/жёлтые(ночь), без inner-рамки === */
+/* === P6.12e: Озвучить disabled — фон как Stop, текст navy/FFC72C, рамка RED === */
 
-/* Убираем внутреннюю рамку от .btn-primary::before во всех is-busy состояниях */
+/* Убираем внутреннюю декоративную рамку (.btn-primary::before) */
 html body #btn-synth.is-busy::before,
 html body #btn-synth.is-busy:hover::before,
 html body #btn-synth.is-busy:focus::before,
@@ -5755,7 +5755,7 @@ html body #btn-synth.is-busy:active::before {
   visibility: hidden !important;
 }
 
-/* День (default): фон input-bg (как disabled Stop), текст/рамка var(--navy) — синие */
+/* День: фон как disabled Stop, текст синий, рамка красная */
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6),
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):hover,
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):focus,
@@ -5763,16 +5763,21 @@ html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4)
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
   background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border: 1.5px solid var(--navy, #1a2a5e) !important;
-  border-color: var(--navy, #1a2a5e) !important;
+  border: 1.5px solid var(--red, #e63946) !important;
+  border-color: var(--red, #e63946) !important;
   outline: none !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
   opacity: 1 !important;
   transform: none !important;
 }
+html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6) *,
+html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):hover * {
+  color: var(--navy, #1a2a5e) !important;
+  fill: var(--navy, #1a2a5e) !important;
+}
 
-/* Ночь: тот же фон var(--input-bg) (тёмный, как Stop disabled ночью), текст/рамка #FFC72C — жёлтые */
+/* Ночь: фон тёмный (как Stop ночью), текст жёлтый, рамка красная */
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6),
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):hover,
 html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):focus,
@@ -5780,11 +5785,16 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
   background: var(--input-bg, rgba(0,0,0,0.35)) !important;
   background-color: var(--input-bg, rgba(0,0,0,0.35)) !important;
   color: #FFC72C !important;
-  border: 1.5px solid #FFC72C !important;
-  border-color: #FFC72C !important;
+  border: 1.5px solid var(--red, #e63946) !important;
+  border-color: var(--red, #e63946) !important;
   outline: none !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
   opacity: 1 !important;
   transform: none !important;
+}
+html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6) *,
+html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y2):not(#y3):not(#y4):not(#y5):not(#y6):hover * {
+  color: #FFC72C !important;
+  fill: #FFC72C !important;
 }
