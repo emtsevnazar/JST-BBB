@@ -15,3 +15,4 @@ for _d in (VOICES, OUTPUT, FRONTEND):
     _d.mkdir(exist_ok=True)
 
 SUPPORTED = {".wav", ".mp3", ".m4a", ".opus", ".flac", ".ogg"}
+REFERENCE_EN = OUTPUT / "merged_reference_en.wav"

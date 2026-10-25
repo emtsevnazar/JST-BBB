@@ -78,7 +78,22 @@ def build_reference(voice: str, total: float = 15.0):
     return out
 
 
-def resolve_reference(voice: str, ref_length: int):
+def resolve_reference(voice: str, ref_length: int, language: str = "ru"):
+    # P7.8: EN reference support
+    if language == "en":
+        _en_candidates = []
+        if voice:
+            _en_candidates.append(OUTPUT / f"merged_reference_{voice}_en.wav")
+        _en_candidates.append(OUTPUT / "merged_reference_en.wav")
+        for _c in _en_candidates:
+            try:
+                if _c.exists() and _c.stat().st_size > 0:
+                    log.info("[ref] EN reference: %s", _c.name)
+                    return _c
+            except Exception:
+                continue
+        log.warning("[ref] EN reference not found, using RU fallback")
+
     per = OUTPUT / f"merged_reference_{voice}.wav"
     if per.exists():
         try:

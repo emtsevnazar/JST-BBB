@@ -68,11 +68,45 @@ async def lifespan(app: FastAPI):
     batch_queue = BatchQueue()
     await batch_queue.start()
     app.state.batch_queue = batch_queue
+
+    # P7.2: cleanup output/ — один раз при старте + фон раз в час
+    from .output_cleanup import cleanup_loop, cleanup_once
+
+    cleanup_task: asyncio.Task | None = None
+    try:
+        _cleanup_res = await cleanup_once()
+        log.info(
+            "cleanup: старт — удалено %s (TTL) + %s (size), осталось %s MB",
+            _cleanup_res["deleted_by_ttl"],
+            _cleanup_res["deleted_by_size"],
+            _cleanup_res["total_mb"],
+        )
+    except Exception as _ce:
+        log.warning("cleanup на старте: %s", _ce)
+    try:
+        cleanup_task = asyncio.create_task(cleanup_loop())
+        log.info("cleanup: фоновый worker запущен (раз в час)")
+    except Exception as _ce2:
+        log.warning("cleanup worker не запущен: %s", _ce2)
+
     try:
         yield
     finally:
         # P3.5: graceful shutdown — дождаться активных WS, освободить Engine
         t_shutdown = time.time()
+
+        # P7.2: остановка cleanup worker
+        if cleanup_task is not None:
+            try:
+                cleanup_task.cancel()
+                try:
+                    await cleanup_task
+                except asyncio.CancelledError:
+                    pass
+                log.info("cleanup: worker остановлен")
+            except Exception as _se:
+                log.warning("cleanup shutdown: %s", _se)
+
         await batch_queue.stop()
         history_mod.set_history(None)
         history_db.close()
