@@ -17,6 +17,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from backend.logging_setup import setup_logging
+
 from .api.batch import router as batch_router
 from .api.health import router as health_router
 from .api.history import router as history_router
@@ -33,7 +35,7 @@ from .security.middleware import (
     SecurityHeadersMiddleware,
 )
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+setup_logging()
 log = logging.getLogger("JST.API")
 
 from .core.paths import (
@@ -54,6 +56,16 @@ WS_SHUTDOWN_MAX_WAIT = 5.0
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown: инициализация Engine + graceful shutdown (P3.5)."""
+    # v1.3.0: memory guard — watchdog RSS + системной памяти
+    from scripts.guard import memory_guard_loop
+
+    guard_task: asyncio.Task | None = None
+    try:
+        guard_task = asyncio.create_task(memory_guard_loop())
+        log.info("guard: memory watchdog task started")
+    except Exception as _ge:
+        log.warning("guard: task не запущен: %s", _ge)
+
     t_startup = time.time()
     log.info("Инициализация Engine…")
     engine = Engine(device="auto", reference_wav=str(REFERENCE))
@@ -92,6 +104,18 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        # v1.3.0: остановка memory guard ДО остальных teardown-ов
+        if guard_task is not None:
+            try:
+                guard_task.cancel()
+                try:
+                    await guard_task
+                except asyncio.CancelledError:
+                    pass
+                log.info("guard: task cancelled")
+            except Exception as _ge2:
+                log.warning("guard: shutdown: %s", _ge2)
+
         # P3.5: graceful shutdown — дождаться активных WS, освободить Engine
         t_shutdown = time.time()
 

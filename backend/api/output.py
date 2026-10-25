@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-import io
 import logging
+import os
 import subprocess
+import tempfile
 import zipfile
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
 
 from ..core.paths import OUTPUT
 
@@ -57,15 +59,26 @@ async def download_all_zip():
     files = [f for f in OUTPUT.iterdir() if f.suffix.lower() in exts]
     if not files:
         raise HTTPException(404, "No files")
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        for f in files:
-            z.write(str(f), arcname=f.name)
-    buf.seek(0)
-    return StreamingResponse(
-        buf,
+    # v1.3.0: ZIP на диск (не в RAM) — избегаем OOM при больших output/
+    tmp = tempfile.NamedTemporaryFile(  # noqa: SIM115
+        suffix=".zip", delete=False, dir=str(OUTPUT), prefix=".jst_all_"
+    )
+    tmp.close()
+    try:
+        with zipfile.ZipFile(tmp.name, "w", zipfile.ZIP_DEFLATED) as z:
+            for f in files:
+                z.write(str(f), arcname=f.name)
+    except Exception:
+        try:
+            os.unlink(tmp.name)
+        except OSError:
+            pass
+        raise
+    return FileResponse(
+        tmp.name,
         media_type="application/zip",
-        headers={"Content-Disposition": "attachment; filename=jst_all.zip"},
+        filename="jst_all.zip",
+        background=BackgroundTask(os.unlink, tmp.name),
     )
 
 
