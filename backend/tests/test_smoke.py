@@ -41,7 +41,11 @@ def test_smoke_full_stack(client):
     r = client.get("/api/models")
     assert r.status_code == 200
     codes = {m["code"] for m in r.json()["models"]}
-    assert {"core", "multi", "jst_clone", "voxcpm", "qwen", "cosyvoice"} <= codes
+    assert {
+        "core",
+        "multi",
+        "jst_clone",
+    } <= codes  # v1.5.4: voxcpm/qwen/cosyvoice удалены (нет моделей)
 
     r = client.get("/api/moods")
     assert r.status_code == 200

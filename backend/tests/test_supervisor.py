@@ -9,7 +9,9 @@ import sys
 import time
 from pathlib import Path
 
-SUP = Path("scripts/supervisor.py")
+# v1.5.4: абсолютный путь от __file__ (pytest идёт из backend/)
+_ROOT = Path(__file__).resolve().parents[2]
+SUP = _ROOT / "scripts" / "supervisor.py"
 
 
 def test_supervisor_starts_and_stops_child(tmp_path):
