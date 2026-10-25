@@ -1,5 +1,7 @@
 # JST Studio — Just Start Transform
 
+![CI](https://github.com/emtsevnazar/JST-BBB/actions/workflows/ci.yml/badge.svg?branch=main)
+
 Профессиональный TTS/STT-инструмент: синтез речи, клонирование голоса,
 настроения (moods), многоязычие, пакетная обработка, история и экспорт.
 
