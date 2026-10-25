@@ -191,18 +191,27 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:8000",
         "http://localhost:8000",
+        "http://192.168.0.195:8000",
         # Tauri 2 origins (macOS/Linux)
         "tauri://localhost",
         # Tauri 2 origins (Windows)
         "https://tauri.localhost",
     ],
     allow_credentials=False,
+    allow_origin_regex=r"http://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?",
     allow_methods=["*"],
     allow_headers=["*"],
 )
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:8000", "localhost:8000"],
+    allowed_hosts=[
+        "127.0.0.1",
+        "localhost",
+        "127.0.0.1:8000",
+        "localhost:8000",
+        "192.168.0.195",
+        "192.168.0.195:8000",
+    ],
 )
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
