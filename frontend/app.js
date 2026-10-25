@@ -1985,7 +1985,7 @@ window.addEventListener("load", init);
 
   function applyLangTo(root) {
     const lang = (document.documentElement.lang === "en") ? "en" : "ru";
-    if (!window.I18N) return;
+    if (typeof I18N === "undefined") return;
     root.querySelectorAll("[data-i18n]").forEach(function (el) {
       const key = el.getAttribute("data-i18n");
       const val = I18N[lang] && I18N[lang][key];
