@@ -11,7 +11,6 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 
 from .. import __version__
-from .. import history as history_mod
 from ..core.constants import MODEL_LANGS
 from ..core.state import GIT_SHA, get_engine, uptime_sec
 from ..security.safety import limiter, startup_check
@@ -161,7 +160,6 @@ def _output_stats() -> dict:
 @router.get("/healthz")
 async def healthz():
     """Простой healthcheck для docker-compose / мониторинга."""
-
     engine_ok = get_engine() is not None
     stats = _output_stats()
     return {
@@ -185,9 +183,15 @@ async def metrics(request: Request):
     engine_ok = get_engine() is not None
     stats = _output_stats()
 
+    total_syntheses = 0
     try:
-        db = getattr(history_mod, "_db", None) or history_mod.get_history()
-        total_syntheses = len(db.list(limit=100000)) if db else 0
+        from .. import history as _hist_mod
+
+        db = getattr(_hist_mod, "_db", None)
+        if db is None and hasattr(_hist_mod, "get_history"):
+            db = _hist_mod.get_history()
+        if db is not None and hasattr(db, "list"):
+            total_syntheses = len(db.list(limit=100000))
     except Exception:
         total_syntheses = 0
 
