@@ -207,11 +207,11 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
 .toast.toast-error{
   background:#c81e2b !important;
   color:#f5b800 !important;
-  border:2px solid #7f1017;
+  border:2px solid #c81e2b;
   font-size:14px;
   font-weight:700;
   padding:15px 26px;
-  box-shadow:0 14px 44px rgba(200,30,43,.45), 0 0 0 1px rgba(245,184,0,.15);
+  box-shadow:0 14px 44px rgba(200,30,43,.45);
   max-width:min(92vw,560px);
 }
 .help-modal{background:rgba(0,0,0,0.5);z-index:200;

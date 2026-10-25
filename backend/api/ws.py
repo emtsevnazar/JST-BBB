@@ -56,7 +56,9 @@ async def _ws_orig(ws: WebSocket):
 
                 text = _vt(text)
             except Exception as _e:
-                await ws.send_text(json.dumps({"type": "error", "message": str(_e)}))
+                await ws.send_text(
+                    json.dumps({"type": "error", "code": "unknown", "message": str(_e)})
+                )
                 continue
             voice = data.get("voice", "") or ""
             s = SynthSettings.from_dict(data.get("settings", {}))
@@ -81,11 +83,19 @@ async def _ws_orig(ws: WebSocket):
             ref = resolve_reference(voice, _int(s.ref_length, 8), language=s.language)
             if not ref or not ref.exists():
                 await ws.send_text(
-                    json.dumps({"type": "error", "message": f"No reference for '{voice}'"})
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "code": "no_ref",
+                            "message": f"No reference for '{voice}'",
+                        }
+                    )
                 )
                 continue
             if not text.strip():
-                await ws.send_text(json.dumps({"type": "error", "message": "Empty text"}))
+                await ws.send_text(
+                    json.dumps({"type": "error", "code": "empty_text", "message": "Empty text"})
+                )
                 continue
             parsed = ENGINE.parse_markup(text)
             default_pause = _num(s.pause_between, 0.20)
@@ -240,14 +250,16 @@ async def _ws_orig(ws: WebSocket):
                     await ws.send_text(json.dumps({"type": "done", "file": payload}))
                     break
                 elif kind == "error":
-                    await ws.send_text(json.dumps({"type": "error", "message": payload}))
+                    await ws.send_text(
+                        json.dumps({"type": "error", "code": "synth_failed", "message": payload})
+                    )
                     break
     except WebSocketDisconnect:
         pass
     except Exception as e:
         log.exception("WS error")
         try:
-            await ws.send_text(json.dumps({"type": "error", "message": str(e)}))
+            await ws.send_text(json.dumps({"type": "error", "code": "unknown", "message": str(e)}))
         except Exception:
             pass
 

@@ -29,6 +29,10 @@ const I18N = {
     history:"История", status_ready:"Готов к работе", status_synth:"Синтез",
     status_stream:"Стриминг", status_done:"Готово", status_stop:"Остановлено",
     status_err:"Ошибка", help_title:"Инструкция",
+    err_timeout:"Превышено время ожидания", err_model_not_loaded:"Модель не загружена",
+    err_empty_text:"Пустой текст", err_no_ref:"Референс не найден",
+    err_synth_failed:"Ошибка синтеза", err_cancelled:"Отменено",
+    err_unknown:"Неизвестная ошибка",
     status_plan:"План", status_phrases:"фраз",
     status_stage_prepare:"Подготовка", status_stage_synth:"Синтез",
     status_stage_post:"Постобработка", status_voice_select:"Выберите голос",
@@ -91,6 +95,10 @@ const I18N = {
     history:"History", status_ready:"Ready", status_synth:"Synthesizing",
     status_stream:"Streaming", status_done:"Done", status_stop:"Stopped",
     status_err:"Error", help_title:"Help",
+    err_timeout:"Request timed out", err_model_not_loaded:"Model not loaded",
+    err_empty_text:"Empty text", err_no_ref:"Reference audio not found",
+    err_synth_failed:"Synthesis failed", err_cancelled:"Cancelled",
+    err_unknown:"Unknown error",
     status_plan:"Plan", status_phrases:"phrases",
     status_stage_prepare:"Preparing", status_stage_synth:"Synthesizing",
     status_stage_post:"Post-processing", status_voice_select:"Select a voice",
@@ -583,7 +591,14 @@ function synthesize() {
         setStatus(stageKey ? t(stageKey) : (m.detail || ""), "busy");
       }
       else if (m.type === "done") { setStatus(t("status_done") + " · " + m.file, ""); finishStreaming(m.file); }
-      else if (m.type === "error") { setStatus(t("status_err") + ": " + m.message, "error"); finishStreaming(null); }
+      else if (m.type === "error") {
+        var _errCode = m.code || "unknown";
+        var _errKey = "err_" + _errCode;
+        var _errText = t(_errKey);
+        if (_errText === _errKey) _errText = m.message || m.code || "unknown";
+        setStatus(t("status_err") + ": " + _errText, "error");
+        finishStreaming(null);
+      }
     } else handleAudioChunk(ev.data);
   };
   ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };

@@ -19,7 +19,7 @@ repos:
       # v1.6.0: security — bandit на каждый коммит (~5 сек)
       - id: bandit
         name: bandit (security static analysis)
-        entry: bandit -r backend/ -ll -q
+        entry: /Users/nazar/Documents/AAC/code/bin/python -m bandit -r backend/ -ll -q
         language: system
         pass_filenames: false
         files: ^backend/.*\.py$
