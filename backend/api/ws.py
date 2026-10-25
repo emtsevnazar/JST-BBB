@@ -137,7 +137,7 @@ async def _ws_orig(ws: WebSocket):
             def producer():
                 t_all = time.time()
                 try:
-                    send_stage("prepare", "Готовлю референс")
+                    send_stage("prepare", "")
                     chunks = []
                     for i, item in enumerate(plan):
                         if not item["text"]:
@@ -182,7 +182,7 @@ async def _ws_orig(ws: WebSocket):
                             time.time() - t0,
                             len(c) / ENGINE.sr,
                         )
-                    send_stage("post", "Постобработка и сохранение")
+                    send_stage("post", "")
                     full = np.concatenate(chunks) if chunks else np.zeros(1, np.float32)
                     base = NAMER.next_name()
                     fname = save_output(full, ENGINE.sr, s, base)

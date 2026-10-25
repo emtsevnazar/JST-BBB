@@ -273,6 +273,9 @@ function applyLanguage() {
   const _streaming = (window.JST_IS_STREAMING === true);   // v1.6.5a
   try {
     var _st = document.getElementById("status-text");
+    if (_st && _streaming && window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
+      try { console.warn("[applyLanguage] streaming=true — status НЕ перерисовывается (правильно)"); } catch(e) {}
+    }
     if (_st && !_streaming) {
       if (window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
         const _ready = t("status_ready") || _st.textContent;
@@ -285,6 +288,8 @@ function applyLanguage() {
   const lt = $("lang-toggle");
   if (lt) lt.textContent = LANG.toUpperCase();
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    // v1.6.5c: статус управляется через setStatus(), не через data-i18n
+    if (el.id === "status-text") return;
     const k = el.dataset.i18n; const v = t(k); if (v) el.textContent = v;
   });
   document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el) {
@@ -573,8 +578,9 @@ function synthesize() {
       const m = JSON.parse(ev.data);
       if (m.type === "start") { currentSR = m.sr; setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy"); }
       else if (m.type === "stage") {
+        // v1.6.5b: только ключ, без backend m.detail (там русский)
         const stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];
-        setStatus((stageKey ? t(stageKey) + ": " : "") + (m.detail || ""), "busy");
+        setStatus(stageKey ? t(stageKey) : (m.detail || ""), "busy");
       }
       else if (m.type === "done") { setStatus(t("status_done") + " · " + m.file, ""); finishStreaming(m.file); }
       else if (m.type === "error") { setStatus(t("status_err") + ": " + m.message, "error"); finishStreaming(null); }
