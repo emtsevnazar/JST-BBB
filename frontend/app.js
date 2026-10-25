@@ -144,8 +144,34 @@ const ACCENTS = [
 let LANG = localStorage.getItem("jst-lang") || "en";
 let MODELS = [];
 let PRESETS = {};
-let currentMode = "core";
-let currentLang = "ru";
+let currentMode = localStorage.getItem("jst-mode") || "core";
+let currentLang = localStorage.getItem("jst-synth-lang") || "";
+
+function saveSynthPrefs() {
+  try {
+    localStorage.setItem("jst-mode", currentMode);
+    localStorage.setItem("jst-synth-lang", currentLang);
+  } catch (e) {}
+}
+
+function normalizeSynthPrefs() {
+  var modelsList = [];
+  try {
+    if (typeof MODELS !== "undefined" && Array.isArray(MODELS)) modelsList = MODELS;
+  } catch (e) { /* TDZ */ }
+  if (!modelsList.length) {
+    if (!currentLang) currentLang = "en";
+    saveSynthPrefs();
+    return;
+  }
+  if (!modelsList.find(function (m) { return m.code === currentMode; })) currentMode = "core";
+  var m = modelsList.find(function (x) { return x.code === currentMode; });
+  var supported = (m && Array.isArray(m.languages) && m.languages.length) ? m.languages : ["en"];
+  if (!currentLang || supported.indexOf(currentLang) === -1) {
+    currentLang = supported.indexOf("en") !== -1 ? "en" : supported[0];
+  }
+  saveSynthPrefs();
+}
 let currentAccent = "neutral";
 let isStreaming = false;
 let audioCtx = null;
@@ -335,6 +361,7 @@ function rebuildModelCarousel() {
       if (!m.loaded && m.code !== "core") {
         showToast(t("toast_not_loaded") + " (" + m.name + ")");
       }
+      saveSynthPrefs();
       const fd = new FormData(); fd.append("mode", m.code);
       fetch("/api/mode", { method: "POST", body: fd }).catch(() => {});
     };
@@ -343,6 +370,7 @@ function rebuildModelCarousel() {
 }
 
 function updateModelInfo() {
+  normalizeSynthPrefs();
   const info = $("model-info"); if (!info) return;
   const m = MODELS.find(x => x.code === currentMode);
   if (!m) { info.innerHTML = ""; return; }
@@ -354,6 +382,7 @@ function updateModelInfo() {
 
 // === LANGUAGES ===
 function renderLanguages() {
+  normalizeSynthPrefs();
   const grid = $("lang-grid"); if (!grid) return;
   const m = MODELS.find(x => x.code === currentMode);
   const supported = new Set(m ? (m.languages || []) : ["en"]);
@@ -373,6 +402,7 @@ function renderLanguages() {
         document.querySelectorAll(".lang-card").forEach(x => x.classList.remove("active"));
         c.classList.add("active");
         currentLang = code;
+        saveSynthPrefs();
       };
     }
     if (code === currentLang && isSupported) c.classList.add("active");
@@ -2689,24 +2719,18 @@ window.addEventListener("load", init);
       });
     }
 
-    // === Boost (Web Audio, +2.5x) ===
-    let boostCtx = null, boostGain = null, boostOn = false;
+    // === Boost (Web Audio, +2.5x) — shared chain с EQ ===
+    let boostOn = false;
     const boostBtn = document.getElementById("jstp-boost");
     if (boostBtn) {
-      boostBtn.addEventListener("click", () => {
+      boostBtn.addEventListener("click", async () => {
         try {
-          if (!boostCtx) {
-            const AC = window.AudioContext || window.webkitAudioContext;
-            boostCtx = new AC();
-            const src = boostCtx.createMediaElementSource(audio);
-            boostGain = boostCtx.createGain();
-            boostGain.gain.value = 1.0;
-            src.connect(boostGain);
-            boostGain.connect(boostCtx.destination);
-          }
-          if (boostCtx.state === "suspended") boostCtx.resume();
+          const ensure = window.JST_ENSURE_CHAIN;
+          if (typeof ensure !== "function") throw new Error("chain API not ready");
+          const chain = await ensure();
+          if (chain.ctx.state === "suspended") chain.ctx.resume();
           boostOn = !boostOn;
-          boostGain.gain.value = boostOn ? 2.5 : 1.0;
+          chain.master.gain.value = boostOn ? 2.5 : 1.0;
           boostBtn.classList.toggle("active", boostOn);
         } catch (e) {
           console.warn("Boost недоступен:", e);
@@ -3080,4 +3104,74 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       }, 500);
     } catch (e) { /* ignore */ }
   });
+})();
+// === v1.1.3: Shared Web Audio chain — реальный EQ на preview-player ===
+(function () {
+  "use strict";
+  if (window.__jstV113Chain) return;
+  window.__jstV113Chain = true;
+
+  let chainPromise = null;
+
+  function getSettings() {
+    return window.JST_FX_SETTINGS || {};
+  }
+
+  function applyEqNow() {
+    const chain = window.JST_AUDIO_CHAIN;
+    const st = getSettings();
+    if (!chain || !chain.eq) return;
+    chain.eq.low.gain.value  = Number(st.eqLow)  || 0;
+    chain.eq.mid.gain.value  = Number(st.eqMid)  || 0;
+    chain.eq.high.gain.value = Number(st.eqHigh) || 0;
+  }
+
+  async function ensureChain() {
+    if (window.JST_AUDIO_CHAIN) return window.JST_AUDIO_CHAIN;
+    if (chainPromise) return chainPromise;
+    chainPromise = (async () => {
+      const audio = document.getElementById("preview-player");
+      if (!audio) throw new Error("preview-player not found");
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AC();
+      const src = ctx.createMediaElementSource(audio);
+      const low  = ctx.createBiquadFilter(); low.type  = "lowshelf";  low.frequency.value  = 200;
+      const mid  = ctx.createBiquadFilter(); mid.type  = "peaking";   mid.frequency.value  = 1000; mid.Q.value = 1;
+      const high = ctx.createBiquadFilter(); high.type = "highshelf"; high.frequency.value = 4000;
+      const master = ctx.createGain(); master.gain.value = 1.0;
+      src.connect(low);
+      low.connect(mid);
+      mid.connect(high);
+      high.connect(master);
+      master.connect(ctx.destination);
+      if (ctx.state === "suspended") { try { await ctx.resume(); } catch (e) {} }
+      window.JST_AUDIO_CHAIN = { ctx: ctx, src: src, eq: { low: low, mid: mid, high: high }, master: master };
+      applyEqNow();
+      return window.JST_AUDIO_CHAIN;
+    })();
+    return chainPromise;
+  }
+
+  window.JST_ENSURE_CHAIN = ensureChain;
+  window.JST_APPLY_EQ = applyEqNow;
+
+  // Слайдеры EQ → создаём/обновляем цепочку
+  ["jstp-opt-eq-low", "jstp-opt-eq-mid", "jstp-opt-eq-high"].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", async function () {
+      try { await ensureChain(); applyEqNow(); } catch (e) { console.warn("[FX] EQ chain:", e); }
+    });
+  });
+
+  // audio.play() → цепочка создаётся автоматически
+  const pv = document.getElementById("preview-player");
+  if (pv) {
+    pv.addEventListener("play", function () {
+      ensureChain().catch(function (e) { console.warn("[FX] chain on play:", e); });
+    });
+  }
+
+  // Пере-применять EQ, если настройки восстановлены из localStorage в другом IIFE
+  window.addEventListener("jst:fx-settings-changed", applyEqNow);
 })();
