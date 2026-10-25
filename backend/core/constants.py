@@ -243,5 +243,4 @@ MODEL_LANGS = {
         "ko",
     ],
     "qwen": ["ru", "en", "zh", "ja", "ko", "de", "fr", "es", "it", "pt"],
-    "cosyvoice": ["ru", "en", "zh", "ja", "ko"],
 }

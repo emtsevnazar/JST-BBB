@@ -154,6 +154,12 @@ function saveSynthPrefs() {
   } catch (e) {}
 }
 
+function applySynthLangToText() {
+  // v1.5.0: textarea должен иметь lang = язык синтеза, а не UI-язык
+  var ta = document.getElementById("text");
+  if (ta && currentLang) ta.setAttribute("lang", currentLang);
+}
+
 function normalizeSynthPrefs() {
   var modelsList = [];
   try {
@@ -171,6 +177,7 @@ function normalizeSynthPrefs() {
     currentLang = supported.indexOf("en") !== -1 ? "en" : supported[0];
   }
   saveSynthPrefs();
+  applySynthLangToText();
 }
 let currentAccent = "neutral";
 let isStreaming = false;
@@ -403,6 +410,7 @@ function renderLanguages() {
         c.classList.add("active");
         currentLang = code;
         saveSynthPrefs();
+        applySynthLangToText();
       };
     }
     if (code === currentLang && isSupported) c.classList.add("active");
@@ -429,7 +437,7 @@ function getSettings() {
   s.mode = currentMode;
   s.language = currentLang;
   s.accent = currentAccent;
-  s.ref_length = rl ? (parseInt(rl.value) || 15) : 15;
+  s.ref_length = rl ? (parseInt(rl.value) || 8) : 8;
   s.pause_between = pb ? (parseFloat(pb.value) || 0.20) : 0.20;
   s.sentence_split = ss ? ss.value : "medium";
   s.mood = (document.querySelector("#mood") || {}).value || "auto";
@@ -779,7 +787,7 @@ function bindUI() {
   const _btnSynth = $("btn-synth"); if (_btnSynth) _btnSynth.addEventListener("click", synthesize);
   const _btnStop = $("btn-stop"); if (_btnStop) _btnStop.addEventListener("click", stopPlayback);
   if (btnR) btnR.addEventListener("click", () => {
-    const lang = (document.documentElement.lang || "ru").toLowerCase();
+    const lang = (currentLang || "ru").toLowerCase();  // v1.5.1: язык синтеза
     const bank = (window.JST_TEST_PHRASES && window.JST_TEST_PHRASES[lang]) || [];
     if (!bank.length) {
       console.warn("[JST] JST_TEST_PHRASES пуст для lang=", lang);
@@ -3090,6 +3098,8 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   if (window.__jstpLastAudioRestore) return;
   window.__jstpLastAudioRestore = true;
   window.addEventListener("DOMContentLoaded", () => {
+    applySynthLangToText();
+
     try {
       const raw = localStorage.getItem("jstp-last-audio");
       if (!raw) return;

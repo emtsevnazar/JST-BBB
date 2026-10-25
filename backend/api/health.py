@@ -61,8 +61,6 @@ async def health():
 async def list_models():
     ENGINE = get_engine()
     mtl_ok = bool(ENGINE and getattr(ENGINE, "mtl_engine", None) is not None)
-    qwen_ok = bool(ENGINE and getattr(ENGINE, "qwen_tts", None) is not None)
-    cosy_ok = bool(ENGINE and getattr(ENGINE, "cosyvoice", None) is not None)
     return {
         "models": [
             {"code": "core", "name": "Core", "loaded": True, "languages": MODEL_LANGS["core"]},
@@ -96,43 +94,6 @@ async def list_models():
                     "ja",
                     "ko",
                 ],
-            },
-            {
-                "code": "voxcpm",
-                "name": "VoxCPM2",
-                "loaded": bool(ENGINE and getattr(ENGINE, "voxcpm", None) is not None),
-                "languages": [
-                    "ru",
-                    "en",
-                    "zh",
-                    "ja",
-                    "ko",
-                    "de",
-                    "fr",
-                    "es",
-                    "it",
-                    "pt",
-                    "pl",
-                    "tr",
-                    "nl",
-                    "sv",
-                    "da",
-                    "no",
-                    "fi",
-                    "el",
-                    "he",
-                    "ar",
-                    "hi",
-                    "sw",
-                    "ms",
-                ],
-            },
-            {"code": "qwen", "name": "Qwen3", "loaded": qwen_ok, "languages": MODEL_LANGS["qwen"]},
-            {
-                "code": "cosyvoice",
-                "name": "CosyVoice",
-                "loaded": cosy_ok,
-                "languages": MODEL_LANGS["cosyvoice"],
             },
         ]
     }

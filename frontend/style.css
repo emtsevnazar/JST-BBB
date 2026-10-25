@@ -2,7 +2,7 @@
   --red:#e63946;--text:#2a2a3a;--text-dim:#6a6a7a;--panel-bg:rgba(255,255,255,0.72);
   --panel-border:rgba(26,42,94,0.12);--panel-shadow:0 8px 32px rgba(26,42,94,0.10);
   --accent:var(--navy);--input-bg:rgba(255,255,255,0.55);--app-bg:#ffffff;
-  --font-heading:'Caveat','Merienda',cursive;--font-body:'Inter',system-ui,sans-serif}
+  --font-heading:'Inter','Inter',sans-serif;--font-body:'Inter',system-ui,sans-serif}
 [data-theme="night"]{--text:#e8e8f0;--text-dim:#8a8a9a;--panel-bg:rgba(13,26,63,0.55);
   --panel-border:rgba(245,184,0,0.22);--panel-shadow:0 8px 32px rgba(0,0,0,0.5);
   --accent:var(--gold);--input-bg:rgba(0,0,0,0.35);--app-bg:#000000}

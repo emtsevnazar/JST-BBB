@@ -175,8 +175,8 @@ def _int(v, d=0):
 
 @dataclass
 class SynthSettings:
-    exaggeration: float = 0.50
-    cfg_weight: float = 0.50
+    exaggeration: float = 0.42
+    cfg_weight: float = 0.42
     temperature: float = 0.80
     repetition_penalty: float = 1.20
     speed: float = 1.0
@@ -187,7 +187,7 @@ class SynthSettings:
     output_sr: int = 44100
     bit_depth: int = 16
     mode: str = "core"
-    ref_length: int = 15
+    ref_length: int = 8
     pause_between: float = 0.20
     emphasis: bool = True
     sentence_split: str = "medium"
@@ -585,7 +585,7 @@ class Engine:
         pitch_mul=0,
     ):
         accent = ACCENT_MODIFIERS.get(settings.accent or "neutral", ACCENT_MODIFIERS["neutral"])
-        exag = _num(settings.exaggeration, 0.5) + (0.15 if emphasize else 0.0) + accent["exag"]
+        exag = _num(settings.exaggeration, 0.42) + (0.15 if emphasize else 0.0) + accent["exag"]
         temp = _num(settings.temperature, 0.8) + (0.03 if emphasize else 0.0) + accent["temp"]
         speed_mul = _num(speed_mul, 1.0) * accent["speed"]
         pitch_mul = _int(pitch_mul, 0) + accent["pitch"]
@@ -602,7 +602,7 @@ class Engine:
                 language_id=lang,
                 audio_prompt_path=str(ref_audio),
                 exaggeration=min(1.0, exag),
-                cfg_weight=_num(settings.cfg_weight, 0.5),
+                cfg_weight=_num(settings.cfg_weight, 0.42),
                 temperature=min(1.5, temp),
                 repetition_penalty=_num(settings.repetition_penalty, 1.2),
             )
@@ -610,7 +610,7 @@ class Engine:
             kwargs = dict(
                 audio_prompt_path=str(ref_audio),
                 exaggeration=min(1.0, exag),
-                cfg_weight=_num(settings.cfg_weight, 0.5),
+                cfg_weight=_num(settings.cfg_weight, 0.42),
                 temperature=min(1.5, temp),
                 repetition_penalty=_num(settings.repetition_penalty, 1.2),
             )

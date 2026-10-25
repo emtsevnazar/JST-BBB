@@ -53,7 +53,7 @@ def validate_voice_name(name: str) -> str:
 
 
 def validate_mode(mode: str) -> str:
-    ALLOWED = {"core", "multi", "jst_clone", "voxcpm", "qwen", "cosyvoice"}
+    ALLOWED = {"core", "multi", "jst_clone"}
     if mode not in ALLOWED:
         raise ValueError(f"Недопустимый режим: {mode}")
     return mode
@@ -221,10 +221,7 @@ def safe_log(msg: str, max_len: int = 500) -> str:
 # ============================================================
 def fallback_chain(primary: str) -> list[str]:
     chains = {
-        "voxcpm": ["voxcpm", "multi", "core"],
-        "qwen": ["qwen", "multi", "core"],
-        "cosyvoice": ["cosyvoice", "multi", "core"],
-        "jst_clone": ["jst_clone", "voxcpm", "multi", "core"],
+        "jst_clone": ["jst_clone", "multi", "core"],
         "multi": ["multi", "core"],
         "core": ["core"],
     }
@@ -242,8 +239,6 @@ def startup_check(root: Path) -> dict:
         or (root / "output").mkdir(parents=True, exist_ok=True) is None,
         "voices_dir": (root / "voices").exists(),
         "ffmpeg": _which("ffmpeg"),
-        "voxcpm2": (pretrained / "VoxCPM2" / "model.safetensors").exists(),
-        "cosyvoice": (pretrained / "CosyVoice-300M").exists(),
         "multi_weights": (pretrained / "t3_mtl23ls_v2.safetensors").exists(),
     }
     log.info(f"Startup check: {checks}")

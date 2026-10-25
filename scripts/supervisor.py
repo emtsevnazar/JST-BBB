@@ -100,18 +100,27 @@ def main() -> int:
     signal.signal(signal.SIGTERM, on_stop)
     signal.signal(signal.SIGINT, on_stop)
 
-    cmd = [
-        sys.executable,
-        "-m",
-        "uvicorn",
-        "backend.main:app",
-        "--host",
-        args.host,
-        "--port",
-        str(args.port),
-        "--log-level",
-        "info",
-    ]
+    # v1.4.1: allow overriding child command for tests
+    env_cmd = os.getenv("JST_SUPERVISOR_TEST_CMD")
+    if env_cmd:
+        # shell-like split, но без оболочки (безопасно)
+        import shlex
+
+        cmd = shlex.split(env_cmd)
+        log.info("using test command from JST_SUPERVISOR_TEST_CMD")
+    else:
+        cmd = [
+            sys.executable,
+            "-m",
+            "uvicorn",
+            "backend.main:app",
+            "--host",
+            args.host,
+            "--port",
+            str(args.port),
+            "--log-level",
+            "info",
+        ]
     log.info("supervisor started: %s", " ".join(cmd))
     log.info(
         "thresholds: rss_limit=%.1fGB sys_free_min=%.1f%%", args.rss_limit_gb, args.sys_free_min

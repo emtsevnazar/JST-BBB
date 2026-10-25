@@ -75,7 +75,7 @@ async def _ws_orig(ws: WebSocket):
                 ENGINE.set_mode(s.mode)
             except Exception as e:
                 log.warning("set_mode: %s", e)
-            ref = resolve_reference(voice, _int(s.ref_length, 15), language=s.language)
+            ref = resolve_reference(voice, _int(s.ref_length, 8), language=s.language)
             if not ref or not ref.exists():
                 await ws.send_text(
                     json.dumps({"type": "error", "message": f"No reference for '{voice}'"})
@@ -116,7 +116,7 @@ async def _ws_orig(ws: WebSocket):
                 "Plan: %d phrases, mode=%s, ref=%ds",
                 len(plan),
                 ENGINE.current_mode,
-                _int(s.ref_length, 15),
+                _int(s.ref_length, 8),
             )
             await ws.send_text(
                 json.dumps(
