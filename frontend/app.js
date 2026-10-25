@@ -976,6 +976,7 @@ async function init() {
   const lt = $("lang-toggle");
   if (lt) lt.addEventListener("click", () => {
     LANG = LANG === "ru" ? "en" : "ru";
+      try { window.dispatchEvent(new CustomEvent("jst:lang-changed")); } catch (e) {}
     localStorage.setItem("jst-lang", LANG);
     document.documentElement.lang = LANG;
     document.documentElement.lang = LANG;
@@ -1828,7 +1829,7 @@ window.addEventListener("load", init);
   const rows = new Map();
 
   function t(key) {
-    const lang = (document.documentElement.lang === "en") ? "en" : "ru";
+    const lang = (typeof LANG !== "undefined" && LANG === "en") ? "en" : "ru";
     return (window.I18N && I18N[lang] && I18N[lang][key]) || key;
   }
 
@@ -2168,6 +2169,12 @@ window.addEventListener("load", init);
     btn.addEventListener("click", openModal);
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
   }
+
+  window.addEventListener("jst:lang-changed", function () {
+    if (!modal) return;
+    cloneSettingsPanels();
+    applyLangTo(modal);
+  });
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
