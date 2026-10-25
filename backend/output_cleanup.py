@@ -17,6 +17,11 @@ log = logging.getLogger("JST.Cleanup")
 
 _AUDIO_EXTS = {".wav", ".mp3", ".ogg", ".flac", ".m4a", ".aac"}
 
+# v1.3.1: orphan temp-файлы (от ZIP / merged) — удаляем через 10 минут
+_ORPHAN_TTL_SEC = 10 * 60
+_ORPHAN_PATTERNS = (".jst_all_*.zip", ".jst_hist_*.zip")
+_ORPHAN_FIXED = (".concat_list.txt", "ALL_MERGED.wav")
+
 
 def _get_output_dir() -> Path:
     try:
@@ -110,17 +115,50 @@ async def cleanup_once(ttl_days: int | None = None, max_mb: int | None = None) -
     except Exception:
         total_after = 0
 
+    # 3. v1.3.1: orphan temp-файлы
+    deleted_orphan = 0
+    try:
+        now2 = time.time()
+        for pat in _ORPHAN_PATTERNS:
+            for p in out_dir.glob(pat):
+                try:
+                    st = p.stat()
+                    if now2 - st.st_mtime > _ORPHAN_TTL_SEC:
+                        p.unlink()
+                        deleted_orphan += 1
+                        freed += st.st_size
+                except FileNotFoundError:
+                    continue
+                except Exception as e:
+                    log.warning(f"cleanup orphan {p}: {e}")
+        for name in _ORPHAN_FIXED:
+            p = out_dir / name
+            try:
+                if p.exists():
+                    st = p.stat()
+                    if now2 - st.st_mtime > _ORPHAN_TTL_SEC:
+                        p.unlink()
+                        deleted_orphan += 1
+                        freed += st.st_size
+            except FileNotFoundError:
+                continue
+            except Exception as e:
+                log.warning(f"cleanup orphan {p}: {e}")
+    except Exception as e:
+        log.warning(f"cleanup orphan: {e}")
+
     res = {
         "deleted_by_ttl": deleted_ttl,
         "deleted_by_size": deleted_size,
+        "deleted_orphan": deleted_orphan,
         "freed_mb": round(freed / 1024 / 1024, 2),
         "total_mb": round(total_after / 1024 / 1024, 2),
         "ttl_days": ttl_days,
         "max_mb": max_mb,
     }
-    if deleted_ttl or deleted_size:
+    if deleted_ttl or deleted_size or deleted_orphan:
         log.info(
-            f"cleanup: удалено {deleted_ttl + deleted_size} файлов "
+            f"cleanup: удалено {deleted_ttl + deleted_size + deleted_orphan} файлов "
             f"(TTL={ttl_days}d, max={max_mb}MB), освобождено {res['freed_mb']} MB, "
             f"осталось {res['total_mb']} MB"
         )

@@ -90,6 +90,15 @@ async def download_all_merged():
     list_file = OUTPUT / ".concat_list.txt"
     list_file.write_text("\n".join([f"file '{f.name}'" for f in files]))
     out = OUTPUT / "ALL_MERGED.wav"
+
+    def _cleanup_merged():
+        for p in (out, list_file):
+            try:
+                if p.exists():
+                    p.unlink()
+            except OSError:
+                pass
+
     try:
         subprocess.run(
             [
@@ -109,7 +118,13 @@ async def download_all_merged():
             capture_output=True,
             cwd=str(OUTPUT),
         )
-        return FileResponse(out, media_type="audio/wav", filename="ALL_MERGED.wav")
+        return FileResponse(
+            out,
+            media_type="audio/wav",
+            filename="ALL_MERGED.wav",
+            background=BackgroundTask(_cleanup_merged),
+        )
     except Exception as e:
         log.warning("merge error: %s", e)
+        _cleanup_merged()
         raise HTTPException(500, "Merge failed (install ffmpeg)")
