@@ -2205,7 +2205,7 @@ window.addEventListener("load", init);
   let peakData = null, peakSrc = null, isDragging = false, dpr = 1;
 
   const PLAYER_SETTINGS = {
-    style: "line",
+    style: "neon",
     thickness: 2,
     grid: true,
     scale: 1.0,
@@ -2317,11 +2317,13 @@ window.addEventListener("load", init);
     const progressX = dur > 0 ? (currentTime / dur) * w : 0;
     const mid = h / 2;
     const amp = h * 0.42 * (PLAYER_SETTINGS.scale || 1.0);
+    const alpha = PLAYER_SETTINGS.opacity || 1.0;
+    const thickness = Math.max(1, PLAYER_SETTINGS.thickness || 2);
 
     // === Сетка (осциллограф-стиль) ===
     if (PLAYER_SETTINGS.grid) {
       ctx.save();
-      ctx.strokeStyle = night ? "rgba(245,184,0,0.06)" : "rgba(26,42,94,0.06)";
+      ctx.strokeStyle = night ? "rgba(245,184,0,0.05)" : "rgba(26,42,94,0.05)";
       ctx.lineWidth = 1;
       const cols = 12, rows = 4;
       for (let i = 1; i < cols; i++) {
@@ -2335,95 +2337,102 @@ window.addEventListener("load", init);
       ctx.restore();
     }
 
-    const style = PLAYER_SETTINGS.style || "line";
-    const thickness = Math.max(1, PLAYER_SETTINGS.thickness || 2);
-    const alpha = PLAYER_SETTINGS.opacity || 1.0;
-    const fillOn = !!PLAYER_SETTINGS.fill;
+    const style = PLAYER_SETTINGS.style || "neon";
 
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = lineColor;
-    ctx.fillStyle = lineColor;
-    ctx.lineWidth = thickness;
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.shadowColor = lineColor;
-    ctx.shadowBlur = isPlayingState ? 14 : 6;
-
+    // ============================================
+    // СТИЛЬ "BARS" — столбики (как раньше)
+    // ============================================
     if (style === "bars") {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = lineColor;
+      ctx.shadowColor = lineColor;
+      ctx.shadowBlur = isPlayingState ? 10 : 4;
       const barW = w / n;
       for (let i = 0; i < n; i++) {
         const px = i * barW;
         const v = peaks[i] * mid * 0.92;
         ctx.fillRect(px, mid - v, Math.max(1, barW * 0.7), v * 2);
       }
-    } else if (style === "dots") {
-      for (let i = 0; i < n; i += Math.max(1, Math.floor(n / 160))) {
+      ctx.restore();
+    }
+    // ============================================
+    // СТИЛЬ "DOTS" — точки
+    // ============================================
+    else if (style === "dots") {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = lineColor;
+      ctx.shadowColor = lineColor;
+      ctx.shadowBlur = isPlayingState ? 12 : 5;
+      const step = Math.max(1, Math.floor(n / 180));
+      for (let i = 0; i < n; i += step) {
         const x = (i / Math.max(1, n - 1)) * w;
         const y = mid - peaks[i] * amp;
         const y2 = mid + peaks[i] * amp;
-        ctx.beginPath(); ctx.arc(x, y, thickness, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(x, y2, thickness, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y2, Math.max(1.2, thickness - 0.5), 0, Math.PI * 2); ctx.fill();
       }
-    } else {
-      // === Плавная линия (контур сверху + зеркально снизу) ===
+      ctx.restore();
+    }
+    // ============================================
+    // СТИЛЬ "NEON" — неоновая волна (по умолчанию)
+    // Только ЛИНИЯ, никаких заливок и фонов
+    // ============================================
+    else {
       const pts = [];
       for (let i = 0; i < n; i++) {
         const x = (i / Math.max(1, n - 1)) * w;
         const y = mid - peaks[i] * amp;
         pts.push({ x, y });
       }
-      if (pts.length < 2) { ctx.restore(); return; }
+      if (pts.length < 2) return;
 
-      function buildLine() {
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
+      function buildPath(target) {
+        target.beginPath();
+        target.moveTo(pts[0].x, pts[0].y);
         for (let i = 1; i < pts.length - 1; i++) {
           const xc = (pts[i].x + pts[i + 1].x) / 2;
           const yc = (pts[i].y + pts[i + 1].y) / 2;
-          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
+          target.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
         }
-        ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+        target.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
       }
 
-      // Опциональная заливка — по настройке, НЕ зависит от playing
-      if (fillOn) {
-        const fillColor = night ? "rgba(245,184,0,0.10)" : "rgba(26,42,94,0.08)";
-        ctx.save();
-        ctx.shadowBlur = 0;
-        ctx.beginPath();
-        ctx.moveTo(0, mid);
-        ctx.lineTo(pts[0].x, pts[0].y);
-        for (let i = 1; i < pts.length - 1; i++) {
-          const xc = (pts[i].x + pts[i + 1].x) / 2;
-          const yc = (pts[i].y + pts[i + 1].y) / 2;
-          ctx.quadraticCurveTo(pts[i].x, pts[i].y, xc, yc);
-        }
-        ctx.lineTo(w, mid); ctx.closePath();
-        ctx.fillStyle = fillColor; ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(0, mid);
-        ctx.lineTo(pts[0].x, h - pts[0].y);
-        for (let i = 1; i < pts.length - 1; i++) {
-          const xc = (pts[i].x + pts[i + 1].x) / 2;
-          const yc = ((h - pts[i].y) + (h - pts[i + 1].y)) / 2;
-          ctx.quadraticCurveTo(pts[i].x, h - pts[i].y, xc, yc);
-        }
-        ctx.lineTo(w, mid); ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      }
+      // --- Слой 1: цветная аура (неон) ---
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.85;
+      ctx.strokeStyle = lineColor;
+      ctx.shadowColor = lineColor;
+      ctx.shadowBlur = isPlayingState ? 28 : 14;
+      ctx.lineWidth = thickness + 1;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      buildPath(ctx);
+      ctx.stroke();
 
-      // Контур сверху
-      buildLine(); ctx.stroke();
-      // Контур снизу (зеркально)
-      ctx.save(); ctx.translate(0, h); ctx.scale(1, -1);
-      buildLine(); ctx.stroke();
+      // Второй проход — усилить glow
+      ctx.shadowBlur = isPlayingState ? 20 : 8;
+      ctx.globalAlpha = alpha * 0.7;
+      buildPath(ctx);
+      ctx.stroke();
+      ctx.restore();
+
+      // --- Слой 2: яркая сердцевина (белёсая) ---
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = night ? "#FFF6C0" : "#EAF1FF";
+      ctx.shadowColor = lineColor;
+      ctx.shadowBlur = 6;
+      ctx.lineWidth = Math.max(1, thickness - 0.8);
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      buildPath(ctx);
+      ctx.stroke();
       ctx.restore();
     }
-    ctx.restore();
 
-    // === Ось по центру ===
+    // === Ось по центру (едва заметно) ===
     ctx.save();
     ctx.globalAlpha = 0.08;
     ctx.strokeStyle = lineColor;
@@ -2441,8 +2450,11 @@ window.addEventListener("load", init);
 
       const r = Math.max(5, w / 220);
       ctx.globalAlpha = 1;
+      ctx.shadowColor = headColor;
+      ctx.shadowBlur = 8;
       ctx.fillStyle = headColor;
       ctx.beginPath(); ctx.arc(progressX, h / 2, r, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.fillStyle = night ? "#0d1a3f" : "#ffffff";
       ctx.beginPath(); ctx.arc(progressX, h / 2, r * 0.45, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
@@ -2672,6 +2684,51 @@ window.addEventListener("load", init);
         audio.volume = Math.max(0, audio.volume - 0.1);
         if (vol) vol.value = audio.volume;
       }
+    });
+
+    // === Player settings panel (всегда видимая) ===
+    const optStyle = document.getElementById("jstp-opt-style");
+    const optThickness = document.getElementById("jstp-opt-thickness");
+    const optGrid = document.getElementById("jstp-opt-grid");
+    const optScale = document.getElementById("jstp-opt-scale");
+    const optScaleVal = document.getElementById("jstp-opt-scale-val");
+    const optOpacity = document.getElementById("jstp-opt-opacity");
+    const optOpacityVal = document.getElementById("jstp-opt-opacity-val");
+
+    function syncSettingsUI() {
+      if (optStyle) optStyle.value = PLAYER_SETTINGS.style;
+      if (optThickness) optThickness.value = String(PLAYER_SETTINGS.thickness);
+      if (optGrid) optGrid.checked = !!PLAYER_SETTINGS.grid;
+      if (optScale) optScale.value = String(PLAYER_SETTINGS.scale);
+      if (optScaleVal) optScaleVal.textContent = Number(PLAYER_SETTINGS.scale).toFixed(1) + "×";
+      if (optOpacity) optOpacity.value = String(PLAYER_SETTINGS.opacity);
+      if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
+    }
+    syncSettingsUI();
+
+    function redraw() {
+      savePlayerSettings();
+      try { drawWave(audio.currentTime || 0); } catch (e) { /* */ }
+    }
+
+    if (optStyle) optStyle.addEventListener("change", () => {
+      PLAYER_SETTINGS.style = optStyle.value; redraw();
+    });
+    if (optThickness) optThickness.addEventListener("change", () => {
+      PLAYER_SETTINGS.thickness = parseInt(optThickness.value, 10) || 2; redraw();
+    });
+    if (optGrid) optGrid.addEventListener("change", () => {
+      PLAYER_SETTINGS.grid = optGrid.checked; redraw();
+    });
+    if (optScale) optScale.addEventListener("input", () => {
+      PLAYER_SETTINGS.scale = parseFloat(optScale.value) || 1;
+      if (optScaleVal) optScaleVal.textContent = PLAYER_SETTINGS.scale.toFixed(1) + "×";
+      redraw();
+    });
+    if (optOpacity) optOpacity.addEventListener("input", () => {
+      PLAYER_SETTINGS.opacity = parseFloat(optOpacity.value) || 1;
+      if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
+      redraw();
     });
 
     window.addEventListener("jst:load-audio", (ev) => {
