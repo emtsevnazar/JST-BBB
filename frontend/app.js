@@ -160,6 +160,36 @@ const ACCENTS = [
 ];
 
 let LANG = localStorage.getItem("jst-lang") || "en";
+
+// v1.6.5: мини-словарь переводов для тостов/статусов (не трогает TRANSLATIONS)
+const JST_TOAST_I18N = {
+  en: {
+    ws_error: "WebSocket: server is not responding",
+    aborted: "Synthesis interrupted",
+    network: "Network",
+    no_conn: "no connection",
+    server_down: "Server is not responding",
+    server_crashed: "Server crashed",
+    model_not_loaded: "Model not loaded",
+    soon: "Soon: ",
+    cleared: "Text cleared"
+  },
+  ru: {
+    ws_error: "WebSocket: сервер не отвечает",
+    aborted: "Синтез прерван",
+    network: "Сеть",
+    no_conn: "нет соединения",
+    server_down: "Сервер не отвечает",
+    server_crashed: "Сервер упал",
+    model_not_loaded: "Модель не загружена",
+    soon: "Скоро: ",
+    cleared: "Текст очищен"
+  }
+};
+function ti(key) {
+  const d = JST_TOAST_I18N[LANG];
+  return (d && d[key]) || key;
+}
 let MODELS = [];
 let PRESETS = {};
 let currentMode = localStorage.getItem("jst-mode") || "core";
@@ -239,11 +269,17 @@ applyTheme(localStorage.getItem("jst-theme") || "day");
 // === i18n UI ===
 function applyLanguage() {
   document.documentElement.lang = LANG;
-  // v1.6.3: перерисовать текущий статус на новом языке
+  // v1.6.5: во время синтеза статус не трогаем — таймер сам переведёт через 1 сек
+  const _streaming = (window.JST_IS_STREAMING === true);   // v1.6.5a
   try {
     var _st = document.getElementById("status-text");
-    if (_st && window.JST_LAST_STATUS) {
-      _st.textContent = window.JST_LAST_STATUS;
+    if (_st && !_streaming) {
+      if (window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
+        const _ready = t("status_ready") || _st.textContent;
+        _st.textContent = _ready;
+        window.JST_LAST_STATUS = _ready;
+        window.JST_LAST_STATUS_LANG = LANG;
+      }
     }
   } catch (e) {}
   const lt = $("lang-toggle");
@@ -254,12 +290,15 @@ function applyLanguage() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el) {
     const k = el.dataset.i18nPlaceholder; const v = t(k); if (v) el.placeholder = v;
   });
-  rebuildPresetsSelect();
-  rebuildCarousel();
-  rebuildAccents();
-  rebuildModelCarousel();
-  updateModelInfo();
-  renderLanguages();
+  // v1.6.5: во время синтеза НЕ перестраиваем карусели (API-вызовы могут вернуть "Model not loaded")
+  if (!_streaming) {
+    try { rebuildPresetsSelect(); } catch(e){}
+    try { rebuildCarousel(); } catch(e){}
+    try { rebuildAccents(); } catch(e){}
+    try { rebuildModelCarousel(); } catch(e){}
+    try { updateModelInfo(); } catch(e){}
+    try { renderLanguages(); } catch(e){}
+  }
 }
 
 // === TOAST ===
@@ -279,6 +318,7 @@ function setStatus(text, type) {
   if (!stt) return;
   stt.textContent = text;
   window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
+  window.JST_LAST_STATUS_LANG = LANG;   // v1.6.5: язык статуса
   if (st) st.className = "status" + (type ? " " + type : "");
 }
 
@@ -381,7 +421,7 @@ function rebuildModelCarousel() {
     c.innerHTML = '<div class="model-name">' + m.name + warn + '</div>';
     c.onclick = () => {
       if (!m.loaded) {
-        showToast((typeof LANG !== "undefined" && LANG === "ru" ? "Модель не загружена" : "Model not loaded") + ": " + m.name);
+        showToast(ti("model_not_loaded") + ": " + m.name);
         return;
       }
       currentMode = m.code;
@@ -431,7 +471,7 @@ function renderLanguages() {
     const isSupported = supported.has(code);
     if (!isSupported) {
       c.classList.add("unavailable");
-      c.onclick = () => showToast((typeof LANG !== "undefined" && LANG === "ru" ? "Скоро: " : "Soon: ") + LANG_NAMES[code]);
+      c.onclick = () => showToast(ti("soon") + LANG_NAMES[code]);
     } else {
       c.onclick = () => {
         document.querySelectorAll(".lang-card").forEach(x => x.classList.remove("active"));
@@ -500,6 +540,7 @@ function synthesize() {
 
   resetPlayback();
   isStreaming = true;
+  window.JST_IS_STREAMING = true;   // v1.6.5a: глобальный флаг
   const pv = $("preview-player");
   if (pv) pv.style.display = "none";
   setStatus(t("status_synth") + "...", "busy");
@@ -539,13 +580,13 @@ function synthesize() {
       else if (m.type === "error") { setStatus(t("status_err") + ": " + m.message, "error"); finishStreaming(null); }
     } else handleAudioChunk(ev.data);
   };
-  ws.onerror = () => { if (typeof showToast === "function") showToast("WebSocket: сервер не отвечает", "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
+  ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
   ws.onclose = (ev) => {
     if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
     if (isStreaming) {
       console.warn("[JST] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
       if (typeof showToast === "function" && ev.code !== 1000) {
-        showToast("Синтез прерван (код " + ev.code + ")", "error");
+        showToast(ti("aborted") + " (code " + ev.code + ")", "error");
       }
       finishStreaming(null);
     }
@@ -554,6 +595,7 @@ function synthesize() {
 
 function finishStreaming(file) {
   isStreaming = false;
+  window.JST_IS_STREAMING = false;   // v1.6.5a
   if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
   if (typeof wsTimeoutTimer !== "undefined" && wsTimeoutTimer) {
     clearTimeout(wsTimeoutTimer);
@@ -589,6 +631,7 @@ function stopPlayback() {
   activeSources = [];
   if (ws) { try { ws.close(); } catch(e) {} ws = null; }
   isStreaming = false;
+  window.JST_IS_STREAMING = false;   // v1.6.5a
   const btnS = $("btn-synth"), btnT = $("btn-stop");
   if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
   if (btnT) btnT.disabled = true;
@@ -602,6 +645,7 @@ function resetPlayback() {
   activeSources = [];
   if (ws) { try { ws.close(); } catch(e) {} ws = null; }
   nextStartTime = 0; totalSamples = 0; allChunks = [];
+  window.JST_IS_STREAMING = false;   // v1.6.5a
   const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
   if (prog) prog.style.width = "0%";
   if (pt) pt.textContent = "0:00.0";
@@ -874,7 +918,7 @@ function bindUI() {
   const btnC = $("btn-clear-history");
   if (btnC) btnC.addEventListener("click", () => {
     if (textEl) { textEl.value = ""; textEl.focus(); }
-    setStatus(LANG === "ru" ? "Текст очищен" : "Text cleared", "");
+    setStatus(ti("cleared"), "");
   });
 
   // Download all
@@ -2355,8 +2399,14 @@ window.addEventListener("load", init);
     try {
       const resp = await fetch(audio.src);
       const ab = await resp.arrayBuffer();
+      // v1.6.5-player: закрываем временный AudioContext после decode
       const actx = new (window.AudioContext || window.webkitAudioContext)();
-      const buf = await actx.decodeAudioData(ab);
+      let buf;
+      try {
+        buf = await actx.decodeAudioData(ab);
+      } finally {
+        try { await actx.close(); } catch (e) {}
+      }
       const ch = buf.getChannelData(0);
       const nBars = Math.min(1600, Math.max(200, Math.floor(ch.length / 200)));
       const block = Math.floor(ch.length / nBars) || 1;
@@ -2705,13 +2755,30 @@ window.addEventListener("load", init);
     vol.addEventListener("input", () => { audio.volume = parseFloat(vol.value); });
     rate.addEventListener("change", () => { audio.playbackRate = parseFloat(rate.value); });
 
-    canvas.addEventListener("click", seekFromEvent);
-    canvas.addEventListener("mousedown", (ev) => { isDragging = true; seekFromEvent(ev); });
+    // v1.6.5-player: pointer events — один seek на клик
+    let _seekDownX = null;
+    canvas.addEventListener("pointerdown", (ev) => {
+      isDragging = true;
+      _seekDownX = ev.clientX;
+      try { canvas.setPointerCapture(ev.pointerId); } catch (e) {}
+      seekFromEvent(ev);
+    });
+    canvas.addEventListener("pointermove", (ev) => {
+      if (!isDragging) return;
+      if (_seekDownX !== null && Math.abs(ev.clientX - _seekDownX) < 2) return;
+      seekFromEvent(ev);
+    });
+    canvas.addEventListener("pointerup", (ev) => {
+      isDragging = false;
+      _seekDownX = null;
+      try { canvas.releasePointerCapture(ev.pointerId); } catch (e) {}
+    });
+    canvas.addEventListener("pointercancel", () => {
+      isDragging = false;
+      _seekDownX = null;
+    });
     window.addEventListener("mousemove", (ev) => { if (isDragging) seekFromEvent(ev); });
     window.addEventListener("mouseup", () => { isDragging = false; });
-    canvas.addEventListener("touchstart", (ev) => { isDragging = true; seekFromEvent(ev); }, { passive: true });
-    canvas.addEventListener("touchmove", (ev) => { if (isDragging) seekFromEvent(ev); }, { passive: true });
-    canvas.addEventListener("touchend", () => { isDragging = false; });
 
     audio.addEventListener("loadedmetadata", () => {
       showPlayer();
@@ -3383,7 +3450,7 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       return resp;
     } catch (err) {
       if (typeof showToast === "function") {
-        showToast("Сеть: " + (err.message || "нет соединения") + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
+        showToast(ti("network") + ": " + (err.message || ti("no_conn")) + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
       }
       throw err;
     }
@@ -3412,14 +3479,14 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       if (!r.ok) {
         const now = Date.now();
         if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
-          showToast("Сервер не отвечает (healthz " + r.status + ")", "error");
+          showToast(ti("server_down") + " (healthz " + r.status + ")", "error");
           _lastHealthToast = now;
         }
       }
     } catch (e) {
       const now = Date.now();
       if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
-        showToast("Сервер упал: " + (e.message || "offline"), "error");
+        showToast(ti("server_crashed") + ": " + (e.message || "offline"), "error");
         _lastHealthToast = now;
       }
     }
