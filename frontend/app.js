@@ -746,6 +746,8 @@ function bindUI() {
 
   // Random text
   const btnR = $("btn-random");
+  const _btnSynth = $("btn-synth"); if (_btnSynth) _btnSynth.addEventListener("click", synthesize);
+  const _btnStop = $("btn-stop"); if (_btnStop) _btnStop.addEventListener("click", stopPlayback);
   if (btnR) btnR.addEventListener("click", () => {
     const lang = (document.documentElement.lang || "ru").toLowerCase();
     const bank = (window.JST_TEST_PHRASES && window.JST_TEST_PHRASES[lang]) || [];
