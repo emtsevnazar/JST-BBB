@@ -2003,8 +2003,6 @@ window.addEventListener("load", init);
     useMainChk = modal.querySelector(".batch-use-main");
     listEl = modal.querySelector(".batch-list");
 
-    cloneSettingsPanels();
-
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
     modal.querySelector(".help-modal-close").addEventListener("click", closeModal);
     submitBtn.addEventListener("click", onSubmit);
@@ -2014,6 +2012,8 @@ window.addEventListener("load", init);
   function openModal() {
     ensureModal();
     syncMainToModal();
+    cloneSettingsPanels();
+    if (typeof applyLangTo === 'function') applyLangTo(modal);
     applyLangTo(modal);
     modal.style.display = "flex";
     loadModels();

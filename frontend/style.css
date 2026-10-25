@@ -5429,3 +5429,22 @@ html:not([data-theme="night"]) .batch-submit:hover:not(:disabled) {
 .batch-adv[open] > summary {
   margin-bottom: 12px !important;
 }
+
+/* === P6.5: yellow border на hover/focus/active для Пакет/Случайный === */
+html body :is(#btn-random, #btn-batch):hover,
+html body :is(#btn-random, #btn-batch):focus,
+html body :is(#btn-random, #btn-batch):active,
+html[data-theme="day"] body :is(#btn-random, #btn-batch):hover,
+html[data-theme="day"] body :is(#btn-random, #btn-batch):focus,
+html[data-theme="day"] body :is(#btn-random, #btn-batch):active,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):focus,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):active {
+  border-color: rgb(245, 184, 0) !important;
+  box-shadow: 0 0 18px rgba(245, 184, 0, 0.45) !important;
+}
+html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):focus,
+html[data-theme="night"] body :is(#btn-random, #btn-batch):active {
+  box-shadow: 0 0 18px rgba(245, 184, 0, 0.6) !important;
+}
