@@ -239,6 +239,13 @@ applyTheme(localStorage.getItem("jst-theme") || "day");
 // === i18n UI ===
 function applyLanguage() {
   document.documentElement.lang = LANG;
+  // v1.6.3: перерисовать текущий статус на новом языке
+  try {
+    var _st = document.getElementById("status-text");
+    if (_st && window.JST_LAST_STATUS) {
+      _st.textContent = window.JST_LAST_STATUS;
+    }
+  } catch (e) {}
   const lt = $("lang-toggle");
   if (lt) lt.textContent = LANG.toUpperCase();
   document.querySelectorAll("[data-i18n]").forEach(function(el) {
@@ -271,6 +278,7 @@ function setStatus(text, type) {
   const st = $("status"); const stt = $("status-text");
   if (!stt) return;
   stt.textContent = text;
+  window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
   if (st) st.className = "status" + (type ? " " + type : "");
 }
 
@@ -457,7 +465,7 @@ function getSettings() {
   s.mode = currentMode;
   s.language = currentLang;
   s.accent = currentAccent;
-  s.ref_length = rl ? (parseInt(rl.value) || 8) : 8;
+  s.ref_length = rl ? (parseInt(rl.value) || 12) : 12;
   s.pause_between = pb ? (parseFloat(pb.value) || 0.20) : 0.20;
   s.sentence_split = ss ? ss.value : "medium";
   s.mood = (document.querySelector("#mood") || {}).value || "auto";
@@ -495,6 +503,16 @@ function synthesize() {
   const pv = $("preview-player");
   if (pv) pv.style.display = "none";
   setStatus(t("status_synth") + "...", "busy");
+  // v1.6.3: elapsed time в статусе
+  const _synthStart = Date.now();
+  if (window._synthTimer) clearInterval(window._synthTimer);
+  window._synthTimer = setInterval(() => {
+    const sec = ((Date.now() - _synthStart) / 1000).toFixed(1);
+    const stt = document.getElementById("status-text");
+    if (stt && stt.textContent && stt.textContent.includes("...")) {
+      stt.textContent = t("status_synth") + "... " + sec + "s";
+    }
+  }, 1000);
 
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
   ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize");
@@ -536,6 +554,7 @@ function synthesize() {
 
 function finishStreaming(file) {
   isStreaming = false;
+  if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
   if (typeof wsTimeoutTimer !== "undefined" && wsTimeoutTimer) {
     clearTimeout(wsTimeoutTimer);
     wsTimeoutTimer = null;
@@ -705,7 +724,7 @@ function initRecordButton() {
           await loadVoices();
           const v = $("voice"); if (v) v.value = name;
           setStatus(t("status_rec_saved") + ": " + name, "");
-        } catch(e) { setStatus("Ошибка: " + e.message, "error"); }
+        } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
       };
       mediaRecorder.start();
       recordStartTime = Date.now();
@@ -914,7 +933,7 @@ async function uploadVoice() {
     const v = $("voice"); if (v) v.value = name;
     nv.value = ""; vf.value = "";
     setStatus(t("status_uploaded") + ": " + name, "");
-  } catch(e) { setStatus("Ошибка: " + e.message, "error"); }
+  } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
   finally { bu.disabled = false; }
 }
 
