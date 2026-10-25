@@ -3,7 +3,7 @@
 const I18N = {
   ru: {
     mood:"Настроение",
-    batch:"Пакет", batch_title:"Пакетный синтез", batch_text:"Текст",
+    batch:"Пакет", batch_lang:"Язык", text_ph:"Введите текст", batch_title:"Пакетный синтез", batch_text:"Текст",
     batch_voice:"Голос", batch_model:"Модель", batch_settings:"Настройки",
     batch_adv:"Дополнительно", batch_submit:"В очередь", batch_download:"ZIP",
     batch_empty:"Задач пока нет", batch_in_queue:"в очереди", batch_running:"синтез…",
@@ -56,7 +56,7 @@ const I18N = {
   },
   en: {
     mood:"Mood",
-    batch:"Batch", batch_title:"Batch synthesis", batch_text:"Text",
+    batch:"Batch", batch_lang:"Language", text_ph:"Enter text", batch_title:"Batch synthesis", batch_text:"Text",
     batch_voice:"Voice", batch_model:"Model", batch_settings:"Settings",
     batch_adv:"Extra", batch_submit:"Queue", batch_download:"ZIP",
     batch_empty:"No tasks yet", batch_in_queue:"queued", batch_running:"synthesizing…",
@@ -680,6 +680,30 @@ async function loadModels() {
   try { const r = await fetch("/api/models"); const d = await r.json(); MODELS = d.models || []; }
   catch(e) { console.error("models:", e); }
 }
+
+function loadLangs() {
+    if (!langEl) return;
+    const m = (typeof MODELS !== "undefined" ? MODELS : []).find(x => x.code === (modelEl && modelEl.value));
+    const supported = new Set(m ? (m.languages || []) : ["en"]);
+    const names = (typeof LANG_NAMES !== "undefined") ? LANG_NAMES : {};
+    const current = langEl.value || (typeof currentLang !== "undefined" ? currentLang : "ru");
+    langEl.innerHTML = "";
+    let firstAvailable = null;
+    Object.keys(names).forEach(code => {
+      if (!supported.has(code)) return;
+      if (!firstAvailable) firstAvailable = code;
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = code.toUpperCase() + " · " + names[code];
+      if (code === current) opt.selected = true;
+      langEl.appendChild(opt);
+    });
+    // Если текущий язык не в списке — выбрать первый доступный
+    const hasCurrent = Array.from(langEl.options).some(o => o.value === current);
+    if (!hasCurrent && firstAvailable) {
+      langEl.value = firstAvailable;
+    }
+  }
 
 async function loadVoices() {
   try {
@@ -1879,7 +1903,7 @@ window.addEventListener("load", init);
   };
 
   let modal = null;
-  let listEl, textareaEl, voiceEl, modelEl, submitBtn, useMainChk;
+  let listEl, textareaEl, voiceEl, modelEl, langEl, submitBtn, useMainChk;
   const rows = new Map();
 
   function t(key) {
@@ -2009,6 +2033,7 @@ window.addEventListener("load", init);
     document.body.appendChild(modal);
     modelEl = modal.querySelector(".batch-model");
     voiceEl = modal.querySelector(".batch-voice");
+    langEl = modal.querySelector(".batch-lang");
     textareaEl = modal.querySelector(".batch-textarea");
     submitBtn = modal.querySelector(".batch-submit");
     useMainChk = modal.querySelector(".batch-use-main");
@@ -2017,6 +2042,7 @@ window.addEventListener("load", init);
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
     modal.querySelector(".help-modal-close").addEventListener("click", closeModal);
     submitBtn.addEventListener("click", onSubmit);
+    if (modelEl) modelEl.addEventListener("change", function() { loadLangs(); });
     return modal;
   }
 
@@ -2027,7 +2053,7 @@ window.addEventListener("load", init);
     if (typeof applyLangTo === 'function') applyLangTo(modal);
     applyLangTo(modal);
     modal.style.display = "flex";
-    loadModels();
+    loadModels().then(function() { loadLangs(); });
     loadVoices();
     setTimeout(() => textareaEl && textareaEl.focus(), 50);
   }
@@ -2086,6 +2112,7 @@ window.addEventListener("load", init);
     };
     return {
       mode: modelEl.value || "core",
+      language: (langEl && langEl.value) || (typeof currentLang !== "undefined" ? currentLang : "ru"),
       preset: fromMain("preset", ""),
       mood: fromMain("mood", "auto"),
       exaggeration: parseFloat(fromMain("exaggeration", 0.5)),
