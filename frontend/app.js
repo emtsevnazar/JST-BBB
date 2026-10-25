@@ -256,13 +256,14 @@ function applyLanguage() {
 }
 
 // === TOAST ===
-function showToast(msg) {
+function showToast(msg, type) {
   let el = $("toast");
   if (!el) { el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
-  el.textContent = msg;
-  el.classList.add("show");
+  const isError = (type === "error");
+  el.textContent = (isError ? "⚠ " : "") + msg;
+  el.className = "toast" + (isError ? " toast-error" : "") + " show";
   clearTimeout(window._toastT);
-  window._toastT = setTimeout(() => el.classList.remove("show"), 3500);
+  window._toastT = setTimeout(() => el.classList.remove("show"), isError ? 8000 : 3500);
 }
 
 // === STATUS ===
@@ -520,11 +521,14 @@ function synthesize() {
       else if (m.type === "error") { setStatus(t("status_err") + ": " + m.message, "error"); finishStreaming(null); }
     } else handleAudioChunk(ev.data);
   };
-  ws.onerror = () => { setStatus(t("status_err"), "error"); finishStreaming(null); };
+  ws.onerror = () => { if (typeof showToast === "function") showToast("WebSocket: сервер не отвечает", "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
   ws.onclose = (ev) => {
     if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
     if (isStreaming) {
       console.warn("[JST] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
+      if (typeof showToast === "function" && ev.code !== 1000) {
+        showToast("Синтез прерван (код " + ev.code + ")", "error");
+      }
       finishStreaming(null);
     }
   };
@@ -3337,4 +3341,70 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
     });
     pv.addEventListener("ended", resetFade);
   }
+})();
+
+// === v1.6.1: Global error toasts — fetch, JS, WS, heartbeat ===
+(function () {
+  "use strict";
+  if (window.__jstErrorToasts) return;
+  window.__jstErrorToasts = true;
+
+  // 3a. Fetch wrapper — ловит HTTP 4xx/5xx и сетевые ошибки
+  const _origFetch = window.fetch.bind(window);
+  window.fetch = async function (...args) {
+    const url = typeof args[0] === "string" ? args[0] : (args[0] && args[0].url) || "";
+    const silent = url.includes("/healthz");   // heartbeat сам покажет
+    try {
+      const resp = await _origFetch.apply(this, args);
+      if (resp.status >= 400 && resp.status !== 401 && resp.status !== 403 && !silent) {
+        if (typeof showToast === "function") {
+          showToast("HTTP " + resp.status + " " + (resp.statusText || "") + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
+        }
+      }
+      return resp;
+    } catch (err) {
+      if (typeof showToast === "function") {
+        showToast("Сеть: " + (err.message || "нет соединения") + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
+      }
+      throw err;
+    }
+  };
+
+  // 3b. Global JS errors
+  window.addEventListener("error", (e) => {
+    if (typeof showToast !== "function") return;
+    const msg = e.message || (e.error && e.error.message) || "JS error";
+    showToast("JS: " + msg, "error");
+  });
+
+  // 3c. Unhandled promise rejections
+  window.addEventListener("unhandledrejection", (e) => {
+    if (typeof showToast !== "function") return;
+    const r = e.reason;
+    const msg = (r && r.message) ? r.message : String(r || "unknown");
+    showToast("Promise: " + msg, "error");
+  });
+
+  // 3d. Heartbeat — раз в 60 сек проверяет /healthz, не чаще 1 toast/мин
+  let _lastHealthToast = 0;
+  setInterval(async () => {
+    try {
+      const r = await _origFetch("/healthz", { cache: "no-store" });
+      if (!r.ok) {
+        const now = Date.now();
+        if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
+          showToast("Сервер не отвечает (healthz " + r.status + ")", "error");
+          _lastHealthToast = now;
+        }
+      }
+    } catch (e) {
+      const now = Date.now();
+      if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
+        showToast("Сервер упал: " + (e.message || "offline"), "error");
+        _lastHealthToast = now;
+      }
+    }
+  }, 60000);
+
+  console.log("[JST] v1.6.1: error toasts active (fetch, JS, WS, heartbeat)");
 })();

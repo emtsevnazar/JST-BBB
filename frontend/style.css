@@ -203,6 +203,17 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
   transition:all .3s cubic-bezier(.4,0,.2,1);z-index:1000;opacity:0;
   pointer-events:none;max-width:min(90vw,520px);text-align:center;line-height:1.4}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+/* v1.6.1: error toast — ярко-красный фон + жёлтый текст + чуть больше padding */
+.toast.toast-error{
+  background:#c81e2b !important;
+  color:#f5b800 !important;
+  border:2px solid #7f1017;
+  font-size:14px;
+  font-weight:700;
+  padding:15px 26px;
+  box-shadow:0 14px 44px rgba(200,30,43,.45), 0 0 0 1px rgba(245,184,0,.15);
+  max-width:min(92vw,560px);
+}
 .help-modal{background:rgba(0,0,0,0.5);z-index:200;
   display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s}
 .help-modal.open{display:flex;opacity:1}
