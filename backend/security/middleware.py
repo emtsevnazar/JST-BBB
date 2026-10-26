@@ -31,7 +31,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "img-src 'self' data: blob:; "
             "media-src 'self' blob:; "
-            "connect-src 'self' ws://127.0.0.1:8000 ws://localhost:8000 ws://192.168.*:8000 ws://10.*:8000 ws://172.16.*:8000 ws://172.17.*:8000 ws://172.18.*:8000 ws://172.19.*:8000 ws://172.2*:8000 ws://172.30.*:8000 ws://172.31.*:8000 https://fonts.googleapis.com https://fonts.gstatic.com; "
+            # v1.7.14: ws:/wss: scheme (валидные источники) вместо wildcards в октетах IP
+            # (192.168.*, 10.*, 172.16.* — невалидный CSP синтаксис, браузер игнорирует)
+            "connect-src 'self' ws: wss: https://fonts.googleapis.com https://fonts.gstatic.com; "
             "font-src 'self' data: https://fonts.gstatic.com; "
             "frame-ancestors 'none'; "
             "base-uri 'self'; "
