@@ -3567,3 +3567,79 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
 
   console.log("[JST] v1.6.1: error toasts active (fetch, JS, WS, heartbeat)");
 })();
+
+
+// ============================================================
+// v1.7.13: PWA install prompt
+// ============================================================
+let _pwaDeferred = null;
+let _pwaBtn = null;
+
+function _pwaIsStandalone() {
+  return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches)
+    || window.navigator.standalone === true;
+}
+
+function _pwaIsIOS() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function _pwaShowBtn() {
+  if (_pwaBtn) { _pwaBtn.style.display = "inline-flex"; }
+}
+
+function _pwaHideBtn() {
+  if (_pwaBtn) { _pwaBtn.style.display = "none"; }
+}
+
+function _pwaAttach() {
+  _pwaBtn = document.getElementById("pwa-install");
+  if (!_pwaBtn) return;
+
+  if (localStorage.getItem("jst-pwa-dismissed") === "1") return;
+  if (_pwaIsStandalone()) return;
+
+  _pwaBtn.addEventListener("click", async () => {
+    if (_pwaDeferred) {
+      // Chrome / Edge / Android
+      _pwaDeferred.prompt();
+      try {
+        const choice = await _pwaDeferred.userChoice;
+        if (choice && choice.outcome === "accepted") {
+          _pwaHideBtn();
+          try { if (window.setStatus) setStatus(t("status_ready"), ""); } catch (e) {}
+        }
+      } catch (e) {}
+      _pwaDeferred = null;
+    } else if (_pwaIsIOS()) {
+      // iOS Safari: нет beforeinstallprompt — инструкция
+      const msg = LANG === "en"
+        ? "iOS: Share → Add to Home Screen"
+        : "iOS: Поделиться → На экран «Домой»";
+      try { alert(msg); } catch (e) {}
+    } else {
+      // Fallback — уже установлено или не поддерживается
+      _pwaHideBtn();
+    }
+  });
+
+  // iOS: показываем сразу с инструкцией
+  if (_pwaIsIOS() && !_pwaIsStandalone()) {
+    _pwaShowBtn();
+  }
+}
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  _pwaDeferred = e;
+  _pwaShowBtn();
+});
+
+window.addEventListener("appinstalled", () => {
+  _pwaDeferred = null;
+  _pwaHideBtn();
+  try { localStorage.setItem("jst-pwa-dismissed", "1"); } catch (e) {}
+});
+
+document.addEventListener("DOMContentLoaded", _pwaAttach);
+
