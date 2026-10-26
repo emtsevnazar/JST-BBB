@@ -1526,7 +1526,6 @@ html body #lang-grid .lang-card .lang-name {
 .help-title .help-en {
   display: inline;
 }
-.help-title .help-en { display: none; }
 
 .help-section {
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12));
@@ -1562,7 +1561,6 @@ html body #lang-grid .lang-card .lang-name {
   font-weight: 700;
   font-size: 12px;
 }
-.help-pill.help-en { display: none; }
 
 .help-arrow {
   margin-left: auto;

@@ -28,7 +28,9 @@ const I18N = {
     dl_current:"Скачать текущий", dl_zip:"Скачать всё (ZIP)", dl_merged:"Скачать всё одним файлом",
     history:"История", status_ready:"Готов к работе", status_synth:"Синтез",
     status_stream:"Стриминг", status_done:"Готово", status_stop:"Остановлено",
-    status_err:"Ошибка", help_title:"Инструкция",
+    status_err:"Ошибка",
+    no_models:"Нет моделей", stt_not_supported:"Голосовой ввод не поддерживается",
+    pitch_kept:"Питч сохраняется", pitch_changes:"Питч меняется со скоростью", help_title:"Инструкция",
     err_timeout:"Превышено время ожидания", err_model_not_loaded:"Модель не загружена",
     err_empty_text:"Пустой текст", err_no_ref:"Референс не найден",
     err_synth_failed:"Ошибка синтеза", err_cancelled:"Отменено",
@@ -94,7 +96,9 @@ const I18N = {
     dl_current:"Download current", dl_zip:"Download all (ZIP)", dl_merged:"Download all as one",
     history:"History", status_ready:"Ready", status_synth:"Synthesizing",
     status_stream:"Streaming", status_done:"Done", status_stop:"Stopped",
-    status_err:"Error", help_title:"Help",
+    status_err:"Error",
+    no_models:"No models", stt_not_supported:"Voice input not supported",
+    pitch_kept:"Pitch preserved", pitch_changes:"Pitch changes with speed", help_title:"Help",
     err_timeout:"Request timed out", err_model_not_loaded:"Model not loaded",
     err_empty_text:"Empty text", err_no_ref:"Reference audio not found",
     err_synth_failed:"Synthesis failed", err_cancelled:"Cancelled",
@@ -422,7 +426,7 @@ function rebuildModelCarousel() {
   const grid = $("model-grid"); if (!grid) return;
   grid.innerHTML = "";
   if (!MODELS || !MODELS.length) {
-    grid.innerHTML = '<div style="padding:12px;color:var(--text-dim)">Нет моделей</div>';
+    grid.innerHTML = '<div style="padding:12px;color:var(--text-dim)">' + t("no_models") + '</div>';
     return;
   }
   MODELS.forEach(m => {
@@ -731,7 +735,7 @@ function fmt(sec) {
 function initSTT() {
   const btn = $("btn-stt"); if (!btn) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { btn.title = "Голосовой ввод не поддерживается"; btn.disabled = true; btn.style.opacity = "0.3"; return; }
+  if (!SR) { btn.title = t("stt_not_supported"); btn.disabled = true; btn.style.opacity = "0.3"; return; }
   btn.addEventListener("click", () => {
     if (sttActive) return;
     const recognition = new SR();
@@ -2926,7 +2930,7 @@ window.addEventListener("load", init);
         const next = !getP();
         setP(next);
         preserveBtn.classList.toggle("active", next);
-        preserveBtn.title = next ? "Питч сохраняется" : "Питч меняется со скоростью";
+        preserveBtn.title = next ? t("pitch_kept") : t("pitch_changes");
       });
     }
 
