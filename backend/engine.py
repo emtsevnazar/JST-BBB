@@ -715,29 +715,40 @@ class Engine:
         return self._post(audio, settings)
 
     def synth_jst_clone(self, text, ref_audio, settings, voice_name="voice"):
-        """v1.7.1-preclean: используем ПРЕД-СГЕНЕРИРОВАННЫЙ ref_clean.
+        """v1.7.5: JST Clone → multilingual engine (RU/EN), НЕ ChatterboxTTS (EN only).
 
-        Проблема: synth_one(merged_reference) виснет (Chatterbox T3 loop
-        без EOS на raw reference). synth_one(clean_ref) работает 23.8s.
+        Проблема: synth_one(text, clean_ref, settings) с settings.mode="jst_clone"
+        не совпадает с "multi" → падает в else → ChatterboxTTS (English only)
+        → на русском тексте выдаёт gibberish («китайский»).
 
-        clean_reference() В ГЛАВНОМ ПРОЦЕССЕ ломает MPS.
-        Решение: pre-generate через `python scripts/preclean_ref.py`
-        (отдельный процесс), затем main-процесс просто читает файл.
-
-        Fallback: если pre-clean не сгенерирован — merged ref (может висеть).
+        Fix: копируем settings и ставим mode="multi" → synth_one пойдёт через
+        mtl_engine.generate(language_id=settings.language).
         """
+        if self.clone_engine is None:
+            raise RuntimeError("JST Clone Engine не загружен")
+        if self.mtl_engine is None:
+            raise RuntimeError(
+                "JST Clone требует multilingual engine (mtl_engine не загружен). "
+                "Проверь: pretrained_models/t3_mtl23ls_v2.safetensors"
+            )
 
         clean_path = Path("output/_clone_cache") / f"ref_clean_{voice_name}.wav"
-        if clean_path.exists() and clean_path.stat().st_size > 100_000:
-            log.info("[JST.Clone] bypass: pre-cleaned ref %s", clean_path.name)
-            return self.synth_one(text, str(clean_path), settings)
+        if not (clean_path.exists() and clean_path.stat().st_size > 100_000):
+            raise RuntimeError(
+                f"pre-clean отсутствует для voice={voice_name}. "
+                f"Запусти: python scripts/preclean_ref.py"
+            )
 
-        log.warning(
-            "[JST.Clone] bypass: no pre-clean for voice=%s — use merged ref "
-            "(may hang). Run: python scripts/preclean_ref.py",
-            voice_name,
+        from copy import copy
+
+        _s = copy(settings)
+        _s.mode = "multi"  # → mtl_engine path
+        log.info(
+            "[JST.Clone] v1.7.5 multilingual: lang=%s, ref=%s, mode=multi",
+            _s.language,
+            clean_path.name,
         )
-        return self.synth_one(text, str(ref_audio), settings)
+        return self.synth_one(text, str(clean_path), _s)
 
     def _load_voxcpm(self):
         """Ленивая загрузка VoxCPM2."""
