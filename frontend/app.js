@@ -293,12 +293,16 @@ function _translateStatus(text, fromLang, toLang) {
   for (const k in s) {
     if (s[k] === text && d[k] && typeof d[k] === "string") return d[k];
   }
-  // 2. Prefix match, longest first (e.g. "Готово · x.wav" → "Done · x.wav")
+  // 2. Prefix match, longest first, with word boundary (v1.7.9)
+  // Skip if tail begins with a letter — prevents "План" matching in "Планирование"
   const keys = Object.keys(s).filter(k => typeof s[k] === "string" && s[k].length > 2);
   keys.sort((a, b) => (s[b] || "").length - (s[a] || "").length);
   for (const k of keys) {
     const v = s[k];
-    if (text.startsWith(v) && d[k]) return d[k] + text.slice(v.length);
+    if (!text.startsWith(v) || !d[k]) continue;
+    const tail = text.slice(v.length);
+    if (tail && /[А-Яа-яЁёA-Za-z]/.test(tail[0])) continue;  // mid-word
+    return d[k] + tail;
   }
   return text;
 }
