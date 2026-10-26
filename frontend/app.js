@@ -293,15 +293,26 @@ function _translateStatus(text, fromLang, toLang) {
   for (const k in s) {
     if (s[k] === text && d[k] && typeof d[k] === "string") return d[k];
   }
-  // 2. Prefix match, longest first, with word boundary (v1.7.9)
-  // Skip if tail begins with a letter — prevents "План" matching in "Планирование"
+  // 2. Word-by-word (v1.7.9c): переводим составные статусы
+  // "Планирование: 1 фраз" → "Planning: 1 phrases"
+  const tokens = text.match(/[А-Яа-яЁёA-Za-z]+|[^А-Яа-яЁёA-Za-z]+/g) || [];
+  let wordChanged = false;
+  const translated = tokens.map(tok => {
+    if (!/[А-Яа-яЁёA-Za-z]/.test(tok)) return tok;
+    for (const k in s) {
+      if (s[k] === tok && d[k] && typeof d[k] === "string") { wordChanged = true; return d[k]; }
+    }
+    return tok;
+  }).join("");
+  if (wordChanged) return translated;
+  // 3. Prefix match (fallback для суффиксов типа "· file.wav", "5.2s")
   const keys = Object.keys(s).filter(k => typeof s[k] === "string" && s[k].length > 2);
   keys.sort((a, b) => (s[b] || "").length - (s[a] || "").length);
   for (const k of keys) {
     const v = s[k];
     if (!text.startsWith(v) || !d[k]) continue;
     const tail = text.slice(v.length);
-    if (tail && /[А-Яа-яЁёA-Za-z]/.test(tail[0])) continue;  // mid-word
+    if (tail && /[А-Яа-яЁёA-Za-z]/.test(tail[0])) continue;
     return d[k] + tail;
   }
   return text;
