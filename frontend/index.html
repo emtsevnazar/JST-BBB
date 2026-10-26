@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css?v=1793042373">
+<link rel="stylesheet" href="/static/style.css?v=1793043179">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -27,7 +27,7 @@
   </a>
   <span class="org-badge" data-i18n="org">Justice Solidarity Tolerance</span>
   <div class="header-buttons">
-    <button class="icon-btn" id="help-toggle" title="Help">?</button>
+    <button class="icon-btn" id="help-toggle" data-i18n-title="title_help" title="Help">?</button>
     <button class="icon-btn" id="lang-toggle">RU</button>
     <button class="icon-btn" id="theme-toggle"><span id="theme-icon">☾</span></button>
   </div>
@@ -188,7 +188,7 @@
     </div>
     <div style="display:flex;gap:6px;margin-top:8px">
       <button class="btn btn-ghost btn-sm" id="btn-upload" data-i18n="upload_btn">Загрузить</button>
-      <button class="btn btn-ghost btn-sm btn-mic" id="btn-record" title="Записать голос" style="width:auto;min-width:44px;padding:9px 12px">
+      <button class="btn btn-ghost btn-sm btn-mic" id="btn-record" data-i18n-title="title_record" title="Записать голос" style="width:auto;min-width:44px;padding:9px 12px">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
       </button>
     </div>
@@ -206,7 +206,7 @@
       <button class="carousel-btn next" id="carousel-next">&#9679;</button>
     </div>
     <textarea id="text" placeholder="Введите текст" data-i18n-placeholder="text_ph"></textarea>
-    <button id="btn-stt" class="btn-mic" title="Голосовой ввод">
+    <button id="btn-stt" class="btn-mic" data-i18n-title="title_stt" title="Голосовой ввод">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
     </button>
   </div>
@@ -256,25 +256,25 @@
     </div>
     <div class="jstp-filename" id="jstp-filename" title="Текущий файл"></div>
     <div class="jstp-controls">
-      <button class="jstp-btn" id="jstp-restart" title="В начало" aria-label="Restart">
+      <button class="jstp-btn" id="jstp-restart" data-i18n-title="title_restart" title="В начало" data-i18n-aria-label="title_restart" aria-label="Restart">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="19,20 9,12 19,4"/><line x1="5" y1="4" x2="5" y2="20"/></svg>
       </button>
-      <button class="jstp-btn" id="jstp-back5" title="-5 сек" aria-label="Back 5s">
+      <button class="jstp-btn" id="jstp-back5" data-i18n-title="title_back5" title="-5 сек" data-i18n-aria-label="title_back5" aria-label="Back 5s">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="11,17 6,12 11,7"/><polyline points="18,17 13,12 18,7"/></svg>
       </button>
-      <button class="jstp-btn jstp-play" id="jstp-play" title="Play/Pause" aria-label="Play">
+      <button class="jstp-btn jstp-play" id="jstp-play" data-i18n-title="title_play_pause" title="Play/Pause" aria-label="Play">
         <svg id="jstp-icon-play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none"><polygon points="6,4 20,12 6,20"/></svg>
         <svg id="jstp-icon-pause" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" stroke="none" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
       </button>
-      <button class="jstp-btn" id="jstp-fwd5" title="+5 сек" aria-label="Forward 5s">
+      <button class="jstp-btn" id="jstp-fwd5" data-i18n-title="title_fwd5" title="+5 сек" data-i18n-aria-label="title_fwd5" aria-label="Forward 5s">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="13,17 18,12 13,7"/><polyline points="6,17 11,12 6,7"/></svg>
       </button>
       <span class="jstp-time"><span class="jstp-cur" id="jstp-cur">0:00</span> / <span id="jstp-tot">0:00</span></span>
-      <label class="jstp-ctrl" title="Громкость">
+      <label class="jstp-ctrl" data-i18n-title="title_volume" title="Громкость">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
         <input type="range" id="jstp-vol" min="0" max="1" step="0.01" value="1">
       </label>
-      <select class="jstp-rate" id="jstp-rate" title="Скорость">
+      <select class="jstp-rate" id="jstp-rate" data-i18n-title="title_speed" title="Скорость">
           <option value="0.1">0.1×</option>
           <option value="0.25">0.25×</option>
           <option value="0.5">0.5×</option>
@@ -289,10 +289,10 @@
           <option value="2.75">2.75×</option>
           <option value="3">3×</option>
         </select>
-      <button class="jstp-btn" id="jstp-loop" title="Зациклить" aria-label="Loop">
+      <button class="jstp-btn" id="jstp-loop" data-i18n-title="title_loop" title="Зациклить" data-i18n-aria-label="title_loop" aria-label="Loop">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
-      <button class="jstp-btn" id="jstp-boost" title="Усилить ×2.5" aria-label="Boost">
+      <button class="jstp-btn" id="jstp-boost" data-i18n-title="title_boost" title="Усилить ×2.5" data-i18n-aria-label="title_boost" aria-label="Boost">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </button>
       <button class="jstp-btn" id="jstp-preserve" title="Питч сохраняется" aria-label="Preserve pitch">
@@ -399,7 +399,7 @@
 
 <script src="/static/test_phrases.js?v=1792955244"></script>
 <script src="/static/test_phrases_ext.js?v=1792958951"></script>
-<script src="/static/app.js?v=1793042373"></script>
+<script src="/static/app.js?v=1793043179"></script>
 <script>
 // v1.4.0: PWA — регистрация service worker
 if ('serviceWorker' in navigator) {

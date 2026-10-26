@@ -29,6 +29,11 @@ const I18N = {
     history:"История", status_ready:"Готов к работе", status_synth:"Синтез",
     status_stream:"Стриминг", status_done:"Готово", status_stop:"Остановлено",
     status_err:"Ошибка",
+    title_current_file:"Текущий файл", title_restart:"В начало",
+    title_back5:"-5 сек", title_play_pause:"Играть/Пауза",
+    title_fwd5:"+5 сек", title_volume:"Громкость", title_speed:"Скорость",
+    title_loop:"Зациклить", title_boost:"Усилить ×2.5",
+    title_record:"Записать голос", title_stt:"Голосовой ввод", title_help:"Помощь",
     no_models:"Нет моделей", stt_not_supported:"Голосовой ввод не поддерживается",
     pitch_kept:"Питч сохраняется", pitch_changes:"Питч меняется со скоростью", help_title:"Инструкция",
     err_timeout:"Превышено время ожидания", err_model_not_loaded:"Модель не загружена",
@@ -307,15 +312,21 @@ function applyLanguage() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el) {
     const k = el.dataset.i18nPlaceholder; const v = t(k); if (v) el.placeholder = v;
   });
-  // v1.6.5: во время синтеза НЕ перестраиваем карусели (API-вызовы могут вернуть "Model not loaded")
-  if (!_streaming) {
-    try { rebuildPresetsSelect(); } catch(e){}
-    try { rebuildCarousel(); } catch(e){}
-    try { rebuildAccents(); } catch(e){}
-    try { rebuildModelCarousel(); } catch(e){}
-    try { updateModelInfo(); } catch(e){}
-    try { renderLanguages(); } catch(e){}
-  }
+  // v1.7.6: ВСЕГДА перерисовываем — все функции локальные (без API)
+  try { rebuildPresetsSelect(); } catch(e){}
+  try { rebuildCarousel(); } catch(e){}
+  try { rebuildAccents(); } catch(e){}
+  try { rebuildModelCarousel(); } catch(e){}
+  try { updateModelInfo(); } catch(e){}
+  try { renderLanguages(); } catch(e){}
+  try { renderMoods(); } catch(e){}
+  // v1.7.6: title / aria-label
+  document.querySelectorAll("[data-i18n-title]").forEach(el => {
+    const k = el.getAttribute("data-i18n-title"); const v = t(k); if (v) el.title = v;
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
+    const k = el.getAttribute("data-i18n-aria-label"); const v = t(k); if (v) el.setAttribute("aria-label", v);
+  });
 }
 
 // === TOAST ===
