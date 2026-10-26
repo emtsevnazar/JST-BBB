@@ -92,3 +92,6 @@ backend/.coverage
 *.perf_*_bak
 *.sec*_bak
 .venv312/
+
+# v1.7.2: journal logs
+journal/

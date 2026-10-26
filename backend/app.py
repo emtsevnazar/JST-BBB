@@ -20,6 +20,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from backend.logging_setup import setup_logging
 
 from .api.batch import router as batch_router
+from .api.emergency import router as emergency_router
 from .api.health import router as health_router
 from .api.history import router as history_router
 from .api.moods import router as moods_router
@@ -34,6 +35,7 @@ from .security.middleware import (
     RequestSizeLimitMiddleware,
     SecurityHeadersMiddleware,
 )
+from .services import journal
 
 setup_logging()
 log = logging.getLogger("JST.API")
@@ -98,6 +100,11 @@ async def lifespan(app: FastAPI):
     try:
         cleanup_task = asyncio.create_task(cleanup_loop())
         log.info("cleanup: фоновый worker запущен (раз в час)")
+        try:
+            journal.action("SERVER_START", port=8000)
+            log.info("journal: SERVER_START logged")
+        except Exception as _je:
+            log.warning("journal init: %s", _je)
     except Exception as _ce2:
         log.warning("cleanup worker не запущен: %s", _ce2)
 
@@ -176,7 +183,18 @@ app.include_router(output_router)
 app.include_router(stt_router)
 app.include_router(ws_router)
 app.include_router(batch_router)
+app.include_router(emergency_router)
 app.include_router(history_router)
+
+
+@app.get("/api/journal")
+async def api_journal(category: str = "actions", limit: int = 50, level: str = ""):
+    return {
+        "category": category,
+        "entries": journal.query(category, min(limit, 500), level or None),
+        "stats": journal.stats(),
+    }
+
 
 # === SECURITY MIDDLEWARE ===
 

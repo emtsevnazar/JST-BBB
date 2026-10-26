@@ -16,9 +16,10 @@ from ..core.paths import OUTPUT
 from ..core.state import get_engine
 from ..core.utils import _int, _num
 from ..engine import SynthSettings
-from ..services import tts_cache
+from ..services import journal, tts_cache
 from ..services.output_service import save_output
 from ..services.references import resolve_reference
+from .emergency import is_stopped
 
 log = logging.getLogger("JST")
 router = APIRouter(tags=["Synthesis"])
@@ -49,6 +50,19 @@ async def _ws_orig(ws: WebSocket):
         while True:
             data = json.loads(await ws.receive_text())
             if data.get("type") != "synthesize":
+                continue
+            # v1.7.2: emergency stop check (async, перед validation)
+            if is_stopped():
+                journal.action("SYNTH_REJECTED_STOP")
+                await ws.send_text(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "code": "stopped",
+                            "message": "emergency stop active",
+                        }
+                    )
+                )
                 continue
             text = data.get("text", "") or ""
             try:
