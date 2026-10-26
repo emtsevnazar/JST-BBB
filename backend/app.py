@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import time
 from contextlib import asynccontextmanager
 
@@ -55,9 +56,75 @@ WS_SHUTDOWN_MAX_WAIT = 5.0
 # Что каждая модель МОЖЕТ поддерживать (независимо от загрузки весов)
 
 
+def _init_admin_token() -> None:
+    """v1.7.10: загрузить JST_ADMIN_TOKEN из .env.local (если есть) или сгенерировать.
+
+    Логика:
+    1. Если JST_ADMIN_TOKEN уже в os.environ — используем его.
+    2. Иначе читаем .env.local: если там есть токен — загружаем в environ.
+    3. Иначе генерируем новый, ПЕРЕЗАПИСЫВАЕМ .env.local (не append!),
+       chmod 600, выводим в log.warning (shown once).
+    """
+    import secrets as _secrets
+    import time as _time
+    from pathlib import Path as _Path
+
+    if os.getenv("JST_ADMIN_TOKEN", "").strip():
+        log.info("[security] JST_ADMIN_TOKEN already in env")
+        return
+
+    env_local = _Path(__file__).resolve().parent.parent / ".env.local"
+
+    # Шаг 1: попытаться прочитать из .env.local
+    existing_token = None
+    if env_local.exists():
+        try:
+            for line in env_local.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if line.startswith("JST_ADMIN_TOKEN="):
+                    existing_token = line.split("=", 1)[1].strip()
+        except Exception as e:
+            log.warning("[security] failed to read .env.local: %s", e)
+
+    if existing_token:
+        os.environ["JST_ADMIN_TOKEN"] = existing_token
+        log.info("[security] JST_ADMIN_TOKEN loaded from .env.local")
+        return
+
+    # Шаг 2: сгенерировать новый
+    token = _secrets.token_urlsafe(32)
+    os.environ["JST_ADMIN_TOKEN"] = token
+    log.warning("[security] JST_ADMIN_TOKEN auto-generated. Shown ONCE below:")
+    log.warning("[security]   JST_ADMIN_TOKEN=%s", token)
+    try:
+        # ПЕРЕЗАПИСЫВАЕМ (не append!) — гарантирует один токен в файле
+        with env_local.open("w", encoding="utf-8") as f:
+            f.write("# v1.7.10: auto-generated secrets — DO NOT COMMIT\n")
+            f.write(f"# {_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"JST_ADMIN_TOKEN={token}\n")
+        try:
+            os.chmod(env_local, 0o600)
+        except Exception:
+            pass
+        log.info("[security] token saved to %s (chmod 600)", env_local)
+    except Exception as e:
+        log.error("[security] failed to save token: %s", e)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown: инициализация Engine + graceful shutdown (P3.5)."""
+    # === v1.7.10: SECURITY INIT ===
+    _init_admin_token()
+    try:
+        from .security.hardening import watchdog as _wd
+
+        _wd.start()
+        log.info("[security] watchdog started")
+    except Exception as _we:
+        log.error("[security] watchdog start failed: %s", _we)
+    # === END SECURITY INIT ===
+
     # v1.3.0: memory guard — watchdog RSS + системной памяти
     from scripts.guard import memory_guard_loop
 
@@ -186,6 +253,11 @@ app.include_router(batch_router)
 app.include_router(emergency_router)
 app.include_router(history_router)
 
+# v1.7.10: security stats + unblock
+from .api.security_api import router as security_router
+
+app.include_router(security_router)
+
 
 @app.get("/api/journal")
 async def api_journal(category: str = "actions", limit: int = 50, level: str = ""):
@@ -228,38 +300,28 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # === v0.9.1-fix: Audit + rate limit ===
 import time as _t
-from collections import defaultdict as _defaultdict
-from collections import deque as _deque
 
 from starlette.responses import JSONResponse as _JSONResponse
 
 from .audit import log_event as _log_event
 
-_RL_BUCKETS = _defaultdict(lambda: _deque(maxlen=200))
-_RL_LIMITS = {
-    "/api/": (120, 60),
-    "/ws/": (20, 60),
-}
-
-
-def _rl_check(ip, path):
-    now = _t.time()
-    for prefix, (limit, window) in _RL_LIMITS.items():
-        if path.startswith(prefix):
-            bucket = _RL_BUCKETS[ip]
-            while bucket and now - bucket[0] > window:
-                bucket.popleft()
-            if len(bucket) >= limit:
-                return False
-            bucket.append(now)
-            return True
-    return True
+# v1.7.10: RateLimiterV2 (per-prefix) + IPBlocklist — см. security/hardening.py
+from .security.hardening import blocklist as _blocklist
+from .security.hardening import rate_limiter as _rate_limiter
 
 
 @app.middleware("http")
 async def jst_rate_limit(request, call_next):
     ip = request.client.host if request.client else "unknown"
-    if not _rl_check(ip, request.url.path):
+    path = request.url.path
+    # v1.7.10-fix: /api/security/* доступен даже забаненным IP
+    # (иначе нельзя разбанить себя; stats нужен для видимости состояния)
+    if not path.startswith("/api/security/") and _blocklist.is_banned(ip):
+        return _JSONResponse(
+            {"error": "ip_blocked", "detail": "IP temporarily blocked"},
+            status_code=403,
+        )
+    if not _rate_limiter.check(ip, path):
         return _JSONResponse(
             {"error": "rate_limit_exceeded", "detail": "Слишком много запросов"},
             status_code=429,

@@ -16,6 +16,8 @@ from ..core.paths import OUTPUT
 from ..core.state import get_engine
 from ..core.utils import _int, _num
 from ..engine import SynthSettings
+from ..security.hardening import blocklist as _blocklist
+from ..security.hardening import rate_limiter as _rate_limiter
 from ..services import journal, tts_cache
 from ..services.output_service import save_output
 from ..services.references import resolve_reference
@@ -280,8 +282,14 @@ async def _ws_orig(ws: WebSocket):
 
 @router.websocket("/ws/synthesize")
 async def ws_synthesize(ws: WebSocket):
-    """Обёртка: ограничивает кол-во WS-соединений с одного IP."""
+    """Обёртка: blocklist + rate-limit per-prefix + max concurrent per IP (v1.7.10)."""
     ip = ws.client.host if ws.client else "unknown"
+    if _blocklist.is_banned(ip):
+        await ws.close(code=1008, reason="IP blocked")
+        return
+    if not _rate_limiter.check(ip, "/ws/synthesize"):
+        await ws.close(code=1008, reason="rate limit")
+        return
     if not _try_register_ip(ip):
         await ws.close(code=1008, reason="Too many WS connections")
         return
