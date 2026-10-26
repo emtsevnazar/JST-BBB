@@ -24,7 +24,7 @@ const I18N = {
     profile_ph:"Имя профиля (a-z, 0-9, _)", drop_hint:"Перетащите аудио или нажмите",
     drop_sub:".wav .mp3 .m4a .opus .flac .ogg", upload_btn:"Загрузить",
     speak:"Озвучить", stop:"Стоп", download:"Скачать", random_text:"Случайный",
-    clear_history:"Очистить",
+    clear_history:"История",
     dl_current:"Скачать текущий", dl_zip:"Скачать всё (ZIP)", dl_merged:"Скачать всё одним файлом",
     history:"История", status_ready:"Готов к работе", status_synth:"Синтез",
     status_stream:"Стриминг", status_done:"Готово", status_stop:"Остановлено",
@@ -97,7 +97,7 @@ const I18N = {
     profile_ph:"Profile name (a-z, 0-9, _)", drop_hint:"Drop audio or click",
     drop_sub:".wav .mp3 .m4a .opus .flac .ogg", upload_btn:"Upload",
     speak:"Speak", stop:"Stop", download:"Download", random_text:"Random",
-    clear_history:"Clear",
+    clear_history:"History",
     dl_current:"Download current", dl_zip:"Download all (ZIP)", dl_merged:"Download all as one",
     history:"History", status_ready:"Ready", status_synth:"Synthesizing",
     status_stream:"Streaming", status_done:"Done", status_stop:"Stopped",
@@ -284,6 +284,25 @@ document.addEventListener("DOMContentLoaded", () => {
 applyTheme(localStorage.getItem("jst-theme") || "day");
 
 // === i18n UI ===
+// v1.7.7: smart translate статуса (сохраняет "5.2s", "· file.wav")
+function _translateStatus(text, fromLang, toLang) {
+  if (!text || fromLang === toLang) return text;
+  const s = I18N[fromLang] || {};
+  const d = I18N[toLang] || {};
+  // 1. Exact match (e.g. "Готов к работе" → "Ready")
+  for (const k in s) {
+    if (s[k] === text && d[k] && typeof d[k] === "string") return d[k];
+  }
+  // 2. Prefix match, longest first (e.g. "Готово · x.wav" → "Done · x.wav")
+  const keys = Object.keys(s).filter(k => typeof s[k] === "string" && s[k].length > 2);
+  keys.sort((a, b) => (s[b] || "").length - (s[a] || "").length);
+  for (const k of keys) {
+    const v = s[k];
+    if (text.startsWith(v) && d[k]) return d[k] + text.slice(v.length);
+  }
+  return text;
+}
+
 function applyLanguage() {
   document.documentElement.lang = LANG;
   // v1.6.5: во время синтеза статус не трогаем — таймер сам переведёт через 1 сек
@@ -295,9 +314,13 @@ function applyLanguage() {
     }
     if (_st && !_streaming) {
       if (window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
-        const _ready = t("status_ready") || _st.textContent;
-        _st.textContent = _ready;
-        window.JST_LAST_STATUS = _ready;
+        // v1.7.7: не сбрасываем на "Ready", переводим умно
+        const _old = _st.textContent || "";
+        const _new = _translateStatus(_old, window.JST_LAST_STATUS_LANG, LANG);
+        if (_new !== _old) {
+          _st.textContent = _new;
+          window.JST_LAST_STATUS = _new;
+        }
         window.JST_LAST_STATUS_LANG = LANG;
       }
     }
