@@ -175,6 +175,23 @@ async def lifespan(app: FastAPI):
     except Exception as _ce2:
         log.warning("cleanup worker не запущен: %s", _ce2)
 
+    # v1.7.11: housekeeping — pycache, plain logs, tmp, tts cache
+    from .security.housekeeping import (
+        housekeeping_loop as _hk_loop,
+    )
+    from .security.housekeeping import (
+        housekeeping_run as _hk_run,
+    )
+
+    hk_task: asyncio.Task | None = None
+    try:
+        _hk_run()
+        log.info("[housekeeping] one-time run at startup: OK")
+        hk_task = asyncio.create_task(_hk_loop())
+        log.info("[housekeeping] loop task started (interval=3600s)")
+    except Exception as _hke:
+        log.warning("[housekeeping] startup failed: %s", _hke)
+
     try:
         yield
     finally:
@@ -204,6 +221,17 @@ async def lifespan(app: FastAPI):
                 log.info("cleanup: worker остановлен")
             except Exception as _se:
                 log.warning("cleanup shutdown: %s", _se)
+
+        if hk_task is not None:
+            try:
+                hk_task.cancel()
+                try:
+                    await hk_task
+                except asyncio.CancelledError:
+                    pass
+                log.info("housekeeping: worker остановлен")
+            except Exception as _hse:
+                log.warning("housekeeping shutdown: %s", _hse)
 
         await batch_queue.stop()
         history_mod.set_history(None)

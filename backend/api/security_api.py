@@ -46,3 +46,18 @@ async def security_unblock(req: UnblockReq, request: Request):
     _require_admin(request)
     was = blocklist.unblock(req.ip)
     return {"ok": True, "ip": req.ip, "was_banned": was}
+
+
+@router.get("/housekeeping")
+async def security_housekeeping():
+    from ..security.housekeeping import stats as _hk_stats
+
+    return _hk_stats()
+
+
+@router.post("/housekeeping/run")
+async def security_housekeeping_run(request: Request):
+    _require_admin(request)
+    from ..security.housekeeping import housekeeping_run
+
+    return housekeeping_run()
