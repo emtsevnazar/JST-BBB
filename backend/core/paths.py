@@ -16,3 +16,12 @@ for _d in (VOICES, OUTPUT, FRONTEND):
 
 SUPPORTED = {".wav", ".mp3", ".m4a", ".opus", ".flac", ".ogg"}
 REFERENCE_EN = OUTPUT / "merged_reference_en.wav"
+
+# v1.7.1: путь к pretrained_models (может быть вне проекта)
+_CANDIDATES = [
+    ROOT / "pretrained_models",
+    ROOT.parent / "pretrained_models",
+    Path.home() / "Documents/AAC/main/pretrained_models",
+    ROOT.parent.parent / "main/pretrained_models",
+]
+PRETRAINED = next((c for c in _CANDIDATES if (c / "s3gen.pt").exists()), _CANDIDATES[0])

@@ -715,32 +715,29 @@ class Engine:
         return self._post(audio, settings)
 
     def synth_jst_clone(self, text, ref_audio, settings, voice_name="voice"):
-        """Собственный JST Clone Engine: чистит реф → синтез → tone conversion → post."""
-        if self.clone_engine is None:
-            raise RuntimeError("JST Clone Engine не загружен")
+        """v1.7.1-preclean: используем ПРЕД-СГЕНЕРИРОВАННЫЙ ref_clean.
 
-        def tts_callback(t, clean_ref):
-            # Базовый синтез через лучшую доступную модель
-            if getattr(self, "voxcpm", None) is not None:
-                try:
-                    return self.synth_voxcpm(t, clean_ref, settings, prompt_text="")
-                except Exception as e:
-                    log.warning("[JST.Clone] voxcpm failed: %s, → chatterbox", e)
-            if getattr(self, "qwen_tts", None) is not None:
-                try:
-                    return self.synth_qwen(t, clean_ref, settings, prompt_text="")
-                except Exception as e:
-                    log.warning("[JST.Clone] qwen failed: %s, → chatterbox", e)
-            # Fallback — Chatterbox
-            return self.synth_one(t, clean_ref, settings)
+        Проблема: synth_one(merged_reference) виснет (Chatterbox T3 loop
+        без EOS на raw reference). synth_one(clean_ref) работает 23.8s.
 
-        return self.clone_engine.synthesize_segment(
-            text=text,
-            voice_name=voice_name,
-            ref_path=Path(ref_audio),
-            tts_callback=tts_callback,
-            use_tone_conversion=True,
+        clean_reference() В ГЛАВНОМ ПРОЦЕССЕ ломает MPS.
+        Решение: pre-generate через `python scripts/preclean_ref.py`
+        (отдельный процесс), затем main-процесс просто читает файл.
+
+        Fallback: если pre-clean не сгенерирован — merged ref (может висеть).
+        """
+
+        clean_path = Path("output/_clone_cache") / f"ref_clean_{voice_name}.wav"
+        if clean_path.exists() and clean_path.stat().st_size > 100_000:
+            log.info("[JST.Clone] bypass: pre-cleaned ref %s", clean_path.name)
+            return self.synth_one(text, str(clean_path), settings)
+
+        log.warning(
+            "[JST.Clone] bypass: no pre-clean for voice=%s — use merged ref "
+            "(may hang). Run: python scripts/preclean_ref.py",
+            voice_name,
         )
+        return self.synth_one(text, str(ref_audio), settings)
 
     def _load_voxcpm(self):
         """Ленивая загрузка VoxCPM2."""
@@ -825,7 +822,7 @@ class Engine:
 
 
 # === P7.1: сериализация synth_* (chatterbox alignment_stream_analyzer не потокобезопасен) ===
-_ENGINE_SYNTH_LOCK = threading.Lock()
+_ENGINE_SYNTH_LOCK = threading.RLock()  # v1.7.1: reentrant — synth_jst_clone вызывает synth_one
 
 
 def _wrap_engine_synth_methods():
