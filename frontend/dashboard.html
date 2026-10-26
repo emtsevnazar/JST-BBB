@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JST Studio — Dashboard</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f1419; color: #e6e6e6;
+    font-size: 14px;
+  }
+  h1 {
+    margin: 0 0 20px; font-size: 22px; font-weight: 600;
+    display: flex; align-items: center; gap: 12px;
+  }
+  h1 a { color: #8aa; text-decoration: none; font-size: 13px; font-weight: 400; }
+  h1 a:hover { text-decoration: underline; }
+  .live { color: #4ade80; font-size: 11px; font-weight: 500; }
+  .live.stale { color: #f87171; }
+  .grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  .card {
+    background: #1a1f26; border: 1px solid #2a313b;
+    border-radius: 10px; padding: 16px;
+  }
+  .card h2 {
+    margin: 0 0 12px; font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: #9aa; border-bottom: 1px solid #2a313b; padding-bottom: 8px;
+  }
+  .row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; border-bottom: 1px dashed #222831;
+  }
+  .row:last-child { border-bottom: none; }
+  .k { color: #8aa; }
+  .v { font-family: "SF Mono", Menlo, monospace; font-weight: 500; }
+  .v.ok { color: #4ade80; }
+  .v.warn { color: #fbbf24; }
+  .v.err { color: #f87171; }
+  .v.muted { color: #6a737d; }
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.ok { background: #1a3a2a; color: #4ade80; }
+  .badge.warn { background: #3a2f1a; color: #fbbf24; }
+  .badge.err { background: #3a1a1a; color: #f87171; }
+  button {
+    margin-top: 8px; padding: 8px 16px; border-radius: 6px;
+    background: #2a6ee8; color: #fff; border: none;
+    font-weight: 500; cursor: pointer; font-size: 13px;
+  }
+  button:hover { background: #1f5bcc; }
+  button:disabled { background: #333; cursor: not-allowed; }
+  .actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .actions-row a {
+    padding: 8px 14px; background: #222831; border: 1px solid #2a313b;
+    border-radius: 6px; color: #9ac; text-decoration: none; font-size: 13px;
+  }
+  .actions-row a:hover { background: #2a313b; }
+  .json-link { font-size: 11px; color: #6a737d; }
+  .json-link a { color: #6a9; }
+  pre {
+    font-family: "SF Mono", Menlo, monospace; font-size: 11px;
+    background: #0a0f14; padding: 8px; border-radius: 4px;
+    overflow: auto; max-height: 200px; color: #9aa; margin: 8px 0 0;
+  }
+  #toast {
+    position: fixed; bottom: 20px; right: 20px;
+    background: #1f2937; border: 1px solid #374151;
+    padding: 12px 20px; border-radius: 8px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    max-width: 400px;
+  }
+  #toast.show { opacity: 1; }
+  #toast.ok { border-color: #4ade80; }
+  #toast.err { border-color: #f87171; }
+</style>
+</head>
+<body>
+
+<h1>
+  JST Studio Dashboard
+  <span class="live" id="live">● LIVE</span>
+  <a href="/">← к приложению</a>
+</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>🛡️ Security</h2>
+    <div class="row"><span class="k">Uptime</span><span class="v" id="uptime">—</span></div>
+    <div class="row"><span class="k">Blocked IPs</span><span class="v" id="blocked-ips">—</span></div>
+    <div class="row"><span class="k">Bans total</span><span class="v" id="bans-total">—</span></div>
+    <div class="row"><span class="k">Rate hits</span><span class="v" id="rate-hits">—</span></div>
+    <div class="row"><span class="k">Rate exceeded</span><span class="v" id="rate-exceeded">—</span></div>
+    <div class="row"><span class="k">Rate buckets</span><span class="v" id="rate-buckets">—</span></div>
+    <div class="row"><span class="k">Watchdog</span><span class="v" id="watchdog">—</span></div>
+    <div class="row"><span class="k">Watchdog kicks</span><span class="v" id="watchdog-kicks">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>🧹 Housekeeping</h2>
+    <div class="row"><span class="k">Last run</span><span class="v" id="hk-last">—</span></div>
+    <div class="row"><span class="k">Interval</span><span class="v" id="hk-interval">—</span></div>
+    <div class="row"><span class="k">Freed (total)</span><span class="v" id="hk-freed">—</span></div>
+    <div class="row"><span class="k">Pycache deleted</span><span class="v" id="hk-pycache">—</span></div>
+    <div class="row"><span class="k">Logs rotated</span><span class="v" id="hk-logs">—</span></div>
+    <div class="row"><span class="k">TTS cache</span><span class="v" id="hk-tts">—</span></div>
+    <button id="hk-run">▶ Run housekeeping now</button>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ System</h2>
+    <div class="row"><span class="k">Engine</span><span class="v" id="sys-engine">—</span></div>
+    <div class="row"><span class="k">Output files</span><span class="v" id="sys-output-files">—</span></div>
+    <div class="row"><span class="k">Output size</span><span class="v" id="sys-output-mb">—</span></div>
+    <div class="row"><span class="k">WS active</span><span class="v" id="sys-ws">—</span></div>
+    <div class="row"><span class="k">Healthz</span><span class="v" id="sys-healthz">—</span></div>
+  </div>
+
+  <div class="card">
+    <h2>🔗 Quick links</h2>
+    <div class="actions-row">
+      <a href="/api/security/stats" target="_blank">/api/security/stats</a>
+      <a href="/api/security/housekeeping" target="_blank">/api/security/housekeeping</a>
+      <a href="/healthz" target="_blank">/healthz</a>
+      <a href="/api/journal" target="_blank">/api/journal</a>
+    </div>
+    <div class="json-link">
+      Refreshing every 3s. <span id="last-fetch">waiting…</span>
+    </div>
+    <pre id="raw">—</pre>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function() {
+  const $ = id => document.getElementById(id);
+  let lastOk = 0;
+
+  function fmtUptime(sec) {
+    if (!sec) return '—';
+    const s = Math.floor(sec);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    if (d > 0) return `${d}d ${h}h ${m}m`;
+    if (h > 0) return `${h}h ${m}m`;
+    return `${m}m ${s % 60}s`;
+  }
+
+  function fmtAgo(ts) {
+    if (!ts) return '—';
+    const diff = Date.now() / 1000 - ts;
+    if (diff < 0) return 'в будущем';
+    if (diff < 60) return `${Math.floor(diff)}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    return `${Math.floor(diff / 3600)}h ago`;
+  }
+
+  function fmtMB(kb) {
+    if (kb == null) return '—';
+    if (kb < 1024) return `${kb.toFixed(1)} KB`;
+    return `${(kb / 1024).toFixed(2)} MB`;
+  }
+
+  function toast(msg, type) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'show ' + (type || '');
+    setTimeout(() => { t.className = ''; }, 4000);
+  }
+
+  async function refresh() {
+    try {
+      const bust = '?_t=' + Date.now();
+      const [statsR, hkR, healthR] = await Promise.all([
+        fetch('/api/security/stats' + bust).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/security/housekeeping' + bust).then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/healthz' + bust).then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+
+      const now = Date.now();
+      if (statsR) {
+        const bl = statsR.blocklist || {};
+        const rl = statsR.rate_limiter || {};
+        const wd = statsR.watchdog || {};
+
+        $('uptime').textContent = fmtUptime(statsR.uptime_sec);
+
+        const ips = bl.active_bans || 0;
+        $('blocked-ips').textContent = ips;
+        $('blocked-ips').className = 'v ' + (ips > 0 ? 'err' : 'ok');
+
+        $('bans-total').textContent = bl.bans_total ?? '—';
+        $('rate-hits').textContent = rl.hits ?? '—';
+        $('rate-exceeded').textContent = rl.exceeded ?? '—';
+        $('rate-exceeded').className = 'v ' + ((rl.exceeded || 0) > 0 ? 'warn' : 'muted');
+        $('rate-buckets').textContent = rl.buckets ?? '—';
+
+        const wdStatus = wd.last_status || '—';
+        $('watchdog').innerHTML = `<span class="badge ${wdStatus === 'ok' ? 'ok' : 'warn'}">${wdStatus}</span>`;
+        $('watchdog-kicks').textContent = wd.kicks ?? 0;
+      }
+
+      if (hkR) {
+        $('hk-last').textContent = fmtAgo(hkR.last_run);
+        $('hk-interval').textContent = hkR.interval_sec ? `${hkR.interval_sec / 60}m` : '—';
+        $('hk-freed').textContent = fmtMB(hkR.freed_mb_total ? hkR.freed_mb_total * 1024 : 0);
+        const lr = hkR.last_results || {};
+        $('hk-pycache').textContent = lr.pycache?.deleted ?? '—';
+        $('hk-logs').textContent = lr.plain_logs?.rotated ?? '—';
+        $('hk-tts').textContent = lr.tts_cache?.deleted ?? '—';
+      }
+
+      if (healthR) {
+        $('sys-engine').innerHTML = healthR.engine
+          ? '<span class="badge ok">loaded</span>'
+          : '<span class="badge err">not loaded</span>';
+        $('sys-output-files').textContent = healthR.output_files ?? '—';
+        $('sys-output-mb').textContent = healthR.output_mb != null ? `${healthR.output_mb} MB` : '—';
+        $('sys-ws').textContent = healthR.ws_active ?? '—';
+        $('sys-healthz').innerHTML = '<span class="badge ok">200</span>';
+      }
+
+      $('last-fetch').textContent = 'updated ' + new Date(now).toLocaleTimeString();
+      $('live').className = 'live';
+      $('raw').textContent = JSON.stringify({ stats: statsR, housekeeping: hkR, health: healthR }, null, 2).slice(0, 500);
+      lastOk = now;
+    } catch (e) {
+      $('live').className = 'live stale';
+      $('last-fetch').textContent = 'fetch failed: ' + e.message;
+    }
+  }
+
+  $('hk-run').onclick = async () => {
+    const btn = $('hk-run');
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      const token = prompt('JST_ADMIN_TOKEN (из .env.local):');
+      if (!token) { btn.disabled = false; btn.textContent = '▶ Run housekeeping now'; return; }
+      const r = await fetch('/api/security/housekeeping/run', {
+        method: 'POST',
+        headers: { 'X-Admin-Token': token.trim() },
+      });
+      const data = await r.json();
+      if (r.ok) {
+        toast('Housekeeping OK: ' + JSON.stringify(data).slice(0, 120), 'ok');
+      } else {
+        toast('Error ' + r.status + ': ' + (data.detail || JSON.stringify(data)).slice(0, 120), 'err');
+      }
+    } catch (e) {
+      toast('Failed: ' + e.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '▶ Run housekeeping now';
+      refresh();
+    }
+  };
+
+  refresh();
+  setInterval(refresh, 3000);
+})();
+</script>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ import logging
 import os
 import time
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -285,6 +286,22 @@ app.include_router(history_router)
 from .api.security_api import router as security_router
 
 app.include_router(security_router)
+
+
+# v1.7.12: Dashboard — HTML + live metrics (blocklist/rate/watchdog/housekeeping)
+from fastapi.responses import HTMLResponse as _HTMLResponse
+
+_DASHBOARD_PATH = Path(__file__).resolve().parent.parent / "frontend" / "dashboard.html"
+
+
+@app.get("/dashboard", response_class=_HTMLResponse)
+async def dashboard():
+    if _DASHBOARD_PATH.exists():
+        return _DASHBOARD_PATH.read_text(encoding="utf-8")
+    return _HTMLResponse(
+        content="<h1>Dashboard not found</h1><p>frontend/dashboard.html missing</p>",
+        status_code=404,
+    )
 
 
 @app.get("/api/journal")
