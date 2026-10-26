@@ -306,23 +306,17 @@ function _translateStatus(text, fromLang, toLang) {
 function applyLanguage() {
   document.documentElement.lang = LANG;
   // v1.6.5: во время синтеза статус не трогаем — таймер сам переведёт через 1 сек
-  const _streaming = (window.JST_IS_STREAMING === true);   // v1.6.5a
+  // v1.7.8: переводим статус ВСЕГДА (даже при streaming) через _translateStatus
   try {
     var _st = document.getElementById("status-text");
-    if (_st && _streaming && window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
-      try { console.warn("[applyLanguage] streaming=true — status НЕ перерисовывается (правильно)"); } catch(e) {}
-    }
-    if (_st && !_streaming) {
-      if (window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
-        // v1.7.7: не сбрасываем на "Ready", переводим умно
-        const _old = _st.textContent || "";
-        const _new = _translateStatus(_old, window.JST_LAST_STATUS_LANG, LANG);
-        if (_new !== _old) {
-          _st.textContent = _new;
-          window.JST_LAST_STATUS = _new;
-        }
-        window.JST_LAST_STATUS_LANG = LANG;
+    if (_st && window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
+      const _old = _st.textContent || "";
+      const _new = _translateStatus(_old, window.JST_LAST_STATUS_LANG, LANG);
+      if (_new !== _old) {
+        _st.textContent = _new;
+        window.JST_LAST_STATUS = _new;
       }
+      window.JST_LAST_STATUS_LANG = LANG;
     }
   } catch (e) {}
   const lt = $("lang-toggle");
@@ -601,8 +595,13 @@ function synthesize() {
   window._synthTimer = setInterval(() => {
     const sec = ((Date.now() - _synthStart) / 1000).toFixed(1);
     const stt = document.getElementById("status-text");
-    if (stt && stt.textContent && stt.textContent.includes("...")) {
-      stt.textContent = t("status_synth") + "... " + sec + "s";
+    if (stt) {
+      // v1.7.8: не сбрасываем phase-статус, только добавляем таймер к "..."
+      if (stt.textContent && (stt.textContent.includes("...") || stt.textContent.includes(t("status_synth")))) {
+        stt.textContent = t("status_synth") + "... " + sec + "s";
+        window.JST_LAST_STATUS = stt.textContent;
+        window.JST_LAST_STATUS_LANG = LANG;
+      }
     }
   }, 1000);
 
