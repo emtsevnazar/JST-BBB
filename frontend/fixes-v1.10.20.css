@@ -1,0 +1,399 @@
+/* ═══════════════════════════════════════════════════════════════
+   v1.10.20: ОДИН файл, все требования.
+   - Подключается ПОСЛЕ style.css → его правила выигрывают.
+   - НЕ используем !important, кроме где без вариантов.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────────
+   1. КОНТЕЙНЕР = 100% viewport (снять max-width 1400px из v1.10.12)
+   ─────────────────────────────────────────────────────────────── */
+.app,
+main.main {
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* .app = flex column → footer прижимается вниз */
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .main занимает остаток */
+main.main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   2. LOGO — стабильный размер, не сжимается на ≤900
+   ─────────────────────────────────────────────────────────────── */
+.logo-img {
+  height: 44px;
+  width: auto;
+  max-height: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+@media (max-width: 900px) {
+  .logo-img {
+    height: 44px;
+    max-height: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   3. HEADER — sticky, кнопки слева, 45×45, скруглённые
+   ─────────────────────────────────────────────────────────────── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--app-bg, #0a0a0c);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.header-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.header-buttons > button,
+.header-buttons > a.btn,
+.header-buttons > .icon-btn {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  min-height: 45px;
+  max-width: 45px;
+  max-height: 45px;
+  padding: 0;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 45px;
+  overflow: hidden;
+}
+
+.header-buttons > button > svg,
+.header-buttons > button > img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+/* ≤900: header-buttons = 145px (3 кнопки × 45 + 2 × 5) */
+@media (max-width: 900px) {
+  .header-buttons {
+    width: 145px;
+    flex: 0 0 145px;
+    max-width: 145px;
+    gap: 5px;
+  }
+  .header-buttons > button,
+  .header-buttons > a.btn,
+  .header-buttons > .icon-btn {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    min-height: 45px;
+    flex: 0 0 45px;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   4. ORG-BADGE — 1 строка на ≥901, 3 строки на ≤900
+   ─────────────────────────────────────────────────────────────── */
+.org-badge {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.2;
+  padding: 7px 14px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.org-badge > span {
+  display: inline;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .org-badge {
+    flex-direction: column;
+    white-space: normal;
+    padding: 8px 12px;
+    font-size: 11px;
+    line-height: 1.15;
+    max-width: 140px;
+  }
+  .org-badge > span {
+    display: block;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   5. FOOTER — прижат внизу
+   ─────────────────────────────────────────────────────────────── */
+.footer {
+  margin-top: auto;
+  flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 5;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   6. APP-TITLE "Just Start Transform" — уменьшается, НЕ рвётся
+   ─────────────────────────────────────────────────────────────── */
+.app-title,
+.brand-name,
+.brand .brand-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(11px, 2.8vw, 18px);
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   7. КНОПКИ: зазор между иконкой и текстом, между соседями
+   ─────────────────────────────────────────────────────────────── */
+.btn,
+button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.btn > svg {
+  flex-shrink: 0;
+}
+
+.btn > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Соседние кнопки — зазор */
+.btn + .btn,
+.btn + .btn-mic,
+.btn-mic + .btn {
+  margin-left: 8px;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   8. BTN-MIC — вернуть в поток, 44×44, не вылазит
+   ─────────────────────────────────────────────────────────────── */
+.btn-mic,
+button.btn-mic,
+.dropzone .btn-mic {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+  padding: 0;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 0 44px;
+}
+
+/* .dropzone — не обрезает содержимое */
+.dropzone {
+  overflow: visible;
+  padding: 16px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Ряд upload + record — flex wrap с зазором */
+.dropzone > div[style*="display:flex"],
+.dropzone > div[style*="display: flex"] {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Текст под кнопками — не наезжает */
+.dropzone > p,
+.dropzone > .drop-sub {
+  margin-top: 8px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   9. CAROUSEL-BTN — круглая, не деформируется
+   ─────────────────────────────────────────────────────────────── */
+.carousel-btn,
+.carousel-btn.prev,
+.carousel-btn.next {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  padding: 0;
+  flex: 0 0 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   10. ≤900: .main — ОДНА колонка (убрать grid 350px 1fr)
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  main.main {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  main.main > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .sidebar,
+  .main-content,
+  .workspace {
+    width: 100%;
+    max-width: 100%;
+    overflow-y: visible;
+    max-height: none;
+    height: auto;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   11. ≤900: Пауза/Эмфаза/Шёпот (carousel cards) — нормальный размер
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .carousel .card,
+  .carousel .card *,
+  .carousel .card button {
+    font-size: 12px !important;
+    min-height: 40px !important;
+    max-height: 56px !important;
+    padding: 6px 10px !important;
+    line-height: 1.15 !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   12. Анти-наезды: блоки не заходят друг на друга
+   ─────────────────────────────────────────────────────────────── */
+.main > *,
+.sidebar > *,
+.app > *,
+.header > * {
+  min-width: 0;
+  min-height: 0;
+}
+
+img, video, canvas, picture {
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+button, .btn, [role="button"] {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   13. Модель языков — если она absolute/sticky, вернуть в поток
+   ─────────────────────────────────────────────────────────────── */
+.lang-card,
+.lang-list,
+.lang-select,
+.model-card,
+.model-list,
+.model-select {
+  position: static;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   14. Слабый интернет badge (для JS из offline.js)
+   ─────────────────────────────────────────────────────────────── */
+.slow-network-badge {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 8px 14px;
+  background: rgba(229, 57, 53, 0.94);
+  color: #ffeb3b;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  animation: slowSlideDown 0.3s ease;
+}
+
+@keyframes slowSlideDown {
+  from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
