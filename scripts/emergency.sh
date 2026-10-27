@@ -23,7 +23,10 @@ Commands:
   slow [N]            — топ медленных endpoints из audit (24h, N=10 default)
   errors              — топ error endpoints + error rate (24h)
   trace <req_id>      — полная трассировка по X-Request-ID (v1.9.2)
-  backup              — бэкап output/ + voices/ + .env.local в /tmp/jst-backup-*.tar.gz
+  backup [--encrypt] [--keep N] [--paths "a,b,c"]
+                      — encrypted backup в ~/.jst-backups/ (rotation keep N=7)
+  restore <file>      — восстановить из backup (auto-decrypt если .enc)
+  list-backups        — показать существующие бэкапы
 USAGE
 }
 
@@ -72,6 +75,11 @@ print('blocked $IP:', blocklist.is_banned('$IP'))
     curl -sS -X POST "$BASE/api/emergency/restart" -H "X-Admin-Token: $TOKEN"; echo
     ;;
   rotate-secrets)
+    # v1.9.3: auto-backup .env.local before rotation
+    echo "[rotate-secrets] creating encrypted backup of current .env.local..."
+    "$0" backup --encrypt --paths ".env.local" --keep 10 >/dev/null 2>&1 || \
+      echo "WARN: backup failed, continuing" >&2
+
     NEW_TOKEN=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
     NEW_API=$(python3 -c "import secrets; print(secrets.token_urlsafe(32))")
     cp "$ROOT/.env.local" "$ROOT/.env.local.bak.$(date +%s)" 2>/dev/null || true
@@ -157,12 +165,84 @@ for e in rt.get('top_error_endpoints', []):
 "
     ;;
   backup)
+    # v1.9.3: encrypted backup with rotation
+    # usage: backup [--encrypt] [--keep N] [--paths "output,voices,.env.local"]
+    ENCRYPT=0
+    KEEP=7
+    PATHS="output voices .env.local"
+
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --encrypt) ENCRYPT=1; shift ;;
+        --keep)    KEEP="$2"; shift 2 ;;
+        --paths)   PATHS="${2//,/ }"; shift 2 ;;
+        *) echo "Unknown backup arg: $1" >&2; exit 1 ;;
+      esac
+    done
+
+    BACKUP_DIR="${JST_BACKUP_DIR:-$HOME/.jst-backups}"
+    mkdir -p "$BACKUP_DIR"
+    chmod 700 "$BACKUP_DIR"
+
     TS=$(date +%Y%m%d-%H%M%S)
-    OUT="/tmp/jst-backup-$TS.tar.gz"
-    tar czf "$OUT" -C "$ROOT" output/ voices/ .env.local 2>/dev/null || \
-      tar czf "$OUT" -C "$ROOT" output/ voices/ 2>/dev/null || true
-    chmod 600 "$OUT"
-    echo "backup: $OUT"
+
+    if [[ "$ENCRYPT" -eq 1 ]]; then
+      KEY_FILE="${JST_BACKUP_KEY:-$HOME/.jst-backup-key}"
+      if [[ ! -f "$KEY_FILE" ]]; then
+        openssl rand -base64 32 > "$KEY_FILE"
+        chmod 600 "$KEY_FILE"
+        echo "WARN: generated new key at $KEY_FILE — KEEP THIS SAFE (no key = no restore)" >&2
+      fi
+      OUT="$BACKUP_DIR/jst-$TS.tar.gz.enc"
+      tar czf - -C "$ROOT" $PATHS 2>/dev/null | \
+        openssl enc -aes-256-cbc -pbkdf2 -salt -pass "file:$KEY_FILE" -out "$OUT"
+    else
+      OUT="$BACKUP_DIR/jst-$TS.tar.gz"
+      tar czf "$OUT" -C "$ROOT" $PATHS 2>/dev/null
+    fi
+
+    if [[ -f "$OUT" ]]; then
+      chmod 600 "$OUT"
+      SIZE=$(du -h "$OUT" | awk '{print $1}')
+      echo "backup: $OUT ($SIZE, encrypt=$ENCRYPT)"
+    else
+      echo "ERR: backup file not created" >&2; exit 1
+    fi
+
+    # rotation: keep only last $KEEP
+    if [[ "$KEEP" -gt 0 ]]; then
+      REMOVED=0
+      while IFS= read -r f; do
+        rm -f "$f"
+        REMOVED=$((REMOVED + 1))
+      done < <(ls -t "$BACKUP_DIR"/jst-*.tar.gz* 2>/dev/null | tail -n +$((KEEP + 1)))
+      [[ "$REMOVED" -gt 0 ]] && echo "rotated: $REMOVED old backup(s) removed"
+    fi
+    ;;
+
+  restore)
+    # v1.9.3: restore from backup
+    FILE="${1:?usage: emergency.sh restore <backup_file>}"
+    [[ ! -f "$FILE" ]] && { echo "ERR: $FILE not found" >&2; exit 1; }
+
+    if [[ "$FILE" == *.enc ]]; then
+      KEY_FILE="${JST_BACKUP_KEY:-$HOME/.jst-backup-key}"
+      [[ ! -f "$KEY_FILE" ]] && { echo "ERR: key not found: $KEY_FILE" >&2; exit 1; }
+      openssl enc -d -aes-256-cbc -pbkdf2 -pass "file:$KEY_FILE" -in "$FILE" | \
+        tar xzf - -C "$ROOT"
+    else
+      tar xzf "$FILE" -C "$ROOT"
+    fi
+    echo "restored from $FILE -> $ROOT"
+    ;;
+
+  list-backups)
+    BACKUP_DIR="${JST_BACKUP_DIR:-$HOME/.jst-backups}"
+    if [[ ! -d "$BACKUP_DIR" ]]; then
+      echo "(no backups dir: $BACKUP_DIR)"
+      exit 0
+    fi
+    ls -lh "$BACKUP_DIR"/jst-* 2>/dev/null || echo "(no backups yet)"
     ;;
   ""|-h|--help|help)
     usage
