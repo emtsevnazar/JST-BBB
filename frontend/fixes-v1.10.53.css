@@ -1,0 +1,301 @@
+
+/* ===============================================================
+   v1.10.53: ensure .controls is static (not positioned)
+   так absolute next/prev позиционируются относительно .controls-wrap
+   =============================================================== */
+
+/* Убеждаемся что .controls НЕ positioned */
+.controls {
+  position: static !important;
+}
+
+/* .controls-wrap — единственный positioned ancestor */
+.controls-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 42px !important;
+  margin: 0 0 8px 0 !important;
+  min-height: 56px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* .controls — flex row */
+.controls {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 6px 2px !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  scroll-behavior: smooth !important;
+  scrollbar-width: thin !important;
+}
+
+.controls:has(.dropdown.open),
+.controls:has(.dropdown.active) {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* ─── controls-btn — точная копия carousel-btn ─── */
+.controls-btn,
+.controls-btn.controls-prev,
+.controls-btn.controls-next {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--input-bg) !important;
+  color: var(--accent) !important;
+  cursor: pointer !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all .2s !important;
+  font-family: inherit !important;
+  z-index: 3 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  aspect-ratio: auto !important;
+  flex: none !important;
+}
+
+.controls-btn.controls-prev {
+  left: 4px !important;
+  right: auto !important;
+}
+
+.controls-btn.controls-next {
+  right: 4px !important;
+  left: auto !important;
+}
+
+.controls-btn:hover {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 12px rgba(245,184,0,.3) !important;
+  transform: translateY(-50%) scale(1.08) !important;
+}
+
+/* 7 кнопок в одну строку */
+.controls > .btn,
+.controls > .dropdown {
+  flex: 0 0 auto !important;
+  min-width: 135px !important;
+  max-width: none !important;
+  width: auto !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  position: relative !important;
+}
+
+.controls > .dropdown {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.controls > .dropdown > .btn {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  padding: 0 34px 0 14px !important;
+  font-size: 13px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+/* Точка в прозрачном кружке */
+.controls > .dropdown > .btn::after {
+  content: '\25CF' !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid currentColor !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: var(--accent) !important;
+  pointer-events: none !important;
+}
+.controls > .dropdown > .btn:hover::after {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* Dropdown меню снизу */
+.controls .dropdown > .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  bottom: auto !important;
+  left: 0 !important;
+  right: auto !important;
+  margin-top: 4px !important;
+  min-width: 200px !important;
+  max-width: min(320px, calc(100vw - 24px)) !important;
+  z-index: 9999 !important;
+  padding: 6px !important;
+  background: var(--panel-bg, rgba(20,20,20,0.98)) !important;
+  border: 1.5px solid var(--panel-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  box-sizing: border-box !important;
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.controls .dropdown.open > .dropdown-menu,
+.controls .dropdown.active > .dropdown-menu {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Model-grid ≤900 — 3 колонки */
+@media (max-width: 900px) {
+  .carousel-wrap:has(#model-grid) {
+    padding: 0 42px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 56px !important;
+  }
+  #model-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 6px 2px !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+  }
+  #model-grid::-webkit-scrollbar { display: none !important; }
+  #model-grid > *,
+  #model-grid > .model-card,
+  #model-grid > .card,
+  #model-grid > [class*="-card"] {
+    flex: 1 1 0 !important;
+    width: calc((100% - 16px) / 3) !important;
+    min-width: 0 !important;
+    max-width: calc((100% - 16px) / 3) !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    padding: 8px 6px !important;
+    font-size: clamp(10px, 2.8vw, 13px) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+  .controls-wrap { padding: 0 42px !important; }
+  .controls > .btn,
+  .controls > .dropdown {
+    min-width: 135px !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    max-height: 46px !important;
+    font-size: 11px !important;
+    padding: 0 10px !important;
+  }
+  .controls > .dropdown > .btn {
+    font-size: 11px !important;
+    height: 100% !important;
+    padding: 0 28px 0 10px !important;
+  }
+}
+
+/* Theme backgrounds */
+html[data-theme="day"] body .panel,
+html[data-theme="day"] body .jstp-settings,
+html[data-theme="day"] body .jstp-settings.visible,
+html[data-theme="day"] body .jstp-set-item.jstp-set-range,
+html[data-theme="day"] body .slider {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+html[data-theme="night"] body .panel,
+html[data-theme="night"] body .jstp-settings,
+html[data-theme="night"] body .jstp-settings.visible,
+html[data-theme="night"] body .jstp-set-item.jstp-set-range,
+html[data-theme="night"] body .slider {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+html[data-theme="light"] body .panel,
+html[data-theme="light"] body .jstp-settings,
+html[data-theme="light"] body .jstp-settings.visible,
+html[data-theme="light"] body .jstp-set-item.jstp-set-range,
+html[data-theme="light"] body .slider {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+html[data-theme="dark"] body .panel,
+html[data-theme="dark"] body .jstp-settings,
+html[data-theme="dark"] body .jstp-settings.visible,
+html[data-theme="dark"] body .jstp-set-item.jstp-set-range,
+html[data-theme="dark"] body .slider {
+  background: transparent !important;
+  background-color: transparent !important;
+}
