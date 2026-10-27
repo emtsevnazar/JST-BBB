@@ -21,8 +21,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             return _Resp(
                 content=b'{"error":"internal"}', status_code=500, media_type="application/json"
             )
-        # v1.9.1: force content-type для .md (BaseHTTPMiddleware теряет media_type)
-        if request.url.path.endswith(".md"):
+        # v1.9.1/1.9.2: force content-type для .md и ?format=md
+        # (BaseHTTPMiddleware теряет media_type при реконструкции Response)
+        _path = request.url.path
+        _fmt = request.query_params.get("format", "").lower()
+        if _path.endswith(".md") or _fmt == "md":
             response.headers["content-type"] = "text/markdown; charset=utf-8"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
@@ -81,4 +84,9 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
         request.state.request_id = req_id
         response: _Resp = await call_next(request)
         response.headers["X-Request-ID"] = req_id
+        # v1.9.2b: force .md content-type (BaseHTTPMiddleware теряет media_type)
+        _path = request.url.path
+        _fmt = request.query_params.get("format", "").lower()
+        if _path.endswith(".md") or _fmt == "md":
+            response.headers["content-type"] = "text/markdown; charset=utf-8"
         return response

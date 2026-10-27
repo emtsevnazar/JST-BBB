@@ -22,6 +22,7 @@ Commands:
   report-md           — markdown-отчёт для GitHub Issue (v1.9.0)
   slow [N]            — топ медленных endpoints из audit (24h, N=10 default)
   errors              — топ error endpoints + error rate (24h)
+  trace <req_id>      — полная трассировка по X-Request-ID (v1.9.2)
   backup              — бэкап output/ + voices/ + .env.local в /tmp/jst-backup-*.tar.gz
 USAGE
 }
@@ -108,6 +109,37 @@ print()
 print(f'Top-{min(int($LIMIT), len(rt.get(\"top_slow_endpoints\", [])))} slow endpoints:')
 for e in rt.get('top_slow_endpoints', [])[:int($LIMIT)]:
     print(f'  {e[\"max_duration_ms\"]:>8} ms  {e[\"method\"]:6} {e[\"path\"]}')
+"
+    ;;
+  trace)
+    # v1.9.2: трассировка по request_id
+    RID="${1:?usage: emergency.sh trace <request_id>}"
+    LOG="$ROOT/logs/audit.log"
+    if [ ! -f "$LOG" ]; then
+      echo "ERR: $LOG not found" >&2; exit 1
+    fi
+    grep -F "\"$RID\"" "$LOG" | python3 -c "
+import sys, json
+rows = []
+for line in sys.stdin:
+    try:
+        e = json.loads(line)
+        rows.append(e)
+    except: pass
+if not rows:
+    print('No entries found for request_id')
+else:
+    print(f'Found {len(rows)} entries:')
+    print(f'{\"ts\":<22} {\"method\":<7} {\"path\":<35} {\"status\":<6} {\"dur_ms\":<8} {\"ip\":<15}')
+    print(\"-\" * 95)
+    for e in rows:
+        ts = e.get(\"ts\", \"-\")
+        m = e.get(\"method\", \"-\")
+        p = e.get(\"path\", \"-\")[:34]
+        s = e.get(\"status\", 0)
+        d = e.get(\"duration_ms\", 0) or 0
+        ip = e.get(\"ip\", \"-\")
+        print(f'{ts:<22} {m:<7} {p:<35} {s:<6} {d:<8.1f} {ip:<15}')
 "
     ;;
   errors)

@@ -139,6 +139,28 @@ class RateLimiterV2:
                 self._buckets.pop(next(iter(self._buckets)), None)
             return True
 
+    def get_limit(self, path: str) -> tuple[int, float] | None:
+        """v1.9.2: возвращает (limit, window_seconds) для пути или None."""
+        m = self._match_prefix(path)
+        if m is None:
+            return None
+        _, limit, window = m
+        return limit, window
+
+    def reset_seconds(self, ip: str, path: str) -> float:
+        """v1.9.2: секунды до освобождения самой старой записи в bucket."""
+        m = self._match_prefix(path)
+        if m is None:
+            return 0.0
+        prefix, _, window = m
+        with self._lock:
+            now = time.time()
+            bucket = self._buckets.get((ip, prefix))
+            if not bucket:
+                return 0.0
+            oldest = bucket[0]
+            return max(0.0, window - (now - oldest))
+
     def remaining(self, ip: str, path: str) -> int:
         m = self._match_prefix(path)
         if m is None:

@@ -65,13 +65,21 @@ async def security_housekeeping_run(request: Request):
 
 
 @router.get("/diagnostics")
-async def diagnostics_json():
-    """v1.9.0: Полный JSON отчёт для разработчиков (публичный).
+async def diagnostics_json(format: str = "json"):
+    """v1.9.0/1.9.2: Полный отчёт для разработчиков.
 
-    Не содержит секретов, IP-адресов, путей к моделям.
-    Включает: project, tests, runtime 24h, security, housekeeping, health, deps, hygiene.
+    ?format=json (default) — JSON со всеми секциями
+    ?format=md             — Markdown для GitHub Issue
     """
-    from ..diagnostics import build_report
+    from ..diagnostics import build_report, to_markdown
+
+    if format.lower() == "md":
+        from starlette.responses import Response
+
+        return Response(
+            content=to_markdown(build_report()),
+            headers={"content-type": "text/markdown; charset=utf-8"},
+        )
 
     return build_report()
 

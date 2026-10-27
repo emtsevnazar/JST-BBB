@@ -27,11 +27,31 @@ async def jst_rate_limit(request, call_next):
             {"error": "ip_blocked", "detail": "IP temporarily blocked"},
             status_code=403,
         )
-    if not _rate_limiter.check(ip, path):
-        return _JSONResponse(
-            {"error": "rate_limit_exceeded", "detail": "Слишком много запросов"},
-            status_code=429,
-        )
+    # v1.9.2: check + rate-limit headers (IETF standard)
+    limit_info = _rate_limiter.get_limit(path)
+    if limit_info:
+        limit, window = limit_info
+        remaining_before = _rate_limiter.remaining(ip, path)
+        ok = _rate_limiter.check(ip, path)
+        if not ok:
+            reset = _rate_limiter.reset_seconds(ip, path)
+            return _JSONResponse(
+                {"error": "rate_limit_exceeded", "detail": "Слишком много запросов"},
+                status_code=429,
+                headers={
+                    "X-RateLimit-Limit": str(limit),
+                    "X-RateLimit-Remaining": "0",
+                    "X-RateLimit-Reset": str(int(window)),
+                    "Retry-After": str(max(1, int(reset))),
+                },
+            )
+        response = await call_next(request)
+        response.headers["X-RateLimit-Limit"] = str(limit)
+        response.headers["X-RateLimit-Remaining"] = str(max(0, remaining_before - 1))
+        response.headers["X-RateLimit-Reset"] = str(int(window))
+        return response
+
+    # paths без rate-limit (public / healthz)
     return await call_next(request)
 
 

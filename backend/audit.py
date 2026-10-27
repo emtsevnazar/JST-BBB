@@ -78,6 +78,7 @@ def log_event(
     status: int,
     duration_ms: float,
     user_agent: str = "",
+    request_id: str | None = None,
     extra: dict | None = None,
 ) -> None:
     record = {
@@ -86,6 +87,7 @@ def log_event(
         "method": method,
         "path": path,
         "status": status,
+        "request_id": request_id or "-",
         "duration_ms": round(duration_ms, 2),
         "ua": (user_agent or "")[:120],
         "action": _classify(method, path),

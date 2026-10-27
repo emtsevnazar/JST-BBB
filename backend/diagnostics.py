@@ -199,28 +199,60 @@ def _runtime_metrics() -> dict:
                     auth_fails += 1
                 dur = e.get("duration_ms", 0.0)
                 if dur:
-                    durations.append((float(dur), e.get("method", ""), e.get("path", ""), status))
+                    durations.append(
+                        (
+                            float(dur),
+                            e.get("method", ""),
+                            e.get("path", ""),
+                            status,
+                            e.get("request_id", "-"),
+                            e.get("ts", ""),
+                        )
+                    )
     except Exception as e:
         return {"audit_log": f"error: {e}"}
 
     # топ-5 медленных (уникальные по (method, path))
-    slow_by_endpoint: dict[tuple[str, str], float] = {}
-    for dur, method, path, _ in durations:
+    slow_by_endpoint: dict[tuple[str, str], tuple[float, str, str]] = {}
+    for dur, method, path, _status, req_id, ts in durations:
         key = (method, path)
-        if dur > slow_by_endpoint.get(key, 0):
-            slow_by_endpoint[key] = dur
+        if dur > slow_by_endpoint.get(key, (0.0, "", ""))[0]:
+            slow_by_endpoint[key] = (dur, req_id, ts)
     top_slow = sorted(
         [
-            {"method": k[0], "path": k[1], "max_duration_ms": round(v, 1)}
+            {
+                "method": k[0],
+                "path": k[1],
+                "max_duration_ms": round(v[0], 1),
+                "request_id": v[1],
+                "timestamp": v[2],
+            }
             for k, v in slow_by_endpoint.items()
         ],
         key=lambda x: -x["max_duration_ms"],
     )[:5]
 
-    avg_dur = sum(d for d, *_ in durations) / len(durations) if durations else 0.0
+    # v1.9.2: recent slow (>1s) с request_id для трассировки через emergency.sh trace
+    recent_slow = sorted(
+        [
+            {
+                "ts": ts,
+                "method": method,
+                "path": path,
+                "duration_ms": round(dur, 1),
+                "status": status,
+                "request_id": req_id,
+            }
+            for dur, method, path, status, req_id, ts in durations
+            if dur >= 1000.0 and req_id != "-"
+        ],
+        key=lambda x: -x["duration_ms"],
+    )[:10]
+
+    avg_dur = sum(d[0] for d in durations) / len(durations) if durations else 0.0
     p95_idx = int(len(durations) * 0.95)
     p95 = (
-        sorted(d for d, *_ in durations)[p95_idx]
+        sorted(d[0] for d in durations)[p95_idx]
         if durations and p95_idx < len(durations)
         else avg_dur
     )
@@ -235,6 +267,7 @@ def _runtime_metrics() -> dict:
         "avg_duration_ms": round(avg_dur, 1),
         "p95_duration_ms": round(p95, 1),
         "top_slow_endpoints": top_slow,
+        "recent_slow_with_reqid": recent_slow,
         "top_error_endpoints": sorted(
             [{"path": p, "errors": c} for p, c in by_path_errors.items()],
             key=lambda x: -x["errors"],
