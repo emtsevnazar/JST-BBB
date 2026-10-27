@@ -46,6 +46,7 @@ async def security_stats():
         "watchdog": watchdog.stats(),
         "auth_bruteforce": auth_bruteforce.stats(),
         "circuit_breaker": circuit_breaker.stats(),
+        "alerts": __import__("backend.alerts", fromlist=["stats"]).stats(),
     }
 
 

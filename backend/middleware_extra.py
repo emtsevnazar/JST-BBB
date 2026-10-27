@@ -74,6 +74,13 @@ async def jst_audit_middleware(request, call_next):
                 user_agent=request.headers.get("user-agent", ""),
                 request_id=getattr(request.state, "request_id", "-"),
             )
+            # v1.9.5: error rate alerting
+            try:
+                from .alerts import record_request as _ar
+
+                _ar(status)
+            except Exception:
+                pass
         except Exception:
             pass
 
