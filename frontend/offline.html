@@ -9,26 +9,23 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  background:#2a0606;color:#fff}
+  color:#fff}
 
-/* ФОН: ph_b2.png (fallback → ph_b7.png) + КРАСНЫЙ overlay */
+/* ФОН: ph_b2.png на весь экран + КРАСНЫЙ overlay */
 body{
-  background:
-    url('/static/img/ph_b2.png') center/cover no-repeat fixed,
-    url('/static/img/ph_b7.png') center/cover no-repeat fixed,
-    #2a0606;
+  background:#2a0606 url('/static/img/ph_b2.png') center/cover no-repeat fixed;
+  background-size:cover;
 }
 body::before{
   content:'';
   position:fixed;inset:0;
-  background:radial-gradient(circle at 50% 40%,rgba(229,57,53,.45),rgba(60,0,0,.88));
+  background:
+    radial-gradient(circle at 50% 40%, rgba(229,57,53,.55) 0%, rgba(80,0,0,.85) 70%, rgba(30,0,0,.95) 100%);
   z-index:1;pointer-events:none;
 }
-
-/* ВСПЛЫВАЮЩАЯ РАМКА — СНИЗУ */
+/* Всплывающая ошибка СНИЗУ */
 .error-popup{
-  position:fixed;left:0;right:0;bottom:0;
-  z-index:10;
+  position:fixed;left:0;right:0;bottom:0;z-index:10;
   display:flex;justify-content:center;
   padding:0 clamp(.75rem,2vw,1.5rem);
   animation:slideUp .55s cubic-bezier(.34,1.56,.64,1) both;
@@ -37,17 +34,15 @@ body::before{
   from{transform:translateY(100%);opacity:0}
   to{transform:translateY(0);opacity:1}
 }
-
 .error-box{
   width:100%;max-width:min(640px,100%);
   background:rgba(20,20,20,.96);
-  border:3px solid #e53935;
-  border-bottom:none;
+  border:3px solid #e53935;border-bottom:none;
   border-radius:16px 16px 0 0;
   padding:clamp(1.2rem,3vw,2rem);
   padding-bottom:clamp(1.5rem,4vw,2.5rem);
-  box-shadow:0 -10px 60px rgba(229,57,53,.35),
-             0 -20px 80px rgba(0,0,0,.7),
+  box-shadow:0 -10px 60px rgba(229,57,53,.4),
+             0 -20px 80px rgba(0,0,0,.75),
              inset 0 1px 0 rgba(255,255,255,.05);
   text-align:center;
 }
@@ -55,10 +50,8 @@ body::before{
 .error-code{display:inline-block;font-family:ui-monospace,monospace;
   font-size:.72rem;color:#ff8a80;background:rgba(229,57,53,.18);
   padding:.2rem .6rem;border-radius:6px;margin-bottom:.6rem;letter-spacing:.05em}
-.error-title{font-size:clamp(1.1rem,3vw,1.4rem);font-weight:700;
-  color:#fff;margin-bottom:.4rem}
-.error-text{font-size:clamp(.85rem,2vw,1rem);color:#c8c8c8;
-  line-height:1.5;margin-bottom:1.2rem}
+.error-title{font-size:clamp(1.1rem,3vw,1.4rem);font-weight:700;margin-bottom:.4rem}
+.error-text{font-size:clamp(.85rem,2vw,1rem);color:#c8c8c8;line-height:1.5;margin-bottom:1.2rem}
 .error-actions{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap}
 .btn{min-height:44px;padding:.7rem 1.4rem;font-size:clamp(.85rem,2vw,1rem);
   font-weight:600;border:none;border-radius:10px;cursor:pointer;
