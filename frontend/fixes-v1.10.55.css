@@ -1,0 +1,183 @@
+
+/* ===============================================================
+   v1.10.55: FIXED 135x56 controls + #text HEIGHT 150px + arrows круг
+   =============================================================== */
+
+/* ─── 1. .controls — gap 8px, без margin на кнопках ─── */
+.controls {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 6px 2px !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.controls:has(.dropdown.open),
+.controls:has(.dropdown.active) {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* ─── 2. Все 7 кнопок .controls — ФИКС 135×56, margin 0 (gap делает отступ) ─── */
+.controls > .btn,
+.controls > .dropdown {
+  flex: 0 0 135px !important;
+  width: 135px !important;
+  min-width: 135px !important;
+  max-width: 135px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  position: relative !important;
+  border-radius: 14px !important;
+  font-size: 13px !important;
+}
+
+.controls > .dropdown {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.controls > .dropdown > .btn {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  padding: 0 32px 0 10px !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+/* Точка ● в прозрачном кружке */
+.controls > .dropdown > .btn::after {
+  content: '\25CF' !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  border: 1.5px solid currentColor !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: var(--accent) !important;
+  pointer-events: none !important;
+}
+.controls > .dropdown > .btn:hover::after {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ─── 3. СТРЕЛКИ ◀ ▶ — КРУГ 32×32 ВСЕГДА (не овал) ─── */
+.controls-btn,
+.controls-btn.controls-prev,
+.controls-btn.controls-next,
+.carousel-btn,
+.carousel-btn.prev,
+.carousel-btn.next {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  aspect-ratio: 1 / 1 !important;
+  flex: 0 0 32px !important;
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ─── 4. #text — HEIGHT 150px (не width!) ─── */
+#text,
+textarea#text {
+  height: 150px !important;
+  min-height: 150px !important;
+  max-height: 150px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  resize: vertical !important;
+}
+
+/* ─── 5. Mobile — НЕ сплющивать кнопки ─── */
+@media (max-width: 900px) {
+  .controls > .btn,
+  .controls > .dropdown {
+    flex: 0 0 135px !important;
+    width: 135px !important;
+    min-width: 135px !important;
+    max-width: 135px !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    font-size: 13px !important;
+  }
+  .controls > .dropdown > .btn {
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    padding: 0 32px 0 10px !important;
+  }
+  .controls-btn,
+  .carousel-btn,
+  .controls-btn.controls-prev,
+  .controls-btn.controls-next,
+  .carousel-btn.prev,
+  .carousel-btn.next {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    aspect-ratio: 1 / 1 !important;
+    flex: 0 0 32px !important;
+    flex-shrink: 0 !important;
+  }
+  #text,
+  textarea#text {
+    height: 150px !important;
+    min-height: 150px !important;
+    max-height: 150px !important;
+  }
+}
