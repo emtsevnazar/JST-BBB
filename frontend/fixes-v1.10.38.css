@@ -1,0 +1,159 @@
+
+/* ===============================================================
+   v1.10.38: smaller carousel cards, bold controls-btn dots,
+   uniform 7 controls buttons, dropdowns in controls
+   =============================================================== */
+
+/* ─── 1. Меньшие карточки для lang/accent/carousel (НЕ model) ─── */
+#lang-grid,
+#accent-grid,
+#carousel {
+  --card-w: clamp(80px, 16vw, 170px);
+}
+#lang-grid > *,
+#accent-grid > *,
+#carousel > * {
+  flex: 0 0 var(--card-w) !important;
+  width: var(--card-w) !important;
+  min-width: 80px !important;
+  max-width: 170px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  font-size: clamp(10px, 1vw, 12px) !important;
+  padding: 6px 8px !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ─── 2. controls-btn — жирная точка как carousel-btn ─── */
+.controls-btn,
+.controls-btn.controls-prev,
+.controls-btn.controls-next {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  color: var(--accent) !important;
+  -webkit-text-stroke: 0.6px currentColor !important;
+  text-shadow: 0 0 0.5px currentColor !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--input-bg) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  z-index: 5 !important;
+}
+.controls-btn:hover {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+  -webkit-text-stroke: 0.6px var(--gold) !important;
+  box-shadow: 0 0 12px rgba(245,184,0,0.3) !important;
+}
+
+/* ─── 3. 7 кнопок .controls — одного размера, ellipsis текста ─── */
+.controls > .btn,
+.controls > .dropdown,
+.controls > .dropdown > .btn {
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  padding: 6px 10px !important;
+  font-size: 13px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  color: inherit !important;
+}
+.controls > .btn > span,
+.controls > .dropdown > .btn > span {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+}
+.controls > .dropdown > .btn {
+  padding-right: 30px !important;
+}
+
+/* ─── 4. Кнопки/ссылки/пункты работают ─── */
+.controls > .btn,
+.controls > .dropdown > .btn,
+.controls-btn,
+.controls .dropdown-menu a,
+.controls .dropdown-menu > * {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* ─── 5. Мобильный режим: 2 в ряд, без стрелок ─── */
+@media (max-width: 900px) {
+  .controls-wrap { padding: 0 !important; }
+  .controls-btn { display: none !important; }
+  .controls {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    gap: 6px !important;
+  }
+  .controls > .btn,
+  .controls > .dropdown,
+  .controls > .dropdown > .btn {
+    flex: 1 1 calc(50% - 3px) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+  }
+}
+
+/* ─── 6. Не вылезает текст ни у какой кнопки ─── */
+.btn, button.btn {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* ─── 7. Dropdown внутри .controls — раскрывается наружу ─── */
+.controls .dropdown { position: relative !important; }
+.controls .dropdown > .dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 4px) !important;
+  left: 0 !important;
+  right: auto !important;
+  min-width: 180px !important;
+  max-width: min(300px, calc(100vw - 24px)) !important;
+  z-index: 600 !important;
+}
+.controls .dropdown:last-of-type > .dropdown-menu {
+  left: auto !important;
+  right: 0 !important;
+}
