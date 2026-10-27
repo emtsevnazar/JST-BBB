@@ -85,11 +85,47 @@ async def api_key_middleware(request, call_next):
         return await call_next(request)  # dev mode
 
     provided = request.headers.get(API_KEY_HEADER, "")
+    ip = request.client.host if request.client else "unknown"
+
     if not provided or not secrets.compare_digest(provided, expected):
+        req_id = getattr(request.state, "request_id", "-")
+        # v1.9.1: audit log auth failure
+        try:
+            from .audit import log_event
+
+            log_event(
+                ip=ip,
+                method=request.method,
+                path=request.url.path,
+                status=401,
+                duration_ms=0.0,
+                user_agent=request.headers.get("user-agent", ""),
+                action="auth_fail",
+                desc=f"Invalid or missing API key (req={req_id})",
+            )
+        except Exception:
+            pass
+        # v1.9.1: brute-force → force-ban
+        try:
+            from .security.hardening import auth_bruteforce, blocklist
+
+            if auth_bruteforce.record_fail(ip):
+                blocklist.ban_now(ip, reason="auth_bruteforce")
+        except Exception:
+            pass
         from fastapi.responses import JSONResponse
 
         return JSONResponse(
             {"detail": f"Invalid or missing {API_KEY_HEADER}"},
             status_code=401,
         )
+
+    # Успех — сброс счётчика
+    try:
+        from .security.hardening import auth_bruteforce
+
+        auth_bruteforce.record_success(ip)
+    except Exception:
+        pass
+
     return await call_next(request)

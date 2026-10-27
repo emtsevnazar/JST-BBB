@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import uuid
 
 from fastapi import Request as _Req
 from fastapi.responses import Response as _Resp
@@ -66,3 +67,18 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
                     media_type="application/json",
                 )
         return await call_next(request)
+
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    """v1.9.1: генерирует X-Request-ID для трассировки.
+
+    Приоритет: переданный клиентом X-Request-ID, иначе UUID4 hex[:12].
+    Доступен в request.state.request_id для логов.
+    """
+
+    async def dispatch(self, request: _Req, call_next):
+        req_id = request.headers.get("X-Request-ID") or uuid.uuid4().hex[:12]
+        request.state.request_id = req_id
+        response: _Resp = await call_next(request)
+        response.headers["X-Request-ID"] = req_id
+        return response

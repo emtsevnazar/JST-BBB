@@ -82,6 +82,14 @@ class IPBlocklist:
             self._fails.pop(ip, None)
             return was
 
+    def ban_now(self, ip: str, reason: str = "") -> bool:
+        """v1.9.1: принудительный бан (brute-force protection)."""
+        with self._lock:
+            self._banned[ip] = time.time() + self.ban_duration
+            self._stats["bans_total"] += 1
+            log.warning("IP force-banned: %s for %ss (%s)", ip, self.ban_duration, reason or "n/a")
+            return True
+
     def stats(self) -> dict:
         with self._lock:
             now = time.time()
@@ -220,6 +228,44 @@ class SelfHealingWatchdog:
             }
 
 
+class AuthBruteForce:
+    """v1.9.1: счётчик неудачных auth-попыток по IP.
+
+    После threshold фейлов в window секунд — триггерит ban через IPBlocklist.
+    """
+
+    def __init__(self, threshold: int = 5, window: float = 300.0, max_ips: int = 10000):
+        self.threshold = threshold
+        self.window = window
+        self.max_ips = max_ips
+        self._fails: dict[str, list[float]] = {}
+        self._lock = threading.Lock()
+        self._stats = {"checks": 0, "bans": 0}
+
+    def record_fail(self, ip: str) -> bool:
+        with self._lock:
+            self._stats["checks"] += 1
+            now = time.time()
+            fails = [t for t in self._fails.get(ip, []) if now - t < self.window]
+            fails.append(now)
+            if len(fails) >= self.threshold:
+                self._fails.pop(ip, None)
+                self._stats["bans"] += 1
+                return True
+            self._fails[ip] = fails
+            if len(self._fails) > self.max_ips:
+                self._fails.pop(next(iter(self._fails)), None)
+            return False
+
+    def record_success(self, ip: str) -> None:
+        with self._lock:
+            self._fails.pop(ip, None)
+
+    def stats(self) -> dict:
+        with self._lock:
+            return {**self._stats, "tracked_ips": len(self._fails)}
+
+
 blocklist = IPBlocklist()
 rate_limiter = RateLimiterV2(
     {
@@ -228,4 +274,5 @@ rate_limiter = RateLimiterV2(
         "/api/emergency/": (10, 60),
     }
 )
+auth_bruteforce = AuthBruteForce()
 watchdog = SelfHealingWatchdog()

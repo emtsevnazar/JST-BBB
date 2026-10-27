@@ -52,6 +52,7 @@ async def jst_audit_middleware(request, call_next):
                 status=status,
                 duration_ms=dur,
                 user_agent=request.headers.get("user-agent", ""),
+                request_id=getattr(request.state, "request_id", "-"),
             )
         except Exception:
             pass
@@ -73,4 +74,8 @@ def register_extra_middleware(app: FastAPI) -> None:
     app.middleware("http")(jst_rate_limit)
     app.middleware("http")(jst_audit_middleware)
     app.middleware("http")(static_cache_control)
-    app.middleware("http")(_api_key_mw)  # v1.8.3: самый внешний
+    app.middleware("http")(_api_key_mw)
+    # v1.9.1: RequestID — самый внешний (генерирует ДО всех остальных)
+    from .security.middleware import RequestIDMiddleware
+
+    app.add_middleware(RequestIDMiddleware)

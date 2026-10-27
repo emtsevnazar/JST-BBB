@@ -8,7 +8,7 @@ import time
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from ..security.hardening import blocklist, rate_limiter, watchdog
+from ..security.hardening import auth_bruteforce, blocklist, rate_limiter, watchdog
 
 router = APIRouter(prefix="/api/security", tags=["security"])
 
@@ -38,6 +38,7 @@ async def security_stats():
         "blocklist": blocklist.stats(),
         "rate_limiter": rate_limiter.stats(),
         "watchdog": watchdog.stats(),
+        "auth_bruteforce": auth_bruteforce.stats(),
     }
 
 
