@@ -1,30 +1,31 @@
+# v1.8.6: docker-compose для локальной разработки / продакшена
 services:
-  api:
+  jst-studio:
     build: .
-    image: jst-studio:local
+    image: jst-studio:latest
     container_name: jst-studio
+    restart: unless-stopped
     ports:
       - "8000:8000"
-    env_file:
-      - .env
     environment:
-      HOME: /root
-      PYTORCH_ENABLE_MPS_FALLBACK: "0"
-      HF_HOME: /app/.cache/huggingface
+      JST_ENV: ${JST_ENV:-dev}
+      JST_ADMIN_TOKEN: ${JST_ADMIN_TOKEN:?JST_ADMIN_TOKEN required}
+      JST_API_KEY: ${JST_API_KEY:-}
+      JST_TRUSTED_HOSTS: ${JST_TRUSTED_HOSTS:-localhost,127.0.0.1}
+      JST_ALLOWED_ORIGINS: ${JST_ALLOWED_ORIGINS:-http://localhost:8000}
+      JST_SENTRY_DSN: ${JST_SENTRY_DSN:-}
     volumes:
-      - ./voices:/app/voices
-      - ./output:/app/output
-      - hf-cache:/app/.cache/huggingface
-      # engine.py ищет FINETUNING / "pretrained_models"
-      # FINETUNING = Path.home() / "Documents/AAC/main" = /root/Documents/AAC/main
-      - ${MODELS_DIR}:/root/Documents/AAC/main/pretrained_models:ro
-    restart: unless-stopped
+      - jst_output:/app/output
+      - jst_logs:/app/logs
+      - jst_voices:/app/voices
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/health"]
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/readyz"]
       interval: 30s
-      timeout: 5s
+      timeout: 10s
       retries: 3
       start_period: 120s
 
 volumes:
-  hf-cache:
+  jst_output:
+  jst_logs:
+  jst_voices:

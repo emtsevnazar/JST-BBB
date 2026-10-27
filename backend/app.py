@@ -63,6 +63,11 @@ from .bootstrap import _init_admin_token  # noqa: F401
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup/shutdown: инициализация Engine + graceful shutdown (P3.5)."""
+    # v1.8.5: Sentry (no-op если JST_SENTRY_DSN не задан)
+    from .observability import init_observability
+
+    init_observability()
+
     # === v1.7.10: SECURITY INIT ===
     _init_admin_token()
     try:
