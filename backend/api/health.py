@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import os
 import time
 from pathlib import Path
 
@@ -163,3 +164,28 @@ async def metrics(request: Request):
         "output_mb": stats["mb"],
         "ws_active": ws_active_count(),
     }
+
+
+@router.get("/readyz")
+async def readyz():
+    """v1.8.0: Readiness probe — engine loaded + output dir writable.
+
+    Отличается от /healthz:
+    - /healthz — liveness (процесс жив)
+    - /readyz  — readiness (готов принимать трафик)
+    """
+    try:
+        from ..core.paths import OUTPUT
+        from ..core.state import get_engine
+
+        eng = get_engine()
+        engine_ok = eng is not None
+        output_ok = OUTPUT.exists() and os.access(str(OUTPUT), os.W_OK)
+    except Exception:
+        engine_ok = False
+        output_ok = False
+
+    if not (engine_ok and output_ok):
+        return {"ready": False, "engine": engine_ok, "output": output_ok}
+
+    return {"ready": True, "engine": True, "output": True}

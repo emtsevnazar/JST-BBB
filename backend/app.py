@@ -269,7 +269,16 @@ async def lifespan(app: FastAPI):
         log.info("Shutdown завершён за %.1f с", time.time() - t_shutdown)
 
 
-app = FastAPI(title="JST Studio", lifespan=lifespan)
+# v1.8.0: API-key auth для непубличных путей
+from fastapi import Depends as _Depends
+
+from .core.security import require_api_key as _require_api_key
+
+app = FastAPI(
+    title="JST Studio",
+    lifespan=lifespan,
+    dependencies=[_Depends(_require_api_key)],
+)
 
 app.include_router(moods_router)
 app.include_router(system_router)
@@ -323,14 +332,16 @@ app.add_middleware(RequestSizeLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:8000",
-        "http://localhost:8000",
-        # Tauri 2 origins (macOS/Linux)
-        "tauri://localhost",
-        # Tauri 2 origins (Windows)
-        "https://tauri.localhost",
-    ],
+    allow_origins=(
+        os.getenv("JST_ALLOWED_ORIGINS", "").split(",")
+        if os.getenv("JST_ALLOWED_ORIGINS")
+        else [
+            "http://127.0.0.1:8000",
+            "http://localhost:8000",
+            "tauri://localhost",
+            "https://tauri.localhost",
+        ]
+    ),
     allow_credentials=False,
     allow_origin_regex=r"http://(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+)(:\d+)?",
     allow_methods=["*"],
