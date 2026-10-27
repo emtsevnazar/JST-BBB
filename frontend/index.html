@@ -32,6 +32,7 @@ document.documentElement.setAttribute("data-theme",t);})();
   <link rel="stylesheet" href="/static/fixes-v1.10.41.css">
   <link rel="stylesheet" href="/static/fixes-v1.10.42.css">
   <link rel="stylesheet" href="/static/fixes-v1.10.43.css">
+  <link rel="stylesheet" href="/static/fixes-v1.10.45.css">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -251,18 +252,18 @@ document.documentElement.setAttribute("data-theme",t);})();
     </button>
     
     
-      <div class="dropdown" id="history-dropdown">
-      <button class="btn btn-ghost">
+      <details class="dropdown" id="history-dropdown">
+      <summary class="btn btn-ghost">
         <span data-i18n="history">История</span>
-      </button>
+      </summary>
       <div class="dropdown-menu history-menu">
         <div class="history-list" id="history"></div>
       </div>
-    </div>
-      <div class="dropdown" id="dl-dropdown">
-      <button class="btn btn-ghost" id="btn-download-toggle">
+    </details>
+      <details class="dropdown" id="dl-dropdown">
+      <summary class="btn btn-ghost" id="btn-download-toggle">
         <span data-i18n="download">Скачать</span>
-      </button>
+      </summary>
       <div class="dropdown-menu">
         <a id="btn-download" download data-i18n="dl_current">Скачать текущий</a>
         <a id="btn-download-zip" data-i18n="dl_zip">Скачать всё (ZIP)</a>
@@ -271,7 +272,7 @@ document.documentElement.setAttribute("data-theme",t);})();
 
     <button class="controls-btn controls-next" type="button" aria-label="Следующие" onclick="window.__jstControlsScroll && window.__jstControlsScroll(this,1)">&#9679;</button>
 
-  </div>
+  </details>
     </div>
     
   </div>
@@ -441,6 +442,5 @@ if ('serviceWorker' in navigator) {
   <script src="/static/offline.js" defer></script>
   <script src="/static/theme-mode.js"></script>
   <script src="/static/controls-scroll.js" defer></script>
-  <script src="/static/dropdown-touch.js" defer></script>
 </body>
 </html>
