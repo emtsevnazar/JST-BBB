@@ -75,14 +75,30 @@
     }).catch(function(){
       clearTimeout(to); fails++;
     }).then(function(){
-      if(fails>=3){fails=0;redirect('network');}
+      if(fails>=2){fails=0;redirect('network');}
     });
   }
-  setTimeout(ping,8000);
-  setInterval(ping,30000);
+  setTimeout(ping,3000);
+  setInterval(ping,10000);
 
   // 7. Снять guard после успешной загрузки
   window.addEventListener('load',function(){
-    setTimeout(function(){sessionStorage.removeItem('jst_err_guard')},1500);
+    setTimeout(function(){
+      sessionStorage.removeItem('jst_err_guard');
+      // 7a. Proactive readyz (1.5s after load)
+      if(_f){
+        _f.call(window,'/readyz',{cache:'no-store',signal:AbortSignal.timeout(3000)})
+          .then(function(r){ if(!r.ok) redirect('network'); })
+          .catch(function(){ redirect('network'); });
+        // 7b. Models check (5s timeout)
+        _f.call(window,'/api/models',{cache:'no-store',signal:AbortSignal.timeout(5000)})
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .then(function(j){
+            var n = Array.isArray(j) ? j.length : (j && j.models ? j.models.length : -1);
+            if(n === 0) redirect('server', '503');
+          })
+          .catch(function(){});
+      }
+    }, 1500);
   });
 })();
