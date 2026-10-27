@@ -62,6 +62,11 @@ async def index():
 
 
 def register_meta_routes(app: FastAPI) -> None:
+
+    @app.get("/offline")
+    async def offline_page():
+        return FileResponse(FRONTEND / "offline.html")
+
     """Регистрирует мета-эндпоинты на app."""
     app.add_api_route("/dashboard", dashboard, methods=["GET"], response_class=_HTMLResponse)
     app.add_api_route("/api/journal", api_journal, methods=["GET"])

@@ -243,6 +243,10 @@ from .api.security_api import router as security_router
 
 app.include_router(security_router)
 
+from .api.ai_api import router as ai_router
+
+app.include_router(ai_router)
+
 # v1.8.1: meta-routes (dashboard, journal, PWA, index)
 from .routes_meta import register_meta_routes as _reg_meta
 
@@ -291,6 +295,29 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 from .middleware_extra import register_extra_middleware as _reg_extra_mw
 
 _reg_extra_mw(app)
+
+
+# v1.10.0: HTML 404/500 → redirect на /offline (кроме /api, /static, /ws)
+from starlette.exceptions import HTTPException as _StarletteHTTPException
+
+
+@app.exception_handler(_StarletteHTTPException)
+async def _html_404_500_handler(request, exc):
+    path = request.url.path
+    accept = request.headers.get("accept", "")
+    # API и статика — JSON как раньше
+    if path.startswith(("/api/", "/static/", "/ws/", "/output/")):
+        from starlette.responses import JSONResponse as _JR  # noqa: N814
+
+        return _JR({"detail": exc.detail}, status_code=exc.status_code)
+    # HTML-клиенты на 404/500 → redirect /offline
+    if exc.status_code in (404, 500) and "text/html" in accept:
+        from fastapi.responses import RedirectResponse as _RR  # noqa: N814
+
+        return _RR(f"/offline?code={exc.status_code}", status_code=302)
+    from starlette.responses import JSONResponse as _JR  # noqa: N814
+
+    return _JR({"detail": exc.detail}, status_code=exc.status_code)
 
 
 # === v0.9.1-fix: Audit + rate limit ===

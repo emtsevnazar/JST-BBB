@@ -8,6 +8,7 @@ const CACHE_STATIC = `jst-static-${VERSION}`;
 const CACHE_HTML   = `jst-html-${VERSION}`;
 
 const PRECACHE = [
+  '/offline',
   '/',
   '/manifest.json',
   '/static/style.css',

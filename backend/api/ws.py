@@ -53,7 +53,7 @@ async def _ws_orig(ws: WebSocket):
             data = json.loads(await ws.receive_text())
             if data.get("type") != "synthesize":
                 continue
-            # v1.7.2: emergency stop check (async, перед validation)
+                # v1.7.2: emergency stop check (async, перед validation)
             if is_stopped():
                 journal.action("SYNTH_REJECTED_STOP")
                 await ws.send_text(
