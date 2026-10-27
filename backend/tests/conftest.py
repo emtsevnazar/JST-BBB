@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+import os
+
+# v1.8.3: тестовый TrustedHost — отклоняем evil.com
+os.environ.setdefault("JST_TRUSTED_HOSTS", "testserver,localhost,127.0.0.1")
+
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient

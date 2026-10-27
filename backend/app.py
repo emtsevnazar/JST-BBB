@@ -218,15 +218,9 @@ async def lifespan(app: FastAPI):
 
 
 # v1.8.0: API-key auth для непубличных путей
-from fastapi import Depends as _Depends
 
-from .core.security import require_api_key as _require_api_key
 
-app = FastAPI(
-    title="JST Studio",
-    lifespan=lifespan,
-    dependencies=[_Depends(_require_api_key)],
-)
+app = FastAPI(title="JST Studio", lifespan=lifespan)
 
 app.include_router(moods_router)
 app.include_router(system_router)
@@ -280,65 +274,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["*"],  # v1.7.3: dev mode — accept any host,
+# v1.8.3: env-driven TrustedHost (dev: ["*"], prod: ["yourdomain.com"])
+_allowed_hosts_env = os.getenv("JST_TRUSTED_HOSTS", "").strip()
+_allowed_hosts = (
+    [h.strip() for h in _allowed_hosts_env.split(",") if h.strip()] if _allowed_hosts_env else ["*"]
 )
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=_allowed_hosts)
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+# v1.8.2: extra middleware (rate-limit, audit, static-cache) extracted
+from .middleware_extra import register_extra_middleware as _reg_extra_mw
+
+_reg_extra_mw(app)
 
 
 # === v0.9.1-fix: Audit + rate limit ===
-import time as _t
 
-from starlette.responses import JSONResponse as _JSONResponse
-
-from .audit import log_event as _log_event
 
 # v1.7.10: RateLimiterV2 (per-prefix) + IPBlocklist — см. security/hardening.py
-from .security.hardening import blocklist as _blocklist
-from .security.hardening import rate_limiter as _rate_limiter
-
-
-@app.middleware("http")
-async def jst_rate_limit(request, call_next):
-    ip = request.client.host if request.client else "unknown"
-    path = request.url.path
-    # v1.7.10-fix: /api/security/* доступен даже забаненным IP
-    # (иначе нельзя разбанить себя; stats нужен для видимости состояния)
-    if not path.startswith("/api/security/") and _blocklist.is_banned(ip):
-        return _JSONResponse(
-            {"error": "ip_blocked", "detail": "IP temporarily blocked"},
-            status_code=403,
-        )
-    if not _rate_limiter.check(ip, path):
-        return _JSONResponse(
-            {"error": "rate_limit_exceeded", "detail": "Слишком много запросов"},
-            status_code=429,
-        )
-    return await call_next(request)
-
-
-@app.middleware("http")
-async def jst_audit_middleware(request, call_next):
-    t0 = _t.time()
-    status = 500
-    try:
-        response = await call_next(request)
-        status = response.status_code
-        return response
-    finally:
-        dur = (_t.time() - t0) * 1000
-        try:
-            _log_event(
-                ip=request.client.host if request.client else "unknown",
-                method=request.method,
-                path=request.url.path,
-                status=status,
-                duration_ms=dur,
-                user_agent=request.headers.get("user-agent", ""),
-            )
-        except Exception:
-            pass
 
 
 # === v1.4.0: PWA endpoints (root-level for proper SW scope) ===
@@ -349,12 +302,6 @@ app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")
 
 # === МОДЕЛИ И ЯЗЫКИ ===
 # === SECURITY HEADERS (Stage 2) ===
-@app.middleware("http")
-async def static_cache_control(request, call_next):
-    response = await call_next(request)
-    if request.url.path.startswith("/static/"):
-        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
-    return response
 
 
 # === ГОЛОСА ===
