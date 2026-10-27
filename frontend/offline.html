@@ -106,12 +106,6 @@ body{
   document.getElementById('t-title').textContent=m.t+(s?' · HTTP '+s:'');
   document.getElementById('t-msg').textContent=m.x;
 
-  document.body.addEventListener('click',function(e){
-    if(e.target===document.body)location.href='/';
-  });
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape')location.href='/';
-  });
 })();
 </script>
 </body>
