@@ -1,29 +1,11 @@
 
 /* ===============================================================
-   v1.10.56: btn 135x56, dropdown 100x56, vertical only max-width 900
+   v1.10.56: history/download 135x56, #text fit, curtains (mask),
+   JST 16px in vertical
    =============================================================== */
 
-/* ─── 1. .controls — gap 8, nowrap, horizontal scroll ─── */
-.controls {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  gap: 8px !important;
-  align-items: center !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  padding: 6px 2px !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-
-.controls:has(.dropdown.open),
-.controls:has(.dropdown.active) {
-  overflow-x: visible !important;
-  overflow-y: visible !important;
-}
-
-/* ─── 2. Обычные кнопки .controls — 135×56 ─── */
-.controls > .btn {
+/* ─── 1. HISTORY/DOWNLOAD DROPDOWN — 135×56 + inner min-width 0 ─── */
+.controls > .dropdown {
   flex: 0 0 135px !important;
   width: 135px !important;
   min-width: 135px !important;
@@ -31,244 +13,96 @@
   height: 56px !important;
   min-height: 56px !important;
   max-height: 56px !important;
-  margin: 0 !important;
-  padding: 0 10px !important;
-  box-sizing: border-box !important;
-  flex-shrink: 0 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-  position: relative !important;
-  border-radius: 14px !important;
-  font-size: 13px !important;
-}
-
-/* ─── 3. DROPDOWN (История, Скачать) — 100×56 ─── */
-.controls > .dropdown {
-  flex: 0 0 100px !important;
-  width: 100px !important;
-  min-width: 100px !important;
-  max-width: 100px !important;
-  height: 56px !important;
-  min-height: 56px !important;
-  max-height: 56px !important;
-  margin: 0 !important;
   padding: 0 !important;
-  box-sizing: border-box !important;
-  flex-shrink: 0 !important;
+  margin: 0 !important;
   overflow: visible !important;
+  position: relative !important;
+  box-sizing: border-box !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  position: relative !important;
-  border-radius: 14px !important;
 }
-
-.controls > .dropdown > .btn {
+.controls > .dropdown > .btn,
+.controls > .dropdown > button {
   width: 100% !important;
-  min-width: 100% !important;
+  min-width: 0 !important;
   max-width: 100% !important;
   height: 100% !important;
   min-height: 100% !important;
   max-height: 100% !important;
+  padding: 0 32px 0 10px !important;
   margin: 0 !important;
-  padding: 0 30px 0 8px !important;
+  font-size: 13px !important;
+  border-radius: 14px !important;
   box-sizing: border-box !important;
-  flex: 1 1 auto !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  text-align: center !important;
   position: relative !important;
-  border-radius: 14px !important;
-  font-size: 12px !important;
 }
 
-/* Точка ● в прозрачном кружке */
-.controls > .dropdown > .btn::after {
-  content: '\25CF' !important;
-  position: absolute !important;
-  right: 6px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 16px !important;
-  height: 16px !important;
-  min-width: 16px !important;
-  min-height: 16px !important;
-  max-width: 16px !important;
-  max-height: 16px !important;
-  aspect-ratio: 1 / 1 !important;
-  border-radius: 50% !important;
-  border: 1.5px solid currentColor !important;
-  background: transparent !important;
+/* ─── 2. #text — не выходит за text-panel ─── */
+.text-panel {
+  overflow: hidden !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
   box-sizing: border-box !important;
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 9px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  color: var(--accent) !important;
-  pointer-events: none !important;
+  flex-direction: column !important;
 }
-.controls > .dropdown > .btn:hover::after {
-  color: var(--gold) !important;
-  border-color: var(--gold) !important;
-}
-
-/* ─── 4. Стрелки — круг 32×32 ─── */
-.controls-btn,
-.controls-btn.controls-prev,
-.controls-btn.controls-next,
-.carousel-btn,
-.carousel-btn.prev,
-.carousel-btn.next {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  aspect-ratio: 1 / 1 !important;
-  flex: 0 0 32px !important;
-  flex-shrink: 0 !important;
-  border-radius: 50% !important;
+.text-panel > * {
+  max-width: 100% !important;
   box-sizing: border-box !important;
-  overflow: hidden !important;
-  line-height: 1 !important;
-  padding: 0 !important;
-  margin: 0 !important;
 }
-
-/* ─── 5. #text height 150 ─── */
-#text,
-textarea#text {
+#text, textarea#text {
+  width: 100% !important;
+  max-width: 100% !important;
   height: 150px !important;
   min-height: 150px !important;
   max-height: 150px !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  flex: 0 0 auto !important;
   box-sizing: border-box !important;
-  resize: vertical !important;
+  resize: none !important;
+  overflow-y: auto !important;
 }
 
-/* ─── 6. ВЕРТИКАЛЬНЫЙ РЕЖИМ — ТОЛЬКО max-width 900px ─── */
+/* ─── 3. JST 16px в вертикальном режиме ─── */
 @media (max-width: 900px) {
-  /* .app — полная высота с независимым скроллом */
-  .app {
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  /* .main — split screen */
-  .main {
-    display: flex !important;
-    flex-direction: column !important;
-    grid-template-columns: none !important;
-    grid-template-rows: none !important;
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    height: auto !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    gap: 0 !important;
-  }
-
-  /* .sidebar — верхняя часть (40%) */
-  .main > .sidebar {
-    flex: 0 0 40% !important;
-    max-height: 40% !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 8px !important;
-    border-bottom: 1px solid var(--panel-border) !important;
-    box-sizing: border-box !important;
-  }
-
-  /* .workspace — нижняя часть (60%) */
-  .main > .workspace {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 8px !important;
-    box-sizing: border-box !important;
-  }
-
-  .footer {
-    flex: 0 0 auto !important;
-    margin-top: 0 !important;
-    padding: 4px 8px !important;
-    font-size: 10px !important;
-  }
-
-  /* controls — кнопки НЕ сплющиваются (135 и 100 остаются) */
-  .controls > .btn {
-    flex: 0 0 135px !important;
-    width: 135px !important;
-    min-width: 135px !important;
-    max-width: 135px !important;
-    height: 56px !important;
-    min-height: 56px !important;
-    max-height: 56px !important;
-    font-size: 13px !important;
-    margin: 0 !important;
-    padding: 0 10px !important;
-  }
-
-  .controls > .dropdown {
-    flex: 0 0 100px !important;
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
-    height: 56px !important;
-    min-height: 56px !important;
-    max-height: 56px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .controls > .dropdown > .btn {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    max-height: 100% !important;
-    font-size: 12px !important;
-    padding: 0 30px 0 8px !important;
+  .logo-text h1,
+  .logo-text > h1 {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
     margin: 0 !important;
   }
+}
 
-  /* стрелки НЕ овальные */
-  .controls-btn,
-  .carousel-btn {
-    width: 32px !important;
-    height: 32px !important;
-    min-width: 32px !important;
-    min-height: 32px !important;
-    max-width: 32px !important;
-    max-height: 32px !important;
-    aspect-ratio: 1 / 1 !important;
-    flex: 0 0 32px !important;
-    flex-shrink: 0 !important;
-  }
-
-  /* #text — та же высота */
-  #text,
-  textarea#text {
-    height: 150px !important;
-    min-height: 150px !important;
-    max-height: 150px !important;
-  }
+/* ─── 4. CURTAINS: mask на sidebar/workspace (без blur/fog) ─── */
+.sidebar, .workspace {
+  -webkit-mask-image: linear-gradient(180deg,
+    transparent 0,
+    black 20px,
+    black calc(100% - 20px),
+    transparent 100%) !important;
+  mask-image: linear-gradient(180deg,
+    transparent 0,
+    black 20px,
+    black calc(100% - 20px),
+    transparent 100%) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+/* Убрать старые ::before/::after шторки с blur */
+.sidebar::before, .sidebar::after,
+.workspace::before, .workspace::after {
+  content: none !important;
+  display: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: none !important;
+  mask-image: none !important;
 }
