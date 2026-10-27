@@ -5,7 +5,6 @@ JST Safety Module v2.0
 - Rate limiter (in-memory, per-key)
 - Валидация файлов (MIME, размер, расширение)
 - Sanitization HTML
-- Circuit breaker для TTS-моделей
 - Безопасное логирование
 - Fallback-цепочка
 """
@@ -166,66 +165,12 @@ def sanitize_html(text: str) -> str:
 
 
 # ============================================================
-# 6. CIRCUIT BREAKER
-# ============================================================
-class CircuitBreaker:
-    """Отключает модель после N подряд ошибок на T секунд."""
-
-    def __init__(self, threshold: int = 3, timeout: float = 30.0):
-        self.threshold = threshold
-        self.timeout = timeout
-        self._failures: dict[str, int] = {}
-        self._opened_at: dict[str, float] = {}
-
-    def is_open(self, key: str) -> bool:
-        if key not in self._opened_at:
-            return False
-        if time.time() - self._opened_at[key] > self.timeout:
-            # Пробуем закрыть
-            del self._opened_at[key]
-            self._failures[key] = 0
-            return False
-        return True
-
-    def record_success(self, key: str) -> None:
-        self._failures[key] = 0
-        self._opened_at.pop(key, None)
-
-    def record_failure(self, key: str) -> None:
-        self._failures[key] = self._failures.get(key, 0) + 1
-        if self._failures[key] >= self.threshold:
-            self._opened_at[key] = time.time()
-            log.warning(f"[CircuitBreaker] {key} открыт на {self.timeout}s")
-
-    def status(self) -> dict:
-        return {
-            "failures": dict(self._failures),
-            "open": list(self._opened_at.keys()),
-        }
-
-
-breaker = CircuitBreaker(threshold=3, timeout=30.0)
-
-
-# ============================================================
 # 7. БЕЗОПАСНОЕ ЛОГИРОВАНИЕ
 # ============================================================
 def safe_log(msg: str, max_len: int = 500) -> str:
     if not isinstance(msg, str):
         msg = str(msg)
     return CTRL_CHARS.sub("?", msg)[:max_len]
-
-
-# ============================================================
-# 8. FALLBACK
-# ============================================================
-def fallback_chain(primary: str) -> list[str]:
-    chains = {
-        "jst_clone": ["jst_clone", "multi", "core"],
-        "multi": ["multi", "core"],
-        "core": ["core"],
-    }
-    return chains.get(primary, ["core"])
 
 
 # ============================================================
@@ -249,29 +194,3 @@ def _which(cmd: str) -> bool:
     import shutil
 
     return shutil.which(cmd) is not None
-
-
-# ============================================================
-# 10. SAFE TTS CALL (с circuit breaker + fallback)
-# ============================================================
-def safe_tts_call(fn, *args, mode: str = "core", **kwargs):
-    """
-    Безопасно вызывает TTS-функцию с fallback-цепочкой и circuit breaker.
-    Возвращает (result, actual_mode).
-    """
-    last_err = None
-    for candidate in fallback_chain(mode):
-        if breaker.is_open(candidate):
-            log.warning("[safe_tts] %s пропущен (breaker open)", candidate)
-            continue
-        try:
-            log.info("[safe_tts] попытка mode=%s", candidate)
-            result = fn(*args, mode=candidate, **kwargs)
-            if result is not None:
-                breaker.record_success(candidate)
-                return result, candidate
-        except Exception as e:
-            last_err = e
-            breaker.record_failure(candidate)
-            log.warning("[safe_tts] %s упал: %s", candidate, safe_log(str(e)))
-    raise RuntimeError(f"Все модели не сработали. Последняя ошибка: {safe_log(str(last_err))}")
