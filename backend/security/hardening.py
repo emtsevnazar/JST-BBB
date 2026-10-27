@@ -177,6 +177,77 @@ class RateLimiterV2:
             return {**self._stats, "buckets": len(self._buckets)}
 
 
+class CircuitBreaker:
+    """v1.9.4: Circuit breaker для TTS-моделей.
+
+    После threshold последовательных ошибок — модель временно отключается
+    на timeout секунд. Fallback на другую модель в ws.py/batch.py.
+
+    Auto-close: если после timeout снова ошибка → повторно открыть.
+    """
+
+    def __init__(self, threshold: int = 3, timeout: float = 30.0, max_keys: int = 1000):
+        self.threshold = threshold
+        self.timeout = timeout
+        self.max_keys = max_keys
+        self._failures: dict[str, int] = {}
+        self._opened_at: dict[str, float] = {}
+        self._lock = threading.Lock()
+        self._stats = {"checks": 0, "opens": 0, "rejects": 0, "successes": 0}
+
+    def is_open(self, key: str) -> bool:
+        with self._lock:
+            self._stats["checks"] += 1
+            opened = self._opened_at.get(key)
+            if opened is None:
+                return False
+            if time.time() - opened > self.timeout:
+                self._opened_at.pop(key, None)
+                self._failures.pop(key, None)
+                return False
+            self._stats["rejects"] += 1
+            return True
+
+    def remaining(self, key: str) -> float:
+        """Секунды до автозакрытия, 0 если не открыт."""
+        with self._lock:
+            opened = self._opened_at.get(key)
+            if opened is None:
+                return 0.0
+            return max(0.0, self.timeout - (time.time() - opened))
+
+    def record_success(self, key: str) -> None:
+        with self._lock:
+            self._failures.pop(key, None)
+            self._opened_at.pop(key, None)
+            self._stats["successes"] += 1
+
+    def record_failure(self, key: str) -> None:
+        with self._lock:
+            self._failures[key] = self._failures.get(key, 0) + 1
+            if self._failures[key] >= self.threshold:
+                self._opened_at[key] = time.time()
+                self._stats["opens"] += 1
+                log.warning(
+                    "circuit OPEN: %s (threshold=%d, timeout=%.0fs)",
+                    key,
+                    self.threshold,
+                    self.timeout,
+                )
+            if len(self._failures) > self.max_keys:
+                self._failures.pop(next(iter(self._failures)), None)
+
+    def stats(self) -> dict:
+        with self._lock:
+            return {
+                **self._stats,
+                "open": list(self._opened_at.keys()),
+                "tracked": len(self._failures),
+                "threshold": self.threshold,
+                "timeout": self.timeout,
+            }
+
+
 class SelfHealingWatchdog:
     def __init__(
         self, url: str = "http://127.0.0.1:8000/healthz", interval: float = 20.0, threshold: int = 3
@@ -297,4 +368,5 @@ rate_limiter = RateLimiterV2(
     }
 )
 auth_bruteforce = AuthBruteForce()
+circuit_breaker = CircuitBreaker()
 watchdog = SelfHealingWatchdog()

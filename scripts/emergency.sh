@@ -216,7 +216,9 @@ for e in rt.get('top_error_endpoints', []):
         rm -f "$f"
         REMOVED=$((REMOVED + 1))
       done < <(ls -t "$BACKUP_DIR"/jst-*.tar.gz* 2>/dev/null | tail -n +$((KEEP + 1)))
-      [[ "$REMOVED" -gt 0 ]] && echo "rotated: $REMOVED old backup(s) removed"
+      if [[ "$REMOVED" -gt 0 ]]; then
+        echo "rotated: $REMOVED old backup(s) removed"
+      fi
     fi
     ;;
 
