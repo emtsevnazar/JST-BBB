@@ -132,9 +132,9 @@ body{
     attempts++;
     if(attempts===3 && tMsg) tMsg.textContent='Reconnecting…';
 
-    fetch('/',{method:'HEAD',redirect:'manual',cache:'no-store',credentials:'same-origin'})
+    fetch('/readyz',{method:'GET',redirect:'manual',cache:'no-store',credentials:'same-origin'})
       .then(function(resp){
-        if(resp.status===200 && resp.type==='basic'){
+        if(resp.status===200){
           redirecting=true;
           sessionStorage.setItem(RECOVER_KEY,String(Date.now()));
           location.replace('/');
@@ -153,9 +153,9 @@ body{
 
   // Умная кнопка: пробует /, если 200 — туда, иначе reload
   window.__jst_refresh=function(){
-    fetch('/',{method:'HEAD',redirect:'manual',cache:'no-store',credentials:'same-origin'})
+    fetch('/readyz',{method:'GET',redirect:'manual',cache:'no-store',credentials:'same-origin'})
       .then(function(resp){
-        if(resp.status===200 && resp.type==='basic'){
+        if(resp.status===200){
           sessionStorage.setItem(RECOVER_KEY,String(Date.now()));
           location.replace('/');
         } else {
