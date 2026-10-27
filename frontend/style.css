@@ -6210,3 +6210,114 @@ html body #jstp-play:disabled {
 .pwa-install:active {
   transform: translateY(0);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   v1.10.12: Responsive typography + touch + large screens
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- Fluid typography (min 320px → max 1920px) --- */
+:root{
+  --fs-xs:  clamp(11px, 0.75rem + 0.1vw, 13px);
+  --fs-sm:  clamp(12px, 0.8rem  + 0.15vw, 14px);
+  --fs-base:clamp(13px, 0.9rem  + 0.2vw, 16px);
+  --fs-md:  clamp(14px, 0.95rem + 0.25vw, 18px);
+  --fs-lg:  clamp(16px, 1.05rem + 0.4vw, 22px);
+  --fs-xl:  clamp(18px, 1.15rem + 0.6vw, 26px);
+  --fs-2xl: clamp(20px, 1.3rem  + 0.8vw, 32px);
+  --fs-3xl: clamp(24px, 1.5rem  + 1.2vw, 40px);
+
+  /* Spacing scale */
+  --sp-1: clamp(2px, 0.25vw, 4px);
+  --sp-2: clamp(4px, 0.4vw, 8px);
+  --sp-3: clamp(6px, 0.6vw, 12px);
+  --sp-4: clamp(8px, 0.8vw, 16px);
+  --sp-6: clamp(12px, 1.2vw, 24px);
+  --sp-8: clamp(16px, 1.5vw, 32px);
+
+  /* Container */
+  --container-max: min(1400px, calc(100vw - 2rem));
+  --touch-min: 44px;
+}
+
+html{ font-size: 16px; }
+body{
+  font-size: var(--fs-base);
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+/* Заменить фиксированные размеры заголовков (если были) */
+h1, .title-h1 { font-size: var(--fs-2xl); line-height: 1.2; }
+h2, .title-h2 { font-size: var(--fs-xl);  line-height: 1.25; }
+h3, .title-h3 { font-size: var(--fs-lg);  line-height: 1.3; }
+p, .text    { font-size: var(--fs-base); line-height: 1.5; }
+small, .text-sm { font-size: var(--fs-sm); }
+.text-xs { font-size: var(--fs-xs); }
+
+/* Все кнопки/inputs — минимум 44px на touch */
+@media (pointer: coarse) {
+  button, .btn, input[type="button"], input[type="submit"],
+  a.btn, [role="button"], select, input[type="text"], input[type="number"],
+  input[type="range"], textarea {
+    min-height: var(--touch-min);
+    min-width: var(--touch-min);
+    font-size: var(--fs-md);
+    padding: var(--sp-3) var(--sp-4);
+  }
+}
+
+/* Контейнер — не «расползается» на 4K/8K */
+.app, .container, main, .wrapper{
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Large screens (≥2560px — 4K) */
+@media (min-width: 2560px){
+  html{ font-size: 18px; }   /* всё в rem-зависимых размерах подрастёт */
+  .app, .container, main, .wrapper{
+    max-width: min(1800px, calc(100vw - 4rem));
+  }
+}
+
+/* Ultra-large (≥3840px — 8K) */
+@media (min-width: 3840px){
+  html{ font-size: 20px; }
+}
+
+/* Small screens (≤480px — mobile) */
+@media (max-width: 480px){
+  .app, .container, main, .wrapper{
+    padding-left: var(--sp-3);
+    padding-right: var(--sp-3);
+  }
+  h1, .title-h1{ font-size: var(--fs-xl); }
+  h2, .title-h2{ font-size: var(--fs-lg); }
+  .header-buttons{ gap: var(--sp-2); }
+}
+
+/* Очень узкие (≤360px) */
+@media (max-width: 360px){
+  html{ font-size: 14px; }
+  .app, .container, main, .wrapper{
+    padding-left: var(--sp-2);
+    padding-right: var(--sp-2);
+  }
+}
+
+/* Landscape mobile (высота < 500px) */
+@media (max-height: 500px) and (orientation: landscape){
+  .app, .container, main, .wrapper{ padding-top: var(--sp-2); padding-bottom: var(--sp-2); }
+}
+
+/* Grid/flex gaps — fluid */
+.header-buttons, .toolbar, .controls{
+  gap: var(--sp-2);
+}
+
+/* Изображения — не ломают layout */
+img, video, canvas, svg:not([class*="icon"]){
+  max-width: 100%;
+  height: auto;
+}
