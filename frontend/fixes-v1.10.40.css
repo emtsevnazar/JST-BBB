@@ -1,0 +1,311 @@
+
+/* ===============================================================
+   v1.10.40: финальный фикс по Q1-Q7
+   Q1=C  mask на краях блока (без overlay/blur)
+   Q2=A  card = родной 130x56 padding 14
+   Q3=C  controls = horiz scroll, 130px кнопки (как card)
+   Q4    40px logo + org-badge 9px pad 3x6 + btn 36x36
+   Q5=D  org-badge 1→2→3 lines адаптивно (flex-wrap)
+   Q6=A  model-grid horizontal scroll, gap 8
+   Q7=A  dl-dropdown внутри .controls (HTML-патч)
+   =============================================================== */
+
+/* ─── Q1=C: Маска на краях, БЕЗ overlay/blur ─── */
+.sidebar, .workspace {
+  -webkit-mask-image: linear-gradient(180deg,
+    transparent 0,
+    black 22px,
+    black calc(100% - 22px),
+    transparent 100%) !important;
+  mask-image: linear-gradient(180deg,
+    transparent 0,
+    black 22px,
+    black calc(100% - 22px),
+    transparent 100%) !important;
+}
+/* Убить все ::before/::after от v1.10.35-39 */
+.sidebar::before, .sidebar::after,
+.workspace::before, .workspace::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* ─── Q2=A: Card = 130×56 padding 14 ─── */
+.card,
+.carousel > .card,
+.carousel > .model-card,
+.carousel > .lang-card,
+.carousel > .accent-card,
+.carousel > [class*="-card"] {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  min-width: 130px !important;
+  max-width: 250px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  padding: 14px !important;
+  font-size: 14px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ─── Q3=C: controls horizontal scroll, кнопки 130px как card ─── */
+.controls {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 4px 2px !important;
+  scrollbar-width: thin !important;
+}
+.controls > .btn,
+.controls > .dropdown,
+.controls > .dropdown > .btn {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  min-width: 130px !important;
+  max-width: 130px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+.controls > .dropdown > .btn {
+  padding-right: 34px !important;
+}
+.controls > .dropdown > .btn::after {
+  right: 8px !important;
+}
+
+/* ─── Q4: header 3 блока меньше ─── */
+.header .logo-img {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  width: auto !important;
+  flex-shrink: 0 !important;
+}
+.header .org-badge {
+  font-size: 9px !important;
+  padding: 3px 6px !important;
+  max-width: 220px !important;
+  letter-spacing: 0.5px !important;
+}
+.header .org-badge > span { font-size: inherit !important; }
+.header .header-buttons > button,
+.header .header-buttons > .icon-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  flex: 0 0 36px !important;
+  padding: 0 !important;
+  border-radius: 10px !important;
+}
+
+/* ─── Q5=D: org-badge 1→2→3 строки адаптивно ─── */
+.org-badge {
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.35em 0.5em !important;
+  white-space: normal !important;
+  text-align: center !important;
+  max-width: 100% !important;
+  padding: 5px 10px !important;
+  border-radius: 22px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+.org-badge > span {
+  display: inline !important;
+  white-space: nowrap !important;
+}
+
+/* ─── Q6=A: model-grid horizontal scroll, gap 8 ─── */
+#model-grid, #lang-grid, #accent-grid, #carousel {
+  display: flex !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 4px 2px !important;
+}
+
+/* ─── btn-record: круглая (inline style перебить !important) ─── */
+#btn-record {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 44px !important;
+  box-sizing: border-box !important;
+}
+#btn-record svg { width: 16px !important; height: 16px !important; }
+
+/* ─── upload + mic: одна строка, одинаковый уровень ─── */
+div[style*="display:flex;gap:6px;margin-top:8px"],
+div[style*="display:flex;gap:6px;margin-top:8px"] {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+  margin-top: 8px !important;
+}
+div[style*="display:flex;gap:6px;margin-top:8px"] > .btn:not(.btn-mic),
+div[style*="display:flex;gap:6px;margin-top:8px"] > button:not(.btn-mic) {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+  box-sizing: border-box !important;
+}
+
+/* ─── controls-btn: bold dot ─── */
+.controls-wrap { position: relative !important; }
+.controls-btn,
+.controls-btn.controls-prev,
+.controls-btn.controls-next {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--panel-border) !important;
+  background: var(--input-bg) !important;
+  color: var(--accent) !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  -webkit-text-stroke: 0.6px currentColor !important;
+  text-shadow: 0 0 0.5px currentColor !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+  box-sizing: border-box !important;
+}
+.controls-prev { left: 2px !important; }
+.controls-next { right: 2px !important; }
+.controls-btn:hover {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+  -webkit-text-stroke: 0.6px var(--gold) !important;
+}
+
+/* ─── Mobile ≤900: controls vertical, arrows hidden ─── */
+@media (max-width: 900px) {
+  .controls-wrap { padding: 0 !important; }
+  .controls-btn { display: none !important; }
+  .controls {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    gap: 6px !important;
+  }
+  .controls > .btn,
+  .controls > .dropdown,
+  .controls > .dropdown > .btn {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+
+  /* header column ≤900 */
+  .header {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+    text-align: center !important;
+  }
+  .header > * {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .header .logo {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .logo-text {
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
+
+/* ─── ≤575: org-badge 3 строки ─── */
+@media (max-width: 575px) {
+  .header .logo-img { height: 32px !important; min-height: 32px !important; max-height: 32px !important; }
+  .header .org-badge {
+    font-size: clamp(8px, 2.6vw, 10px) !important;
+    padding: 4px 8px !important;
+    max-width: 100% !important;
+  }
+  .header .header-buttons > button,
+  .header .header-buttons > .icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    max-width: 34px !important;
+    max-height: 34px !important;
+    flex: 0 0 34px !important;
+  }
+}
