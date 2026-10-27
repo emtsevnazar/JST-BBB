@@ -303,18 +303,21 @@ from starlette.exceptions import HTTPException as _StarletteHTTPException
 
 @app.exception_handler(_StarletteHTTPException)
 async def _html_404_500_handler(request, exc):
+    """v1.10.2: HTML 404/500 → /offline?reason=&status= ; API/static/ws/output → JSON.
+
+    Accept-фильтр убран: curl, боты, fetch также получают 302 (кроме API).
+    /offline защищён от рекурсии.
+    """
     path = request.url.path
-    accept = request.headers.get("accept", "")
-    # API и статика — JSON как раньше
-    if path.startswith(("/api/", "/static/", "/ws/", "/output/")):
+    if path.startswith(("/api/", "/static/", "/ws/", "/output/", "/offline")):
         from starlette.responses import JSONResponse as _JR  # noqa: N814
 
         return _JR({"detail": exc.detail}, status_code=exc.status_code)
-    # HTML-клиенты на 404/500 → redirect /offline
-    if exc.status_code in (404, 500) and "text/html" in accept:
+    if exc.status_code in (404, 500):
         from fastapi.responses import RedirectResponse as _RR  # noqa: N814
 
-        return _RR(f"/offline?code={exc.status_code}", status_code=302)
+        reason = "notfound" if exc.status_code == 404 else "server"
+        return _RR(f"/offline?reason={reason}&status={exc.status_code}", status_code=302)
     from starlette.responses import JSONResponse as _JR  # noqa: N814
 
     return _JR({"detail": exc.detail}, status_code=exc.status_code)
