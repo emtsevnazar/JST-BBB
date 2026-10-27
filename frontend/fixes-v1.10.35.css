@@ -1,0 +1,319 @@
+
+/* ===============================================================
+   v1.10.35: 17 требований. ОДИН файл. Минимум !important.
+   =============================================================== */
+
+/* ─── 16. Layout = 100vw ─── */
+:root { --container-max: 100vw; }
+html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+.app, main, main.main, .main, .container, .wrapper {
+  width: 100% !important;
+  max-width: 100vw !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box;
+}
+@media (min-width: 2560px) {
+  .app, main, .main, .container { max-width: 100vw !important; }
+}
+
+/* ─── 3. Header sticky (снять .app overflow hidden) ─── */
+.app {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: visible !important;
+}
+.header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  flex-shrink: 0;
+  border-radius: 0 !important;
+  padding: 8px 14px !important;
+  gap: 10px !important;
+}
+
+/* ─── 8. Header 3 блока компактнее ─── */
+.header .logo-img {
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  width: auto !important;
+}
+.header .logo { max-width: 340px; gap: 8px; }
+.header .org-badge {
+  max-width: 260px !important;
+  font-size: 10px !important;
+  padding: 5px 10px !important;
+  letter-spacing: 1px !important;
+}
+.header .header-buttons { gap: 6px !important; }
+.header .header-buttons > button,
+.header .header-buttons > .icon-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  flex: 0 0 40px !important;
+  padding: 0 !important;
+  border-radius: 10px !important;
+}
+@media (max-width: 900px) {
+  .header { padding: 6px 10px !important; gap: 6px !important; }
+  .header .logo-img { height: 34px !important; min-height: 34px !important; max-height: 34px !important; }
+  .header .org-badge { font-size: 9px !important; padding: 4px 8px !important; }
+  .header .header-buttons > button,
+  .header .header-buttons > .icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    flex: 0 0 36px !important;
+  }
+}
+
+/* ─── 1. Controls equal + vertical mobile ─── */
+.controls {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+.controls > .btn,
+.controls > .dropdown,
+.controls > .dropdown > .btn {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  padding: 0 14px !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.controls > .dropdown > .btn {
+  padding-left: 14px !important;
+  padding-right: 36px !important;
+}
+@media (max-width: 600px) {
+  .controls {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+  .controls > .btn,
+  .controls > .dropdown,
+  .controls > .dropdown > .btn {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 42px !important;
+    min-height: 42px !important;
+  }
+}
+
+/* ─── 4. Sidebar / workspace независимый скролл ─── */
+@media (max-width: 900px) {
+  .app { height: 100vh !important; height: 100dvh !important; overflow: hidden !important; }
+  .main {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  .main > .sidebar {
+    flex: 0 0 40% !important;
+    max-height: 40% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-bottom: 1px solid var(--panel-border) !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+  }
+  .main > .workspace {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+  }
+  .footer { flex: 0 0 auto !important; margin-top: 0 !important; padding: 4px 8px !important; font-size: 10px !important; }
+}
+
+/* ─── 5. Textarea не вылезает ─── */
+.text-panel {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+.text-panel > * { max-width: 100% !important; box-sizing: border-box !important; }
+#text, textarea {
+  flex: 1 1 auto !important;
+  min-height: 60px !important;
+  max-height: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-y: auto !important;
+  resize: none !important;
+  box-sizing: border-box !important;
+}
+
+/* ─── 2+6. Curtains — только внутри блока, под контентом ─── */
+.sidebar, .workspace {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  min-height: 0 !important;
+}
+.sidebar::before, .workspace::before,
+.sidebar::after, .workspace::after {
+  content: '' !important;
+  position: sticky !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: block !important;
+  height: 20px !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  clip-path: inset(0) !important;
+  -webkit-clip-path: inset(0) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  mask-image: linear-gradient(180deg, black 0%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(180deg, black 0%, transparent 100%) !important;
+}
+.sidebar::before, .workspace::before {
+  top: 0 !important;
+  margin-bottom: -20px !important;
+  background: linear-gradient(180deg, var(--app-bg, #0a0a0c) 0%, transparent 100%) !important;
+}
+.sidebar::after, .workspace::after {
+  bottom: 0 !important;
+  margin-top: -20px !important;
+  background: linear-gradient(0deg, var(--app-bg, #0a0a0c) 0%, transparent 100%) !important;
+  mask-image: linear-gradient(0deg, black 0%, transparent 100%) !important;
+  -webkit-mask-image: linear-gradient(0deg, black 0%, transparent 100%) !important;
+}
+.sidebar > *, .workspace > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ─── 10+14+15. Carousel cards equal, 250→110 ─── */
+:root { --card-w: clamp(110px, 28vw, 250px); }
+.carousel { display: flex !important; gap: clamp(4px, 1vw, 8px) !important; padding: 6px 2px !important; overflow-x: auto !important; overflow-y: hidden !important; min-width: 0 !important; }
+.carousel > .card,
+.carousel > .model-card,
+.carousel > .lang-card,
+.carousel > .accent-card,
+.carousel > [class*="-card"] {
+  flex: 0 0 var(--card-w) !important;
+  width: var(--card-w) !important;
+  min-width: 110px !important;
+  max-width: 250px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  padding: 8px 10px !important;
+  font-size: clamp(11px, 1.2vw, 13px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+.carousel > .lang-card.unavailable,
+.carousel > .lang-card.lang-disabled {
+  flex: 0 0 var(--card-w) !important;
+  width: var(--card-w) !important;
+  opacity: 0.5 !important;
+}
+
+/* ─── 11. btn-mic круглая ─── */
+.btn.btn-sm.btn-mic,
+button.btn-mic,
+#btn-record {
+  border-radius: 50% !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: 44px !important;
+  max-height: 44px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+#btn-record svg { width: 16px !important; height: 16px !important; }
+
+/* ─── 9. Buttons / fonts fluid ─── */
+.btn, button.btn {
+  padding: clamp(8px, 1.2vw, 11px) clamp(12px, 2vw, 20px) !important;
+  font-size: clamp(11px, 1.2vw, 13px) !important;
+}
+@media (max-width: 900px) {
+  body { font-size: clamp(12px, 3vw, 14px); }
+  .panel-title, h3 { font-size: clamp(12px, 3vw, 15px); }
+}
+
+/* ─── 7+12. Dropdown touch — открытие по .open классу ─── */
+.dropdown > .dropdown-menu {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.dropdown:hover > .dropdown-menu,
+.dropdown:focus-within > .dropdown-menu,
+.dropdown.open > .dropdown-menu,
+.dropdown.active > .dropdown-menu {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* ─── 17. Скруглённые кнопки ─── */
+.btn, button.btn, .icon-btn, .dropdown > .btn {
+  border-radius: 10px;
+}
+
+/* ─── 13. Кнопки работают ─── */
+.btn, button, .btn-ghost {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+.sidebar::before, .sidebar::after,
+.workspace::before, .workspace::after {
+  pointer-events: none !important;
+}
