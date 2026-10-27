@@ -13,7 +13,7 @@ body{font-family:var(--font-body);color:var(--text);background:var(--app-bg);
 h1,h2,h3,.panel-title,.logo-text h1{font-family:var(--font-heading)}
 .bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
   background:var(--app-bg);transition:background .4s}
-.bg-image{position:absolute;inset:-10px;background:url('/static/img/ph_b7.png') center/cover no-repeat;
+.bg-image{position:absolute;inset:-10px;background:url('/static/img/ph_b2.png') center/cover no-repeat;
   filter:blur(4px);opacity:.9}
 .bg::after{content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.18) 100%);
