@@ -15,7 +15,6 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
@@ -57,59 +56,8 @@ WS_SHUTDOWN_MAX_WAIT = 5.0
 # Что каждая модель МОЖЕТ поддерживать (независимо от загрузки весов)
 
 
-def _init_admin_token() -> None:
-    """v1.7.10: загрузить JST_ADMIN_TOKEN из .env.local (если есть) или сгенерировать.
-
-    Логика:
-    1. Если JST_ADMIN_TOKEN уже в os.environ — используем его.
-    2. Иначе читаем .env.local: если там есть токен — загружаем в environ.
-    3. Иначе генерируем новый, ПЕРЕЗАПИСЫВАЕМ .env.local (не append!),
-       chmod 600, выводим в log.warning (shown once).
-    """
-    import secrets as _secrets
-    import time as _time
-    from pathlib import Path as _Path
-
-    if os.getenv("JST_ADMIN_TOKEN", "").strip():
-        log.info("[security] JST_ADMIN_TOKEN already in env")
-        return
-
-    env_local = _Path(__file__).resolve().parent.parent / ".env.local"
-
-    # Шаг 1: попытаться прочитать из .env.local
-    existing_token = None
-    if env_local.exists():
-        try:
-            for line in env_local.read_text(encoding="utf-8").splitlines():
-                line = line.strip()
-                if line.startswith("JST_ADMIN_TOKEN="):
-                    existing_token = line.split("=", 1)[1].strip()
-        except Exception as e:
-            log.warning("[security] failed to read .env.local: %s", e)
-
-    if existing_token:
-        os.environ["JST_ADMIN_TOKEN"] = existing_token
-        log.info("[security] JST_ADMIN_TOKEN loaded from .env.local")
-        return
-
-    # Шаг 2: сгенерировать новый
-    token = _secrets.token_urlsafe(32)
-    os.environ["JST_ADMIN_TOKEN"] = token
-    log.warning("[security] JST_ADMIN_TOKEN auto-generated. Shown ONCE below:")
-    log.warning("[security]   JST_ADMIN_TOKEN=%s", token)
-    try:
-        # ПЕРЕЗАПИСЫВАЕМ (не append!) — гарантирует один токен в файле
-        with env_local.open("w", encoding="utf-8") as f:
-            f.write("# v1.7.10: auto-generated secrets — DO NOT COMMIT\n")
-            f.write(f"# {_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"JST_ADMIN_TOKEN={token}\n")
-        try:
-            os.chmod(env_local, 0o600)
-        except Exception:
-            pass
-        log.info("[security] token saved to %s (chmod 600)", env_local)
-    except Exception as e:
-        log.error("[security] failed to save token: %s", e)
+# v1.8.1: вынесено в bootstrap.py
+from .bootstrap import _init_admin_token  # noqa: F401
 
 
 @asynccontextmanager
@@ -296,30 +244,15 @@ from .api.security_api import router as security_router
 
 app.include_router(security_router)
 
+# v1.8.1: meta-routes (dashboard, journal, PWA, index)
+from .routes_meta import register_meta_routes as _reg_meta
+
+_reg_meta(app)
+
 
 # v1.7.12: Dashboard — HTML + live metrics (blocklist/rate/watchdog/housekeeping)
-from fastapi.responses import HTMLResponse as _HTMLResponse
 
 _DASHBOARD_PATH = Path(__file__).resolve().parent.parent / "frontend" / "dashboard.html"
-
-
-@app.get("/dashboard", response_class=_HTMLResponse)
-async def dashboard():
-    if _DASHBOARD_PATH.exists():
-        return _DASHBOARD_PATH.read_text(encoding="utf-8")
-    return _HTMLResponse(
-        content="<h1>Dashboard not found</h1><p>frontend/dashboard.html missing</p>",
-        status_code=404,
-    )
-
-
-@app.get("/api/journal")
-async def api_journal(category: str = "actions", limit: int = 50, level: str = ""):
-    return {
-        "category": category,
-        "entries": journal.query(category, min(limit, 500), level or None),
-        "stats": journal.stats(),
-    }
 
 
 # === SECURITY MIDDLEWARE ===
@@ -409,33 +342,9 @@ async def jst_audit_middleware(request, call_next):
 
 
 # === v1.4.0: PWA endpoints (root-level for proper SW scope) ===
-@app.api_route("/manifest.json", methods=["GET", "HEAD"])
-async def serve_manifest():
-    return FileResponse(
-        FRONTEND / "manifest.json",
-        media_type="application/manifest+json",
-        headers={"Cache-Control": "public, max-age=3600"},
-    )
-
-
-@app.api_route("/sw.js", methods=["GET", "HEAD"])
-async def serve_sw():
-    return FileResponse(
-        FRONTEND / "sw.js",
-        media_type="application/javascript",
-        headers={
-            "Service-Worker-Allowed": "/",
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-        },
-    )
 
 
 app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")
-
-
-@app.get("/")
-async def index():
-    return FileResponse(FRONTEND / "index.html")
 
 
 # === МОДЕЛИ И ЯЗЫКИ ===
