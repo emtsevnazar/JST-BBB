@@ -95,3 +95,8 @@ backend/.coverage
 
 # v1.7.2: journal logs
 journal/
+
+# v1.9.0: coverage/pytest/ruff артефакты
+.coverage.*
+.coverage *
+*.coverage

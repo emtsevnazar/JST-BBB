@@ -61,3 +61,29 @@ async def security_housekeeping_run(request: Request):
     from ..security.housekeeping import housekeeping_run
 
     return housekeeping_run()
+
+
+@router.get("/diagnostics")
+async def diagnostics_json():
+    """v1.9.0: Полный JSON отчёт для разработчиков (публичный).
+
+    Не содержит секретов, IP-адресов, путей к моделям.
+    Включает: project, tests, runtime 24h, security, housekeeping, health, deps, hygiene.
+    """
+    from ..diagnostics import build_report
+
+    return build_report()
+
+
+@router.get("/diagnostics.md")
+async def diagnostics_markdown():
+    """v1.9.0: Markdown-отчёт для GitHub Issue / README."""
+    from starlette.responses import Response
+
+    from ..diagnostics import build_report, to_markdown
+
+    # v1.9.1: только headers, без media_type (избегаем конфликт в BaseHTTPMiddleware)
+    return Response(
+        content=to_markdown(build_report()),
+        headers={"content-type": "text/markdown; charset=utf-8"},
+    )

@@ -30,11 +30,15 @@ async def list_languages():
 
 @router.post("/api/mode")
 async def set_mode(mode: str = Form(...)):
+    # v1.9.1: set_mode — блокирующий вызов (может загружать модель ~6с),
+    # выносим в thread, чтобы не блокировать event loop
+    import asyncio
+
     ENGINE = get_engine()
     m = (mode or "core").lower()
     if m == "zeroshot":
         m = "core"
     if m not in ("core", "multi", "jst_clone", "voxcpm", "qwen", "cosyvoice"):
         raise HTTPException(400, "mode: core|multi|jst_clone|voxcpm|qwen|cosyvoice")
-    ENGINE.set_mode(m)
+    await asyncio.to_thread(ENGINE.set_mode, m)
     return {"ok": True, "mode": ENGINE.current_mode}

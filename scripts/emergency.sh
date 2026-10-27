@@ -18,6 +18,10 @@ Commands:
   restart             — перезапустить процесс (launchctl kickstart)
   rotate-secrets      — перегенерировать JST_ADMIN_TOKEN + JST_API_KEY
   diagnose            — собрать дамп: healthz, stats, последние 200 строк логов
+  report              — полный diagnostics JSON (v1.9.0)
+  report-md           — markdown-отчёт для GitHub Issue (v1.9.0)
+  slow [N]            — топ медленных endpoints из audit (24h, N=10 default)
+  errors              — топ error endpoints + error rate (24h)
   backup              — бэкап output/ + voices/ + .env.local в /tmp/jst-backup-*.tar.gz
 USAGE
 }
@@ -82,6 +86,43 @@ print('blocked $IP:', blocklist.is_banned('$IP'))
     echo "=== readyz ==="; curl -sS "$BASE/readyz"; echo
     echo "=== security stats ==="; curl -sS "$BASE/api/security/stats"; echo
     echo "=== last 200 log lines ==="; tail -200 "$ROOT/logs/app.log" 2>/dev/null || true
+    ;;
+  report)
+    # v1.9.0: полный diagnostics JSON
+    curl -sS "$BASE/api/security/diagnostics" | python3 -m json.tool
+    ;;
+  report-md)
+    # v1.9.0: markdown (для GitHub Issue)
+    curl -sS "$BASE/api/security/diagnostics.md"
+    ;;
+  slow)
+    # v1.9.0: топ медленных endpoints из audit
+    LIMIT="${1:-10}"
+    curl -sS "$BASE/api/security/diagnostics" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+rt = d.get('runtime', {})
+print(f'Window: {rt.get(\"window\", \"?\")}')
+print(f'Avg: {rt.get(\"avg_duration_ms\")} ms, P95: {rt.get(\"p95_duration_ms\")} ms')
+print()
+print(f'Top-{min(int($LIMIT), len(rt.get(\"top_slow_endpoints\", [])))} slow endpoints:')
+for e in rt.get('top_slow_endpoints', [])[:int($LIMIT)]:
+    print(f'  {e[\"max_duration_ms\"]:>8} ms  {e[\"method\"]:6} {e[\"path\"]}')
+"
+    ;;
+  errors)
+    # v1.9.0: топ error endpoints
+    curl -sS "$BASE/api/security/diagnostics" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+rt = d.get('runtime', {})
+print(f'Errors 5xx: {rt.get(\"errors_5xx\")} ({rt.get(\"error_rate_pct\")}%)')
+print(f'Auth fails: {rt.get(\"auth_fails_401\")}')
+print()
+print('Top error endpoints:')
+for e in rt.get('top_error_endpoints', []):
+    print(f'  {e[\"errors\"]:>4} errors  {e[\"path\"]}')
+"
     ;;
   backup)
     TS=$(date +%Y%m%d-%H%M%S)

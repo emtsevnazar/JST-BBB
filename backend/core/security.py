@@ -18,7 +18,9 @@ PUBLIC_PATHS = {
     "/manifest.json",
     "/sw.js",
     "/api/security/stats",  # публичный мониторинг
-    "/api/security/housekeeping",  # публичный статус очистки
+    "/api/security/housekeeping",
+    "/api/security/diagnostics",
+    "/api/security/diagnostics.md",  # публичный статус очистки
     "/api/journal",  # журнал (read-only)
 }
 

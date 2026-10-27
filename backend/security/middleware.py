@@ -20,6 +20,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             return _Resp(
                 content=b'{"error":"internal"}', status_code=500, media_type="application/json"
             )
+        # v1.9.1: force content-type для .md (BaseHTTPMiddleware теряет media_type)
+        if request.url.path.endswith(".md"):
+            response.headers["content-type"] = "text/markdown; charset=utf-8"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
