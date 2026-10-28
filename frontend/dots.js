@@ -1,7 +1,7 @@
 (function(){
   'use strict';
-  if (window.__jstDotsV6) return;
-  window.__jstDotsV6 = true;
+  if (window.__jstDotsV7) return;
+  window.__jstDotsV7 = true;
 
   // ===== DOTS =====
   function addDots() {
@@ -22,6 +22,38 @@
   addDots();
   if (document.body) new MutationObserver(addDots).observe(document.body, {childList: true, subtree: true});
   window.addEventListener('load', addDots);
+
+  // ===== ERROR MESSAGES (English) =====
+  var ERRORS = {
+    offline:      { t: 'No Connection',        m: 'Wi-Fi or mobile data is disabled. Reconnecting automatically.' },
+    no_internet:  { t: 'No Internet',          m: 'Your device is not connected to the internet.' },
+    weak_internet:{ t: 'Weak Connection',      m: 'Your internet is slow or unstable. Retrying...' },
+    vpn_unstable: { t: 'Unstable VPN',         m: 'VPN connection is unstable. Try disabling it or reconnecting.' },
+    service_error:{ t: 'Service Error',        m: 'A required service is temporarily unavailable.' },
+    server_error: { t: 'Server Error',         m: 'The server returned an error. Retrying...' },
+    clear_cache:  { t: 'Clear Cache Required', m: 'Please clear your browser cache and reload the page.' },
+    maintenance:  { t: 'Under Maintenance',    m: 'The service is under maintenance. We will be back soon.' },
+    not_found:    { t: 'Page Not Found',       m: 'The page you requested does not exist. Error 404.' },
+    timeout:      { t: 'Request Timeout',      m: 'The server took too long to respond.' },
+    unknown:      { t: 'Something Went Wrong', m: 'An unexpected error occurred. Please try again.' }
+  };
+
+  function getMsg(code) {
+    if (!code) return ERRORS.unknown;
+    var k = String(code).toLowerCase().replace(/[^a-z0-9_]/g, '_');
+    if (ERRORS[k]) return ERRORS[k];
+    if (k.indexOf('offline') !== -1 || k.indexOf('connect') !== -1) return ERRORS.offline;
+    if (k.indexOf('internet') !== -1) return ERRORS.no_internet;
+    if (k.indexOf('weak') !== -1 || k.indexOf('slow') !== -1) return ERRORS.weak_internet;
+    if (k.indexOf('vpn') !== -1) return ERRORS.vpn_unstable;
+    if (k.indexOf('cache') !== -1) return ERRORS.clear_cache;
+    if (k.indexOf('maint') !== -1) return ERRORS.maintenance;
+    if (k.indexOf('404') !== -1 || k.indexOf('not_found') !== -1) return ERRORS.not_found;
+    if (k.indexOf('timeout') !== -1) return ERRORS.timeout;
+    if (k.indexOf('service') !== -1) return ERRORS.service_error;
+    if (k.indexOf('server') !== -1) return ERRORS.server_error;
+    return ERRORS.unknown;
+  }
 
   // ===== OVERLAY =====
   var overlay = null;
@@ -51,33 +83,31 @@
 
   function checkNow() {
     if (!navigator.onLine) {
-      showOverlay('Нет подключения', 'Wi-Fi или мобильные данные отключены. Восстановление автоматически.');
+      showOverlay(ERRORS.offline.t, ERRORS.offline.m);
       return;
     }
-    fetch('/api/error-state?_t=' + Date.now(), {cache:'no-store'})
+    fetch('/api/error-state?_t=' + Date.now(), {cache: 'no-store'})
       .then(function(rr){ return rr.json(); })
       .then(function(d){
         fails = 0;
         if (d && d.healthy === true) { hideOverlay(); return; }
         if (d && d.error) {
-          showOverlay(
-            (d.error.code || 'Ошибка') + (d.error.message ? ' - ' + d.error.message : ''),
-            'Источник: ' + (d.error.source || '?') + ' - Восстановление автоматически'
-          );
+          var e = getMsg(d.error.code);
+          showOverlay(e.t, e.m);
         }
       })
       .catch(function(){
         fails++;
         if (!navigator.onLine) {
-          showOverlay('Нет подключения', 'Wi-Fi отключён. Восстановление автоматически.');
+          showOverlay(ERRORS.offline.t, ERRORS.offline.m);
         } else if (fails >= 5) {
-          showOverlay('Сервер недоступен', 'Не удалось связаться (' + fails + '). Ждём...');
+          showOverlay(ERRORS.server_error.t, ERRORS.server_error.m);
         }
       });
   }
 
   window.addEventListener('offline', function(){
-    showOverlay('Нет подключения', 'Wi-Fi или мобильные данные отключены.');
+    showOverlay(ERRORS.offline.t, ERRORS.offline.m);
   });
   window.addEventListener('online', function(){ fails = 0; checkNow(); });
 
