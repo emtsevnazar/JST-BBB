@@ -1,0 +1,261 @@
+
+/* ===============================================================
+   v1.10.67: dropdown readable (полная прокрутка, не обрезается)
+   + splitter sidebar/workspace в вертикальном режиме
+   + carousel 84x38 (усилено)
+   =============================================================== */
+
+/* ─── 1. Dropdown menu: читаемое, полная прокрутка ─── */
+.controls .dropdown > .dropdown-menu,
+.dropdown > .dropdown-menu {
+  position: fixed !important;
+  z-index: 99999 !important;
+  min-width: 220px !important;
+  max-width: min(360px, calc(100vw - 20px)) !important;
+  max-height: calc(100vh - 32px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: thin !important;
+  box-sizing: border-box !important;
+  padding: 8px !important;
+}
+
+/* Пункты меню — читаемы, многострочные */
+.controls .dropdown > .dropdown-menu > *,
+.dropdown > .dropdown-menu > *,
+.controls .dropdown > .dropdown-menu a,
+.dropdown > .dropdown-menu a {
+  display: block !important;
+  width: 100% !important;
+  padding: 10px 14px !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  text-overflow: clip !important;
+  overflow: visible !important;
+  line-height: 1.35 !important;
+  font-size: 13px !important;
+  box-sizing: border-box !important;
+  text-align: left !important;
+  hyphens: auto !important;
+}
+
+/* history-list внутри menu — без собственного scroll (единственный scroll на menu) */
+.controls .dropdown-menu .history-list,
+.dropdown-menu .history-list {
+  max-height: none !important;
+  overflow: visible !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  width: 100% !important;
+}
+
+.controls .dropdown-menu .history-list > *,
+.dropdown-menu .history-list > * {
+  max-height: none !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+/* scrollbar для menu */
+.controls .dropdown > .dropdown-menu::-webkit-scrollbar,
+.dropdown > .dropdown-menu::-webkit-scrollbar {
+  width: 8px !important;
+}
+.controls .dropdown > .dropdown-menu::-webkit-scrollbar-thumb,
+.dropdown > .dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25) !important;
+  border-radius: 4px !important;
+}
+.controls .dropdown > .dropdown-menu::-webkit-scrollbar-track,
+.dropdown > .dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.15) !important;
+}
+
+/* ─── 2. Carousel 84×38 (усилено) ─── */
+.carousel > .card,
+.carousel > .model-card,
+.carousel > .lang-card,
+.carousel > .accent-card,
+.carousel > [class*="-card"],
+#model-grid > *,
+#lang-grid > *,
+#accent-grid > *,
+#carousel > * {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 84px !important;
+  max-width: none !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 4px 8px !important;
+  font-size: clamp(10px, 1.4vw, 12px) !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ─── 3. .controls — никогда не меняет overflow (стабильность) ─── */
+.controls,
+.controls:has(.dropdown.open),
+.controls:has(.dropdown.active) {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overflow-anchor: none !important;
+}
+
+/* ─── 4. SPLITTER для sidebar/workspace (только ≤900px) ─── */
+.splitter {
+  display: none;
+}
+
+@media (max-width: 900px) {
+
+  /* .main — grid rows: sidebar / splitter / workspace */
+  .main {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: var(--sidebar-h, 40%) 8px 1fr !important;
+    gap: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Sidebar — row 1, высота = --sidebar-h */
+  .main > .sidebar {
+    grid-row: 1 !important;
+    grid-column: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-bottom: none !important;
+    border-radius: 0 !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  /* Splitter — row 2 */
+  .main > .splitter,
+  .splitter {
+    display: flex !important;
+    grid-row: 2 !important;
+    grid-column: 1 !important;
+    height: 8px !important;
+    min-height: 8px !important;
+    max-height: 8px !important;
+    width: 100% !important;
+    cursor: ns-resize !important;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05) 0%,
+      rgba(255,255,255,0.15) 50%,
+      rgba(255,255,255,0.05) 100%
+    ) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    position: relative !important;
+    z-index: 5 !important;
+    box-sizing: border-box !important;
+    border-top: 1px solid rgba(255,255,255,0.08) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+  }
+
+  /* Grip dots посередине ползунка */
+  .main > .splitter::before,
+  .splitter::before {
+    content: '' !important;
+    display: block !important;
+    width: 40px !important;
+    height: 4px !important;
+    background-image: radial-gradient(
+      circle,
+      rgba(255,255,255,0.55) 1.5px,
+      transparent 1.5px
+    ) !important;
+    background-size: 8px 4px !important;
+    background-position: center !important;
+    background-repeat: repeat-x !important;
+    border-radius: 2px !important;
+    pointer-events: none !important;
+  }
+
+  .main > .splitter:hover,
+  .splitter:hover {
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.10) 0%,
+      rgba(255,255,255,0.28) 50%,
+      rgba(255,255,255,0.10) 100%
+    ) !important;
+  }
+
+  .main > .splitter.dragging,
+  .splitter.dragging {
+    background: linear-gradient(
+      180deg,
+      rgba(245,184,0,0.15) 0%,
+      rgba(245,184,0,0.40) 50%,
+      rgba(245,184,0,0.15) 100%
+    ) !important;
+  }
+
+  /* Workspace — row 3 */
+  .main > .workspace {
+    grid-row: 3 !important;
+    grid-column: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Carousel в мобильном — 84×38 */
+  #model-grid > *,
+  #lang-grid > *,
+  #accent-grid > *,
+  #carousel > * {
+    min-width: 84px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    font-size: clamp(10px, 2.6vw, 12px) !important;
+    padding: 4px 6px !important;
+  }
+}
+
+/* Скрываем splitter на больших экранах (не нужен в grid 350px 1fr) */
+@media (min-width: 901px) {
+  .main > .splitter,
+  .splitter {
+    display: none !important;
+  }
+}

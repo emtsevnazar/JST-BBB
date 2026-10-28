@@ -1,6 +1,5 @@
-/* v1.10.66: dropdown — стабильное открытие без сдвига controls
-   + flip above если снизу мало места
-   + max-height с overflow scroll */
+/* v1.10.67: dropdown — flip above/below + max-height по доступному месту
+   + сохранение scrollLeft (нет сдвига controls) */
 (function () {
   'use strict';
 
@@ -19,60 +18,85 @@
     var r = btn.getBoundingClientRect();
     var vh = window.innerHeight;
     var vw = window.innerWidth;
-    var mw = Math.min(320, vw - 24);
-    var ml = Math.max(8, Math.min(r.left, vw - mw - 8));
-    var offset = 4;
+    var GAP = 4;
+    var EDGE = 8;
 
-    // Сбросить
+    // Горизонтальное положение
+    var mw = Math.min(360, vw - 2 * EDGE);
+    var ml = Math.max(EDGE, Math.min(r.left, vw - mw - EDGE));
+
+    // Сначала выставим горизонталь + базовые стили
     menu.style.setProperty('position', 'fixed', 'important');
     menu.style.setProperty('left', ml + 'px', 'important');
     menu.style.setProperty('right', 'auto', 'important');
-    menu.style.setProperty('z-index', '99999', 'important');
+    menu.style.setProperty('width', 'auto', 'important');
+    menu.style.setProperty('min-width', Math.min(220, vw - 2 * EDGE) + 'px', 'important');
     menu.style.setProperty('max-width', mw + 'px', 'important');
-    menu.style.setProperty('max-height', (vh - 40) + 'px', 'important');
+    menu.style.setProperty('z-index', '99999', 'important');
     menu.style.setProperty('overflow-y', 'auto', 'important');
     menu.style.setProperty('overflow-x', 'hidden', 'important');
+    menu.style.setProperty('-webkit-overflow-scrolling', 'touch', 'important');
 
-    // Временно показываем, чтобы измерить высоту
-    var prevDisplay = menu.style.display;
-    menu.style.setProperty('visibility', 'hidden', 'important');
+    // Измеряем высоту (temporarily display block)
     menu.style.setProperty('display', 'block', 'important');
-    var menuH = menu.offsetHeight;
-    menu.style.setProperty('display', prevDisplay || 'block', 'important');
-    menu.style.setProperty('visibility', 'visible', 'important');
+    menu.style.setProperty('visibility', 'hidden', 'important');
+    var naturalH = menu.scrollHeight;
 
-    var spaceBelow = vh - r.bottom - offset;
-    var spaceAbove = r.top - offset;
+    // Доступное место
+    var spaceBelow = vh - r.bottom - GAP - EDGE;
+    var spaceAbove = r.top - GAP - EDGE;
 
-    if (spaceBelow >= menuH || spaceBelow >= spaceAbove) {
-      // Открываем снизу
-      menu.style.setProperty('top', (r.bottom + offset) + 'px', 'important');
+    var fitsBelow = naturalH <= spaceBelow;
+    var fitsAbove = naturalH <= spaceAbove;
+
+    var useBelow;
+    var finalH;
+
+    if (fitsBelow) {
+      useBelow = true;
+      finalH = naturalH;
+    } else if (fitsAbove) {
+      useBelow = false;
+      finalH = naturalH;
+    } else {
+      // Не влезает целиком — выбираем сторону с большим местом
+      if (spaceBelow >= spaceAbove) {
+        useBelow = true;
+        finalH = spaceBelow;
+      } else {
+        useBelow = false;
+        finalH = spaceAbove;
+      }
+    }
+
+    // Применяем max-height = finalH (не меньше 100)
+    finalH = Math.max(100, finalH);
+    menu.style.setProperty('max-height', finalH + 'px', 'important');
+
+    if (useBelow) {
+      menu.style.setProperty('top', (r.bottom + GAP) + 'px', 'important');
       menu.style.setProperty('bottom', 'auto', 'important');
     } else {
-      // Открываем сверху
-      menu.style.setProperty('bottom', (vh - r.top + offset) + 'px', 'important');
+      menu.style.setProperty('bottom', (vh - r.top + GAP) + 'px', 'important');
       menu.style.setProperty('top', 'auto', 'important');
     }
+
+    menu.style.setProperty('visibility', 'visible', 'important');
   }
 
   function resetMenu(dd) {
     var menu = dd.querySelector('.dropdown-menu');
     if (!menu) return;
-    menu.style.removeProperty('position');
-    menu.style.removeProperty('top');
-    menu.style.removeProperty('bottom');
-    menu.style.removeProperty('left');
-    menu.style.removeProperty('right');
-    menu.style.removeProperty('max-width');
-    menu.style.removeProperty('max-height');
-    menu.style.removeProperty('overflow-y');
-    menu.style.removeProperty('overflow-x');
-    menu.style.removeProperty('z-index');
-    menu.style.removeProperty('visibility');
-    menu.style.removeProperty('display');
+    ['position', 'top', 'bottom', 'left', 'right',
+     'width', 'min-width', 'max-width', 'max-height',
+     'overflow-y', 'overflow-x', '-webkit-overflow-scrolling',
+     'z-index', 'visibility', 'display'
+    ].forEach(function (p) {
+      menu.style.removeProperty(p);
+    });
   }
 
-  // Capture click
+  // Capture click на toggle
   document.addEventListener('click', function (e) {
     var dd = e.target.closest('.controls .dropdown, .toolbar .dropdown');
     if (!dd) return;
@@ -87,7 +111,7 @@
     positionMenu(dd);
 
     var restore = function () {
-      if (ctl) ctl.scrollLeft = sl;
+      if (ctl && ctl.scrollLeft !== sl) ctl.scrollLeft = sl;
       if (window.pageYOffset !== sy || window.pageXOffset !== sx) {
         window.scrollTo({ top: sy, left: sx, behavior: 'instant' });
       }
@@ -108,7 +132,7 @@
         var sl = ctl.scrollLeft;
         var sy = window.pageYOffset;
         requestAnimationFrame(function () {
-          ctl.scrollLeft = sl;
+          if (ctl.scrollLeft !== sl) ctl.scrollLeft = sl;
           if (window.pageYOffset !== sy) {
             window.scrollTo({ top: sy, behavior: 'instant' });
           }
@@ -117,16 +141,15 @@
     }
   }, true);
 
-  // MutationObserver — на .open пересчитать
+  // MutationObserver — при .open/.active
   var obs = new MutationObserver(function (muts) {
     for (var i = 0; i < muts.length; i++) {
       var el = muts[i].target;
-      if (el.classList && el.classList.contains('dropdown')) {
-        if (el.classList.contains('open') || el.classList.contains('active')) {
-          positionMenu(el);
-        } else {
-          resetMenu(el);
-        }
+      if (!el.classList || !el.classList.contains('dropdown')) continue;
+      if (el.classList.contains('open') || el.classList.contains('active')) {
+        positionMenu(el);
+      } else {
+        resetMenu(el);
       }
     }
   });
@@ -146,7 +169,7 @@
   setTimeout(initObs, 500);
   setTimeout(initObs, 2000);
 
-  // Пересчёт при resize/scroll
+  // resize/scroll — пересчёт
   window.addEventListener('resize', function () {
     document.querySelectorAll('.dropdown.open, .dropdown.active').forEach(positionMenu);
   });
