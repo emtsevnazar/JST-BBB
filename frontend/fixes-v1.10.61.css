@@ -1,0 +1,227 @@
+
+/* ===============================================================
+   v1.10.61: VERTICAL MODE при ≤900px (split-screen как раньше)
+   .app height 100dvh; .main flex column; sidebar 40% / workspace 60%
+   header column; org-badge 3 строки; JST 16px; curtains
+   =============================================================== */
+
+@media (max-width: 900px) {
+
+  /* ─── 1. .app — на весь экран, без overflow ─── */
+  .app {
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    padding: 8px !important;
+    gap: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* ─── 2. .main — flex column вместо grid ─── */
+  .main {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ─── 3. Sidebar — 40% сверху, свой скролл ─── */
+  .main > .sidebar {
+    flex: 0 0 40% !important;
+    max-height: 40% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    border-bottom: 1px solid var(--panel-border) !important;
+    border-radius: 12px !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ─── 4. Workspace — 60% снизу, свой скролл ─── */
+  .main > .workspace {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 8px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ─── 5. Footer — компакт внизу ─── */
+  .footer {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+
+  /* ─── 6. Header — column (logo → org → buttons) ─── */
+  .header {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 8px 12px !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header > .logo,
+  .header > .org-badge,
+  .header > .header-buttons {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+    margin: 0 auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  .header > .logo {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .logo-text {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  /* ─── 7. JST 16px в вертикальном ─── */
+  .logo-text h1,
+  .logo-text > h1 {
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    letter-spacing: 1px !important;
+    white-space: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .logo-text p {
+    font-size: 10px !important;
+    letter-spacing: 2px !important;
+    margin-top: 2px !important;
+  }
+
+  .logo-img {
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    width: auto !important;
+  }
+
+  /* ─── 8. org-badge — 3 строки ─── */
+  .header .org-badge,
+  .org-badge {
+    flex-direction: column !important;
+    white-space: normal !important;
+    font-size: clamp(9px, 2.8vw, 12px) !important;
+    padding: 4px 10px !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    line-height: 1.15 !important;
+  }
+
+  .org-badge > span {
+    display: block !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  /* ─── 9. header-buttons center ─── */
+  .header .header-buttons {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .header .header-buttons > button,
+  .header .header-buttons > .icon-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    flex: 0 0 40px !important;
+  }
+
+  /* ─── 10. Controls-wrap — на всю ширину с местом под стрелки ─── */
+  .controls-wrap {
+    padding: 0 42px !important;
+    width: 100% !important;
+    min-height: 56px !important;
+  }
+
+  /* ─── 11. Curtains через mask (без blur/fog) ─── */
+  .sidebar, .workspace {
+    -webkit-mask-image: linear-gradient(180deg,
+      transparent 0,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%) !important;
+    mask-image: linear-gradient(180deg,
+      transparent 0,
+      black 20px,
+      black calc(100% - 20px),
+      transparent 100%) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .sidebar::before, .sidebar::after,
+  .workspace::before, .workspace::after {
+    content: none !important;
+    display: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: none !important;
+    mask-image: none !important;
+  }
+
+  /* ─── 12. #text внутри text-panel ─── */
+  .text-panel {
+    overflow: hidden !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #text, textarea#text {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 150px !important;
+    min-height: 150px !important;
+    max-height: 150px !important;
+    resize: none !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+  }
+}
