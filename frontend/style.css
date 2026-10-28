@@ -6331,8 +6331,8 @@ html body #history-dropdown > .btn:active::after {
   position: fixed;
   left: 0;
   top: 0;
-  width: 56px;
-  height: 56px;
+  width: 24px;
+  height: 24px;;
   pointer-events: none;
   z-index: 2147483647;
   transform: translate(var(--jst-x, -200px), var(--jst-y, -200px));

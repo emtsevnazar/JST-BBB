@@ -1,0 +1,120 @@
+/* === FINAL DOTS + OVERLAY === */
+
+/* Убить любые ::after у кнопок */
+html body #btn-download-toggle::after,
+html body #history-dropdown > .btn::after,
+html body #dl-dropdown > .btn::after,
+html body .dropdown > .btn.btn-ghost::after,
+html[data-theme="day"] body #btn-download-toggle::after,
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="day"] body #history-dropdown > .btn::after,
+html[data-theme="night"] body #history-dropdown > .btn::after,
+html[data-theme="day"] body #dl-dropdown > .btn::after,
+html[data-theme="night"] body #dl-dropdown > .btn::after {
+  display: none !important;
+  content: none !important;
+  visibility: hidden !important;
+  background: none !important;
+  border: none !important;
+}
+
+html body .jst-btn-with-dot {
+  position: relative !important;
+  padding-right: 48px !important;
+}
+
+html body .jst-btn-with-dot .jst-dot {
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  display: block !important;
+  z-index: 3 !important;
+  box-sizing: border-box !important;
+}
+
+html body .jst-btn-with-dot .jst-dot::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 50% !important;
+  border: 2px solid var(--jst-dot-color, #1a2a5e) !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+
+html body .jst-btn-with-dot .jst-dot::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: var(--jst-dot-color, #1a2a5e) !important;
+  border: none !important;
+  display: block !important;
+  transition: background 0.15s !important;
+}
+
+html[data-theme="day"]   { --jst-dot-color: #1a2a5e !important; }
+html[data-theme="night"] { --jst-dot-color: #F5B800 !important; }
+
+html body .jst-btn-with-dot:hover .jst-dot::before,
+html body .jst-btn-with-dot:active .jst-dot::before,
+html body .jst-btn-with-dot:focus-visible .jst-dot::before {
+  border-color: #F5B800 !important;
+  box-shadow: 0 0 12px rgba(245,184,0,0.6) !important;
+}
+html body .jst-btn-with-dot:hover .jst-dot::after,
+html body .jst-btn-with-dot:active .jst-dot::after,
+html body .jst-btn-with-dot:focus-visible .jst-dot::after {
+  background: #F5B800 !important;
+}
+
+/* === OVERLAY === */
+#jst-err-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483645 !important;
+  background: url('/static/img/ph_b2.png') center/cover no-repeat #2a0606 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  animation: jst-err-in 0.3s ease-out !important;
+}
+@keyframes jst-err-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.jst-err-toast {
+  display: flex; align-items: center; gap: 12px;
+  max-width: min(520px, 100%);
+  padding: 12px 16px;
+  background: #c62828;
+  border: 2px solid #ef5350;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(198,40,40,0.55), 0 0 0 1px rgba(255,255,255,0.08) inset;
+  color: #fff;
+}
+.jst-err-icon { flex-shrink: 0; width: 28px; height: 28px; color: #ffeb3b; display: flex; align-items: center; justify-content: center; }
+.jst-err-icon svg { width: 100%; height: 100%; display: block; }
+.jst-err-body { flex: 1; min-width: 0; }
+.jst-err-title { font-size: 13.5px; font-weight: 700; color: #ffeb3b; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jst-err-msg { font-size: 12px; color: #fff59d; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.jst-err-btn { flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: 2px solid #ffeb3b; color: #ffeb3b; border-radius: 8px; cursor: pointer; padding: 0; }
+.jst-err-btn:hover, .jst-err-btn:active { background: rgba(255,235,59,0.18); }
+.jst-err-btn svg { width: 16px; height: 16px; display: block; }

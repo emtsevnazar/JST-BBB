@@ -1,82 +1,74 @@
-// JST Studio Service Worker v2.0.0
-// Стратегия:
-//   - HTML       → ВСЕГДА network (без кэша) — иначе /error будет закэширован под ключом /
-//   - /offline   → кэш при offline (только эта страница)
-//   - /static/*  → cache-first
-//   - /api/*, /ws/*, /output/* → network-only
-const VERSION      = 'v2.0.1';
-const CACHE_STATIC = `jst-static-${VERSION}`;
-const CACHE_OFFL   = `jst-offl-${VERSION}`;
+const VERSION = 'v4.1.0';
+const CACHE_STATIC = 'jst-static-' + VERSION;
+const CACHE_OFFL = 'jst-offl-' + VERSION;
 
-const PRECACHE_OFFLINE = [
+const PRECACHE = [
+  '/error',
   '/offline',
   '/static/style.css',
-  '/static/img/icon-192.png',
-  '/static/img/icon-512.png',
+  '/static/style-clean.css',
+  '/static/dots.js',
+  '/static/app.js',
+  '/static/img/ph_b2.png',
+  '/static/img/icon-192.png'
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_OFFL)
-      .then((cache) => cache.addAll(PRECACHE_OFFLINE))
-      .then(() => self.skipWaiting())
-      .catch(() => self.skipWaiting())
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(CACHE_OFFL).then(function(c) {
+      return Promise.all(PRECACHE.map(function(u) {
+        return c.add(u).catch(function(err) { console.warn('precache skip:', u, err); });
+      }));
+    }).then(function() { return self.skipWaiting(); })
   );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
     Promise.all([
-      caches.keys().then((keys) =>
-        Promise.all(
-          keys.filter((k) => k !== CACHE_STATIC && k !== CACHE_OFFL)
-              .map((k) => caches.delete(k))
-        )
-      ),
-      self.clients.claim(),
+      caches.keys().then(function(keys) {
+        return Promise.all(keys.filter(function(k) { return k !== CACHE_STATIC && k !== CACHE_OFFL; }).map(function(k) { return caches.delete(k); }));
+      }),
+      self.clients.claim()
     ])
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
+self.addEventListener('fetch', function(e) {
+  var req = e.request;
   if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== location.origin) return;
+  var u = new URL(req.url);
+  if (u.origin !== location.origin) return;
+  if (u.pathname.indexOf('/api/') === 0 || u.pathname.indexOf('/ws/') === 0 || u.pathname.indexOf('/output/') === 0 || u.pathname === '/sw.js') return;
 
-  // API/WS/output/sw.js — напрямую
-  if (
-    url.pathname.startsWith('/api/') ||
-    url.pathname.startsWith('/ws/') ||
-    url.pathname.startsWith('/output/') ||
-    url.pathname === '/sw.js' ||
-    url.pathname === '/error'
-  ) {
-    return;
-  }
-
-  // HTML navigation — ВСЕГДА сеть, без кэша
-  const isNav = req.mode === 'navigate' || req.destination === 'document';
+  var isNav = req.mode === 'navigate' || req.destination === 'document';
   if (isNav) {
-    event.respondWith(
-      fetch(req).catch(() => caches.match('/offline'))
+    e.respondWith(
+      fetch(req).catch(function() {
+        return caches.match('/error').then(function(h) {
+          if (h) return h;
+          return caches.match('/offline');
+        }).then(function(h) {
+          if (h) return h;
+          return new Response('<!doctype html><html><body style="background:#2a0606;color:#fff;font:16px sans-serif;padding:20px"><h1>Нет подключения</h1><p>Проверьте Wi-Fi</p></body></html>', {status:503, headers:{'Content-Type':'text/html; charset=utf-8'}});
+        });
+      })
     );
     return;
   }
 
-  // /offline и статика — кэш-first
-  if (url.pathname === '/offline' || url.pathname.startsWith('/static/')) {
-    event.respondWith(
-      caches.match(req).then((c) =>
-        c || fetch(req).then((resp) => {
+  if (u.pathname === '/error' || u.pathname === '/offline' || u.pathname.indexOf('/static/') === 0) {
+    e.respondWith(
+      caches.match(req).then(function(c) {
+        if (c) return c;
+        return fetch(req).then(function(resp) {
           if (resp && resp.ok) {
-            const clone = resp.clone();
-            const cacheName = url.pathname === '/offline' ? CACHE_OFFL : CACHE_STATIC;
-            caches.open(cacheName).then((cache) => cache.put(req, clone)).catch(() => {});
+            var clone = resp.clone();
+            caches.open(CACHE_OFFL).then(function(cache) { cache.put(req, clone); });
           }
           return resp;
-        })
-      )
+        }).catch(function() { return caches.match('/offline'); });
+      })
     );
     return;
   }
