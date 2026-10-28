@@ -1,0 +1,174 @@
+
+/* ===============================================================
+   v1.10.60: controls 7 кнопок по всей ширине (adaptive grow),
+   model-grid ≤900 тоже
+   =============================================================== */
+
+/* ─── 1. .controls — растягиваются на всю ширину ─── */
+.controls {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 6px 2px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  scroll-behavior: smooth !important;
+  scrollbar-width: thin !important;
+}
+
+.controls:has(.dropdown.open),
+.controls:has(.dropdown.active) {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* ─── 2. Кнопки — растут (flex 1 1 0), но не меньше 135×56 ─── */
+.controls > .btn,
+.controls > .dropdown {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 135px !important;
+  max-width: none !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 1 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  position: relative !important;
+  border-radius: 14px !important;
+  font-size: 13px !important;
+}
+
+.controls > .dropdown {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.controls > .dropdown > .btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: 100% !important;
+  padding: 0 32px 0 10px !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+}
+
+/* точка в прозрачном кружке (не трогаем) */
+.controls > .dropdown > .btn::after {
+  content: '\25CF' !important;
+  position: absolute !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  border-radius: 50% !important;
+  border: 1.5px solid currentColor !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: var(--accent) !important;
+  pointer-events: none !important;
+}
+.controls > .dropdown > .btn:hover::after {
+  color: var(--gold) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ─── 3. MODEL-GRID ≤900: растягиваются на всю ширину ─── */
+@media (max-width: 900px) {
+  #model-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 6px 2px !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: none !important;
+  }
+  #model-grid::-webkit-scrollbar { display: none !important; }
+
+  #model-grid > *,
+  #model-grid > .model-card,
+  #model-grid > .card,
+  #model-grid > [class*="-card"] {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 80px !important;
+    max-width: none !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    padding: 8px 6px !important;
+    font-size: clamp(10px, 2.8vw, 13px) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    flex-shrink: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* ─── 4. Совместимость с v1.10.55 — но mobile тоже растягивается ─── */
+@media (max-width: 900px) {
+  .controls > .btn,
+  .controls > .dropdown {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 135px !important;
+    max-width: none !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    font-size: 13px !important;
+  }
+  .controls > .dropdown > .btn {
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    padding: 0 32px 0 10px !important;
+    font-size: 13px !important;
+  }
+}
