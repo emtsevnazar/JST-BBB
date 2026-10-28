@@ -1,5 +1,4 @@
-/* v1.10.64: FORCE model-grid fill + carousel-btn visible via inline styles
-   (не зависит от :has()) */
+/* v1.10.66: force model-grid fill + 84×38 (inline !important) */
 (function () {
   'use strict';
 
@@ -16,10 +15,9 @@
       wrap.style.setProperty('align-items', 'center', 'important');
       wrap.style.setProperty('width', '100%', 'important');
       wrap.style.setProperty('max-width', '100%', 'important');
-      wrap.style.setProperty('min-height', '56px', 'important');
+      wrap.style.setProperty('min-height', '46px', 'important');
       wrap.style.setProperty('box-sizing', 'border-box', 'important');
 
-      // Force carousel-btn visible
       var btns = wrap.querySelectorAll('.carousel-btn');
       for (var b = 0; b < btns.length; b++) {
         btns[b].style.setProperty('display', 'flex', 'important');
@@ -30,6 +28,8 @@
         btns[b].style.setProperty('height', '32px', 'important');
         btns[b].style.setProperty('min-width', '32px', 'important');
         btns[b].style.setProperty('min-height', '32px', 'important');
+        btns[b].style.setProperty('max-width', '32px', 'important');
+        btns[b].style.setProperty('max-height', '32px', 'important');
         btns[b].style.setProperty('border-radius', '50%', 'important');
         btns[b].style.setProperty('position', 'absolute', 'important');
         btns[b].style.setProperty('top', '50%', 'important');
@@ -38,7 +38,7 @@
       }
     }
 
-    // Force model-grid fill
+    // #model-grid — fill
     mg.style.setProperty('display', 'flex', 'important');
     mg.style.setProperty('flex-direction', 'row', 'important');
     mg.style.setProperty('flex-wrap', 'nowrap', 'important');
@@ -52,21 +52,21 @@
     mg.style.setProperty('padding', '4px 0', 'important');
     mg.style.setProperty('box-sizing', 'border-box', 'important');
 
-    // Force children fill
+    // Дети — 84×38 (НЕ 56)
     var kids = mg.children;
     for (var i = 0; i < kids.length; i++) {
       var k = kids[i];
       k.style.setProperty('flex', '1 1 0', 'important');
       k.style.setProperty('width', 'auto', 'important');
-      k.style.setProperty('min-width', '0', 'important');
+      k.style.setProperty('min-width', '84px', 'important');
       k.style.setProperty('max-width', 'none', 'important');
       k.style.setProperty('flex-shrink', '1', 'important');
-      k.style.setProperty('height', '56px', 'important');
-      k.style.setProperty('min-height', '56px', 'important');
-      k.style.setProperty('max-height', '56px', 'important');
+      k.style.setProperty('height', '38px', 'important');
+      k.style.setProperty('min-height', '38px', 'important');
+      k.style.setProperty('max-height', '38px', 'important');
       k.style.setProperty('box-sizing', 'border-box', 'important');
-      k.style.setProperty('padding', '8px 6px', 'important');
-      k.style.setProperty('border-radius', '12px', 'important');
+      k.style.setProperty('padding', '4px 8px', 'important');
+      k.style.setProperty('border-radius', '10px', 'important');
       k.style.setProperty('display', 'flex', 'important');
       k.style.setProperty('align-items', 'center', 'important');
       k.style.setProperty('justify-content', 'center', 'important');
@@ -90,7 +90,6 @@
     run();
   }
 
-  // MutationObserver на #model-grid — если app.js перерисует карточки
   function watch() {
     var mg = document.getElementById('model-grid');
     if (!mg || mg.dataset.mgObs) return;
