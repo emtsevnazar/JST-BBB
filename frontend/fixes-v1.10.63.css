@@ -1,0 +1,143 @@
+
+/* ===============================================================
+   v1.10.63: model-grid fill + carousel-btn visible + org-badge 12
+   + dropdown no-break (fixed positioning via JS)
+   =============================================================== */
+
+@media (max-width: 900px) {
+
+  /* ─── 1. carousel-wrap для model-grid: ОСТАВЛЯЕМ padding 42px под кнопки ─── */
+  .carousel-wrap:has(#model-grid) {
+    padding: 0 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 56px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ─── 2. carousel-btn ВИДИМЫ ─── */
+  .carousel-wrap:has(#model-grid) > .carousel-btn,
+  .carousel-wrap:has(#model-grid) > .carousel-btn.prev,
+  .carousel-wrap:has(#model-grid) > .carousel-btn.next {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 50% !important;
+    border: 1.5px solid var(--panel-border) !important;
+    background: var(--input-bg) !important;
+    color: var(--accent) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .carousel-wrap:has(#model-grid) > .carousel-btn.prev { left: 4px !important; }
+  .carousel-wrap:has(#model-grid) > .carousel-btn.next { right: 4px !important; }
+
+  /* ─── 3. #model-grid: fill 100% ─── */
+  #model-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    padding: 4px 0 !important;
+    box-sizing: border-box !important;
+  }
+  #model-grid::-webkit-scrollbar { display: none !important; }
+
+  /* Дети — flex 1 1 0 (равные, растягиваются) */
+  #model-grid > *,
+  #model-grid > .model-card,
+  #model-grid > .card,
+  #model-grid > [class*="-card"] {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    padding: 8px 6px !important;
+    font-size: clamp(10px, 2.8vw, 13px) !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    flex-shrink: 1 !important;
+  }
+
+  /* ─── 4. org-badge 12px ─── */
+  .header .org-badge,
+  .org-badge {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    padding: 5px 12px !important;
+  }
+  .header .org-badge > span,
+  .org-badge > span {
+    font-size: inherit !important;
+  }
+
+  /* ─── 5. controls: ВСЕГДА overflow auto (без layout shift) ─── */
+  .controls,
+  .controls:has(.dropdown.open),
+  .controls:has(.dropdown.active) {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  /* ─── 6. dropdown-menu: position fixed (JS установит top/left) ─── */
+  .controls .dropdown > .dropdown-menu {
+    position: fixed !important;
+    z-index: 99999 !important;
+    min-width: 200px !important;
+    max-width: min(320px, calc(100vw - 24px)) !important;
+  }
+
+  /* Открытый dropdown — видим над всем */
+  .controls .dropdown.open > .dropdown-menu,
+  .controls .dropdown.active > .dropdown-menu {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* На больших экранах тоже position: fixed для dropdown (JS ставит top/left) */
+.controls .dropdown > .dropdown-menu {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
