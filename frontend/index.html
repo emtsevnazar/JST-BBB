@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="day">
 <head>
+<script>/* jst_err_guard_CLEANUP */ try{sessionStorage.removeItem("jst_err_guard");sessionStorage.removeItem("jst_error_state");}catch(e){}</script>
 <meta charset="UTF-8">
 <script>
 (function(){var m;try{m=localStorage.getItem("jst-theme-mode")||"auto";}catch(e){m="auto";}
@@ -13,7 +14,7 @@ document.documentElement.setAttribute("data-theme",t);})();
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>JST · Just Start Transform</title>
-<link rel="icon" href="/static/img/poster_b.png">
+<link rel="icon" href="/static/img/poster_b.webp">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/static/img/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -48,7 +49,7 @@ document.documentElement.setAttribute("data-theme",t);})();
   <a class="logo" href="/">
     <picture>
       <source srcset="/static/img/poster_b.webp" type="image/webp">
-      <img class="logo-img" src="/static/img/poster_b.png" alt="JST">
+      <img class="logo-img" src="/static/img/poster_b.webp" alt="JST">
     </picture>
     <div class="logo-text"><h1>JST</h1><p data-i18n="tagline">Just Start Transform</p></div>
   </a>
@@ -453,12 +454,75 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <button id="pwa-install" class="pwa-install" style="display:none" title="Установить">📲</button>
-  <script src="/static/offline.js" defer></script>
   <script src="/static/theme-mode.js"></script>
   <script src="/static/controls-scroll.js" defer></script>
   <script src="/static/model-grid-fix.js" defer></script>
   <script src="/static/dropdown-stable.js" defer></script>
   <script src="/static/splitter.js" defer></script>
   <script src="/static/batch-table-adaptive.js" defer></script>
+<script src="/static/error-guard.js" defer></script>
+<script src="/static/wand-cursor.js" defer></script>
+
+<style id="jst-dots-FINAL-CLEAN">
+  /* Clean override в самом конце документа — побеждает всё выше по каскаду */
+  html body #btn-download-toggle::after,
+  html body #history-dropdown > .btn::after,
+  html body #dl-dropdown > .btn::after,
+  html body .dropdown > .btn::after {
+    content: "●" !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    box-sizing: border-box !important;
+    border-radius: 50% !important;
+    border: 2px solid currentColor !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
+  /* День — синие */
+  html[data-theme="day"] body #btn-download-toggle::after,
+  html[data-theme="day"] body #history-dropdown > .btn::after,
+  html[data-theme="day"] body #dl-dropdown > .btn::after,
+  html[data-theme="day"] body .dropdown > .btn::after {
+    color: #1a2a5e !important;
+    border-color: #1a2a5e !important;
+  }
+  /* Ночь — жёлтые */
+  html[data-theme="night"] body #btn-download-toggle::after,
+  html[data-theme="night"] body #history-dropdown > .btn::after,
+  html[data-theme="night"] body #dl-dropdown > .btn::after,
+  html[data-theme="night"] body .dropdown > .btn::after {
+    color: #F5B800 !important;
+    border-color: #F5B800 !important;
+  }
+  /* Hover/active — золото */
+  html body #btn-download-toggle:hover::after,
+  html body #history-dropdown > .btn:hover::after,
+  html body #dl-dropdown > .btn:hover::after,
+  html body .dropdown > .btn:hover::after,
+  html body #btn-download-toggle:active::after,
+  html body #history-dropdown > .btn:active::after {
+    color: #F5B800 !important;
+    border-color: #F5B800 !important;
+    box-shadow: 0 0 10px rgba(245,184,0,0.55) !important;
+  }
+</style>
 </body>
 </html>

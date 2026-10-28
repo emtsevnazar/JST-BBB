@@ -33,6 +33,15 @@ PUBLIC_PATHS = {
     "/api/history",
     "/api/health",
     "/api/ai/status",
+    "/offline",
+    "/offline/",
+    "/favicon.ico",
+
+    "/error",
+    "/api/error-state",
+    "/api/admin/error-state",
+
+    "/api/voice-clone/health",
 }
 
 # Публичные префиксы (статика, docs)

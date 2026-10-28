@@ -90,7 +90,38 @@
         else if (mq.addListener) mq.addListener(h);
       } catch (e) {}
     }
-    setInterval(function () { if (getMode() === "scheduled") apply(); }, 60000);
+    /* JST_SCHEDULED_PRECISE_TIMER — точное переключение в 06:00 и 18:00 */
+    var _schedTimer = null;
+    function _scheduleNextSwitch() {
+      if (_schedTimer) { clearTimeout(_schedTimer); _schedTimer = null; }
+      if (getMode() !== "scheduled") return;
+      var now = new Date();
+      var h = now.getHours();
+      var next;
+      if (h >= 6 && h < 18) {
+        // сейчас день → следующая граница 18:00
+        next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 2);
+      } else {
+        // сейчас ночь → следующая граница 06:00 (завтра если h>=18)
+        next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 2);
+        if (next.getTime() <= now.getTime()) {
+          next.setDate(next.getDate() + 1);
+        }
+      }
+      var delay = Math.max(1000, next.getTime() - now.getTime());
+      _schedTimer = setTimeout(function() {
+        if (getMode() === "scheduled") {
+          apply();
+          _scheduleNextSwitch();
+        }
+      }, delay);
+    }
+    // Fallback: раз в 60с — на случай sleep/wake компьютера
+    setInterval(function () { if (getMode() === "scheduled") { apply(); _scheduleNextSwitch(); } }, 60000);
+    // Запустить при init и при смене режима
+    _scheduleNextSwitch();
+    var _origSetMode = setMode;
+    setMode = function(m) { _origSetMode(m); _scheduleNextSwitch(); };
     apply();
     render();
   }

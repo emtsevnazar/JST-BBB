@@ -4,6 +4,7 @@ __version__ = "2.0.0"
 import os as _os_env
 from pathlib import Path as _Path_env
 
+
 def _load_env_files_safe():
     try:
         for _fname in (".env.local", ".env"):

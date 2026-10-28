@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ru" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>JST — Error</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #fff;
+  }
+  body {
+    background-image: url('/static/img/ph_b2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #2a0606;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%) translateY(calc(100% + 40px));
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: max-content;
+    max-width: min(520px, calc(100vw - 32px));
+    padding: 12px 16px;
+    background: #c62828;
+    border: 2px solid #ef5350;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(198,40,40,.55),
+                0 0 0 1px rgba(255,255,255,.08) inset;
+    animation: slideUp .5s cubic-bezier(.34,1.56,.64,1) .15s forwards;
+  }
+  @keyframes slideUp { to { transform: translateX(-50%) translateY(0); } }
+
+  .toast-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    color: #ffeb3b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toast-icon svg { width: 100%; height: 100%; display: block; }
+
+  .toast-body { flex: 1; min-width: 0; }
+  .toast-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffeb3b;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .toast-msg {
+    font-size: 12px;
+    color: #fff59d;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .toast-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid #ffeb3b;
+    color: #ffeb3b;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .toast-btn:hover { background: rgba(255,235,59,.18); }
+  .toast-btn:active { transform: scale(.92); }
+  .toast-btn svg { width: 16px; height: 16px; display: block; }
+</style>
+</head>
+<body>
+<div class="toast" role="alert" aria-live="assertive">
+  <div class="toast-icon" id="t-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  </div>
+  <div class="toast-body">
+    <div class="toast-title" id="t-title">Ошибка</div>
+    <div class="toast-msg" id="t-msg">Проверьте подключение или повторите попытку.</div>
+  </div>
+  <button class="toast-btn" id="t-btn" type="button" title="Повторить" aria-label="Повторить">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </svg>
+  </button>
+</div>
+<script>
+(function() {
+  'use strict';
+  var POLL_MS = 1000;
+  var redirecting = false;
+  var lastVersion = null;
+  var $title = document.getElementById('t-title');
+  var $msg = document.getElementById('t-msg');
+  var $btn = document.getElementById('t-btn');
+
+  function goHome() {
+    if (redirecting) return;
+    redirecting = true;
+    window.location.replace('/?_t=' + Date.now() + '&from=error');
+  }
+
+  function setError(err) {
+    if (!err) return;
+    var code = err.code || 'UNKNOWN';
+    var msg = err.message || '';
+    $title.textContent = code + (msg ? ' · ' + msg : '');
+    $msg.textContent = err.source ? ('Источник: ' + err.source) : 'Сервер вернул ошибку.';
+  }
+
+  async function check() {
+    if (redirecting) return;
+    try {
+      var r = await fetch('/api/error-state?_t=' + Date.now(), {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (!r.ok) return;
+      var d = await r.json();
+      if (d && d.healthy === true) {
+        goHome();
+        return;
+      }
+      if (d && d.error) {
+        if (lastVersion === null || d.version !== lastVersion) {
+          setError(d.error);
+          lastVersion = d.version;
+        }
+      }
+    } catch (e) { /* сеть — продолжаем показывать */ }
+    setTimeout(check, POLL_MS);
+  }
+
+  $btn.addEventListener('click', function() {
+    fetch('/api/error-state?_t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(d) {
+        if (d && d.healthy === true) goHome();
+      })
+      .catch(function() {});
+  });
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible' && !redirecting) check();
+  });
+
+  check();
+})();
+</script>
+</body>
+</html>

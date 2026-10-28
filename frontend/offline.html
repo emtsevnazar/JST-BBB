@@ -27,7 +27,7 @@ body {
   min-height: 100dvh;
 }
 
-/* Fallback: если ph_b2.png не загрузится — показываем ph_b7.png как <img> снизу */
+/* Fallback: если ph_b2.png не загрузится — показываем ph_b2.png как <img> снизу */
 .bg-fallback {
   position: fixed;
   inset: 0;
@@ -119,7 +119,7 @@ body {
 <body>
 <!-- Fallback картинка (если CSS не сработал или ph_b2 не загрузился) -->
 <div class="bg-fallback" aria-hidden="true">
-  <img src="/static/img/ph_b7.png" alt="" onerror="this.style.display='none'">
+  <img src="/static/img/ph_b2.png" alt="" onerror="this.style.display='none'">
 </div>
 
 <div class="toast" role="alert" aria-live="assertive">

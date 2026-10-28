@@ -1,102 +1,23 @@
-# Virtual envs
-.venv*/
-venv/
-env/
+# Backups
+*.bak
+*.bak.*
+*~
 
 # Python
 __pycache__/
-*.py[cod]
-*.so
-build/
-dist/
-.pytest_cache/
-.mypy_cache/
+*.pyc
+.venv/
+venv/
 
-# Backups
-*.bak
-*.bak[0-9]*
-*_bak
-*_backup
-*.old
-*.orig
-*.tmp
-*.swp
+# Node
+node_modules/
+
+# OS
 .DS_Store
 
-# Models (large)
-pretrained_models/
-VoxCPM2_portable/
-*.safetensors
-*.ckpt
-*.pt
-*.pth
-*.bin
-*.onnx
-
-# User data
-output/
-voices/
-uploads/
-temp/
-tmp/
-
-# Secrets
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-secrets.json
-
-# IDE
-.idea/
-.vscode/
-
 # Logs
-*.log
 logs/
+*.log
 
-# Backup-файлы шагов рефакторинга
-*.step*_bak
-*.step*.bak
-
-# Frontend-бэкапы
-*.before_*
-
-# Эксперименты/артефакты
-*.presets_fail
-*.overlay_broken
-*.before_final_fix
-*.before_rollback
-*.pre-compress.bak
-
-# Локальный симлинк на голоса
-voices
-
-# coverage.py
-.coverage
-htmlcov/
-
-# Ruff cache
-.ruff_cache/
-
-# Local SQLite (jst.db) and runtime data
-data/
-backend/data/
-
-# v0.9.0
-**/.DS_Store
-*.pyc
-*.pyo
-backend/.coverage
-*.perf_*_bak
-*.sec*_bak
-.venv312/
-
-# v1.7.2: journal logs
-journal/
-
-# v1.9.0: coverage/pytest/ruff артефакты
-.coverage.*
-.coverage *
-*.coverage
+# Seed-VC (external repo, не в git)
+seed-vc/
