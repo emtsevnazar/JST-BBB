@@ -22,6 +22,17 @@ PUBLIC_PATHS = {
     "/api/security/diagnostics",
     "/api/security/diagnostics.md",  # публичный статус очистки
     "/api/journal",  # журнал (read-only)
+    # v1.10.73: read-only GET endpoints (frontend загружает без ключа)
+    "/api/models",
+    "/api/voices",
+    "/api/presets",
+    "/api/moods",
+    "/api/output",
+    "/api/formats",
+    "/api/languages",
+    "/api/history",
+    "/api/health",
+    "/api/ai/status",
 }
 
 # Публичные префиксы (статика, docs)
