@@ -167,39 +167,58 @@ body {
   document.getElementById('t-title').textContent = m.t + (s ? ' · HTTP ' + s : '');
   document.getElementById('t-msg').textContent = m.x;
 
-  // AUTO_RECOVERY: poll HEAD / каждые 5с, если 200 → вернуться
-  var AUTO_RECOVER = { offline: 1, network: 1, server: 1, exception: 1, unknown: 1, slow: 1 };
-  if (AUTO_RECOVER[r]) {
-    var RECOVER_KEY = 'jst_recovery_at';
-    var POLL_MS = 5000;
-    var ANTI_LOOP_MS = 15000;
-    var lastRecover = parseInt(sessionStorage.getItem(RECOVER_KEY) || '0', 10);
-    var initialDelay = (Date.now() - lastRecover < ANTI_LOOP_MS) ? ANTI_LOOP_MS : 2000;
-    var attempts = 0;
-    var redirecting = false;
+  // v1.10.58: AUTO_RECOVERY по типу ошибки — проверяет реальное состояние
+  var RECOVERY_CHECKS = {
+    offline:   function() { return checkReadyz(); },
+    network:   function() { return checkReadyz(); },
+    exception: function() { return checkReadyz(); },
+    slow:      function() { return checkReadyz(); },
+    unknown:   function() { return checkReadyz(); },
+    server:    function() { return checkReadyz().then(function(ok) { return ok ? checkModels() : false; }); },
+    notfound:  function() { return Promise.resolve(false); }
+  };
 
-    function probe() {
-      if (redirecting) return;
-      attempts++;
-      fetch('/', { method: 'GET', redirect: 'manual', cache: 'no-store', credentials: 'same-origin' })
-        .then(function(resp) {
-          if (resp.status === 200) {
-            redirecting = true;
-            sessionStorage.setItem(RECOVER_KEY, String(Date.now()));
-            location.replace('/');
-          } else {
-            setTimeout(probe, POLL_MS);
-          }
-        })
-        .catch(function() { setTimeout(probe, POLL_MS); });
-    }
-
-    window.addEventListener('online', function() {
-      if (!redirecting) { attempts = 0; probe(); }
-    });
-    setTimeout(probe, initialDelay);
+  function checkReadyz() {
+    return fetch('/readyz', { cache: 'no-store', credentials: 'same-origin' })
+      .then(function(r) { return r.ok; })
+      .catch(function() { return false; });
   }
-})();
+
+  function checkModels() {
+    return fetch('/api/models', { cache: 'no-store', credentials: 'same-origin' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(j) {
+        if (!j) return false;
+        var n = Array.isArray(j) ? j.length : (j.models ? j.models.length : 0);
+        return n > 0;
+      })
+      .catch(function() { return false; });
+  }
+
+  var check = RECOVERY_CHECKS[r];
+  if (check) {
+    var probe = function() {
+      if (redirecting) return;
+      check().then(function(ok) {
+        if (ok) {
+          redirecting = true;
+          sessionStorage.setItem('jst_recovery_at', String(Date.now()));
+          location.replace('/');
+        } else {
+          setTimeout(probe, 5000);
+        }
+      });
+    };
+    // Первая проверка через 2с
+    setTimeout(probe, 2000);
+    // При возврате сети — сразу
+    window.addEventListener('online', function() {
+      if (!redirecting) {
+        check().then(function(ok) { if (ok) location.replace('/'); });
+      }
+    });
+  }
+  })();
 </script>
 </body>
 </html>
