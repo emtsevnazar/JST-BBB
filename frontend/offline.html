@@ -128,10 +128,11 @@ body {
     <div class="toast-title" id="t-title">Something Went Wrong</div>
     <div class="toast-msg" id="t-msg">Check your connection or try again.</div>
   </div>
-  <button class="toast-btn" onclick="location.href='/'" title="Home" aria-label="Home">
+  <button class="toast-btn" id="t-btn" onclick="sessionStorage.removeItem('jst_recovery_at'); location.reload()" title="Retry" aria-label="Retry">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
     </svg>
   </button>
 </div>
