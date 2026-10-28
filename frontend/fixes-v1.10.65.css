@@ -1,0 +1,134 @@
+
+/* ===============================================================
+   v1.10.65: carousel кнопки 84x38 минимум (было 110x56)
+   =============================================================== */
+
+/* ─── 1. Все carousel кнопки — min 84x38 ─── */
+.carousel > .card,
+.carousel > .model-card,
+.carousel > .lang-card,
+.carousel > .accent-card,
+.carousel > [class*="-card"],
+#model-grid > *,
+#lang-grid > *,
+#accent-grid > *,
+#carousel > * {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 84px !important;
+  max-width: none !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 4px 8px !important;
+  font-size: clamp(10px, 1.4vw, 12px) !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ─── 2. Mobile ≤900 — тот же 84×38 (без увеличения) ─── */
+@media (max-width: 900px) {
+  #model-grid > *,
+  #model-grid > .model-card,
+  #model-grid > .card,
+  #model-grid > [class*="-card"],
+  .carousel > * {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 84px !important;
+    max-width: none !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    padding: 4px 6px !important;
+    font-size: clamp(10px, 2.6vw, 12px) !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* carousel-btn по-прежнему видны */
+  .carousel-btn,
+  .carousel-btn.prev,
+  .carousel-btn.next,
+  .carousel-wrap > .carousel-btn,
+  .carousel-wrap.has-model-grid > .carousel-btn {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 50% !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+  }
+  .carousel-btn.prev,
+  .carousel-wrap > .carousel-btn.prev,
+  .carousel-wrap.has-model-grid > .carousel-btn.prev {
+    left: 4px !important;
+    right: auto !important;
+  }
+  .carousel-btn.next,
+  .carousel-wrap > .carousel-btn.next,
+  .carousel-wrap.has-model-grid > .carousel-btn.next {
+    right: 4px !important;
+    left: auto !important;
+  }
+}
+
+/* ─── 3. Dropdown: fixed, стабильный ─── */
+.controls .dropdown > .dropdown-menu {
+  position: fixed !important;
+  z-index: 99999 !important;
+}
+.controls {
+  overflow-anchor: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* ─── 4. model-grid fill (на всякий, если JS не сработал) ─── */
+.carousel-wrap.has-model-grid {
+  padding: 0 42px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 46px !important;
+  box-sizing: border-box !important;
+}
+.carousel-wrap.has-model-grid > .carousel-btn {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#model-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 4px 0 !important;
+  box-sizing: border-box !important;
+}
