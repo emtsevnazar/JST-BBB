@@ -1,4 +1,4 @@
-const VERSION = 'v4.1.0';
+const VERSION = 'v5.0.0';
 const CACHE_STATIC = 'jst-static-' + VERSION;
 const CACHE_OFFL = 'jst-offl-' + VERSION;
 
@@ -8,7 +8,7 @@ const PRECACHE = [
   '/static/style.css',
   '/static/style-clean.css',
   '/static/dots.js',
-  '/static/app.js',
+  '/static/wand.js',
   '/static/img/ph_b2.png',
   '/static/img/icon-192.png'
 ];
@@ -17,9 +17,9 @@ self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE_OFFL).then(function(c) {
       return Promise.all(PRECACHE.map(function(u) {
-        return c.add(u).catch(function(err) { console.warn('precache skip:', u, err); });
+        return c.add(u).catch(function(err) {});
       }));
-    }).then(function() { return self.skipWaiting(); })
+    }).then(function(){ return self.skipWaiting(); })
   );
 });
 
@@ -27,7 +27,7 @@ self.addEventListener('activate', function(e) {
   e.waitUntil(
     Promise.all([
       caches.keys().then(function(keys) {
-        return Promise.all(keys.filter(function(k) { return k !== CACHE_STATIC && k !== CACHE_OFFL; }).map(function(k) { return caches.delete(k); }));
+        return Promise.all(keys.filter(function(k){ return k !== CACHE_STATIC && k !== CACHE_OFFL; }).map(function(k){ return caches.delete(k); }));
       }),
       self.clients.claim()
     ])
@@ -45,12 +45,8 @@ self.addEventListener('fetch', function(e) {
   if (isNav) {
     e.respondWith(
       fetch(req).catch(function() {
-        return caches.match('/error').then(function(h) {
-          if (h) return h;
-          return caches.match('/offline');
-        }).then(function(h) {
-          if (h) return h;
-          return new Response('<!doctype html><html><body style="background:#2a0606;color:#fff;font:16px sans-serif;padding:20px"><h1>Нет подключения</h1><p>Проверьте Wi-Fi</p></body></html>', {status:503, headers:{'Content-Type':'text/html; charset=utf-8'}});
+        return caches.match('/error').then(function(h){ return h || caches.match('/offline'); }).then(function(h){
+          return h || new Response('<!doctype html><html><body style="background:#2a0606;color:#fff;padding:20px"><h1>No Connection</h1><p>Check your network.</p></body></html>', {status:503, headers:{'Content-Type':'text/html'}});
         });
       })
     );
@@ -59,15 +55,15 @@ self.addEventListener('fetch', function(e) {
 
   if (u.pathname === '/error' || u.pathname === '/offline' || u.pathname.indexOf('/static/') === 0) {
     e.respondWith(
-      caches.match(req).then(function(c) {
+      caches.match(req).then(function(c){
         if (c) return c;
-        return fetch(req).then(function(resp) {
+        return fetch(req).then(function(resp){
           if (resp && resp.ok) {
             var clone = resp.clone();
-            caches.open(CACHE_OFFL).then(function(cache) { cache.put(req, clone); });
+            caches.open(CACHE_OFFL).then(function(cache){ cache.put(req, clone); });
           }
           return resp;
-        }).catch(function() { return caches.match('/offline'); });
+        }).catch(function(){ return caches.match('/offline'); });
       })
     );
     return;

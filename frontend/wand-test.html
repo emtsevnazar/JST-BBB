@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Wand Test</title>
+<style>body{background:#222;color:#fff;font:16px -apple-system,sans-serif;padding:20px}h1{color:#F5B800}code{background:#333;padding:2px 6px;border-radius:4px}#log{background:#333;padding:15px;border-radius:8px;margin-top:20px;font-family:monospace;white-space:pre-wrap}</style>
+</head>
+<body>
+<h1>Wand Test</h1>
+<p>Move mouse. If you see the wand, it works. Check DevTools Console for <code>[wand]</code> logs.</p>
+<div id="log">...</div>
+<script src="/static/wand.js?v=8"></script>
+<script>
+setTimeout(function(){
+  var w = document.getElementById('jst-wand');
+  var info = [
+    'Wand: ' + (w ? 'EXISTS' : 'MISSING'),
+    'display: ' + (w ? getComputedStyle(w).display : 'n/a'),
+    'opacity: ' + (w ? getComputedStyle(w).opacity : 'n/a'),
+    'visibility: ' + (w ? getComputedStyle(w).visibility : 'n/a'),
+    'rect: ' + (w ? JSON.stringify(w.getBoundingClientRect()) : 'n/a'),
+    'svg: ' + (w ? w.querySelectorAll('svg').length : 0),
+    'theme: ' + document.documentElement.getAttribute('data-theme'),
+    'cursor-none: ' + document.body.classList.contains('cursor-none'),
+    'lastError: ' + (window.__lastWandError || 'none')
+  ];
+  document.getElementById('log').textContent = info.join('\n');
+}, 500);
+</script>
+</body></html>

@@ -4,13 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#2a0606">
 <title>JST - Error</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#fff}
-body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a0606;min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));z-index:100;display:flex;align-items:center;gap:12px;width:max-content;max-width:min(520px,calc(100vw - 32px));padding:12px 16px;background:#c62828;border:2px solid #ef5350;border-radius:12px;box-shadow:0 8px 32px rgba(198,40,40,.55),0 0 0 1px rgba(255,255,255,.08) inset;animation:slideUp .5s cubic-bezier(.34,1.56,.64,1) .15s forwards}
+body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a0606;min-height:100vh;min-height:100dvh}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));z-index:100;display:flex;align-items:center;gap:12px;width:max-content;max-width:min(520px,calc(100vw - 32px));padding:12px 16px;background:#c62828;border:2px solid #ef5350;border-radius:12px;box-shadow:0 8px 32px rgba(198,40,40,.55);animation:slideUp .5s cubic-bezier(.34,1.56,.64,1) .15s forwards}
 @keyframes slideUp{to{transform:translateX(-50%) translateY(0)}}
 @media (prefers-reduced-motion:reduce){.toast{animation:none;transform:translateX(-50%) translateY(0)}}
 .toast-icon{flex-shrink:0;width:28px;height:28px;color:#ffeb3b;display:flex;align-items:center;justify-content:center}
@@ -18,7 +17,7 @@ body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a060
 .toast-body{flex:1;min-width:0}
 .toast-title{font-size:13.5px;font-weight:700;color:#ffeb3b;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toast-msg{font-size:12px;color:#fff59d;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.toast-btn{flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:transparent;border:2px solid #ffeb3b;color:#ffeb3b;border-radius:8px;cursor:pointer;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.toast-btn{flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:transparent;border:2px solid #ffeb3b;color:#ffeb3b;border-radius:8px;cursor:pointer;padding:0}
 .toast-btn:hover,.toast-btn:active{background:rgba(255,235,59,.18)}
 .toast-btn svg{width:16px;height:16px;display:block}
 </style>
@@ -34,18 +33,46 @@ body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a060
 (function(){
   'use strict';
   var ERRORS = {
-    offline:      { t: 'No Connection',        m: 'Wi-Fi or mobile data is disabled. Reconnecting automatically.' },
-    no_internet:  { t: 'No Internet',          m: 'Your device is not connected to the internet.' },
-    weak_internet:{ t: 'Weak Connection',      m: 'Your internet is slow or unstable. Retrying...' },
-    vpn_unstable: { t: 'Unstable VPN',         m: 'VPN connection is unstable. Try disabling it or reconnecting.' },
-    service_error:{ t: 'Service Error',        m: 'A required service is temporarily unavailable.' },
-    server_error: { t: 'Server Error',         m: 'The server returned an error. Retrying...' },
-    clear_cache:  { t: 'Clear Cache Required', m: 'Please clear your browser cache and reload the page.' },
-    maintenance:  { t: 'Under Maintenance',    m: 'The service is under maintenance. We will be back soon.' },
-    not_found:    { t: 'Page Not Found',       m: 'The page you requested does not exist. Error 404.' },
-    timeout:      { t: 'Request Timeout',      m: 'The server took too long to respond.' },
-    unknown:      { t: 'Something Went Wrong', m: 'An unexpected error occurred. Please try again.' }
+    offline: { t: "No Connection", m: "Wi-Fi or mobile data is disabled. Reconnecting automatically." },
+    no_internet: { t: "No Internet", m: "Your device is not connected to the internet." },
+    weak_internet: { t: "Weak Connection", m: "Internet is slow or unstable. Retrying..." },
+    dns_error: { t: "DNS Error", m: "Cannot resolve server address. Check your network." },
+    ssl_error: { t: "Security Error", m: "SSL certificate problem. Try a different network." },
+    vpn_unstable: { t: "Unstable VPN", m: "VPN connection is unstable. Try disabling it." },
+    service_error: { t: "Service Error", m: "A required service is temporarily unavailable." },
+    server_error: { t: "Server Error", m: "The server returned an error. Retrying..." },
+    bad_gateway: { t: "Bad Gateway", m: "Gateway error. Server is not responding properly." },
+    overload: { t: "Server Overloaded", m: "Too many requests. Please wait a moment." },
+    rate_limited: { t: "Too Many Requests", m: "Slow down. Try again in a minute." },
+    auth_failed: { t: "Authentication Failed", m: "Your API key is missing or invalid." },
+    database_error: { t: "Database Error", m: "Cannot access data. Try again later." },
+    clear_cache: { t: "Clear Cache Required", m: "Please clear your browser cache and reload." },
+    maintenance: { t: "Under Maintenance", m: "Service is under maintenance. We will be back soon." },
+    not_found: { t: "Page Not Found", m: "The requested page does not exist. Error 404." },
+    timeout: { t: "Request Timeout", m: "The server took too long to respond." },
+    unknown: { t: "Something Went Wrong", m: "An unexpected error occurred. Please try again." },
   };
+  function classifyFetchError(err) {
+    if (!navigator.onLine) return 'offline';
+    var m = String((err && err.message) || err || '').toLowerCase();
+    var n = String((err && err.name) || '').toLowerCase();
+    if (n === 'aborterror' || m.indexOf('timeout') !== -1 || m.indexOf('timed out') !== -1) return 'timeout';
+    if (m.indexOf('dns') !== -1 || m.indexOf('getaddrinfo') !== -1) return 'dns_error';
+    if (m.indexOf('ssl') !== -1 || m.indexOf('certificate') !== -1 || m.indexOf('tls') !== -1) return 'ssl_error';
+    if (n === 'typeerror') return 'no_internet';
+    return 'unknown';
+  }
+  function classifyStatus(s) {
+    if (s === 401 || s === 403) return 'auth_failed';
+    if (s === 404) return 'not_found';
+    if (s === 429) return 'rate_limited';
+    if (s === 500) return 'server_error';
+    if (s === 502) return 'bad_gateway';
+    if (s === 503) return 'overload';
+    if (s === 504) return 'timeout';
+    if (s >= 500) return 'server_error';
+    return 'unknown';
+  }
   function getMsg(code) {
     if (!code) return ERRORS.unknown;
     var k = String(code).toLowerCase().replace(/[^a-z0-9_]/g, '_');
@@ -53,49 +80,77 @@ body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a060
     if (k.indexOf('offline') !== -1 || k.indexOf('connect') !== -1) return ERRORS.offline;
     if (k.indexOf('internet') !== -1) return ERRORS.no_internet;
     if (k.indexOf('weak') !== -1 || k.indexOf('slow') !== -1) return ERRORS.weak_internet;
+    if (k.indexOf('dns') !== -1) return ERRORS.dns_error;
+    if (k.indexOf('ssl') !== -1 || k.indexOf('cert') !== -1) return ERRORS.ssl_error;
     if (k.indexOf('vpn') !== -1) return ERRORS.vpn_unstable;
     if (k.indexOf('cache') !== -1) return ERRORS.clear_cache;
     if (k.indexOf('maint') !== -1) return ERRORS.maintenance;
     if (k.indexOf('404') !== -1 || k.indexOf('not_found') !== -1) return ERRORS.not_found;
     if (k.indexOf('timeout') !== -1) return ERRORS.timeout;
+    if (k.indexOf('rate') !== -1) return ERRORS.rate_limited;
+    if (k.indexOf('auth') !== -1) return ERRORS.auth_failed;
+    if (k.indexOf('gateway') !== -1) return ERRORS.bad_gateway;
+    if (k.indexOf('overload') !== -1) return ERRORS.overload;
+    if (k.indexOf('db') !== -1) return ERRORS.database_error;
     if (k.indexOf('service') !== -1) return ERRORS.service_error;
     if (k.indexOf('server') !== -1) return ERRORS.server_error;
     return ERRORS.unknown;
   }
 
-  var POLL = 1000, R = false, fails = 0, lastV = null, timer = null;
-  var T = document.getElementById('t'), M = document.getElementById('m'), B = document.getElementById('b');
-  function home(){ if(R)return; R=true; if(timer){clearTimeout(timer);timer=null;} try{location.replace('/?_t='+Date.now()+'&from=error');}catch(e){location.href='/?_t='+Date.now();} setTimeout(function(){if(location.pathname.indexOf('/error')===0)location.reload();},1500); }
-  function offline(){ T.textContent=ERRORS.offline.t; M.textContent=ERRORS.offline.m; }
-  function sched(){ if(timer)clearTimeout(timer); timer=setTimeout(check, POLL); }
+  var POLL=1000, R=false, fails=0, timer=null;
+  var T=document.getElementById('t'), M=document.getElementById('m'), B=document.getElementById('b');
+
+  function home(){
+    if (R) return; R = true;
+    if (timer) { clearTimeout(timer); timer = null; }
+    try { location.replace('/?_t=' + Date.now() + '&from=error'); }
+    catch(e) { location.href = '/?_t=' + Date.now(); }
+    setTimeout(function(){ if (location.pathname.indexOf('/error')===0) location.reload(); }, 1500);
+  }
+
+  function sched(){ if (timer) clearTimeout(timer); timer = setTimeout(check, POLL); }
+  function setCode(code, src){
+    var e = getMsg(code);
+    T.textContent = e.t;
+    M.textContent = e.m + (src ? ' (' + src + ')' : '');
+  }
+
   function check(){
-    if(R)return;
-    if(navigator.onLine===false){offline();sched();return;}
-    fetch('/api/error-state?_t='+Date.now(),{cache:'no-store'})
-      .then(function(r){return r.json();})
+    if (R) return;
+    if (navigator.onLine === false) { setCode('offline'); sched(); return; }
+    var ctl=null, toId=null;
+    if (window.AbortController){ ctl = new AbortController(); toId = setTimeout(function(){ try{ ctl.abort(); }catch(e){} }, 10000); }
+    var o = {cache:'no-store'};
+    if (ctl) o.signal = ctl.signal;
+    fetch('/api/error-state?_t=' + Date.now(), o)
+      .then(function(r){
+        if (toId) clearTimeout(toId);
+        if (!r.ok) { setCode(classifyStatus(r.status)); sched(); return null; }
+        return r.json();
+      })
       .then(function(d){
-        fails=0;
-        if(d&&d.healthy===true){home();return;}
-        if(d&&d.error){
-          var e = getMsg(d.error.code);
-          T.textContent = e.t;
-          M.textContent = e.m + (d.error.source ? ' (' + d.error.source + ')' : '');
-          lastV = d.version;
-        }
+        if (d === null) return;
+        fails = 0;
+        if (d && d.healthy === true) { home(); return; }
+        if (d && d.error) setCode(d.error.code, d.error.source);
         sched();
       })
-      .catch(function(){
+      .catch(function(err){
+        if (toId) clearTimeout(toId);
         fails++;
-        if(navigator.onLine===false)offline();
-        else if(fails >= 5){ T.textContent=ERRORS.server_error.t; M.textContent=ERRORS.server_error.m; }
+        if (navigator.onLine === false) setCode('offline');
+        else if (err && err.name === 'AbortError') setCode('timeout');
+        else if (fails >= 5) setCode('server_error');
+        else setCode(classifyFetchError(err));
         sched();
       });
   }
-  window.addEventListener('offline',offline);
-  window.addEventListener('online',function(){fails=0;if(timer){clearTimeout(timer);timer=null;}check();});
-  B.addEventListener('click',function(){fails=0;if(timer){clearTimeout(timer);timer=null;}check();});
-  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&!R){if(timer){clearTimeout(timer);timer=null;}check();}});
-  if(navigator.onLine===false)offline();
+
+  window.addEventListener('offline', function(){ setCode('offline'); });
+  window.addEventListener('online', function(){ fails=0; if (timer){ clearTimeout(timer); timer=null; } check(); });
+  B.addEventListener('click', function(){ fails=0; if (timer){ clearTimeout(timer); timer=null; } check(); });
+  document.addEventListener('visibilitychange', function(){ if (document.visibilityState==='visible' && !R){ if (timer){ clearTimeout(timer); timer=null; } check(); } });
+  if (navigator.onLine === false) setCode('offline');
   check();
 })();
 </script>
