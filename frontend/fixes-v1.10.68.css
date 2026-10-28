@@ -1,0 +1,128 @@
+
+/* ===============================================================
+   v1.10.68: batch models — table → text < 500px (RU/EN)
+   =============================================================== */
+
+/* ─── 1. < 500px: таблица превращается в список ─── */
+@media (max-width: 500px) {
+
+  /* Скрыть шапку таблицы */
+  .batch-modal table thead,
+  .batch-dialog table thead,
+  .batch-table thead,
+  .batch-modal .batch-table thead {
+    display: none !important;
+  }
+
+  /* Таблица → block */
+  .batch-modal table,
+  .batch-dialog table,
+  .batch-table,
+  .batch-modal .batch-table {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+    border: none !important;
+  }
+
+  .batch-modal table tbody,
+  .batch-dialog table tbody,
+  .batch-table tbody,
+  .batch-modal .batch-table tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Строка → карточка */
+  .batch-modal table tr,
+  .batch-dialog table tr,
+  .batch-table tr,
+  .batch-modal .batch-table tr {
+    display: block !important;
+    width: 100% !important;
+    padding: 10px 12px !important;
+    margin-bottom: 8px !important;
+    background: var(--panel-bg, rgba(20,20,20,0.6)) !important;
+    border: 1px solid var(--panel-border, rgba(255,255,255,0.1)) !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ячейки → block с префиксом */
+  .batch-modal table td,
+  .batch-dialog table td,
+  .batch-table td,
+  .batch-modal .batch-table td {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 4px 0 !important;
+    border: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    box-sizing: border-box !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    text-align: left !important;
+  }
+
+  /* td::before — префикс из data-label (JS проставит) */
+  .batch-modal table td::before,
+  .batch-dialog table td::before,
+  .batch-table td::before,
+  .batch-modal .batch-table td[data-label]::before {
+    content: attr(data-label) ': ' !important;
+    display: inline-block !important;
+    font-weight: 700 !important;
+    color: var(--accent, #F5B800) !important;
+    margin-right: 4px !important;
+    font-size: 12px !important;
+  }
+
+  /* Если data-label нет — просто блок без префикса */
+  .batch-modal table td:not([data-label])::before,
+  .batch-dialog table td:not([data-label])::before,
+  .batch-table td:not([data-label])::before {
+    content: '' !important;
+  }
+}
+
+/* ─── 2. На любых экранах — таблица не вылезает ─── */
+.batch-modal table,
+.batch-dialog table,
+.batch-table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+  box-sizing: border-box !important;
+}
+
+.batch-modal table th,
+.batch-modal table td,
+.batch-dialog table th,
+.batch-dialog table td,
+.batch-table th,
+.batch-table td {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  box-sizing: border-box !important;
+  padding: 8px 10px !important;
+  font-size: clamp(11px, 1.2vw, 13px) !important;
+}
+
+/* Скролл если таблица широкая */
+.batch-modal .batch-table-wrap,
+.batch-dialog .batch-table-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}

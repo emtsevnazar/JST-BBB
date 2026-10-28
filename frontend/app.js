@@ -3194,6 +3194,13 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       if (!dict[key]) return;
       document.querySelectorAll(sel).forEach(o => { o.textContent = dict[key]; });
     };
+    // v1.10.70: явные setLabel для 6 меток (могут отсутствовать)
+    setLabel("jstp-style", "style");
+    setLabel("jstp-thickness", "thickness");
+    setLabel("jstp-grid", "grid");
+    setLabel("jstp-scale", "scale");
+    setLabel("jstp-opacity", "opacity");
+    setLabel("jstp-glow", "glow");
     setOpt('option[value="neon"]', "s_neon");
     setOpt('option[value="line"]', "s_line");
     setOpt('option[value="mirror"]', "s_mirror");

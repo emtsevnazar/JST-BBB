@@ -3,7 +3,7 @@
 //   - HTML      → network-first (обновления)
 //   - /static/* → cache-first (быстро, офлайн)
 //   - /api/*, /ws/*, /output/* → network-only (никогда не кешируем)
-const VERSION      = 'v1.4.38';
+const VERSION      = 'v1.4.40';
 const CACHE_STATIC = `jst-static-${VERSION}`;
 const CACHE_HTML   = `jst-html-${VERSION}`;
 

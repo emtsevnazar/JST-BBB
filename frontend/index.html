@@ -39,13 +39,17 @@ document.documentElement.setAttribute("data-theme",t);})();
   <link rel="stylesheet" href="/static/fixes-v1.10.65.css">
   <link rel="stylesheet" href="/static/fixes-v1.10.66.css">
   <link rel="stylesheet" href="/static/fixes-v1.10.67.css">
+  <link rel="stylesheet" href="/static/fixes-v1.10.68.css">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
 <div class="app">
 <header class="header">
   <a class="logo" href="/">
-    <img class="logo-img" src="/static/img/poster_b.png" alt="JST">
+    <picture>
+      <source srcset="/static/img/poster_b.webp" type="image/webp">
+      <img class="logo-img" src="/static/img/poster_b.png" alt="JST">
+    </picture>
     <div class="logo-text"><h1>JST</h1><p data-i18n="tagline">Just Start Transform</p></div>
   </a>
   <span class="org-badge" data-i18n="org">Justice Solidarity Tolerance</span>
@@ -346,7 +350,7 @@ document.documentElement.setAttribute("data-theme",t);})();
 
     <div class="jstp-settings" id="jstp-settings">
       <div class="jstp-set-item">
-        <span class="jstp-set-label">Стиль</span>
+        <span class="jstp-set-label" data-i18n="style">Стиль</span>
         <select id="jstp-opt-style">
           <option value="neon">Неон</option>
           <option value="bars">Бары</option>
@@ -362,7 +366,7 @@ document.documentElement.setAttribute("data-theme",t);})();
         <input type="range" id="jstp-opt-thickness" min="1" max="10" step="1" value="2">
       </div>
       <div class="jstp-set-item">
-        <span class="jstp-set-label">Сетка</span>
+        <span class="jstp-set-label" data-i18n="grid">Сетка</span>
         <input type="checkbox" id="jstp-opt-grid" checked>
       </div>
       <div class="jstp-set-item jstp-set-range">
@@ -456,5 +460,6 @@ if ('serviceWorker' in navigator) {
   <script src="/static/model-grid-fix.js" defer></script>
   <script src="/static/dropdown-stable.js" defer></script>
   <script src="/static/splitter.js" defer></script>
+  <script src="/static/batch-table-adaptive.js" defer></script>
 </body>
 </html>
