@@ -269,21 +269,10 @@ const tCard = (k) => I18N[LANG].cards[k] || k;
 const tDesc = (k) => I18N[LANG].desc[k] || "";
 const $ = (id) => document.getElementById(id);
 
-// === THEME ===
-function applyTheme(th) {
-  document.documentElement.setAttribute("data-theme", th);
-  const icon = $("theme-icon");
-  if (icon) icon.textContent = th === "night" ? "\u2600" : "\u263E";
-  localStorage.setItem("jst-theme", th);
-}
-document.addEventListener("DOMContentLoaded", () => {
-  const themeBtn = $("theme-toggle");
-  if (themeBtn) /* [theme-mode.js owns this] themeBtn.addEventListener("click", () => {
-    const cur = document.documentElement.getAttribute("data-theme");
-    applyTheme(cur === "night" ? "day" : "night");
-  }) */;
-});
-applyTheme(localStorage.getItem("jst-theme") || "day");
+// === THEME (owned by theme-mode.js) ===
+// Legacy stub: theme-mode.js is the SINGLE owner of data-theme/data-mode.
+// Do not call setAttribute here — it will conflict with theme-mode.js.
+function applyTheme(th) { /* no-op - see theme-mode.js */ }
 
 // === i18n UI ===
 // v1.7.7: smart translate статуса (сохраняет "5.2s", "· file.wav")

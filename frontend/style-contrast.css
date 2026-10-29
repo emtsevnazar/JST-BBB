@@ -1,28 +1,8 @@
-/* === CONTRAST THEME — filter on body children (exclude overlay/wand) === */
+/* ============================================================
+   CONTRAST THEME — universal B&W (no filter on containers)
+   ============================================================ */
 
-/* 1. Filter body's top-level wrappers EXCEPT overlay/wand/scripts */
-html[data-theme="contrast"] body > *:not(#jst-err-overlay):not(#jst-wand):not(.jst-wand-sparks):not(.jst-wand-spark):not(script):not(style):not(noscript):not(#theme-mode-badge) {
-  filter: grayscale(1) contrast(1.15) brightness(1.02) !important;
-  -webkit-filter: grayscale(1) contrast(1.15) brightness(1.02) !important;
-}
-/* 2. Also filter help-modal (it might be inside a wrapper) */
-html[data-theme="contrast"] .help-modal,
-html[data-theme="contrast"] .help-doc,
-html[data-theme="contrast"] .help-body {
-  filter: grayscale(1) contrast(1.15) brightness(1.02) !important;
-  -webkit-filter: grayscale(1) contrast(1.15) brightness(1.02) !important;
-}
-/* 3. Overlay + wand NO filter */
-html[data-theme="contrast"] #jst-err-overlay,
-html[data-theme="contrast"] #jst-err-overlay *,
-html[data-theme="contrast"] #jst-wand,
-html[data-theme="contrast"] #jst-wand *,
-html[data-theme="contrast"] .jst-wand-sparks {
-  filter: none !important;
-  -webkit-filter: none !important;
-}
-
-/* 4. B&W variables */
+/* 1. B&W CSS variables */
 html[data-theme="contrast"] {
   --bg: #ffffff;
   --text: #000000;
@@ -50,62 +30,57 @@ html[data-theme="contrast"] {
   color-scheme: light;
 }
 
-/* 5. Body */
-html[data-theme="contrast"] body {
-  background: #ffffff !important;
+/* 2. UNIVERSAL: все элементы → чёрный текст на белом
+   Исключения: overlay ошибки + wand + их потомки */
+html[data-theme="contrast"] *:not(#jst-err-overlay):not(#jst-wand):not(.jst-wand-sparks) {
   color: #000000 !important;
-}
-
-/* 6. All text → black */
-html[data-theme="contrast"] p,
-html[data-theme="contrast"] span,
-html[data-theme="contrast"] label,
-html[data-theme="contrast"] small,
-html[data-theme="contrast"] strong,
-html[data-theme="contrast"] b,
-html[data-theme="contrast"] i,
-html[data-theme="contrast"] em,
-html[data-theme="contrast"] li,
-html[data-theme="contrast"] td,
-html[data-theme="contrast"] th,
-html[data-theme="contrast"] h1, html[data-theme="contrast"] h2,
-html[data-theme="contrast"] h3, html[data-theme="contrast"] h4,
-html[data-theme="contrast"] h5, html[data-theme="contrast"] h6 {
-  color: #000000 !important;
-}
-
-/* 7. Buttons — white bg, black border, black text */
-html[data-theme="contrast"] button,
-html[data-theme="contrast"] .btn,
-html[data-theme="contrast"] .icon-btn,
-html[data-theme="contrast"] .carousel-btn,
-html[data-theme="contrast"] .controls-btn,
-html[data-theme="contrast"] select,
-html[data-theme="contrast"] input:not([type="range"]),
-html[data-theme="contrast"] textarea,
-html[data-theme="contrast"] summary,
-html[data-theme="contrast"] .dropdown > .btn {
+  -webkit-text-fill-color: #000000 !important;
   background-color: #ffffff !important;
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
   border-color: #000000 !important;
-}
-html[data-theme="contrast"] button *,
-html[data-theme="contrast"] .btn *,
-html[data-theme="contrast"] .icon-btn *,
-html[data-theme="contrast"] .carousel-btn * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-html[data-theme="contrast"] button svg,
-html[data-theme="contrast"] .btn svg,
-html[data-theme="contrast"] .icon-btn svg,
-html[data-theme="contrast"] .carousel-btn svg {
-  stroke: #000000 !important;
-  color: #000000 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
-/* 8. Active/selected/hover → black bg, white text */
+/* 3. Исключить потомков overlay и wand */
+html[data-theme="contrast"] #jst-err-overlay *,
+html[data-theme="contrast"] #jst-wand *,
+html[data-theme="contrast"] .jst-wand-sparks *,
+html[data-theme="contrast"] .jst-wand-spark {
+  /* inherit — не навязываем B&W */
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  background-color: transparent;
+  border-color: inherit;
+  box-shadow: inherit;
+}
+
+/* 4. Background-image: none для контейнеров */
+html[data-theme="contrast"] *:not(img):not(svg):not(#jst-err-overlay):not(#jst-err-overlay *):not(#jst-wand):not(#jst-wand *) {
+  background-image: none !important;
+}
+
+/* 5. img, video, canvas, svg — grayscale */
+html[data-theme="contrast"] img,
+html[data-theme="contrast"] video,
+html[data-theme="contrast"] canvas,
+html[data-theme="contrast"] svg {
+  filter: grayscale(1) !important;
+  -webkit-filter: grayscale(1) !important;
+  background-color: transparent !important;
+}
+html[data-theme="contrast"] img { color: inherit !important; }
+
+/* 6. Logo — grayscale, видимый */
+html[data-theme="contrast"] .logo,
+html[data-theme="contrast"] .logo-img,
+html[data-theme="contrast"] .logo img,
+html[data-theme="contrast"] img.logo-img {
+  filter: grayscale(1) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 7. ACTIVE / HOVER кнопки → ЧЁРНЫЙ фон + БЕЛЫЙ текст */
 html[data-theme="contrast"] button.active,
 html[data-theme="contrast"] button.is-active,
 html[data-theme="contrast"] button.selected,
@@ -113,98 +88,141 @@ html[data-theme="contrast"] button.on,
 html[data-theme="contrast"] button:active,
 html[data-theme="contrast"] button[aria-pressed="true"],
 html[data-theme="contrast"] button[aria-selected="true"],
+html[data-theme="contrast"] button[aria-current="true"],
 html[data-theme="contrast"] button[data-active="true"],
+html[data-theme="contrast"] button[data-selected="true"],
 html[data-theme="contrast"] .btn.active,
 html[data-theme="contrast"] .btn.is-active,
 html[data-theme="contrast"] .btn.selected,
 html[data-theme="contrast"] .btn.on,
 html[data-theme="contrast"] .btn:active,
 html[data-theme="contrast"] .btn[aria-pressed="true"],
+html[data-theme="contrast"] .btn[aria-selected="true"],
+html[data-theme="contrast"] .btn[data-active="true"],
 html[data-theme="contrast"] .carousel-btn.active,
+html[data-theme="contrast"] .carousel-btn:active,
 html[data-theme="contrast"] .controls-btn.active,
+html[data-theme="contrast"] .controls-btn:active,
 html[data-theme="contrast"] .dropdown.open > .btn,
+html[data-theme="contrast"] .dropdown.active > .btn,
 html[data-theme="contrast"] .dropdown.open > button,
 html[data-theme="contrast"] button:hover:not([disabled]),
 html[data-theme="contrast"] .btn:hover:not([disabled]),
 html[data-theme="contrast"] .icon-btn:hover:not([disabled]),
 html[data-theme="contrast"] .carousel-btn:hover:not([disabled]),
 html[data-theme="contrast"] .controls-btn:hover:not([disabled]),
-html[data-theme="contrast"] .dropdown > .btn:hover:not([disabled]) {
+html[data-theme="contrast"] .dropdown > .btn:hover:not([disabled]),
+html[data-theme="contrast"] a:hover {
   background-color: #000000 !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   border-color: #000000 !important;
 }
+
 html[data-theme="contrast"] button.active *,
 html[data-theme="contrast"] button.is-active *,
 html[data-theme="contrast"] button.selected *,
 html[data-theme="contrast"] button.on *,
 html[data-theme="contrast"] button:active *,
 html[data-theme="contrast"] button[aria-pressed="true"] *,
+html[data-theme="contrast"] button[aria-selected="true"] *,
+html[data-theme="contrast"] button[data-active="true"] *,
 html[data-theme="contrast"] .btn.active *,
 html[data-theme="contrast"] .btn.is-active *,
 html[data-theme="contrast"] .btn.selected *,
 html[data-theme="contrast"] .btn:active *,
+html[data-theme="contrast"] .carousel-btn.active *,
+html[data-theme="contrast"] .controls-btn.active *,
 html[data-theme="contrast"] .dropdown.open > .btn *,
 html[data-theme="contrast"] button:hover:not([disabled]) *,
 html[data-theme="contrast"] .btn:hover:not([disabled]) *,
-html[data-theme="contrast"] .icon-btn:hover:not([disabled]) * {
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) *,
+html[data-theme="contrast"] .carousel-btn:hover:not([disabled]) *,
+html[data-theme="contrast"] .controls-btn:hover:not([disabled]) * {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
 html[data-theme="contrast"] button.active svg,
 html[data-theme="contrast"] button:active svg,
 html[data-theme="contrast"] .btn.active svg,
 html[data-theme="contrast"] .btn:active svg,
+html[data-theme="contrast"] .carousel-btn.active svg,
+html[data-theme="contrast"] .controls-btn.active svg,
 html[data-theme="contrast"] .dropdown.open > .btn svg,
 html[data-theme="contrast"] button:hover:not([disabled]) svg,
-html[data-theme="contrast"] .btn:hover:not([disabled]) svg {
+html[data-theme="contrast"] .btn:hover:not([disabled]) svg,
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) svg {
   stroke: #ffffff !important;
   color: #ffffff !important;
+  filter: none !important;
 }
 
-/* 9. Disabled — B&W opacity 0.45 */
+/* 8. DISABLED — белый фон, чёрный текст, opacity 0.45 */
 html[data-theme="contrast"] button:disabled,
 html[data-theme="contrast"] button[disabled],
 html[data-theme="contrast"] button[aria-disabled="true"],
 html[data-theme="contrast"] button.disabled,
 html[data-theme="contrast"] .btn:disabled,
 html[data-theme="contrast"] .btn[disabled],
-html[data-theme="contrast"] .btn.disabled {
+html[data-theme="contrast"] .btn.disabled,
+html[data-theme="contrast"] .carousel-btn:disabled,
+html[data-theme="contrast"] .controls-btn:disabled {
   background-color: #ffffff !important;
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
   border-color: #000000 !important;
   opacity: 0.45 !important;
   cursor: not-allowed !important;
+  box-shadow: none !important;
 }
+
 html[data-theme="contrast"] button:disabled *,
-html[data-theme="contrast"] .btn:disabled * {
+html[data-theme="contrast"] .btn:disabled *,
+html[data-theme="contrast"] .carousel-btn:disabled *,
+html[data-theme="contrast"] .controls-btn:disabled * {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
 }
+
 html[data-theme="contrast"] button:disabled svg,
 html[data-theme="contrast"] .btn:disabled svg {
   stroke: #000000 !important;
 }
 
-/* 10. Panels */
-html[data-theme="contrast"] .panel,
-html[data-theme="contrast"] .card,
-html[data-theme="contrast"] .sidebar,
-html[data-theme="contrast"] .main,
-html[data-theme="contrast"] .controls,
-html[data-theme="contrast"] .controls-bar,
-html[data-theme="contrast"] .dropdown-menu,
-html[data-theme="contrast"] .history-menu,
-html[data-theme="contrast"] .modal,
-html[data-theme="contrast"] .topbar,
-html[data-theme="contrast"] header,
-html[data-theme="contrast"] footer,
-html[data-theme="contrast"] .jst-player {
-  background-color: #ffffff !important;
+/* 9. ERROR — чёрный + underline */
+html[data-theme="contrast"] .error,
+html[data-theme="contrast"] .err,
+html[data-theme="contrast"] .status.error,
+html[data-theme="contrast"] .status.error *,
+html[data-theme="contrast"] .error-text,
+html[data-theme="contrast"] .text-error,
+html[data-theme="contrast"] .text-danger,
+html[data-theme="contrast"] .text-red,
+html[data-theme="contrast"] .is-error,
+html[data-theme="contrast"] .has-error,
+html[data-theme="contrast"] .field-error,
+html[data-theme="contrast"] .input-error,
+html[data-theme="contrast"] .invalid-feedback,
+html[data-theme="contrast"] .invalid {
   color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-decoration-color: #000000 !important;
+}
+
+html[data-theme="contrast"] .status.error::before,
+html[data-theme="contrast"] .status.error .status-dot {
+  background-color: #000000 !important;
   border-color: #000000 !important;
+  animation: none !important;
+}
+
+/* 10. Links */
+html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn):not(.carousel-btn):not(.controls-btn) {
+  color: #000000 !important;
+  text-decoration: underline !important;
 }
 
 /* 11. Dropdown items */
@@ -221,66 +239,29 @@ html[data-theme="contrast"] .history-item:hover {
   color: #ffffff !important;
 }
 
-/* 12. Links */
-html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn):not(.carousel-btn) {
-  color: #000000 !important;
-  text-decoration: underline !important;
-}
-
-/* 13. Logo grayscale */
-html[data-theme="contrast"] .logo,
-html[data-theme="contrast"] .logo-img,
-html[data-theme="contrast"] .logo img,
-html[data-theme="contrast"] img.logo-img,
-html[data-theme="contrast"] .brand img {
-  filter: grayscale(1) !important;
-  opacity: 1 !important;
-}
-html[data-theme="contrast"] .logo-text,
-html[data-theme="contrast"] .brand-text,
-html[data-theme="contrast"] .logo * {
-  color: #000000 !important;
-}
-
-/* 14. Error text — black + underline */
-html[data-theme="contrast"] .error,
-html[data-theme="contrast"] .err,
-html[data-theme="contrast"] .status.error,
-html[data-theme="contrast"] .status.error *,
-html[data-theme="contrast"] .error-text,
-html[data-theme="contrast"] .text-error,
-html[data-theme="contrast"] .text-danger,
-html[data-theme="contrast"] .text-red,
-html[data-theme="contrast"] .field-error,
-html[data-theme="contrast"] .invalid-feedback,
-html[data-theme="contrast"] .invalid {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  text-decoration: underline !important;
-  text-decoration-thickness: 2px !important;
-}
-html[data-theme="contrast"] .status.error::before,
-html[data-theme="contrast"] .status.error .status-dot {
-  background-color: #000000 !important;
-  border-color: #000000 !important;
-  animation: none !important;
-}
-
-/* 15. Dots in download/history */
+/* 12. Dots */
 html[data-theme="contrast"] .jst-btn-with-dot .jst-dot::before,
 html[data-theme="contrast"] .jst-btn-with-dot .jst-dot::after {
   border-color: #000000 !important;
   background: #000000 !important;
 }
+html[data-theme="contrast"] .jst-btn-with-dot:hover .jst-dot::before {
+  border-color: #ffffff !important;
+  background: transparent !important;
+}
+html[data-theme="contrast"] .jst-btn-with-dot:hover .jst-dot::after {
+  background: #ffffff !important;
+}
 
-/* 16. Wand B&W */
+/* 13. Wand B&W */
 html[data-theme="contrast"] #jst-wand .jst-wand-body,
 html[data-theme="contrast"] #jst-wand .jst-wand-star {
   stroke: #000000 !important;
   fill: #000000 !important;
+  filter: none !important;
 }
 
-/* 17. Range slider */
+/* 14. Range slider */
 html[data-theme="contrast"] input[type="range"]::-webkit-slider-runnable-track {
   background: #ffffff !important;
   border: 2px solid #000000 !important;
@@ -299,36 +280,30 @@ html[data-theme="contrast"] input[type="range"]::-moz-range-thumb {
   border: 2px solid #ffffff !important;
 }
 
-/* 18. Scrollbar */
+/* 15. Scrollbar */
 html[data-theme="contrast"] ::-webkit-scrollbar { background: #ffffff !important; }
 html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000000 !important; }
 
-/* 19. Focus */
+/* 16. Focus */
 html[data-theme="contrast"] *:focus-visible {
   outline-color: #000000 !important;
 }
 
-/* 20. Table */
-html[data-theme="contrast"] table,
-html[data-theme="contrast"] th,
-html[data-theme="contrast"] td {
-  border-color: #000000 !important;
-  color: #000000 !important;
-  background-color: #ffffff !important;
-}
+/* 17. Table */
 html[data-theme="contrast"] th {
   background-color: #000000 !important;
   color: #ffffff !important;
 }
+html[data-theme="contrast"] th * {
+  color: #ffffff !important;
+}
 
-/* 21. Accent-grid 135×38 */
-html #accent-grid,
-html[data-theme="contrast"] #accent-grid {
+/* 18. Accent-grid 135×38 */
+html #accent-grid {
   grid-template-columns: repeat(auto-fill, 135px) !important;
   gap: 6px !important;
 }
-html #accent-grid > *,
-html[data-theme="contrast"] #accent-grid > * {
+html #accent-grid > * {
   width: 135px !important;
   min-width: 135px !important;
   max-width: 135px !important;
@@ -345,46 +320,56 @@ html[data-theme="contrast"] #accent-grid > * {
   padding: 0 8px !important;
   font-size: 11px !important;
 }
-html #accent-grid > * *,
-html[data-theme="contrast"] #accent-grid > * * {
+html #accent-grid > * * {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
   max-width: 100% !important;
 }
 
-/* 22. Mode badge under icon */
+/* 19. Badge — маленький, без рамки, цвет по теме, ВНУТРИ кнопки */
 .theme-mode-badge {
-  position: absolute;
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 8px;
-  line-height: 1;
-  padding: 1px 3px;
-  border-radius: 2px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  font-weight: 700;
-  pointer-events: none;
-  white-space: nowrap;
-  letter-spacing: 0.03em;
-  z-index: 10;
+  position: absolute !important;
+  bottom: 1px !important;
+  right: 2px !important;
+  font-size: 7px !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  font-weight: 700 !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+  z-index: 10 !important;
+  opacity: 0.85 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Цвет по теме */
+html[data-theme="day"] .theme-mode-badge {
+  color: #1a2a5e !important;
+  -webkit-text-fill-color: #1a2a5e !important;
+}
+html[data-theme="night"] .theme-mode-badge {
+  color: #F5B800 !important;
+  -webkit-text-fill-color: #F5B800 !important;
 }
 html[data-theme="contrast"] .theme-mode-badge {
-  background: #000000 !important;
-  color: #ffffff !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: transparent !important;
+  opacity: 1 !important;
 }
-html[data-mode="auto"] .theme-mode-badge {
-  background: #2a6b3f !important;
-  color: #ffffff !important;
-}
-html[data-mode="scheduled"] .theme-mode-badge {
-  background: #6b4f00 !important;
-  color: #ffffff !important;
-}
-html[data-mode="contrast"] .theme-mode-badge {
-  background: #000000 !important;
-  color: #ffffff !important;
-  outline: 1px solid #ffffff;
+
+/* Кнопка — position: relative для absolute badge */
+#theme-toggle {
+  position: relative !important;
 }
