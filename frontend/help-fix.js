@@ -205,7 +205,6 @@
   if (isContrast()) setTimeout(walkAll, 500);
   window.__jstContrastEnforce = walkAll;
 })();
-/* === CONTRAST ENFORCER — all inline styles === */
 (function(){
   'use strict';
   var CONTRAST_HEXES = [
@@ -334,5 +333,89 @@
     if (isContrast()) walkAll();
   }, 1000);
   if (isContrast()) setTimeout(walkAll, 500);
+  window.__jstContrastEnforce = walkAll;
+})();
+/* === CONTRAST INLINE ENFORCER === */
+(function(){
+  "use strict";
+  function isContrast() {
+    return document.documentElement.getAttribute("data-theme") === "contrast";
+  }
+  function isSkipped(el) {
+    if (!el) return true;
+    if (el.id === "jst-err-overlay" || el.id === "jst-wand") return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id === "jst-err-overlay" || p.id === "jst-wand") return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  var INLINE_REPLACERS = [
+    [/#F5B800/gi, "#000000"],
+    [/#f5b800/gi, "#000000"],
+    [/#FFC72C/gi, "#000000"],
+    [/#FFD859/gi, "#000000"],
+    [/#FFD700/gi, "#000000"],
+    [/#FFC107/gi, "#000000"],
+    [/#FFB300/gi, "#000000"],
+    [/#FFA000/gi, "#000000"],
+    [/background(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "background$1: #ffffff"],
+    [/background(-color)?\s*:\s*rgba\(\s*255\s*,\s*(199|215|235|216)\s*,[^)]+\)/gi, "background$1: #ffffff"],
+    [/border(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "border$1: #000000"],
+    [/border(-color)?\s*:\s*2px\s+solid\s+#F5B800/gi, "border$1: 2px solid #000000"],
+    [/box-shadow\s*:\s*[^;]*rgba\(\s*245\s*,\s*184\s*,\s*0[^)]*\)[^;]*/gi, "box-shadow: none"],
+  ];
+  function cleanInline(el) {
+    if (!el || el.nodeType !== 1 || isSkipped(el)) return;
+    var style = el.getAttribute("style");
+    if (!style) return;
+    var newStyle = style;
+    var changed = false;
+    for (var i = 0; i < INLINE_REPLACERS.length; i++) {
+      var re = INLINE_REPLACERS[i][0];
+      var rep = INLINE_REPLACERS[i][1];
+      if (re.test(newStyle)) {
+        newStyle = newStyle.replace(re, rep);
+        changed = true;
+      }
+    }
+    if (changed) {
+      try { el.setAttribute("style", newStyle); } catch(e) {}
+    }
+  }
+  function walkAll() {
+    if (!isContrast()) return;
+    var all = document.querySelectorAll("[style]");
+    for (var i = 0; i < all.length; i++) cleanInline(all[i]);
+  }
+  var scheduled = false;
+  function schedule() {
+    if (!isContrast() || scheduled) return;
+    scheduled = true;
+    setTimeout(function() { scheduled = false; walkAll(); }, 100);
+  }
+  try {
+    new MutationObserver(function(m) {
+      for (var i = 0; i < m.length; i++) {
+        if (m[i].attributeName === "data-theme") schedule();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  } catch (e) {}
+  if (document.body) {
+    try {
+      new MutationObserver(function(m) {
+        if (!isContrast()) return;
+        for (var i = 0; i < m.length; i++) {
+          if (m[i].type === "attributes" && m[i].attributeName === "style") {
+            cleanInline(m[i].target);
+          }
+          if (m[i].addedNodes && m[i].addedNodes.length) schedule();
+        }
+      }).observe(document.body, { attributes: true, attributeFilter: ["style"], childList: true, subtree: true });
+    } catch (e) {}
+  }
+  setInterval(function() { if (isContrast()) walkAll(); }, 500);
+  if (isContrast()) setTimeout(walkAll, 300);
   window.__jstContrastEnforce = walkAll;
 })();
