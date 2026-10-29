@@ -47,10 +47,18 @@
   }
   function apply() {
     var theme = _actual(getMode());
-    // contrast — устанавливаем НАПРЯМУЮ, app.js::applyTheme не знает про contrast
+    // For contrast — set directly, don't delegate to app.js applyTheme
     if (theme === "contrast") {
       document.documentElement.setAttribute("data-theme", "contrast");
       try { localStorage.setItem("jst-theme", "contrast"); } catch (e) {}
+      return;
+    }
+    if (typeof window.applyTheme === "function") {
+      try { window.applyTheme(theme); return; } catch (e) {}
+    }
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem("jst-theme", theme); } catch (e) {}
+  } catch (e) {}
       try {
         var lm = localStorage.getItem(KEY);
         if (lm !== "contrast") localStorage.setItem(KEY, "contrast");

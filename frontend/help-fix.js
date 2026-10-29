@@ -189,7 +189,6 @@
   }
 })();
 
-/* === PERSIST CONTRAST THEME — robust across page reloads === */
 (function(){
   'use strict';
   var KEY = 'jst-theme-mode';
@@ -289,7 +288,6 @@
   console.log('[persist] active, stored=' + getStored() + ' backup=' + getBackup() + ' current=' + getCurrent());
 })();
 
-/* === CONTRAST ENFORCER — force B&W inline styles, kill inline yellow === */
 (function(){
   'use strict';
   var SKIP = ['jst-err-overlay', 'jst-wand', 'jst-wand-sparks', 'jst-wand-spark'];
