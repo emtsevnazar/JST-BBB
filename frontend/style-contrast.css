@@ -1,24 +1,7 @@
 /* ============ CONTRAST THEME — preserve design, only colors B&W ============ */
 
 /* 1. Все CSS-переменные → ч/б */
-html[data-theme="contrast"] {
-  --bg: #ffffff;
-  --text: #000000;
-  --text-dim: #000000;
-  --accent: #000000;
-  --gold: #000000;
-  --gold-light: #000000;
-  --navy: #000000;
-  --red: #000000;
-  --panel-bg: #ffffff;
-  --panel-border: #000000;
-  --input-bg: #ffffff;
-  --surface-1: #ffffff;
-  --card-bg: #ffffff;
-  --muted: #000000;
-  --border: #000000;
-  color-scheme: light;
-}
+
 
 /* 2. Body */
 html[data-theme="contrast"] body {
@@ -729,4 +712,76 @@ html[data-theme="contrast"] .status.error .status-dot {
   border-color: #000000 !important;
   box-shadow: none !important;
   animation: none !important;
+}
+
+/* === FIX: переменные + accent-grid 135×38 === */
+html[data-theme="contrast"] {
+  --red: #000000 !important;
+  --red-dark: #000000 !important;
+  --text-dim: #000000 !important;
+  --muted: #000000 !important;
+  --error: #000000 !important;
+  --danger: #000000 !important;
+}
+
+/* KILL любые inline-style с цветом (перебивает атрибут style="color:var(--red)") */
+html[data-theme="contrast"] [style*="color:"],
+html[data-theme="contrast"] [style*="background:"] {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+html[data-theme="contrast"] [style*="color:var(--red)"],
+html[data-theme="contrast"] [style*="color:var(--error)"],
+html[data-theme="contrast"] [style*="color:var(--danger)"] {
+  color: #000000 !important;
+  text-decoration: underline !important;
+  text-decoration-color: #000000 !important;
+}
+
+/* === ACCENT-GRID — 135×38 с ellipsis === */
+html[data-theme="contrast"] #accent-grid,
+html #accent-grid {
+  grid-template-columns: repeat(auto-fill, 135px) !important;
+  gap: 6px !important;
+}
+html[data-theme="contrast"] #accent-grid > *,
+html #accent-grid > * {
+  width: 135px !important;
+  min-width: 135px !important;
+  max-width: 135px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  padding: 0 8px !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.1px !important;
+}
+html[data-theme="contrast"] #accent-grid > * > span,
+html #accent-grid > * > span,
+html[data-theme="contrast"] #accent-grid button,
+html #accent-grid button {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  display: block !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+}
+/* Отключаем wrap внутри кнопки — текст в одну строку с ellipsis */
+html #accent-grid > * *,
+html[data-theme="contrast"] #accent-grid > * * {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
 }
