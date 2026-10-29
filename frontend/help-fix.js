@@ -124,7 +124,6 @@
   if (isContrast()) setTimeout(enforceHelpModal, 500);
   window.__jstContrastHelpEnforce = enforceHelpModal;
 })();
-/* === CONTRAST ENFORCER === */
 (function(){
   'use strict';
   var CONTRAST_HEXES = [
@@ -203,6 +202,137 @@
       }).observe(document.body, { childList: true, subtree: true });
     } catch (e) {}
   }
+  if (isContrast()) setTimeout(walkAll, 500);
+  window.__jstContrastEnforce = walkAll;
+})();
+/* === CONTRAST ENFORCER — all inline styles === */
+(function(){
+  'use strict';
+  var CONTRAST_HEXES = [
+    /#F5B800/gi, /#FFC72C/gi, /#FFD859/gi, /#FFD966/gi,
+    /#FFE082/gi, /#FFEB3B/gi, /#FFD700/gi, /#FFC107/gi,
+    /#FFB300/gi, /#FFA000/gi, /#FFCA28/gi, /#FFD54F/gi,
+    /#f5b300/gi, /#f0c040/gi,
+    /rgba\(\s*245\s*,\s*184\s*,\s*0[^)]*\)/gi,
+    /rgba\(\s*255\s*,\s*(?:199|215|235|216)\s*,\s*(?:44|0|59|89)[^)]*\)/gi
+  ];
+  function isContrast() {
+    return document.documentElement.getAttribute('data-theme') === 'contrast';
+  }
+  function isSkipped(el) {
+    if (!el || !el.id) return false;
+    if (el.id === 'jst-err-overlay' || el.id === 'jst-wand') return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id === 'jst-err-overlay' || p.id === 'jst-wand') return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  function fixInline(el) {
+    if (!el || el.nodeType !== 1) return;
+    if (isSkipped(el)) return;
+    var style = el.getAttribute('style');
+    if (!style) return;
+    var newStyle = style;
+    var changed = false;
+    // Kill hex yellows
+    CONTRAST_HEXES.forEach(function(re) {
+      if (re.test(newStyle)) {
+        newStyle = newStyle.replace(re, '#000000');
+        changed = true;
+      }
+    });
+    // Replace rgba(0,0,0,x) backgrounds → transparent
+    if (/background[^:]*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0/.test(newStyle)) {
+      newStyle = newStyle.replace(
+        /background(-color)?\s*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0\s*,[^)]+\)/gi,
+        'background$1: transparent'
+      );
+      changed = true;
+    }
+    // rgba(255,255,255,x) backgrounds → transparent
+    if (/background[^:]*:\s*rgba\(\s*255\s*,\s*255\s*,\s*255/.test(newStyle)) {
+      newStyle = newStyle.replace(
+        /background(-color)?\s*:\s*rgba\(\s*255\s*,\s*255\s*,\s*255\s*,[^)]+\)/gi,
+        'background$1: transparent'
+      );
+      changed = true;
+    }
+    // box-shadow → none
+    if (/box-shadow\s*:/.test(newStyle)) {
+      newStyle = newStyle.replace(/box-shadow\s*:[^;]+;?/gi, 'box-shadow: none !important;');
+      changed = true;
+    }
+    // color: rgba(0,0,0,x) → black
+    if (/color\s*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0/.test(newStyle)) {
+      newStyle = newStyle.replace(
+        /(?:^|;)\s*color\s*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0\s*,[^)]+\)/gi,
+        ';color: #000000 !important'
+      );
+      changed = true;
+    }
+    // border-color: rgba(0,0,0,x) → black
+    if (/border[^:]*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0/.test(newStyle)) {
+      newStyle = newStyle.replace(
+        /border(?:-color)?\s*:\s*rgba\(\s*0\s*,\s*0\s*,\s*0\s*,[^)]+\)/gi,
+        'border-color: #000000 !important'
+      );
+      changed = true;
+    }
+    if (changed) {
+      try { el.setAttribute('style', newStyle); } catch(e) {}
+    }
+  }
+  function walkAll() {
+    if (!isContrast()) return;
+    var all = document.querySelectorAll('[style]');
+    for (var i = 0; i < all.length; i++) fixInline(all[i]);
+  }
+  var scheduled = false;
+  function schedule() {
+    if (!isContrast() || scheduled) return;
+    scheduled = true;
+    setTimeout(function() {
+      scheduled = false;
+      walkAll();
+    }, 50);
+  }
+  // Theme change observer
+  try {
+    new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === 'data-theme') schedule();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  } catch (e) {}
+  // Body attribute observer (для inline style изменений)
+  if (document.body) {
+    try {
+      new MutationObserver(function(mutations) {
+        if (!isContrast()) return;
+        for (var i = 0; i < mutations.length; i++) {
+          if (mutations[i].type === 'attributes' && mutations[i].attributeName === 'style') {
+            schedule();
+            return;
+          }
+          if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
+            schedule();
+            return;
+          }
+        }
+      }).observe(document.body, {
+        attributes: true,
+        attributeFilter: ['style'],
+        childList: true,
+        subtree: true
+      });
+    } catch (e) {}
+  }
+  // Periodic enforcer (catch missed changes)
+  setInterval(function() {
+    if (isContrast()) walkAll();
+  }, 1000);
   if (isContrast()) setTimeout(walkAll, 500);
   window.__jstContrastEnforce = walkAll;
 })();

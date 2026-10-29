@@ -1,10 +1,9 @@
 /* ============================================================
    CONTRAST THEME — ABSOLUTE B&W
-   Принцип: только #000 и #fff. Белый фон + чёрный текст,
-   чёрный фон + белый текст. Инверсия при hover/active/focus.
+   Загружается ПОСЛЕ style-v4.css. Только #000 и #fff.
    ============================================================ */
 
-/* 1. CSS variables */
+/* 1. Variables → B&W */
 html[data-theme="contrast"] {
   --bg: #ffffff; --text: #000000; --text-dim: #000000; --muted: #000000;
   --accent: #000000; --gold: #000000; --gold-light: #000000; --gold-dark: #000000;
@@ -26,11 +25,12 @@ html[data-theme="contrast"] body {
   color: #000000 !important;
 }
 
-/* 3. Все контейнеры */
+/* 3. Все контейнеры — БЕЛЫЕ */
 html[data-theme="contrast"] .panel,
 html[data-theme="contrast"] .card,
 html[data-theme="contrast"] .sidebar,
 html[data-theme="contrast"] .main,
+html[data-theme="contrast"] .app,
 html[data-theme="contrast"] .controls,
 html[data-theme="contrast"] .controls-bar,
 html[data-theme="contrast"] .topbar,
@@ -39,21 +39,32 @@ html[data-theme="contrast"] footer,
 html[data-theme="contrast"] .dropdown-menu,
 html[data-theme="contrast"] .history-menu,
 html[data-theme="contrast"] .modal,
-html[data-theme="contrast"] .jst-player,
 html[data-theme="contrast"] .help-modal,
 html[data-theme="contrast"] .help-doc,
 html[data-theme="contrast"] .help-content,
 html[data-theme="contrast"] .help-section,
 html[data-theme="contrast"] .help-header,
-html[data-theme="contrast"] .help-body {
+html[data-theme="contrast"] .help-body,
+html[data-theme="contrast"] .help-pill,
+html[data-theme="contrast"] .help-arrow,
+html[data-theme="contrast"] .jst-player,
+html[data-theme="contrast"] .jstp-controls,
+html[data-theme="contrast"] .batch-panel,
+html[data-theme="contrast"] .batch-table,
+html[data-theme="contrast"] .history-list,
+html[data-theme="contrast"] .history-item,
+html[data-theme="contrast"] .select-wrap,
+html[data-theme="contrast"] .dropdown,
+html[data-theme="contrast"] .carousel {
   background-color: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
   border-color: #000000 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
-/* 4. ГЛАВНОЕ ПРАВИЛО: все элементы → ч/б фон/текст */
-/* Ловит всё что имеет белый/чёрный/любой цвет */
+/* 4. Кнопки — БЕЛЫЕ с чёрным текстом */
 html[data-theme="contrast"] button,
 html[data-theme="contrast"] .btn,
 html[data-theme="contrast"] .icon-btn,
@@ -62,13 +73,7 @@ html[data-theme="contrast"] .controls-btn,
 html[data-theme="contrast"] [role="button"],
 html[data-theme="contrast"] select,
 html[data-theme="contrast"] summary,
-html[data-theme="contrast"] a:not(.logo),
-html[data-theme="contrast"] .dropdown-menu a,
-html[data-theme="contrast"] .history-menu a,
-html[data-theme="contrast"] .history-item,
-html[data-theme="contrast"] .dropdown-menu li,
-html[data-theme="contrast"] .help-pill {
-  background: #ffffff !important;
+html[data-theme="contrast"] a:not(.logo) {
   background-color: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
@@ -83,11 +88,7 @@ html[data-theme="contrast"] .icon-btn *,
 html[data-theme="contrast"] .carousel-btn *,
 html[data-theme="contrast"] .controls-btn *,
 html[data-theme="contrast"] [role="button"] *,
-html[data-theme="contrast"] a *,
-html[data-theme="contrast"] .dropdown-menu a *,
-html[data-theme="contrast"] .history-menu a *,
-html[data-theme="contrast"] .history-item *,
-html[data-theme="contrast"] .help-pill * {
+html[data-theme="contrast"] a:not(.logo) * {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
 }
@@ -96,12 +97,12 @@ html[data-theme="contrast"] .btn svg,
 html[data-theme="contrast"] .icon-btn svg,
 html[data-theme="contrast"] .carousel-btn svg,
 html[data-theme="contrast"] .controls-btn svg,
-html[data-theme="contrast"] a svg {
+html[data-theme="contrast"] a:not(.logo) svg {
   stroke: #000000 !important;
   fill: none !important;
 }
 
-/* 5. HOVER / ACTIVE / FOCUS / PRESSED — ИНВЕРСИЯ */
+/* 5. HOVER/ACTIVE — ЧЁРНАЯ кнопка, БЕЛЫЙ текст */
 html[data-theme="contrast"] button:hover,
 html[data-theme="contrast"] button:focus,
 html[data-theme="contrast"] button:active,
@@ -134,19 +135,23 @@ html[data-theme="contrast"] a:not(.logo):focus,
 html[data-theme="contrast"] a:not(.logo):active,
 html[data-theme="contrast"] .dropdown-menu a:hover,
 html[data-theme="contrast"] .dropdown-menu a:focus,
+html[data-theme="contrast"] .dropdown-menu a:active,
 html[data-theme="contrast"] .history-menu a:hover,
 html[data-theme="contrast"] .history-menu a:focus,
+html[data-theme="contrast"] .history-menu a:active,
 html[data-theme="contrast"] .history-item:hover,
 html[data-theme="contrast"] .history-item:focus,
-html[data-theme="contrast"] .dropdown-menu li:hover,
+html[data-theme="contrast"] .history-item:active,
 html[data-theme="contrast"] .history-menu .history-list > div:hover,
+html[data-theme="contrast"] .dropdown-menu li:hover,
 html[data-theme="contrast"] .dropdown.open > .btn,
 html[data-theme="contrast"] .dropdown.open > button,
 html[data-theme="contrast"] .dropdown.active > .btn,
 html[data-theme="contrast"] .help-pill:hover,
+html[data-theme="contrast"] .help-pill:focus,
+html[data-theme="contrast"] .help-section[open] .help-pill,
 html[data-theme="contrast"] .help-section[open] > summary,
-html[data-theme="contrast"] .help-section[open] .help-pill {
-  background: #000000 !important;
+html[data-theme="contrast"] summary:hover {
   background-color: #000000 !important;
   background-image: none !important;
   color: #ffffff !important;
@@ -171,7 +176,7 @@ html[data-theme="contrast"] .carousel-btn:active *,
 html[data-theme="contrast"] .carousel-btn.active *,
 html[data-theme="contrast"] .controls-btn:hover *,
 html[data-theme="contrast"] .controls-btn:active *,
-html[data-theme="contrast"] a:hover *,
+html[data-theme="contrast"] a:not(.logo):hover *,
 html[data-theme="contrast"] .dropdown-menu a:hover *,
 html[data-theme="contrast"] .history-menu a:hover *,
 html[data-theme="contrast"] .history-item:hover *,
@@ -202,19 +207,20 @@ html[data-theme="contrast"] button:disabled,
 html[data-theme="contrast"] button[disabled],
 html[data-theme="contrast"] .btn:disabled,
 html[data-theme="contrast"] .btn[disabled] {
-  background: #ffffff !important;
+  background-color: #ffffff !important;
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
   border-color: #000000 !important;
   opacity: 0.45 !important;
   cursor: not-allowed !important;
+  box-shadow: none !important;
 }
 html[data-theme="contrast"] button:disabled *,
 html[data-theme="contrast"] .btn:disabled * {
   color: #000000 !important;
 }
 
-/* 7. Help modal — ВСЁ ч/б */
+/* 7. HELP MODAL — всё ч/б */
 html[data-theme="contrast"] .help-modal *,
 html[data-theme="contrast"] .help-doc *,
 html[data-theme="contrast"] .help-content *,
@@ -222,7 +228,8 @@ html[data-theme="contrast"] .help-section *,
 html[data-theme="contrast"] .help-header *,
 html[data-theme="contrast"] .help-body *,
 html[data-theme="contrast"] .help-title,
-html[data-theme="contrast"] .help-arrow {
+html[data-theme="contrast"] .help-table,
+html[data-theme="contrast"] .help-table * {
   background-color: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
@@ -231,11 +238,13 @@ html[data-theme="contrast"] .help-arrow {
   box-shadow: none !important;
   text-shadow: none !important;
 }
-html[data-theme="contrast"] .help-modal th {
-  background: #000000 !important;
+html[data-theme="contrast"] .help-modal th,
+html[data-theme="contrast"] .help-table th {
+  background-color: #000000 !important;
   color: #ffffff !important;
 }
-html[data-theme="contrast"] .help-modal th * {
+html[data-theme="contrast"] .help-modal th *,
+html[data-theme="contrast"] .help-table th * {
   color: #ffffff !important;
 }
 html[data-theme="contrast"] .help-modal a,
@@ -243,16 +252,12 @@ html[data-theme="contrast"] .help-doc a {
   color: #000000 !important;
   text-decoration: underline !important;
 }
-html[data-theme="contrast"] .help-modal a:hover {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
 html[data-theme="contrast"] .help-modal-close:hover {
-  background: #000000 !important;
+  background-color: #000000 !important;
   color: #ffffff !important;
 }
 
-/* 8. Убить ВСЕ inline rgba (серые) */
+/* 8. Убить inline rgba и yellow */
 html[data-theme="contrast"] [style*="rgba(0, 0, 0"],
 html[data-theme="contrast"] [style*="rgba(0,0,0"],
 html[data-theme="contrast"] [style*="rgba(255, 255, 255"],
@@ -261,7 +266,8 @@ html[data-theme="contrast"] [style*="245, 184, 0"],
 html[data-theme="contrast"] [style*="245,184,0"],
 html[data-theme="contrast"] [style*="255, 199, 44"],
 html[data-theme="contrast"] [style*="#F5B800"],
-html[data-theme="contrast"] [style*="#FFC72C"] {
+html[data-theme="contrast"] [style*="#FFC72C"],
+html[data-theme="contrast"] [style*="#FFD859"] {
   background-color: transparent !important;
   border-color: #000000 !important;
   color: #000000 !important;
@@ -287,10 +293,9 @@ html[data-theme="contrast"] .invalid {
   text-decoration-thickness: 2px !important;
 }
 
-/* 10. Links */
-html[data-theme="contrast"] a:not(.logo) {
-  color: #000000 !important;
-  text-decoration: underline !important;
+/* 10. Waveform canvas — grayscale */
+html[data-theme="contrast"] canvas {
+  filter: grayscale(1) !important;
 }
 
 /* 11. img grayscale */
@@ -321,7 +326,7 @@ html #accent-grid > * {
   font-size: 11px !important;
 }
 
-/* 13. Badge 6px inherit */
+/* 13. Badge */
 #theme-toggle {
   position: relative !important;
   overflow: visible !important;
@@ -344,4 +349,20 @@ html #accent-grid > * {
   color: inherit !important;
   -webkit-text-fill-color: inherit !important;
   z-index: 10 !important;
+}
+
+/* 14. Точки download/history — чёрные */
+html[data-theme="contrast"] .jst-btn-with-dot .jst-dot::before {
+  border-color: #000000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] .jst-btn-with-dot .jst-dot::after {
+  background-color: #000000 !important;
+}
+html[data-theme="contrast"] .jst-btn-with-dot:hover .jst-dot::before {
+  border-color: #ffffff !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] .jst-btn-with-dot:hover .jst-dot::after {
+  background-color: #ffffff !important;
 }
