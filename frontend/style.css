@@ -177,7 +177,11 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
   box-shadow:0 0 8px rgba(245,184,0,.25)}
 .dropdown{position:relative;display:inline-block}
 .dropdown > .btn{position:relative;padding-right:46px}
-
+.dropdown > .btn::after{content:"●";position:absolute;right:8px;top:50%;
+  transform:translateY(-50%);width:26px;height:26px;border-radius:50%;
+  background:var(--input-bg);border:1.5px solid var(--panel-border);
+  display:flex;align-items:center;justify-content:center;font-size:9px;
+  color:var(--accent);pointer-events:none;z-index:1;transition:all .2s}
 .dropdown:hover > .btn::after{border-color:var(--gold);color:var(--gold)}
 .dropdown-menu{position:absolute;top:calc(100% + 6px);right:0;background:var(--panel-bg);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
@@ -1363,6 +1367,29 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
   /* background, color, transform — наследуются от обычной карточки */
 }
 
+/* ============================================================
+   ТОЧКИ ● ЖЁЛТЫЕ + ЖИРНЫЕ ВО ВСЕХ БУРГЕР-МЕНЮ
+   ============================================================ */
+
+/* Кнопки «Скачать», «История» — точка после текста */
+.dropdown > .btn::after {
+  content: "●" !important;
+  color: var(--gold, #F5B800) !important;
+  font-weight: 900 !important;
+  font-size: 14px !important;
+  width: 26px !important;
+  height: 26px !important;
+  line-height: 26px !important;
+  text-align: center !important;
+  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
+  border-radius: 50% !important;
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  box-sizing: border-box !important;
+}
 
 /* Hover на кнопку — точка становится ярко-жёлтой */
 .dropdown:hover > .btn::after,
@@ -1372,6 +1399,12 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
   border-color: var(--gold, #F5B800) !important;
 }
 
+/* Тёмная тема — фон точки тёмный, сама точка жёлтая */
+html[data-theme="night"] .dropdown > .btn::after {
+  background: rgba(255,255,255,0.08) !important;
+  color: var(--gold, #F5B800) !important;
+  border-color: rgba(245, 184, 0, 0.40) !important;
+}
 html[data-theme="night"] .dropdown:hover > .btn::after,
 html[data-theme="night"] .dropdown:focus-within > .btn::after {
   background: var(--gold, #F5B800) !important;
@@ -1917,6 +1950,26 @@ html body .help-section .help-pill {
   color: var(--navy, #1a2a5e) !important;
 }
 
+/* ============================================================
+   НОЧЬ: «Скачать» и «История» = фон как у «Случайный» / «Очистить»
+   ============================================================ */
+
+/* Убираем светлый фон у бургер-кнопок Скачать и История в ночи */
+html[data-theme="night"] body .dropdown > #btn-download-toggle,
+html[data-theme="night"] body .dropdown > #history-toggle,
+html[data-theme="night"] body #btn-download-toggle,
+html[data-theme="night"] body #history-toggle,
+html[data-theme="night"] body .dropdown > .btn:has(#btn-download-toggle),
+html[data-theme="night"] body .dropdown > .btn:has(#history-toggle),
+html[data-theme="night"] body .dropdown:has(#btn-download-toggle) > .btn,
+html[data-theme="night"] body .dropdown:has(#history-toggle) > .btn,
+html[data-theme="night"] body .dropdown > .btn,
+html[data-theme="night"] body .dropdown > button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FFC72C !important;
+  border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
+  box-shadow: none !important;
+}
 
 /* Дочерние элементы (стрелка, текст) — жёлтые */
 html[data-theme="night"] body #btn-download-toggle *,
@@ -1925,6 +1978,14 @@ html[data-theme="night"] body .dropdown > .btn * {
   color: #FFC72C !important;
 }
 
+/* Кружок точки ::after — тоже тёмный */
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="night"] body #history-toggle::after,
+html[data-theme="night"] body .dropdown > .btn::after {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #FFC72C !important;
+  border-color: rgba(245, 184, 0, 0.40) !important;
+}
 
 /* Hover — жёлтая рамка, фон тот же */
 html[data-theme="night"] body #btn-download-toggle:hover,
@@ -1942,6 +2003,14 @@ html[data-theme="night"] body .dropdown > .btn:hover::after {
   border-color: var(--gold, #F5B800) !important;
 }
 
+/* Активное/открытое состояние — жёлтый фон, синий текст */
+html[data-theme="night"] body .dropdown:has(#btn-download-toggle)[open] > .btn,
+html[data-theme="night"] body .dropdown:has(#history-toggle)[open] > .btn,
+html[data-theme="night"] body .dropdown.open > .btn {
+  background: var(--gold, #F5B800) !important;
+  color: var(--navy, #1a2a5e) !important;
+  border-color: var(--gold, #F5B800) !important;
+}
 
 /* ============================================================
    ФИНАЛ: Скачать и История = фон и текст как у Случайный/Очистить
@@ -1973,6 +2042,16 @@ html[data-theme="night"] body #history-dropdown > .btn * {
   color: #FFC72C !important;
 }
 
+/* Кружок-точка ::after — тёмный фон, жёлтая точка */
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="night"] body #history-toggle::after,
+html[data-theme="night"] body #dl-dropdown > .btn::after,
+html[data-theme="night"] body #history-dropdown > .btn::after,
+html[data-theme="night"] body .dropdown > .btn::after {
+  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  color: #FFC72C !important;
+  border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
+}
 
 /* Hover — жёлтая рамка, фон НЕ меняется */
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
@@ -2061,7 +2140,14 @@ html body #history-toggle *,
 html body .dropdown > .btn * {
   color: #FFC72C !important;
 }
-
+/* Кружок ● у Скачать/История */
+html body #btn-download-toggle::after,
+html body #history-toggle::after,
+html body .dropdown > .btn::after {
+  background: rgba(13, 26, 63, 0.55) !important;
+  color: #FFC72C !important;
+  border-color: rgba(245, 184, 0, 0.40) !important;
+}
 /* Hover */
 html body :is(#btn-random, #btn-batch):hover,
 html body #btn-clear-history:hover,
@@ -2233,7 +2319,13 @@ html[data-theme="day"] body #history-toggle *,
 html[data-theme="day"] body .dropdown > .btn * {
   color: var(--navy, #1a2a5e) !important;
 }
-
+html[data-theme="day"] body #btn-download-toggle::after,
+html[data-theme="day"] body #history-toggle::after,
+html[data-theme="day"] body .dropdown > .btn::after {
+  background: var(--gold, #F5B800) !important;
+  color: var(--navy, #1a2a5e) !important;
+  border-color: var(--gold, #F5B800) !important;
+}
 html[data-theme="day"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="day"] body #btn-clear-history:hover,
 html[data-theme="day"] body #btn-download-toggle:hover,
@@ -2261,7 +2353,13 @@ html[data-theme="night"] body #history-toggle *,
 html[data-theme="night"] body .dropdown > .btn * {
   color: var(--gold, #F5B800) !important;
 }
-
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="night"] body #history-toggle::after,
+html[data-theme="night"] body .dropdown > .btn::after {
+  background: var(--gold, #F5B800) !important;
+  color: #0d1a3f !important;
+  border-color: var(--gold, #F5B800) !important;
+}
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear-history:hover,
 html[data-theme="night"] body #btn-download-toggle:hover,
@@ -2421,7 +2519,12 @@ html[data-theme="night"] body .dropdown > .btn *,
 html[data-theme="night"] body .btn.btn-ghost * {
   color: #F5B800 !important;
 }
-
+html[data-theme="night"] body .dropdown > .btn::after,
+html[data-theme="night"] body .btn.btn-ghost::after {
+  background: #F5B800 !important;
+  color: #1a2a5e !important;
+  border-color: #F5B800 !important;
+}
 html[data-theme="night"] body .dropdown > .btn:hover,
 html[data-theme="night"] body .dropdown > .btn.btn-ghost:hover,
 html[data-theme="night"] body .btn.btn-ghost:hover {
@@ -2502,6 +2605,15 @@ html[data-theme="night"] body .history-menu > * {
   color: #F5B800 !important;
 }
 
+/* Точка ● у Скачать / История — жёлтый кружок, синий символ (контраст на светлом фоне) */
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="night"] body #history-toggle::after,
+html[data-theme="night"] body .dropdown > .btn::after,
+html[data-theme="night"] body .btn.btn-ghost::after {
+  background: #F5B800 !important;
+  color: #1a2a5e !important;
+  border-color: #F5B800 !important;
+}
 
 /* ---------- 2. УБРАТЬ РАМКИ В ИНСТРУКЦИИ (день + ночь) ---------- */
 html[data-theme="night"] body .help-doc,
@@ -2552,6 +2664,13 @@ html[data-theme="night"] body #history-toggle * {
   color: #F5B800 !important;
 }
 
+/* Точка ● (псевдоэлемент ::after) — жёлтый кружок, синий символ */
+html[data-theme="night"] body #btn-download-toggle::after,
+html[data-theme="night"] body #history-toggle::after {
+  background: #F5B800 !important;
+  color: #1a2a5e !important;
+  border-color: #F5B800 !important;
+}
 
 /* ---------- 2. HELP-ЭЛЕМЕНТЫ: ДЕНЬ + НОЧЬ ---------- */
 
@@ -6206,209 +6325,3 @@ img, video, canvas, svg:not([class*="icon"]){
   max-width: 100%;
   height: auto;
 }
-
-/* ===== help-table: mobile fallback <500px ===== */
-@media (max-width: 500px) {
-  table.help-table,
-  table.help-table thead,
-  table.help-table tbody,
-  table.help-table tr,
-  table.help-table th,
-  table.help-table td {
-    display: block;
-    width: 100%;
-  }
-  table.help-table thead { display: none; }
-  table.help-table tr {
-    border: 1px solid rgba(0,0,0,.12);
-    border-radius: 10px;
-    margin-bottom: .75rem;
-    padding: .65rem .8rem;
-    background: var(--surface-1, #fff);
-  }
-  table.help-table td {
-    padding: .25rem 0;
-    border: none;
-    font-size: .95rem;
-    line-height: 1.45;
-  }
-  table.help-table td::before {
-    content: attr(data-label) ": ";
-    font-weight: 600;
-    color: var(--text-muted, #555);
-  }
-  table.help-table td:first-child {
-    font-weight: 700;
-    margin-bottom: .25rem;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-/* === JST_DROPDOWN_DOTS_V5 — прозрачный контур-круг + жирная точка === */
-/* Оставляем ТОЛЬКО: border-круг, content: ●, прозрачный фон. Никаких box-shadow, заливок. */
-
-#btn-download-toggle,
-#history-dropdown > .btn,
-#dl-dropdown > .btn,
-.dropdown > .btn {
-  position: relative !important;
-  padding-right: 52px !important;
-}
-
-html body #btn-download-toggle::after,
-html body #history-dropdown > .btn::after,
-html body #dl-dropdown > .btn::after,
-html body .dropdown > .btn::after {
-  content: "●" !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: absolute !important;
-  right: 8px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  box-sizing: border-box !important;
-  border-radius: 50% !important;
-  border: 2px solid currentColor !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  font-size: 14px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  text-align: center !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
-  transition: color 0.15s, border-color 0.15s, box-shadow 0.15s !important;
-}
-
-/* ДЕНЬ — синие */
-html[data-theme="day"] body #btn-download-toggle::after,
-html[data-theme="day"] body #history-dropdown > .btn::after,
-html[data-theme="day"] body #dl-dropdown > .btn::after,
-html[data-theme="day"] body .dropdown > .btn::after {
-  color: #1a2a5e !important;
-  border-color: #1a2a5e !important;
-}
-/* НОЧЬ — жёлтые */
-html[data-theme="night"] body #btn-download-toggle::after,
-html[data-theme="night"] body #history-dropdown > .btn::after,
-html[data-theme="night"] body #dl-dropdown > .btn::after,
-html[data-theme="night"] body .dropdown > .btn::after {
-  color: #F5B800 !important;
-  border-color: #F5B800 !important;
-}
-/* HOVER/ACTIVE — всегда золотые */
-html body #btn-download-toggle:hover::after,
-html body #history-dropdown > .btn:hover::after,
-html body #dl-dropdown > .btn:hover::after,
-html body .dropdown > .btn:hover::after,
-html body #btn-download-toggle:active::after,
-html body #history-dropdown > .btn:active::after {
-  color: #F5B800 !important;
-  border-color: #F5B800 !important;
-  box-shadow: 0 0 10px rgba(245,184,0,0.5) !important;
-}
-
-/* === WAND CURSOR CSS (JS-driven) === */
-#jst-wand {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 24px;
-  height: 24px;;
-  pointer-events: none;
-  z-index: 2147483647;
-  transform: translate(var(--jst-x, -200px), var(--jst-y, -200px));
-  transform-origin: 12px 12px;
-  transition: opacity 0.15s;
-  opacity: 1;
-  will-change: transform;
-}
-#jst-wand.jst-wand-over-input { opacity: 0; }
-#jst-wand.jst-wand-pressed .jst-wand-svg {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 10px #F5B800) drop-shadow(0 0 6px #1a2a5e);
-}
-.jst-wand-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 4px #F5B800);
-  transition: transform 0.08s, filter 0.15s;
-}
-.jst-sparks-layer {
-  position: absolute;
-  left: 12px;
-  top: 12px;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-.jst-spark {
-  position: absolute;
-  border-radius: 50%;
-  background: #F5B800;
-  box-shadow: 0 0 5px #F5B800;
-  transform: translate(-50%, -50%);
-  animation: jst-spark-fly 800ms cubic-bezier(0.15, 0.8, 0.4, 1) forwards;
-  will-change: transform, opacity;
-}
-.jst-spark-blue {
-  background: #1a2a5e;
-  box-shadow: 0 0 5px #1a2a5e, 0 0 8px rgba(245,184,0,0.4);
-}
-.jst-spark-alt {
-  background: #1a2a5e;
-  box-shadow: 0 0 5px #1a2a5e;
-}
-.jst-spark-burst {
-  animation-duration: 1000ms;
-}
-@keyframes jst-spark-fly {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  60% { opacity: 0.9; }
-  100% { transform: translate(calc(-50% + var(--jst-dx, 0)), calc(-50% + var(--jst-dy, 0))) scale(0.2); opacity: 0; }
-}
-/* Цвета по теме */
-html[data-theme="day"] {
-  --jst-wand-outline: #F5B800;
-  --jst-wand-body: #1a2a5e;
-  --jst-wand-star: #F5B800;
-  --jst-spark-1: #1a2a5e;
-  --jst-spark-2: #F5B800;
-}
-html[data-theme="night"] {
-  --jst-wand-outline: #1a2a5e;
-  --jst-wand-body: #F5B800;
-  --jst-wand-star: #1a2a5e;
-  --jst-spark-1: #F5B800;
-  --jst-spark-2: #1a2a5e;
-}
-/* Скрыть системный курсор */
-body.jst-wand-active,
-body.jst-wand-active * { cursor: none !important; }
-body.jst-wand-active input,
-body.jst-wand-active textarea,
-body.jst-wand-active [contenteditable="true"] { cursor: text !important; }
-/* На touch — вернуть системный */
-@media (hover: none) {
-  body.jst-wand-active, body.jst-wand-active * { cursor: auto !important; }
-  #jst-wand { display: none !important; }
-}
-/* === /JST_DROPDOWN_DOTS_V5 + WAND CSS === */
