@@ -3,7 +3,6 @@
   var KEY = "jst-theme-mode";
   var ORDER = ["day", "night", "auto", "scheduled", "contrast"];
   var LABELS = { day: "Day", night: "Night", auto: "Auto", scheduled: "Sched", contrast: "B&W" };
-  /* badge inherits color from button */
   var SVG = {
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
@@ -12,18 +11,11 @@
     contrast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg>'
   };
   var TITLES = {
-    day: { ru: "Светлая", en: "Light" },
-    night: { ru: "Тёмная", en: "Dark" },
-    auto: { ru: "Авто", en: "Auto" },
-    scheduled: { ru: "По расписанию", en: "Schedule" },
-    contrast: { ru: "Ч/Б контраст", en: "B&W" }
+    day: "Light", night: "Dark", auto: "Auto", scheduled: "Schedule", contrast: "B&W"
   };
 
   var _applying = false;
 
-  function _lang() {
-    try { return localStorage.getItem("jst-lang") || "ru"; } catch (e) { return "ru"; }
-  }
   function getMode() {
     try {
       var m = localStorage.getItem(KEY);
@@ -51,22 +43,10 @@
     _applying = true;
     var mode = getMode();
     var actual = _actual(mode);
-    if (document.documentElement.getAttribute("data-theme") !== actual) {
-      document.documentElement.setAttribute("data-theme", actual);
-    }
+    document.documentElement.setAttribute("data-theme", actual);
     document.documentElement.setAttribute("data-mode", mode);
     try { localStorage.setItem("jst-theme", actual); } catch (e) {}
     _applying = false;
-    updateBadgeColor(actual);
-  }
-  function updateBadgeColor() {
-    var badge = document.getElementById("theme-mode-badge");
-    if (!badge) return;
-    badge.style.removeProperty("color");
-    badge.style.removeProperty("-webkit-text-fill-color");
-    badge.style.removeProperty("background");
-    badge.style.removeProperty("background-color");
-    badge.style.removeProperty("background-image");
   }
   function render() {
     var mode = getMode();
@@ -75,9 +55,8 @@
     if (icon) icon.innerHTML = SVG[mode] || SVG.auto;
     var btn = document.getElementById("theme-toggle");
     if (btn) {
-      var t = TITLES[mode] || {};
-      btn.setAttribute("title", (t[_lang()] || t.ru || mode) + " (click to switch)");
-      btn.setAttribute("aria-label", t[_lang()] || t.ru || mode);
+      btn.setAttribute("title", (TITLES[mode] || mode) + " (click to switch)");
+      btn.setAttribute("aria-label", TITLES[mode] || mode);
       btn.setAttribute("data-current-mode", mode);
     }
     var badge = document.getElementById("theme-mode-badge");
@@ -91,7 +70,6 @@
       }
     }
     if (badge) badge.textContent = LABELS[mode] || mode;
-    updateBadgeColor(actual);
   }
   function nextMode() {
     var cur = getMode();
@@ -115,7 +93,6 @@
   function init() {
     document.addEventListener("click", _intercept, true);
 
-    /* Catch any external data-theme reset (app.js, another script) and restore */
     try {
       new MutationObserver(function(mutations) {
         if (_applying) return;
@@ -124,13 +101,10 @@
             var expected = _actual(getMode());
             var current = document.documentElement.getAttribute("data-theme");
             if (current !== expected) {
-              try { console.warn("[theme-mode] external reset detected:", current, "→ restoring:", expected); } catch(e) {}
+              try { console.warn("[theme-mode] reset detected: " + current + " → " + expected); } catch(e) {}
               _applying = true;
               document.documentElement.setAttribute("data-theme", expected);
               _applying = false;
-              updateBadgeColor(expected);
-            } else {
-              updateBadgeColor(current);
             }
           }
         }
@@ -149,28 +123,25 @@
     setInterval(function () { if (getMode() === "scheduled") apply(); }, 60000);
     apply();
     render();
-    try { console.log("[theme-mode] ready. ORDER:", ORDER.join("→"), "mode:", getMode(), "actual:", document.documentElement.getAttribute("data-theme")); } catch (e) {}
+
+    window.__jstThemeLoaded = true;
+    window.__jstThemeDebug = function() {
+      var btn = document.getElementById("theme-toggle");
+      var badge = document.querySelector(".theme-mode-badge");
+      return {
+        dataTheme: document.documentElement.getAttribute("data-theme"),
+        dataMode: document.documentElement.getAttribute("data-mode"),
+        storageMode: localStorage.getItem("jst-theme-mode"),
+        storageTheme: localStorage.getItem("jst-theme"),
+        badge: badge ? badge.textContent : null,
+        hasApplyTheme: typeof window.applyTheme
+      };
+    };
+    try { console.log("[theme-mode] ready. mode: " + getMode() + ", actual: " + document.documentElement.getAttribute("data-theme")); } catch (e) {}
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
-
-  window.__jstThemeLoaded = true;
-  window.__jstThemeDebug = function() {
-    var btn = document.getElementById("theme-toggle");
-    var badge = document.querySelector(".theme-mode-badge");
-    return {
-      dataTheme: document.documentElement.getAttribute("data-theme"),
-      dataMode: document.documentElement.getAttribute("data-mode"),
-      storageMode: localStorage.getItem("jst-theme-mode"),
-      storageTheme: localStorage.getItem("jst-theme"),
-      badge: badge ? badge.textContent : null,
-      badgeColor: badge ? getComputedStyle(badge).color : null,
-      buttonBg: btn ? getComputedStyle(btn).backgroundColor : null,
-      buttonColor: btn ? getComputedStyle(btn).color : null,
-      applyThemeType: typeof window.applyTheme
-    };
-  };
 })();
