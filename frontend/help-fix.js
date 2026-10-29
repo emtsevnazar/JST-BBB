@@ -418,7 +418,6 @@
   if (isContrast()) setTimeout(walkAll, 300);
   window.__jstContrastEnforce = walkAll;
 })();
-/* === CONTRAST ENFORCER === */
 (function(){
   "use strict";
   function isContrast() {
@@ -488,5 +487,165 @@
   }
   setInterval(function() { if (isContrast()) walkAll(); }, 500);
   if (isContrast()) setTimeout(walkAll, 300);
+  window.__jstContrastEnforce = walkAll;
+})();
+/* === CONTRAST ENFORCER v3 === */
+(function(){
+  "use strict";
+  function isC() {
+    return document.documentElement.getAttribute("data-theme") === "contrast";
+  }
+  function isSkipped(el) {
+    if (!el) return true;
+    if (el.id === "jst-err-overlay" || el.id === "jst-wand") return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id === "jst-err-overlay" || p.id === "jst-wand") return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  function isButtonLike(el) {
+    if (!el || !el.matches) return false;
+    return el.matches('button, .btn, .icon-btn, .carousel-btn, .controls-btn, [role="button"], summary, .help-pill, .dropdown > .btn, .dropdown > button, .dropdown-menu a, .history-menu a, .history-item, .dropdown-menu li');
+  }
+  function isHovered(el) {
+    if (!el || !el.matches) return false;
+    try { return el.matches(':hover'); } catch(e) { return false; }
+  }
+  function setBW(el, hovered) {
+    if (!el || el.nodeType !== 1 || isSkipped(el)) return;
+    var bg = hovered ? "#000000" : "#ffffff";
+    var fg = hovered ? "#ffffff" : "#000000";
+    el.style.setProperty("background", bg, "important");
+    el.style.setProperty("background-color", bg, "important");
+    el.style.setProperty("background-image", "none", "important");
+    el.style.setProperty("color", fg, "important");
+    el.style.setProperty("-webkit-text-fill-color", fg, "important");
+    el.style.setProperty("border-color", "#000000", "important");
+    // Все дети — прозрачный bg, соответствующий color
+    el.querySelectorAll("*").forEach(function(c) {
+      if (isSkipped(c)) return;
+      c.style.setProperty("background", "transparent", "important");
+      c.style.setProperty("background-color", "transparent", "important");
+      c.style.setProperty("background-image", "none", "important");
+      c.style.setProperty("color", fg, "important");
+      c.style.setProperty("-webkit-text-fill-color", fg, "important");
+      c.style.setProperty("border-color", "transparent", "important");
+      c.style.setProperty("box-shadow", "none", "important");
+      if (c.tagName.toLowerCase() === "svg" || c.tagName.toLowerCase() === "path" ||
+          c.tagName.toLowerCase() === "line" || c.tagName.toLowerCase() === "circle" ||
+          c.tagName.toLowerCase() === "rect") {
+        c.style.setProperty("stroke", fg, "important");
+      }
+    });
+  }
+  function enforceHelpModal() {
+    var modal = document.querySelector(".help-modal, #help-modal, #help-body");
+    if (!modal) return;
+    // Все элементы help-modal: белый фон, чёрный текст
+    var all = modal.querySelectorAll("*");
+    all.forEach(function(el) {
+      if (isSkipped(el)) return;
+      // Пропускаем кнопки — их hover обрабатывается mouseover
+      if (isButtonLike(el)) {
+        setBW(el, isHovered(el));
+        return;
+      }
+      el.style.setProperty("background-color", "#ffffff", "important");
+      el.style.setProperty("background-image", "none", "important");
+      el.style.setProperty("color", "#000000", "important");
+      el.style.setProperty("-webkit-text-fill-color", "#000000", "important");
+    });
+  }
+  function fixInline(el) {
+    if (!el || el.nodeType !== 1 || isSkipped(el)) return;
+    var style = el.getAttribute("style");
+    if (!style) return;
+    var changed = false;
+    var ns = style;
+    var pairs = [
+      [/#F5B800/gi, "#000000"], [/#f5b800/gi, "#000000"],
+      [/#FFC72C/gi, "#000000"], [/#FFD859/gi, "#000000"],
+      [/#FFD700/gi, "#000000"], [/#FFC107/gi, "#000000"],
+      [/#FFB300/gi, "#000000"], [/#FFA000/gi, "#000000"]
+    ];
+    pairs.forEach(function(p) {
+      if (p[0].test(ns)) { ns = ns.replace(p[0], p[1]); changed = true; }
+    });
+    // rgba yellow → transparent/black
+    if (/background[^:]*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0/.test(ns)) {
+      ns = ns.replace(/background(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "background$1: transparent");
+      changed = true;
+    }
+    if (/background[^:]*:\s*rgba\(\s*255\s*,\s*(199|215|235|216)/.test(ns)) {
+      ns = ns.replace(/background(-color)?\s*:\s*rgba\(\s*255\s*,\s*(199|215|235|216)\s*,[^)]+\)/gi, "background$1: transparent");
+      changed = true;
+    }
+    if (/border[^:]*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0/.test(ns)) {
+      ns = ns.replace(/border(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "border$1: #000000");
+      changed = true;
+    }
+    if (/box-shadow[^:]*:\s*[^;]*rgba\(\s*245\s*,\s*184/.test(ns)) {
+      ns = ns.replace(/box-shadow\s*:\s*[^;]*rgba\(\s*245\s*,\s*184[^)]*\)[^;]*/gi, "box-shadow: none");
+      changed = true;
+    }
+    if (changed) try { el.setAttribute("style", ns); } catch(e) {}
+  }
+  function walkAll() {
+    if (!isC()) return;
+    document.querySelectorAll("[style]").forEach(fixInline);
+    enforceHelpModal();
+  }
+  // Mouseover — принудительный BW
+  document.addEventListener("mouseover", function(e) {
+    if (!isC()) return;
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (isButtonLike(el)) {
+        setBW(el, true);
+        el.__jstBW = "hover";
+        return;
+      }
+      el = el.parentNode;
+    }
+  }, true);
+  document.addEventListener("mouseout", function(e) {
+    if (!isC()) return;
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (el.__jstBW === "hover") {
+        setBW(el, false);
+        delete el.__jstBW;
+        return;
+      }
+      el = el.parentNode;
+    }
+  }, true);
+  // Interval — каждый 500ms проверять
+  setInterval(function() {
+    if (isC()) walkAll();
+  }, 500);
+  // Theme change observer
+  try {
+    new MutationObserver(function(m) {
+      for (var i = 0; i < m.length; i++) {
+        if (m[i].attributeName === "data-theme") setTimeout(walkAll, 100);
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  } catch(e) {}
+  // DOM mutation observer
+  if (document.body) {
+    try {
+      new MutationObserver(function(m) {
+        if (!isC()) return;
+        for (var i = 0; i < m.length; i++) {
+          if (m[i].type === "attributes" && m[i].attributeName === "style") fixInline(m[i].target);
+          if (m[i].addedNodes && m[i].addedNodes.length) setTimeout(walkAll, 100);
+        }
+      }).observe(document.body, { attributes: true, attributeFilter: ["style"], childList: true, subtree: true });
+    } catch(e) {}
+  }
+  if (isC()) setTimeout(walkAll, 300);
   window.__jstContrastEnforce = walkAll;
 })();

@@ -1,4 +1,4 @@
-/* CONTRAST — ABSOLUTE B&W v2 */
+/* CONTRAST — ABSOLUTE B&W v3 */
 
 html[data-theme="contrast"] {
   --bg:#ffffff;--text:#000000;--text-dim:#000000;--muted:#000000;
@@ -16,30 +16,100 @@ html[data-theme="contrast"] body {
   color: #000000 !important;
 }
 
-/* === WILDCARD: всё → ч/б === */
+/* === WILDCARD базовый === */
 html[data-theme="contrast"] body * {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
-  background-color: #ffffff !important;
+  background-color: transparent !important;
   background-image: none !important;
   border-color: #000000 !important;
-  box-shadow: none !important;
   text-shadow: none !important;
+}
+
+/* Только body, контейнеры и панели получают белый bg */
+html[data-theme="contrast"] body,
+html[data-theme="contrast"] body .app,
+html[data-theme="contrast"] body .panel,
+html[data-theme="contrast"] body .card,
+html[data-theme="contrast"] body .sidebar,
+html[data-theme="contrast"] body .main,
+html[data-theme="contrast"] body .controls,
+html[data-theme="contrast"] body .controls-bar,
+html[data-theme="contrast"] body .topbar,
+html[data-theme="contrast"] body header,
+html[data-theme="contrast"] body footer,
+html[data-theme="contrast"] body .dropdown-menu,
+html[data-theme="contrast"] body .history-menu,
+html[data-theme="contrast"] body .modal,
+html[data-theme="contrast"] body .jst-player,
+html[data-theme="contrast"] body .batch-panel,
+html[data-theme="contrast"] body .history-list,
+html[data-theme="contrast"] body .select-wrap,
+html[data-theme="contrast"] body .carousel {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+/* === КНОПКИ: базовое состояние — белый bg, чёрный текст, чёрный жирный контур === */
+html[data-theme="contrast"] body button,
+html[data-theme="contrast"] body .btn,
+html[data-theme="contrast"] body .icon-btn,
+html[data-theme="contrast"] body .carousel-btn,
+html[data-theme="contrast"] body .controls-btn,
+html[data-theme="contrast"] body [role="button"],
+html[data-theme="contrast"] body summary,
+html[data-theme="contrast"] body select,
+html[data-theme="contrast"] body .dropdown > .btn,
+html[data-theme="contrast"] body .dropdown > button,
+html[data-theme="contrast"] body .help-pill,
+html[data-theme="contrast"] body .help-header {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 0 0 0 2px #000000 !important;
   outline: none !important;
 }
 
-/* SVG */
-html[data-theme="contrast"] body svg,
-html[data-theme="contrast"] body svg * {
+/* Дети кнопок — прозрачный фон (убиваем span-background) */
+html[data-theme="contrast"] body button *,
+html[data-theme="contrast"] body .btn *,
+html[data-theme="contrast"] body .icon-btn *,
+html[data-theme="contrast"] body .carousel-btn *,
+html[data-theme="contrast"] body .controls-btn *,
+html[data-theme="contrast"] body [role="button"] *,
+html[data-theme="contrast"] body summary *,
+html[data-theme="contrast"] body .dropdown > .btn *,
+html[data-theme="contrast"] body .help-pill *,
+html[data-theme="contrast"] body .help-header * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* SVG кнопок */
+html[data-theme="contrast"] body button svg,
+html[data-theme="contrast"] body .btn svg,
+html[data-theme="contrast"] body .icon-btn svg,
+html[data-theme="contrast"] body .carousel-btn svg,
+html[data-theme="contrast"] body .controls-btn svg,
+html[data-theme="contrast"] body summary svg {
   stroke: #000000 !important;
   fill: none !important;
 }
 
-/* === КНОПКИ: hover/active → black bg + white text + black bold glow === */
+/* === HOVER/ACTIVE/FOCUS — ИНВЕРСИЯ: чёрный bg + белый текст + чёрное свечение === */
 html[data-theme="contrast"] body button:hover,
+html[data-theme="contrast"] body button:active,
 html[data-theme="contrast"] body button:focus,
 html[data-theme="contrast"] body button:focus-visible,
-html[data-theme="contrast"] body button:active,
 html[data-theme="contrast"] body button.active,
 html[data-theme="contrast"] body button.is-active,
 html[data-theme="contrast"] body button.selected,
@@ -49,14 +119,12 @@ html[data-theme="contrast"] body button[aria-pressed="true"],
 html[data-theme="contrast"] body button[aria-selected="true"],
 html[data-theme="contrast"] body button[aria-expanded="true"],
 html[data-theme="contrast"] body .btn:hover,
-html[data-theme="contrast"] body .btn:focus,
 html[data-theme="contrast"] body .btn:active,
+html[data-theme="contrast"] body .btn:focus,
 html[data-theme="contrast"] body .btn.active,
-html[data-theme="contrast"] body .btn.is-active,
-html[data-theme="contrast"] body .btn.selected,
 html[data-theme="contrast"] body .icon-btn:hover,
-html[data-theme="contrast"] body .icon-btn:focus,
 html[data-theme="contrast"] body .icon-btn:active,
+html[data-theme="contrast"] body .icon-btn:focus,
 html[data-theme="contrast"] body .carousel-btn:hover,
 html[data-theme="contrast"] body .carousel-btn:active,
 html[data-theme="contrast"] body .carousel-btn.active,
@@ -78,26 +146,34 @@ html[data-theme="contrast"] body .history-menu a:focus,
 html[data-theme="contrast"] body .history-menu a:active,
 html[data-theme="contrast"] body .history-item:hover,
 html[data-theme="contrast"] body .history-item:focus,
-html[data-theme="contrast"] body .history-menu .history-list > div:hover {
+html[data-theme="contrast"] body .history-menu .history-list > div:hover,
+html[data-theme="contrast"] body summary:hover,
+html[data-theme="contrast"] body summary:focus,
+html[data-theme="contrast"] body details[open] > summary,
+html[data-theme="contrast"] body .help-pill:hover,
+html[data-theme="contrast"] body .help-pill:focus,
+html[data-theme="contrast"] body .help-section[open] .help-pill,
+html[data-theme="contrast"] body details.help-section[open] .help-pill {
   background: #000000 !important;
   background-color: #000000 !important;
   background-image: none !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  border-color: #000000 !important;
-  box-shadow: 0 0 0 2px #000000, 0 0 8px rgba(0,0,0,0.5) !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 0 0 0 3px #000000, 0 0 8px rgba(0,0,0,0.4) !important;
+  outline: none !important;
 }
 
-/* Дети: white text, transparent bg (KILL span-background) */
+/* Дети hovered/active — white text, transparent bg */
 html[data-theme="contrast"] body button:hover *,
-html[data-theme="contrast"] body button:focus *,
 html[data-theme="contrast"] body button:active *,
+html[data-theme="contrast"] body button:focus *,
 html[data-theme="contrast"] body button.active *,
 html[data-theme="contrast"] body button.pressed *,
 html[data-theme="contrast"] body button[aria-pressed="true"] *,
 html[data-theme="contrast"] body .btn:hover *,
-html[data-theme="contrast"] body .btn:focus *,
 html[data-theme="contrast"] body .btn:active *,
+html[data-theme="contrast"] body .btn:focus *,
 html[data-theme="contrast"] body .btn.active *,
 html[data-theme="contrast"] body .icon-btn:hover *,
 html[data-theme="contrast"] body .icon-btn:active *,
@@ -107,22 +183,26 @@ html[data-theme="contrast"] body .carousel-btn.active *,
 html[data-theme="contrast"] body .controls-btn:hover *,
 html[data-theme="contrast"] body .controls-btn:active *,
 html[data-theme="contrast"] body [role="button"]:hover *,
-html[data-theme="contrast"] body [role="button"]:active *,
 html[data-theme="contrast"] body a:not(.logo):hover *,
 html[data-theme="contrast"] body .dropdown.open > .btn *,
 html[data-theme="contrast"] body .dropdown-menu a:hover *,
 html[data-theme="contrast"] body .history-menu a:hover *,
-html[data-theme="contrast"] body .history-item:hover * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
+html[data-theme="contrast"] body .history-item:hover *,
+html[data-theme="contrast"] body summary:hover *,
+html[data-theme="contrast"] body details[open] > summary *,
+html[data-theme="contrast"] body .help-pill:hover *,
+html[data-theme="contrast"] body .help-section[open] .help-pill * {
   background: transparent !important;
   background-color: transparent !important;
   background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: transparent !important;
   box-shadow: none !important;
 }
 
+/* SVG hovered — white */
 html[data-theme="contrast"] body button:hover svg,
-html[data-theme="contrast"] body button:focus svg,
 html[data-theme="contrast"] body button:active svg,
 html[data-theme="contrast"] body button.active svg,
 html[data-theme="contrast"] body .btn:hover svg,
@@ -135,34 +215,29 @@ html[data-theme="contrast"] body .carousel-btn:active svg,
 html[data-theme="contrast"] body .carousel-btn.active svg,
 html[data-theme="contrast"] body .controls-btn:hover svg,
 html[data-theme="contrast"] body .controls-btn:active svg,
-html[data-theme="contrast"] body a:not(.logo):hover svg {
+html[data-theme="contrast"] body summary:hover svg {
   stroke: #ffffff !important;
   fill: none !important;
 }
 
-/* === HELP MODAL — АБСОЛЮТНО белый во всех состояниях === */
+/* === HELP MODAL — АБСОЛЮТНО БЕЛЫЙ во всех состояниях === */
 html[data-theme="contrast"] body .help-modal,
+html[data-theme="contrast"] body #help-modal,
+html[data-theme="contrast"] body #help-body,
 html[data-theme="contrast"] body .help-doc,
 html[data-theme="contrast"] body .help-body,
 html[data-theme="contrast"] body .help-content,
 html[data-theme="contrast"] body .help-section,
 html[data-theme="contrast"] body details.help-section,
 html[data-theme="contrast"] body details.help-section[open],
+html[data-theme="contrast"] body details.help-section > div,
 html[data-theme="contrast"] body details.help-section[open] > div,
-html[data-theme="contrast"] body details.help-section > summary,
-html[data-theme="contrast"] body details.help-section[open] > summary,
-html[data-theme="contrast"] body .help-header,
-html[data-theme="contrast"] body .help-section[open] .help-header,
-html[data-theme="contrast"] body .help-section[open] .help-content,
-html[data-theme="contrast"] body .help-title,
-html[data-theme="contrast"] body .help-arrow,
-html[data-theme="contrast"] body .help-modal *,
-html[data-theme="contrast"] body details.help-section *,
-html[data-theme="contrast"] body details.help-section[open] *,
-html[data-theme="contrast"] body .help-pill,
-html[data-theme="contrast"] body .help-section[open] .help-pill,
-html[data-theme="contrast"] body .help-table,
-html[data-theme="contrast"] body .help-table * {
+html[data-theme="contrast"] body details.help-section > div *,
+html[data-theme="contrast"] body details.help-section[open] > div *,
+html[data-theme="contrast"] body details.help-section .help-content,
+html[data-theme="contrast"] body details.help-section[open] .help-content,
+html[data-theme="contrast"] body details.help-section .help-content *,
+html[data-theme="contrast"] body .help-modal *:not(summary):not(.help-pill):not(summary *):not(.help-pill *) {
   background: #ffffff !important;
   background-color: #ffffff !important;
   background-image: none !important;
@@ -173,14 +248,54 @@ html[data-theme="contrast"] body .help-table * {
   text-shadow: none !important;
 }
 
-/* Help pill — black border, no glow */
+/* help-pill и summary — БЕЛЫЙ фон, чёрный контур, чёрный текст */
 html[data-theme="contrast"] body .help-pill,
-html[data-theme="contrast"] body .help-section[open] .help-pill {
+html[data-theme="contrast"] body .help-section[open] .help-pill,
+html[data-theme="contrast"] body details.help-section[open] .help-pill,
+html[data-theme="contrast"] body summary.help-header,
+html[data-theme="contrast"] body details.help-section > summary.help-header {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
   border: 2px solid #000000 !important;
+  box-shadow: 0 0 0 2px #000000 !important;
+}
+
+/* help-pill дети (span внутри) */
+html[data-theme="contrast"] body .help-pill *,
+html[data-theme="contrast"] body .help-section[open] .help-pill *,
+html[data-theme="contrast"] body summary.help-header * {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: transparent !important;
   box-shadow: none !important;
 }
 
-/* Help modal TH — инверсия */
+/* help-pill HOVER — чёрный bg, белый текст */
+html[data-theme="contrast"] body .help-pill:hover,
+html[data-theme="contrast"] body summary.help-header:hover,
+html[data-theme="contrast"] body details.help-section[open] > summary.help-header:hover {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #000000 !important;
+  box-shadow: 0 0 0 3px #000000 !important;
+}
+html[data-theme="contrast"] body .help-pill:hover *,
+html[data-theme="contrast"] body summary.help-header:hover *,
+html[data-theme="contrast"] body details.help-section[open] > summary.help-header:hover * {
+  background: transparent !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Help table th — inversion */
 html[data-theme="contrast"] body .help-modal th,
 html[data-theme="contrast"] body .help-table th {
   background: #000000 !important;
@@ -191,43 +306,45 @@ html[data-theme="contrast"] body .help-table th * {
   color: #ffffff !important;
 }
 
-/* === Убить жёлтые/красные рамки → чёрный контур === */
-html[data-theme="contrast"] body .status.error,
-html[data-theme="contrast"] body .status.error *,
+/* === Жёлтые/красные рамки → чёрное свечение === */
+html[data-theme="contrast"] body [class*="error"]:not(#jst-err-overlay *):not(#jst-err-overlay):not(.jst-err-toast):not(.jst-err-icon):not(.jst-err-title):not(.jst-err-msg),
 html[data-theme="contrast"] body .text-danger,
 html[data-theme="contrast"] body .text-red,
 html[data-theme="contrast"] body .invalid,
-html[data-theme="contrast"] body .error:not(#jst-err-overlay):not(#jst-err-overlay *),
-html[data-theme="contrast"] body .error-text,
 html[data-theme="contrast"] body .field-error,
 html[data-theme="contrast"] body .invalid-feedback,
 html[data-theme="contrast"] body [aria-invalid="true"] {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
-  background-color: #ffffff !important;
-  border-color: #000000 !important;
-  box-shadow: none !important;
+  background-color: transparent !important;
+  border: 2px solid #000000 !important;
+  box-shadow: 0 0 0 2px #000000 !important;
   text-decoration: underline !important;
   text-decoration-thickness: 2px !important;
 }
-html[data-theme="contrast"] body .status.error::before,
-html[data-theme="contrast"] body .status.error .status-dot {
-  background-color: #000000 !important;
-  border-color: #000000 !important;
-  box-shadow: none !important;
-  animation: none !important;
-}
 
-/* Focus ring — чёрный, тонкий */
+/* Focus ring — чёрный жирный */
+html[data-theme="contrast"] body *:focus,
 html[data-theme="contrast"] body *:focus-visible {
   outline: 2px solid #000000 !important;
   outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #000000 !important;
 }
 
-/* === EXCEPTION: error overlay = красный + жёлтый === */
+/* === EXCEPTION: error overlay — красный + жёлтый === */
+html[data-theme="contrast"] body #jst-err-overlay,
+html[data-theme="contrast"] body #jst-err-overlay * {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body #jst-err-overlay {
+  background: url('/static/img/ph_b2.png') center/cover no-repeat #2a0606 !important;
+}
 html[data-theme="contrast"] body #jst-err-overlay .jst-err-toast {
   background: #c62828 !important;
-  border-color: #ef5350 !important;
+  background-color: #c62828 !important;
+  border: 2px solid #ef5350 !important;
   box-shadow: 0 8px 32px rgba(198,40,40,0.55) !important;
 }
 html[data-theme="contrast"] body #jst-err-overlay .jst-err-title { color: #ffeb3b !important; }
@@ -250,11 +367,12 @@ html[data-theme="contrast"] body #jst-err-overlay .jst-err-btn svg * {
   fill: none !important;
 }
 
-/* EXCEPTION: wand = чёрная */
+/* === EXCEPTION: wand — чёрная === */
 html[data-theme="contrast"] body #jst-wand,
 html[data-theme="contrast"] body #jst-wand * {
   background: transparent !important;
   color: #000000 !important;
+  box-shadow: none !important;
 }
 html[data-theme="contrast"] body #jst-wand .jst-wand-body,
 html[data-theme="contrast"] body #jst-wand .jst-wand-star,
@@ -279,6 +397,7 @@ html[data-theme="contrast"] body .btn[disabled] {
   border-color: #000000 !important;
   opacity: 0.45 !important;
   cursor: not-allowed !important;
+  box-shadow: 0 0 0 1px #000000 !important;
 }
 html[data-theme="contrast"] body button:disabled *,
 html[data-theme="contrast"] body .btn:disabled * {
