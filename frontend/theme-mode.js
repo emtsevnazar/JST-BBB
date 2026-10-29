@@ -1,6 +1,3 @@
-/* v1.10.1: theme-mode — cycle day/night/auto/scheduled + SVG outline.
- * НЕ трогает app.js. Перехватывает click в capture phase, отменяет app.js handler.
- */
 (function () {
   "use strict";
   var KEY = "jst-theme-mode";
@@ -9,15 +6,15 @@
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v3M12 3h3M21 12h-3M21 12v-3"/></svg>',
-    scheduled: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>', 
+    scheduled: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     contrast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg>'
   };
   var TITLES = {
     day: { ru: "Светлая (клик: тёмная)", en: "Light (click: dark)" },
     night: { ru: "Тёмная (клик: авто)", en: "Dark (click: auto)" },
     auto: { ru: "Авто (клик: по расписанию)", en: "Auto (click: scheduled)" },
-    scheduled: { ru: "По расписанию (клик: светлая)", en: "Scheduled (click: light)" },
-      contrast: { ru: "Ч/Б контраст (клик: светлая)", en: "B&W Contrast (click: light)" }
+    scheduled: { ru: "По расписанию (клик: Ч/Б)", en: "Scheduled (click: B&W)" },
+    contrast: { ru: "Ч/Б контраст (клик: светлая)", en: "B&W Contrast (click: light)" }
   };
 
   function _lang() {
@@ -43,33 +40,15 @@
       var h = new Date().getHours();
       return (h >= 6 && h < 18) ? "day" : "night";
     }
+    if (mode === "contrast") {
+      return "contrast";
+    }
     return mode;
   }
   function apply() {
-    var theme = _actual(getMode());
-    // For contrast — set directly, don't delegate to app.js applyTheme
-    if (theme === "contrast") {
-      document.documentElement.setAttribute("data-theme", "contrast");
-      try { localStorage.setItem("jst-theme", "contrast"); } catch (e) {}
-      return;
-    }
-    if (typeof window.applyTheme === "function") {
-      try { window.applyTheme(theme); return; } catch (e) {}
-    }
-    document.documentElement.setAttribute("data-theme", theme);
-    try { localStorage.setItem("jst-theme", theme); } catch (e) {}
-  } catch (e) {}
-      try {
-        var lm = localStorage.getItem(KEY);
-        if (lm !== "contrast") localStorage.setItem(KEY, "contrast");
-      } catch (e) {}
-      return;
-    }
-    if (typeof window.applyTheme === "function") {
-      try { window.applyTheme(theme); return; } catch (e) {}
-    }
-    document.documentElement.setAttribute("data-theme", theme);
-    try { localStorage.setItem("jst-theme", theme); } catch (e) {}
+    var actual = _actual(getMode());
+    document.documentElement.setAttribute("data-theme", actual);
+    try { localStorage.setItem("jst-theme", actual); } catch (e) {}
   }
   function render() {
     var mode = getMode();
@@ -85,6 +64,7 @@
   function nextMode() {
     var cur = getMode();
     var idx = ORDER.indexOf(cur);
+    if (idx === -1) idx = 0;
     setMode(ORDER[(idx + 1) % ORDER.length]);
   }
   function _intercept(e) {
@@ -110,40 +90,10 @@
         else if (mq.addListener) mq.addListener(h);
       } catch (e) {}
     }
-    /* JST_SCHEDULED_PRECISE_TIMER — точное переключение в 06:00 и 18:00 */
-    var _schedTimer = null;
-    function _scheduleNextSwitch() {
-      if (_schedTimer) { clearTimeout(_schedTimer); _schedTimer = null; }
-      if (getMode() !== "scheduled") return;
-      var now = new Date();
-      var h = now.getHours();
-      var next;
-      if (h >= 6 && h < 18) {
-        // сейчас день → следующая граница 18:00
-        next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 0, 2);
-      } else {
-        // сейчас ночь → следующая граница 06:00 (завтра если h>=18)
-        next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 2);
-        if (next.getTime() <= now.getTime()) {
-          next.setDate(next.getDate() + 1);
-        }
-      }
-      var delay = Math.max(1000, next.getTime() - now.getTime());
-      _schedTimer = setTimeout(function() {
-        if (getMode() === "scheduled") {
-          apply();
-          _scheduleNextSwitch();
-        }
-      }, delay);
-    }
-    // Fallback: раз в 60с — на случай sleep/wake компьютера
-    setInterval(function () { if (getMode() === "scheduled") { apply(); _scheduleNextSwitch(); } }, 60000);
-    // Запустить при init и при смене режима
-    _scheduleNextSwitch();
-    var _origSetMode = setMode;
-    setMode = function(m) { _origSetMode(m); _scheduleNextSwitch(); };
+    setInterval(function () { if (getMode() === "scheduled") apply(); }, 60000);
     apply();
     render();
+    try { console.log("[theme-mode] ready, ORDER:", ORDER.join(",")); } catch (e) {}
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
