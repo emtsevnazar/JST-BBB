@@ -305,3 +305,208 @@ html[data-theme="contrast"] #jst-err-overlay .jst-err-btn svg {
   fill: none !important;
   filter: none !important;
 }
+
+
+/* === HELP MODAL B&W === */
+html[data-theme="contrast"] .help-modal,
+html[data-theme="contrast"] .help-doc,
+html[data-theme="contrast"] .help-section,
+html[data-theme="contrast"] .help-content,
+html[data-theme="contrast"] .help-header,
+html[data-theme="contrast"] details.help-section summary,
+html[data-theme="contrast"] .help-modal-close,
+html[data-theme="contrast"] .help-close {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="contrast"] .help-modal *,
+html[data-theme="contrast"] .help-doc *,
+html[data-theme="contrast"] .help-section *,
+html[data-theme="contrast"] .help-content *,
+html[data-theme="contrast"] .help-header * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="contrast"] .help-pill,
+html[data-theme="contrast"] .help-arrow {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] .help-modal h1,
+html[data-theme="contrast"] .help-modal h2,
+html[data-theme="contrast"] .help-modal h3,
+html[data-theme="contrast"] .help-modal b,
+html[data-theme="contrast"] .help-modal strong,
+html[data-theme="contrast"] .help-title {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+html[data-theme="contrast"] .help-modal a,
+html[data-theme="contrast"] .help-doc a,
+html[data-theme="contrast"] .help-content a {
+  color: #000000 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+}
+html[data-theme="contrast"] details.help-section summary:hover,
+html[data-theme="contrast"] details.help-section summary:focus,
+html[data-theme="contrast"] details.help-section[open] summary {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+html[data-theme="contrast"] .help-modal-close:hover,
+html[data-theme="contrast"] .help-close:hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+html[data-theme="contrast"] .help-modal-close:hover svg,
+html[data-theme="contrast"] .help-close:hover svg {
+  stroke: #ffffff !important;
+  fill: none !important;
+}
+
+/* === LOGO grayscale === */
+html[data-theme="contrast"] .logo img,
+html[data-theme="contrast"] img.logo-img,
+html[data-theme="contrast"] .logo svg {
+  filter: grayscale(1) contrast(1.2) brightness(1.05) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+html[data-theme="contrast"] .logo-text,
+html[data-theme="contrast"] .brand-text,
+html[data-theme="contrast"] .logo,
+html[data-theme="contrast"] .logo * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+html[data-theme="contrast"] .logo,
+html[data-theme="contrast"] .logo-text,
+html[data-theme="contrast"] .brand-text {
+  background-color: transparent !important;
+}
+
+/* === SELECTED BTN (black bg white text) === */
+html[data-theme="contrast"] button.active,
+html[data-theme="contrast"] button.selected,
+html[data-theme="contrast"] button[aria-pressed="true"],
+html[data-theme="contrast"] button[aria-selected="true"],
+html[data-theme="contrast"] .btn.active,
+html[data-theme="contrast"] .btn.selected,
+html[data-theme="contrast"] .btn[aria-pressed="true"],
+html[data-theme="contrast"] .btn[aria-selected="true"],
+html[data-theme="contrast"] .btn.is-active,
+html[data-theme="contrast"] .btn.on,
+html[data-theme="contrast"] .dropdown.open > .btn,
+html[data-theme="contrast"] .dropdown.open > button,
+html[data-theme="contrast"] .dropdown.active > .btn,
+html[data-theme="contrast"] .dropdown.active > button,
+html[data-theme="contrast"] .dropdown > .btn.active,
+html[data-theme="contrast"] .dropdown > .btn.selected {
+  background-color: #000000 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #000000 !important;
+}
+html[data-theme="contrast"] button.active *,
+html[data-theme="contrast"] button.selected *,
+html[data-theme="contrast"] button[aria-pressed="true"] *,
+html[data-theme="contrast"] button[aria-selected="true"] *,
+html[data-theme="contrast"] .btn.active *,
+html[data-theme="contrast"] .btn.selected *,
+html[data-theme="contrast"] .btn.is-active *,
+html[data-theme="contrast"] .dropdown.open > .btn *,
+html[data-theme="contrast"] .dropdown.open > button *,
+html[data-theme="contrast"] .dropdown.active > .btn * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html[data-theme="contrast"] button.active svg,
+html[data-theme="contrast"] button.selected svg,
+html[data-theme="contrast"] .btn.active svg,
+html[data-theme="contrast"] .btn.selected svg,
+html[data-theme="contrast"] .btn.is-active svg,
+html[data-theme="contrast"] .dropdown.open > .btn svg,
+html[data-theme="contrast"] .dropdown.active > .btn svg {
+  stroke: #ffffff !important;
+  fill: none !important;
+  color: #ffffff !important;
+}
+
+/* === DISABLED BTN (B&W no red) === */
+html[data-theme="contrast"] button:disabled,
+html[data-theme="contrast"] button[disabled],
+html[data-theme="contrast"] button[aria-disabled="true"],
+html[data-theme="contrast"] .btn:disabled,
+html[data-theme="contrast"] .btn[disabled],
+html[data-theme="contrast"] .btn.disabled,
+html[data-theme="contrast"] button.disabled {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  border-color: #000000 !important;
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+html[data-theme="contrast"] button:disabled *,
+html[data-theme="contrast"] button[disabled] *,
+html[data-theme="contrast"] .btn:disabled *,
+html[data-theme="contrast"] .btn[disabled] *,
+html[data-theme="contrast"] .btn.disabled * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+html[data-theme="contrast"] button:disabled svg,
+html[data-theme="contrast"] button[disabled] svg,
+html[data-theme="contrast"] .btn:disabled svg,
+html[data-theme="contrast"] .btn[disabled] svg {
+  stroke: #000000 !important;
+  fill: none !important;
+  color: #000000 !important;
+}
+
+/* === ERROR TEXT B&W === */
+html[data-theme="contrast"] .error,
+html[data-theme="contrast"] .err,
+html[data-theme="contrast"] .status.error,
+html[data-theme="contrast"] .error-text,
+html[data-theme="contrast"] .text-error,
+html[data-theme="contrast"] .text-red,
+html[data-theme="contrast"] .is-error,
+html[data-theme="contrast"] .has-error,
+html[data-theme="contrast"] .field-error,
+html[data-theme="contrast"] .input-error,
+html[data-theme="contrast"] .invalid-feedback,
+html[data-theme="contrast"] .invalid {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: transparent !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-decoration-color: #000000 !important;
+}
+html[data-theme="contrast"] .status.error::before,
+html[data-theme="contrast"] .status.error .status-dot {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
