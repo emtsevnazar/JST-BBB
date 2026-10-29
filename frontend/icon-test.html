@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Icon Test</title>
+<style>
+body{background:#222;color:#fff;padding:20px;font-family:monospace;font-size:14px}
+.demo{display:inline-flex;align-items:center;gap:12px;background:#c62828;padding:16px;border-radius:12px;margin:10px 0}
+.icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;display:block}
+pre{background:#111;padding:12px;border-radius:6px;overflow:auto;font-size:12px}
+</style></head>
+<body>
+<h2 style="color:#F5B800">Icon test</h2>
+<p>Должен быть треугольник с жирным <b>!</b> внутри — жёлтый на красном.</p>
+
+<div class="demo">
+  <div class="icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="34" height="34" style="width:34px;height:34px;display:block;overflow:visible" fill="none" stroke="#ffeb3b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="none"/><path d="M12 9 L12 13" fill="none" stroke="#ffeb3b" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="17" r="1.6" fill="#ffeb3b" stroke="none"/></svg>
+  </div>
+  <span>Server Error / No Connection</span>
+</div>
+
+<h3 style="color:#F5B800">Debug</h3>
+<pre id="log">loading...</pre>
+
+<script>
+setTimeout(function(){
+  var svg = document.querySelector('.icon svg');
+  var log = [];
+  log.push('SVG found: ' + !!svg);
+  if (svg) {
+    var r = svg.getBoundingClientRect();
+    log.push('SVG rect: ' + r.width + 'x' + r.height);
+    log.push('SVG stroke: ' + getComputedStyle(svg).stroke);
+    log.push('SVG children: ' + svg.children.length);
+    Array.from(svg.children).forEach(function(el, i){
+      var cs = getComputedStyle(el);
+      var er = el.getBoundingClientRect();
+      log.push('  [' + i + '] <' + el.tagName + '> stroke=' + cs.stroke + ' sw=' + cs.strokeWidth + ' fill=' + cs.fill + ' rect=' + er.width.toFixed(1) + 'x' + er.height.toFixed(1));
+    });
+  }
+  document.getElementById('log').textContent = log.join('\n');
+}, 300);
+</script>
+</body></html>
