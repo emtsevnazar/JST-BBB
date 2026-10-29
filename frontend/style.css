@@ -1,4 +1,4 @@
-:root{--gold:#F5B800;--gold-light:#FFC72C;--navy:#1a2a5e;--navy-dark:#0d1a3f;
+:root{--gold:var(--gold);--gold-light:var(--gold);--navy:#1a2a5e;--navy-dark:#0d1a3f;
   --red:#e63946;--text:#2a2a3a;--text-dim:#6a6a7a;--panel-bg:rgba(255,255,255,0.72);
   --panel-border:rgba(26,42,94,0.12);--panel-shadow:0 8px 32px rgba(26,42,94,0.10);
   --accent:var(--navy);--input-bg:rgba(255,255,255,0.55);--app-bg:#ffffff;
@@ -71,7 +71,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
 .dropzone{margin-top:8px;padding:16px;border:2px dashed var(--panel-border);border-radius:12px;
   text-align:center;cursor:pointer;transition:all .2s;background:var(--input-bg)}
-.dropzone:hover,.dropzone.dragover{border-color:var(--gold);background:rgba(0,0,0,.1)}
+.dropzone:hover,.dropzone.dragover{border-color:var(--gold);background: transparent}
 .dropzone p{font-size:12px;color:var(--text)}
 .dropzone .drop-sub{font-size:10px;color:var(--text-dim);margin-top:4px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -160,7 +160,7 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
 .model-name{font-size:13px;font-weight:700;color:var(--accent);width:100%;margin:0;letter-spacing:.3px}
 .model-card.active .model-name{color:var(--navy-dark)}
 .model-warn{display:inline-block;margin-left:4px;font-size:8px;padding:1px 5px;
-  border-radius:4px;background:rgba(230,57,70,.15);color:var(--red)}
+  border-radius:4px;background: transparent;color:var(--red)}
 .model-info{margin-top:6px;padding:10px 12px;background:var(--input-bg);
   border:1px solid var(--panel-border);border-radius:10px;min-height:50px}
 .model-info .mi-langs{font-size:10px;font-weight:700;color:var(--gold);
@@ -192,17 +192,17 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
   opacity:1;visibility:visible;transform:translateY(0)}
 .dropdown-menu a{display:block;padding:9px 14px;border-radius:8px;color:var(--text);
   text-decoration:none;font-size:12.5px;transition:all .15s;cursor:pointer}
-.dropdown-menu a:hover{background:rgba(0,0,0,.15);color:var(--gold)}
+.dropdown-menu a:hover{background: transparent;color:var(--gold)}
 .history-menu{min-width:340px;max-height:440px;overflow-y:auto;padding:8px}
 .history-menu .history-list{max-height:420px;display:flex;flex-direction:column;
   gap:4px;overflow-y:auto}
 .history-menu .history-list > div{padding:8px 12px;font-size:12px;border-radius:8px;transition:background .15s}
-.history-menu .history-list > div:hover{background:rgba(0,0,0,.12)}
+.history-menu .history-list > div:hover{background: transparent}
 .history-menu .history-list a{color:var(--accent);text-decoration:none;font-weight:600;
   display:block;margin-bottom:2px}
 .history-menu .history-list .date{color:var(--text-dim);font-size:10.5px;font-variant-numeric:tabular-nums}
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
-  background:rgba(230,57,70,.96);color:#fff;padding:13px 24px;border-radius:12px;
+  background: transparent;color:#fff;padding:13px 24px;border-radius:12px;
   font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(0,0,0,.35);
   transition:all .3s cubic-bezier(.4,0,.2,1);z-index:1000;opacity:0;
   pointer-events:none;max-width:min(90vw,520px);text-align:center;line-height:1.4}
@@ -218,7 +218,7 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
   box-shadow:0 14px 44px rgba(200,30,43,.45);
   max-width:min(92vw,560px);
 }
-.help-modal{background:rgba(0,0,0,0.5);z-index:200;
+.help-modal{background: transparent;z-index:200;
   display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .2s}
 .help-modal.open{display:flex;opacity:1}
 .help-modal-content{background:var(--panel-bg);backdrop-filter:blur(30px);
@@ -367,13 +367,13 @@ html[lang="en"] .help-ru { display: none !important; }
 .help-section {
   margin-bottom: 12px;
   border-radius: 14px;
-  background: rgba(255,255,255,0.03);
+  background: transparent;
   border: 1px solid rgba(255,255,255,0.08);
   overflow: hidden;
   transition: border-color 0.2s, background 0.2s;
 }
 .help-section[open] {
-  background: rgba(255,255,255,0.05);
+  background: transparent;
   border-color: rgba(120,160,255,0.45);
 }
 .help-section > summary.help-header {
@@ -399,11 +399,11 @@ html[lang="en"] .help-ru { display: none !important; }
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2px;
-  background: rgba(255,255,255,0.02);
+  background: transparent;
 }
 .help-section[open] .help-pill {
   border-color: rgba(120,160,255,0.75);
-  background: rgba(120,160,255,0.10);
+  background: transparent;
 }
 
 /* Стрелка в кружке справа */
@@ -423,7 +423,7 @@ html[lang="en"] .help-ru { display: none !important; }
 .help-section[open] .help-arrow {
   transform: rotate(90deg);
   border-color: rgba(120,160,255,0.85);
-  background: rgba(120,160,255,0.18);
+  background: transparent;
 }
 .help-section:hover .help-arrow {
   border-color: rgba(255,255,255,0.7);
@@ -442,7 +442,7 @@ html[lang="en"] .help-ru { display: none !important; }
 .help-content li { margin: 5px 0; }
 .help-content p { margin: 8px 0; }
 .help-content code {
-  background: rgba(255,255,255,0.08);
+  background: transparent;
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 12.5px;
@@ -460,11 +460,11 @@ html[lang="en"] .help-ru { display: none !important; }
   text-align: left;
 }
 .help-table th {
-  background: rgba(255,255,255,0.05);
+  background: transparent;
   font-weight: 600;
 }
 .help-table tr:hover td {
-  background: rgba(255,255,255,0.025);
+  background: transparent;
 }
 /* HELP_ACCORDION_END */
 
@@ -527,7 +527,7 @@ html[lang="en"] .help-ru { display: none !important; }
   font-size: 13px;
   color: rgba(120,160,255,1);
   border-color: rgba(120,160,255,0.8);
-  background: rgba(120,160,255,0.12);
+  background: transparent;
 }
 .help-section:hover .help-arrow {
   border-color: rgba(255,255,255,0.6);
@@ -556,7 +556,7 @@ html[lang="en"] .help-ru { display: none !important; }
 .model-card.unavailable_old:focus-visible,
 .lang-card.unavailable_old:focus-visible {
   border: 1px solid #ff4444 !important;
-  background: rgba(255, 68, 68, 0.05) !important;
+  background: transparent !important;
   box-shadow: 0 0 14px rgba(255, 68, 68, 0.35) !important;
   outline: none !important;
   transform: none !important;
@@ -599,7 +599,7 @@ summary.help-header {
   font-size: 11px !important;
   color: #6ea0ff !important;
   border-color: rgba(110,160,255,0.8) !important;
-  background: rgba(110,160,255,0.15) !important;
+  background: transparent !important;
 }
 
 /* 4. Help-модалка в стиле карточек моделей/языков */
@@ -615,7 +615,7 @@ summary.help-header {
 .help-modal-close {
   border: 1px solid rgba(255,255,255,0.15) !important;
   border-radius: 10px !important;
-  background: rgba(255,255,255,0.03) !important;
+  background: transparent !important;
   width: 32px !important;
   height: 32px !important;
   cursor: pointer !important;
@@ -626,20 +626,20 @@ summary.help-header {
 .help-modal-close:hover {
   border-color: #ff4444 !important;
   color: #ff4444 !important;
-  background: rgba(255,68,68,0.06) !important;
+  background: transparent !important;
 }
 
 /* Секции help — как карточки моделей */
 .help-section {
   border: 1px solid rgba(255,255,255,0.10) !important;
   border-radius: 12px !important;
-  background: rgba(255,255,255,0.03) !important;
+  background: transparent !important;
   margin-bottom: 10px !important;
   transition: border-color 0.15s, background 0.15s !important;
 }
 .help-section[open] {
   border-color: rgba(110,160,255,0.45) !important;
-  background: rgba(110,160,255,0.06) !important;
+  background: transparent !important;
 }
 
 /* 5. Заголовок модалки — по центру, крупно */
@@ -709,7 +709,7 @@ summary.help-header {
 /* Недоступная модель: прозрачно-жёлтая рамка БЕЗ hover */
 #model-grid .model-card.unavailable_old {
   border: 1.5px solid rgba(0, 0, 0, 0.35) !important;
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
   cursor: not-allowed !important;
   opacity: 1 !important;
@@ -718,13 +718,13 @@ summary.help-header {
 #model-grid .model-card.unavailable_old:hover {
   border: 1.5px solid rgba(230, 57, 70, 0.85) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.35), 0 0 10px rgba(230,57,70,0.20) !important;
-  background: rgba(255,255,255,0.55) !important;
+  background: transparent !important;
   transform: none !important;
   opacity: 1 !important;
 }
 /* Недоступная НЕ получает .active никогда (проверка в JS), но подстрахуемся */
 #model-grid .model-card.unavailable_old.active {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
   border-color: rgba(0, 0, 0, 0.35) !important;
 }
@@ -778,7 +778,7 @@ summary.help-header {
 /* Недоступный язык: прозрачно-жёлтая рамка, БЕЗ текста "скоро/soon" */
 #lang-grid .lang-card.unavailable_old {
   border: 1.5px solid rgba(0, 0, 0, 0.35) !important;
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
   cursor: not-allowed !important;
   opacity: 1 !important;
@@ -787,12 +787,12 @@ summary.help-header {
 #lang-grid .lang-card.unavailable_old:hover {
   border: 1.5px solid rgba(230, 57, 70, 0.85) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.35), 0 0 10px rgba(230,57,70,0.20) !important;
-  background: rgba(255,255,255,0.55) !important;
+  background: transparent !important;
   transform: none !important;
   opacity: 1 !important;
 }
 #lang-grid .lang-card.unavailable_old.active {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
   border-color: rgba(0, 0, 0, 0.35) !important;
 }
@@ -1084,7 +1084,7 @@ html[data-theme="day"] #model-grid .model-card.unavailable_old:hover,
 html[data-theme="day"] #lang-grid .lang-card.unavailable_old:hover,
 html:not([data-theme]) #model-grid .model-card.unavailable_old:hover,
 html:not([data-theme]) #lang-grid .lang-card.unavailable_old:hover {
-  background: rgba(0,0,0,0.05) !important;   /* как без наведения */
+  background: transparent !important;   /* как без наведения */
   color: var(--navy, #1a2a5e) !important;
   border-color: rgba(230,57,70,0.85) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.35), 0 0 10px rgba(230,57,70,0.20) !important;
@@ -1098,7 +1098,7 @@ html:not([data-theme]) .btn:not(.active):not(.unavailable_old):hover {
   color: inherit !important;
 }
 html[data-theme="night"] .btn:not(.active):not(.unavailable_old):hover {
-  background: rgba(255,255,255,0.08) !important;
+  background: transparent !important;
 }
 
 /* ============================================================
@@ -1152,7 +1152,7 @@ html body #lang-grid .lang-card.unavailable_old:hover {
 /* --- НОЧЬ: НЕАКТИВНЫЕ — тёмный полупрозрачный фон --- */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
   opacity: 1 !important;
@@ -1166,7 +1166,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old .lang-name {
 /* --- HOVER (НОЧЬ): КРАСНАЯ рамка, фон остаётся тёмным --- */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old:hover,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border-color: rgba(230, 57, 70, 0.95) !important;
   box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.45), 0 0 12px rgba(230, 57, 70, 0.30) !important;
@@ -1213,7 +1213,7 @@ html body #lang-grid .lang-card.unavailable_old:hover {
 /* 4. НОЧЬ: фон как у обычной кнопки ночью (rgba .08) */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old {
-  background: rgba(255,255,255,0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
   opacity: 1 !important;
@@ -1227,7 +1227,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old .lang-name {
 /* 5. НОЧЬ: hover — рамка красная, фон тот же */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old:hover,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
-  background: rgba(255,255,255,0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border-color: rgba(230,57,70,0.95) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.45), 0 0 12px rgba(230,57,70,0.30) !important;
@@ -1401,7 +1401,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
 
 /* Тёмная тема — фон точки тёмный, сама точка жёлтая */
 html[data-theme="night"] .dropdown > .btn::after {
-  background: rgba(255,255,255,0.08) !important;
+  background: transparent !important;
   color: var(--gold, #F5B800) !important;
   border-color: rgba(0, 0, 0, 0.40) !important;
 }
@@ -1596,7 +1596,7 @@ html body #lang-grid .lang-card .lang-name {
 }
 .help-content b { color: var(--gold-dark, #c89b00); }
 .help-content code {
-  background: rgba(26,42,94,0.06);
+  background: transparent;
   padding: 1px 6px;
   border-radius: 4px;
   font-family: 'SF Mono', Menlo, monospace;
@@ -1627,7 +1627,7 @@ html[data-theme="night"] .help-content {
   border-top-color: rgba(0,0,0,0.25) !important;
 }
 html[data-theme="night"] .help-content code {
-  background: rgba(0,0,0,0.12) !important;
+  background: transparent !important;
   color: var(--gold) !important;
 }
 html[data-theme="night"] .help-content b {
@@ -1667,7 +1667,7 @@ html[data-theme="night"] .help-content b {
 .history-menu a:hover,
 .dropdown-menu a:focus,
 .history-menu a:focus {
-  background: rgba(0, 0, 0, 0.15) !important;
+  background: transparent !important;
   color: var(--gold-dark, #c89b00) !important;
 }
 .dropdown-menu a.active,
@@ -1693,7 +1693,7 @@ html[data-theme="night"] .help-content b {
 /* Ночью — тёмный фон, жёлтый текст */
 html[data-theme="night"] .dropdown-menu,
 html[data-theme="night"] .history-menu {
-  background: rgba(13,26,63,0.95) !important;
+  background: transparent !important;
   border-color: rgba(0,0,0,0.35) !important;
 }
 html[data-theme="night"] .dropdown-menu a,
@@ -1702,7 +1702,7 @@ html[data-theme="night"] .history-menu a {
 }
 html[data-theme="night"] .dropdown-menu a:hover,
 html[data-theme="night"] .history-menu a:hover {
-  background: rgba(0,0,0,0.15) !important;
+  background: transparent !important;
   color: var(--gold-light) !important;
 }
 
@@ -1757,7 +1757,7 @@ html body .history-menu a:hover,
 html body .dropdown-menu a:focus,
 html body .history-menu a:focus,
 html body .history-menu .history-list > div:hover {
-  background: rgba(0, 0, 0, 0.18) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -1813,7 +1813,7 @@ html[data-theme="night"] body .history-menu a:hover,
 html[data-theme="night"] body .dropdown-menu a:focus,
 html[data-theme="night"] body .history-menu a:focus,
 html[data-theme="night"] body .history-menu .history-list > div:hover {
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
   color: var(--gold-light) !important;
 }
 
@@ -1965,7 +1965,7 @@ html[data-theme="night"] body .dropdown:has(#btn-download-toggle) > .btn,
 html[data-theme="night"] body .dropdown:has(#history-toggle) > .btn,
 html[data-theme="night"] body .dropdown > .btn,
 html[data-theme="night"] body .dropdown > button {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
   box-shadow: none !important;
@@ -1982,7 +1982,7 @@ html[data-theme="night"] body .dropdown > .btn * {
 html[data-theme="night"] body #btn-download-toggle::after,
 html[data-theme="night"] body #history-toggle::after,
 html[data-theme="night"] body .dropdown > .btn::after {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border-color: rgba(0, 0, 0, 0.40) !important;
 }
@@ -1991,7 +1991,7 @@ html[data-theme="night"] body .dropdown > .btn::after {
 html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
 html[data-theme="night"] body .dropdown > .btn:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
   border-color: var(--gold, #F5B800) !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30) !important;
 }
@@ -2095,7 +2095,7 @@ html[data-theme="night"] body .dropdown[open] > .btn {
 html body .help-doc,
 html body #help-body,
 html body .help-body {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   border-radius: 12px !important;
 }
 
@@ -2129,7 +2129,7 @@ html body #btn-download-toggle,
 html body #history-toggle,
 html body .dropdown > .btn,
 html body .dropdown > button {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
 }
@@ -2144,7 +2144,7 @@ html body .dropdown > .btn * {
 html body #btn-download-toggle::after,
 html body #history-toggle::after,
 html body .dropdown > .btn::after {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border-color: rgba(0, 0, 0, 0.40) !important;
 }
@@ -2154,7 +2154,7 @@ html body #btn-clear-history:hover,
 html body #btn-download-toggle:hover,
 html body #history-toggle:hover,
 html body .dropdown > .btn:hover {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   border-color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30) !important;
 }
@@ -2168,7 +2168,7 @@ html body #history-toggle:hover::after {
 /* ---------- РАСКРЫТЫЕ БУРГЕР-МЕНЮ ---------- */
 html body .dropdown-menu,
 html body .history-menu {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
@@ -2182,7 +2182,7 @@ html body .history-menu > * {
 }
 html body .dropdown-menu a:hover,
 html body .history-menu a:hover {
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
   color: var(--gold-light) !important;
 }
 
@@ -2227,7 +2227,7 @@ html[data-theme="day"] body .help-body {
 html[data-theme="night"] body .help-doc,
 html[data-theme="night"] body #help-body,
 html[data-theme="night"] body .help-body {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
   color: var(--gold, #F5B800) !important;
 }
@@ -2237,7 +2237,7 @@ html[data-theme="night"] body .help-body {
    ================================================ */
 /* ДЕНЬ: белые блоки, серая рамка, тёмно-синий текст */
 html[data-theme="day"] body .help-section {
-  background: rgba(255,255,255,0.55) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26,42,94,0.12) !important;
   color: var(--navy, #1a2a5e) !important;
 }
@@ -2376,7 +2376,7 @@ html[data-theme="night"] body .dropdown > .btn:hover {
 /* ДЕНЬ */
 html[data-theme="day"] body .dropdown-menu,
 html[data-theme="day"] body .history-menu {
-  background: rgba(255,255,255,0.72) !important;
+  background: transparent !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1.5px solid rgba(26,42,94,0.12) !important;
@@ -2390,7 +2390,7 @@ html[data-theme="day"] body .history-menu > * {
 }
 html[data-theme="day"] body .dropdown-menu a:hover,
 html[data-theme="day"] body .history-menu a:hover {
-  background: rgba(0,0,0,0.18) !important;
+  background: transparent !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -2411,7 +2411,7 @@ html[data-theme="night"] body .history-menu > * {
 }
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
-  background: rgba(0,0,0,0.20) !important;
+  background: transparent !important;
   color: var(--gold-light) !important;
 }
 
@@ -2556,7 +2556,7 @@ html[data-theme="night"] body .history-menu > * {
 }
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
   color: var(--gold-light) !important;
 }
 
@@ -2583,7 +2583,7 @@ html[data-theme="night"] body .dropdown > button,
 html[data-theme="night"] body .btn.btn-ghost,
 html[data-theme="night"] body .dropdown-menu,
 html[data-theme="night"] body .history-menu {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
 }
 
@@ -2632,7 +2632,7 @@ html[data-theme="day"] body .help-modal-content {
 html[data-theme="day"] body .help-modal-content,
 html[data-theme="day"] body #help-body,
 html[data-theme="day"] body .help-doc {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   color: #1a2a5e !important;
 }
 
@@ -2652,7 +2652,7 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
 }
@@ -2680,7 +2680,7 @@ html[data-theme="day"] body #help-body,
 html[data-theme="day"] body .help-doc,
 html[data-theme="day"] body .help-section,
 html[data-theme="day"] body .help-content {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   color: #1a2a5e !important;
   border: none !important;
   box-shadow: none !important;
@@ -2696,7 +2696,7 @@ html[data-theme="night"] body #help-body,
 html[data-theme="night"] body .help-doc,
 html[data-theme="night"] body .help-section,
 html[data-theme="night"] body .help-content {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border: none !important;
   box-shadow: none !important;
@@ -2716,20 +2716,20 @@ html[data-theme="night"] body #btn-stop.btn.btn-ghost:not(#_x):not(#_y),
 html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#_x):not(#_y),
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_x):not(#_y),
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_x):not(#_y) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --- История (без id) — через .dropdown > button --- */
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_x):not(#_y) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --- Общий селектор: все button.btn.btn-ghost в ночи --- */
 html[data-theme="night"] body button.btn.btn-ghost:not(#_x):not(#_y):not(#_z) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --- HELP-элементы: день и ночь --- */
@@ -2738,14 +2738,14 @@ html[data-theme="day"] body #help-body:not(#_x),
 html[data-theme="day"] body .help-doc:not(#_x),
 html[data-theme="day"] body .help-section:not(#_x),
 html[data-theme="day"] body .help-content:not(#_x) {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
 }
 html[data-theme="night"] body .help-modal-content:not(#_x),
 html[data-theme="night"] body #help-body:not(#_x),
 html[data-theme="night"] body .help-doc:not(#_x),
 html[data-theme="night"] body .help-section:not(#_x),
 html[data-theme="night"] body .help-content:not(#_x) {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
 }
 
 /* ============================================================
@@ -2773,8 +2773,8 @@ html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b)
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body button.btn.btn-ghost:not(#_a):not(#_b) {
-  background: rgba(13, 26, 63, 0.55) !important;
-  background-color: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ---------- 3. НОЧЬ: help-элементы → rgba(13,26,63,0.55) ---------- */
@@ -2782,8 +2782,8 @@ html[data-theme="night"] body #help-body:not(#_a):not(#_b),
 html[data-theme="night"] body .help-doc:not(#_a):not(#_b),
 html[data-theme="night"] body .help-section:not(#_a):not(#_b),
 html[data-theme="night"] body .help-content:not(#_a):not(#_b) {
-  background: rgba(13, 26, 63, 0.55) !important;
-  background-color: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ---------- 3. ДЕНЬ: help-элементы → rgba(255,255,255,0.55) ---------- */
@@ -2791,8 +2791,8 @@ html[data-theme="day"] body #help-body:not(#_a):not(#_b),
 html[data-theme="day"] body .help-doc:not(#_a):not(#_b),
 html[data-theme="day"] body .help-section:not(#_a):not(#_b),
 html[data-theme="day"] body .help-content:not(#_a):not(#_b) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ============================================================
@@ -2823,8 +2823,8 @@ html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#_a):not(#_b)
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost:not(#_a):not(#_b),
 html[data-theme="night"] body button.btn.btn-ghost:not(#_a):not(#_b) {
-  background: rgba(0, 0, 0, 0.35) !important;
-  background-color: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ---------- 3. НОЧЬ: help-элементы → rgba(0,0,0,0.35) ---------- */
@@ -2832,8 +2832,8 @@ html[data-theme="night"] body #help-body:not(#_a):not(#_b),
 html[data-theme="night"] body .help-doc:not(#_a):not(#_b),
 html[data-theme="night"] body .help-section:not(#_a):not(#_b),
 html[data-theme="night"] body .help-content:not(#_a):not(#_b) {
-  background: rgba(0, 0, 0, 0.35) !important;
-  background-color: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ---------- 3. ДЕНЬ: help-элементы → rgba(255,255,255,0.55) ---------- */
@@ -2841,8 +2841,8 @@ html[data-theme="day"] body #help-body:not(#_a):not(#_b),
 html[data-theme="day"] body .help-doc:not(#_a):not(#_b),
 html[data-theme="day"] body .help-section:not(#_a):not(#_b),
 html[data-theme="day"] body .help-content:not(#_a):not(#_b) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* ============================================================
@@ -3096,7 +3096,7 @@ html body .help-modal-close {
   justify-content: center !important;
   cursor: pointer !important;
   
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(0, 0, 0, 0.40) !important;
   border-radius: 50% !important;
   color: var(--gold) !important;
@@ -3107,7 +3107,7 @@ html body .help-modal-close {
 }
 html body #help-close:hover,
 html body .help-modal-close:hover {
-  background: rgba(0, 0, 0, 0.30) !important;
+  background: transparent !important;
   transform: scale(1.08) !important;
 }
 html body #help-close *,
@@ -3119,7 +3119,7 @@ html body .help-modal-close * {
 /* Днём — синий крестик на белом */
 html[data-theme="day"] body #help-close,
 html[data-theme="day"] body .help-modal-close {
-  background: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
   border-color: rgba(26, 42, 94, 0.20) !important;
   color: #1a2a5e !important;
 }
@@ -3163,7 +3163,7 @@ html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost,
 html[data-theme="night"] body button.btn.btn-ghost {
-  background: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
   color: var(--gold) !important;
 }
 html[data-theme="night"] body #btn-stop *,
@@ -3271,17 +3271,17 @@ html body .help-doc::-webkit-scrollbar {
   width: 8px !important;
 }
 html body .help-doc::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05) !important;
+  background: transparent !important;
   border-radius: 4px !important;
   margin: 4px 0 !important;
 }
 html body .help-doc::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
   border-radius: 4px !important;
   transition: background 0.2s !important;
 }
 html body .help-doc::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.60) !important;
+  background: transparent !important;
 }
 /* Firefox */
 html body .help-doc {
@@ -3349,8 +3349,8 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not
 html[data-theme="night"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="night"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
-  background: rgba(13, 26, 63, 0.55) !important;
-  background-color: rgba(13, 26, 63, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
   color: var(--gold) !important;
@@ -3372,8 +3372,8 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not(#
 html[data-theme="day"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="day"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5),
 html[data-theme="day"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
-  background: rgba(255, 255, 255, 0.55) !important;
-  background-color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  background-color: transparent !important;
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
   color: #1a2a5e !important;
@@ -3492,7 +3492,7 @@ html body .help-doc > h2:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
   z-index: 20 !important;
 
   /* Фон, чтобы текст под ним не просвечивал при прокрутке */
-  background: rgba(13, 26, 63, 0.92) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   padding: 12px 8px 10px !important;
   margin: -20px -22px 8px !important;
@@ -3506,7 +3506,7 @@ html body .help-doc > h2:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
 
 /* День — светлый фон заголовка */
 html[data-theme="day"] body .help-doc .help-title:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: transparent !important;
   color: #1a2a5e !important;
 }
 
@@ -3520,11 +3520,11 @@ html body .help-doc:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5)::-webkit-scroll
   width: 6px !important;
 }
 html body .help-doc:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5)::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.45) !important;
+  background: transparent !important;
   border-radius: 4px !important;
 }
 html body .help-doc:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5)::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.75) !important;
+  background: transparent !important;
 }
 html body .help-doc:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
   scrollbar-width: thin !important;
@@ -3814,21 +3814,21 @@ html body #help-close {
   transition: background 0.15s, transform 0.15s !important;
 }
 html[data-theme="night"] body #help-close {
-  background: rgba(13, 26, 63, 0.85) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
 }
 html[data-theme="night"] body #help-close:hover {
-  background: rgba(0, 0, 0, 0.25) !important;
+  background: transparent !important;
   transform: scale(1.08) !important;
 }
 html[data-theme="day"] body #help-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26, 42, 94, 0.40) !important;
   color: #1a2a5e !important;
 }
 html[data-theme="day"] body #help-close:hover {
-  background: rgba(26, 42, 94, 0.10) !important;
+  background: transparent !important;
   transform: scale(1.08) !important;
 }
 
@@ -3852,14 +3852,14 @@ html body .help-modal.open {
   justify-content: center !important;
   padding: 3vh 16px !important;
   z-index: 9999 !important;
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
   backdrop-filter: blur(8px) !important;
   -webkit-backdrop-filter: blur(8px) !important;
   overflow-y: auto !important;
   overscroll-behavior: contain !important;
 }
 html[data-theme="day"] body .help-modal.open {
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
 }
 
 /* ---------- 3. ГЛАВНЫЙ БЛОК .help-doc ---------- */
@@ -3971,12 +3971,12 @@ html body .help-modal.open #help-close {
   cursor: pointer !important;
 }
 html[data-theme="night"] body .help-modal.open #help-close {
-  background: rgba(13, 26, 63, 0.85) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
 }
 html[data-theme="day"] body .help-modal.open #help-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26, 42, 94, 0.40) !important;
   color: #1a2a5e !important;
 }
@@ -3997,13 +3997,13 @@ html body .help-modal.open {
   z-index: 9999 !important;
   overflow-y: auto !important;
   overscroll-behavior: contain !important;
-  background: rgba(0, 0, 0, 0.40) !important;
+  background: transparent !important;
   backdrop-filter: blur(10px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(10px) saturate(1.2) !important;
   padding: 0 !important;
 }
 html[data-theme="day"] body .help-modal.open {
-  background: rgba(0, 0, 0, 0.25) !important;
+  background: transparent !important;
 }
 
 /* ---------- 2. ОБЁРТКА КОНТЕНТА — прозрачная ---------- */
@@ -4077,7 +4077,7 @@ html body .help-modal.open .help-doc h2.help-title {
   padding: 10px 30px !important;
 
   /* Жёлтая скруглённая рамка + фон позади чутка блюрится */
-  background: rgba(0, 0, 0, 0.14) !important;
+  background: transparent !important;
   backdrop-filter: blur(28px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
   border: 2px solid var(--gold) !important;
@@ -4095,7 +4095,7 @@ html body .help-modal.open .help-doc h2.help-title {
 
 html[data-theme="day"] body .help-modal.open .help-doc .help-title {
   color: #1a2a5e !important;
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: transparent !important;
   border-color: var(--gold) !important;
 }
 
@@ -4151,25 +4151,25 @@ html body .help-modal-close > * {
 
 html[data-theme="night"] body #help-close,
 html[data-theme="night"] body .help-modal-close {
-  background: rgba(13, 26, 63, 0.90) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.40) !important;
 }
 html[data-theme="night"] body #help-close:hover {
-  background: rgba(0, 0, 0, 0.30) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
 html[data-theme="day"] body #help-close,
 html[data-theme="day"] body .help-modal-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26, 42, 94, 0.50) !important;
   color: #1a2a5e !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
 }
 html[data-theme="day"] body #help-close:hover {
-  background: rgba(26, 42, 94, 0.12) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
@@ -4198,7 +4198,7 @@ html body .help-modal.open .help-section {
   position: relative !important;
 }
 html[data-theme="night"] body .help-modal.open .help-section {
-  background: rgba(13, 26, 63, 0.85) !important;
+  background: transparent !important;
   border-color: rgba(0, 0, 0, 0.28) !important;
 }
 
@@ -4241,14 +4241,14 @@ html body .help-modal.open {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   overscroll-behavior: contain !important;
-  background: rgba(0, 0, 0, 0.45) !important;
+  background: transparent !important;
   backdrop-filter: blur(12px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(12px) saturate(1.2) !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 html[data-theme="day"] body .help-modal.open {
-  background: rgba(0, 0, 0, 0.30) !important;
+  background: transparent !important;
 }
 
 /* ---------- 2. BLUR-ЗОНЫ У КРАЁВ (слева и справа) ---------- */
@@ -4324,7 +4324,7 @@ html body .help-modal.open .help-doc h2.help-title {
   margin: 0 auto 36px !important;
   padding: 10px 32px !important;
 
-  background: rgba(0, 0, 0, 0.15) !important;
+  background: transparent !important;
   backdrop-filter: blur(28px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
   border: 2px solid var(--gold) !important;
@@ -4340,7 +4340,7 @@ html body .help-modal.open .help-doc h2.help-title {
 }
 html[data-theme="day"] body .help-modal.open .help-doc .help-title {
   color: #1a2a5e !important;
-  background: rgba(255, 255, 255, 0.80) !important;
+  background: transparent !important;
 }
 
 /* Только текущий язык */
@@ -4393,24 +4393,24 @@ html body .help-modal.open .help-modal-close > * {
 }
 
 html[data-theme="night"] body .help-modal.open #help-close {
-  background: rgba(13, 26, 63, 0.90) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
 }
 html[data-theme="night"] body .help-modal.open #help-close:hover {
-  background: rgba(0, 0, 0, 0.30) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
 html[data-theme="day"] body .help-modal.open #help-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26, 42, 94, 0.50) !important;
   color: #1a2a5e !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.20) !important;
 }
 html[data-theme="day"] body .help-modal.open #help-close:hover {
-  background: rgba(26, 42, 94, 0.12) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
@@ -4441,7 +4441,7 @@ html body .help-modal.open .help-doc .help-section {
   width: 100% !important;
 }
 html[data-theme="night"] body .help-modal.open .help-doc .help-section {
-  background: rgba(13, 26, 63, 0.85) !important;
+  background: transparent !important;
   border-color: rgba(0, 0, 0, 0.28) !important;
 }
 
@@ -4496,12 +4496,12 @@ html body .help-modal.open::before {
   inset: 0 !important;
   z-index: 1 !important;
   pointer-events: none !important;
-  background: rgba(0, 0, 0, 0.45) !important;
+  background: transparent !important;
   backdrop-filter: blur(10px) saturate(1.1) !important;
   -webkit-backdrop-filter: blur(10px) saturate(1.1) !important;
 }
 html[data-theme="day"] body .help-modal.open::before {
-  background: rgba(0, 0, 0, 0.30) !important;
+  background: transparent !important;
 }
 
 /* ::after — сильный blur, только у краёв (градиентная маска 200px) */
@@ -4620,7 +4620,7 @@ html body .help-modal.open .help-doc h2.help-title {
   padding: 10px 32px !important;
   margin: 0 !important;
 
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
   border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.40), 0 2px 10px rgba(0, 0, 0, 0.30) !important;
@@ -4634,7 +4634,7 @@ html body .help-modal.open .help-doc h2.help-title {
 }
 html[data-theme="day"] body .help-modal.open .help-doc .help-title {
   color: #1a2a5e !important;
-  background: rgba(255, 255, 255, 0.90) !important;
+  background: transparent !important;
 }
 
 /* Только текущий язык */
@@ -4691,24 +4691,24 @@ html body .help-modal.open .help-modal-close > * {
 }
 
 html[data-theme="night"] body .help-modal.open #help-close {
-  background: rgba(13, 26, 63, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.50) !important;
 }
 html[data-theme="night"] body .help-modal.open #help-close:hover {
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
 html[data-theme="day"] body .help-modal.open #help-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid rgba(26, 42, 94, 0.55) !important;
   color: #1a2a5e !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.20) !important;
 }
 html[data-theme="day"] body .help-modal.open #help-close:hover {
-  background: rgba(26, 42, 94, 0.15) !important;
+  background: transparent !important;
   transform: scale(1.10) !important;
 }
 
@@ -4737,7 +4737,7 @@ html body .help-modal.open .help-doc .help-section {
   width: 100% !important;
 }
 html[data-theme="night"] body .help-modal.open .help-doc .help-section {
-  background: rgba(13, 26, 63, 0.88) !important;
+  background: transparent !important;
   border-color: rgba(0, 0, 0, 0.28) !important;
 }
 html body .help-modal.open .help-doc .help-section[open] {
@@ -4774,14 +4774,14 @@ html body .help-modal.open {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   overscroll-behavior: contain !important;
-  background: rgba(0, 0, 0, 0.55) !important;
+  background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   padding: 0 !important;
   margin: 0 !important;
 }
 html[data-theme="day"] body .help-modal.open {
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: transparent !important;
 }
 
 /* ---------- 2. ОБЩИЙ blur ВСЕГО ФОНА ---------- */
@@ -4866,7 +4866,7 @@ html body .help-modal.open .help-doc h2.help-title {
   padding: 10px 26px !important;
   margin: 0 !important;
 
-  background: rgba(0, 0, 0, 0.20) !important;
+  background: transparent !important;
   border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.40), 0 2px 10px rgba(0, 0, 0, 0.25) !important;
@@ -4884,7 +4884,7 @@ html body .help-modal.open .help-doc h2.help-title {
 }
 html[data-theme="day"] body .help-modal.open .help-doc .help-title {
   color: #1a2a5e !important;
-  background: rgba(255, 255, 255, 0.90) !important;
+  background: transparent !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -4943,12 +4943,12 @@ html body .help-modal.open .help-title #help-close > * {
 }
 
 html[data-theme="night"] body .help-modal.open .help-title #help-close {
-  background: rgba(13, 26, 63, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid var(--gold) !important;
   color: var(--gold) !important;
 }
 html[data-theme="day"] body .help-modal.open .help-title #help-close {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: transparent !important;
   border: 1.5px solid #1a2a5e !important;
   color: #1a2a5e !important;
 }
@@ -4957,10 +4957,10 @@ html body .help-modal.open .help-title #help-close:hover {
   transform: scale(1.12) !important;
 }
 html[data-theme="night"] body .help-modal.open .help-title #help-close:hover {
-  background: rgba(0, 0, 0, 0.40) !important;
+  background: transparent !important;
 }
 html[data-theme="day"] body .help-modal.open .help-title #help-close:hover {
-  background: rgba(26, 42, 94, 0.15) !important;
+  background: transparent !important;
 }
 
 /* ---------- 7. 9 БЛОКОВ — карточки, не наезжают ---------- */
@@ -4978,7 +4978,7 @@ html body .help-modal.open .help-doc .help-section {
   width: 100% !important;
 }
 html[data-theme="night"] body .help-modal.open .help-doc .help-section {
-  background: rgba(13, 26, 63, 0.88) !important;
+  background: transparent !important;
   border-color: rgba(0, 0, 0, 0.28) !important;
 }
 html body .help-modal.open .help-doc .help-section[open] {
@@ -5039,14 +5039,14 @@ html body #help-modal.help-modal.open::after {
 html body #help-header-fixed {
     backdrop-filter: blur(20px) saturate(1.2) !important;
     -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 10px 28px !important;
     border-radius: 16px !important;
 }
 html[data-theme="night"] body #help-header-fixed {
-    background: rgba(0, 0, 0, 0.06) !important;
+    background: transparent !important;
 }
 
 /* Само слово «Инструкция» — без рамки, без фона */
@@ -5083,7 +5083,7 @@ html body #help-modal.help-modal.open::after {
 
 /* === P6.2: Batch UI === */
 .batch-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;font-family:var(--font-body)}
-.batch-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px)}
+.batch-backdrop{position:absolute;inset:0;background: transparent;backdrop-filter:blur(4px)}
 .batch-dialog{position:relative;background:var(--app-bg);color:var(--text);border-radius:20px;
   border:1.5px solid var(--panel-border);box-shadow:0 20px 60px rgba(0,0,0,.35);
   width:min(820px,94vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
@@ -5235,10 +5235,10 @@ html[data-theme="night"] .batch-submit:hover:not(:disabled) {
 #batch-modal .help-modal-close:hover {
   border-color: var(--red) !important;
   color: var(--red) !important;
-  background: rgba(230,57,70,0.08) !important;
+  background: transparent !important;
 }
 [data-theme="night"] #batch-modal .help-modal-close {
-  background: rgba(0,0,0,0.14) !important;
+  background: transparent !important;
   color: var(--gold) !important;
   border-color: rgba(0,0,0,0.3) !important;
 }
@@ -5743,7 +5743,7 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   cursor: pointer;
 }
 .jstp-rate:hover { border-color: var(--gold, #F5B800); }
-[data-theme="night"] .jstp-wave-wrap { background: rgba(0,0,0,0.35); }
+[data-theme="night"] .jstp-wave-wrap { background: transparent; }
 
 /* 4. АДАПТИВНОСТЬ — правильный скролл + масштабирование */
 
@@ -6055,11 +6055,11 @@ html[data-theme="night"] .jstp-btn.active:hover {
 }
 
 html[data-theme="night"] .jstp-settings {
-  background: rgba(0,0,0,0.35);
+  background: transparent;
   border-color: rgba(255,255,255,0.08);
 }
 html[data-theme="night"] .jstp-set-item select {
-  background: rgba(0,0,0,0.4);
+  background: transparent;
   color: var(--text);
   border-color: rgba(255,255,255,0.15);
 }

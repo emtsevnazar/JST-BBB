@@ -40,7 +40,6 @@
     }
   };
 })();
-/* === CONTRAST HELP ENFORCER === */
 (function(){
   'use strict';
   function isContrast() {
@@ -124,4 +123,86 @@
   // Initial
   if (isContrast()) setTimeout(enforceHelpModal, 500);
   window.__jstContrastHelpEnforce = enforceHelpModal;
+})();
+/* === CONTRAST ENFORCER === */
+(function(){
+  'use strict';
+  var CONTRAST_HEXES = [
+    /#F5B800/gi, /#FFC72C/gi, /#FFD859/gi, /#FFD966/gi,
+    /#FFE082/gi, /#FFEB3B/gi, /#FFD700/gi, /#FFC107/gi,
+    /#FFB300/gi, /#FFA000/gi, /#FFCA28/gi, /#FFD54F/gi,
+    /#f5b300/gi, /#f0c040/gi,
+    /rgba\(\s*245\s*,\s*184\s*,\s*0[^)]*\)/gi,
+    /rgba\(\s*255\s*,\s*(?:199|215|235|216)\s*,\s*(?:44|0|59|89)[^)]*\)/gi
+  ];
+  function isContrast() {
+    return document.documentElement.getAttribute('data-theme') === 'contrast';
+  }
+  function isSkipped(el) {
+    if (!el || !el.id) return false;
+    if (el.id === 'jst-err-overlay' || el.id === 'jst-wand') return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id === 'jst-err-overlay' || p.id === 'jst-wand') return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  function fixInline(el) {
+    if (!el || el.nodeType !== 1) return;
+    if (isSkipped(el)) return;
+    var style = el.getAttribute('style');
+    if (!style) return;
+    var newStyle = style;
+    var changed = false;
+    CONTRAST_HEXES.forEach(function(re) {
+      if (re.test(newStyle)) {
+        newStyle = newStyle.replace(re, '#000000');
+        changed = true;
+      }
+    });
+    // Убить rgba серых/полупрозрачных фонов
+    if (/background[^:]*:\s*rgba\(/.test(newStyle)) {
+      newStyle = newStyle.replace(/background(-color)?\s*:\s*rgba\([^)]+\)/g, 'background$1: transparent');
+      changed = true;
+    }
+    if (changed) {
+      try { el.setAttribute('style', newStyle); } catch(e) {}
+    }
+  }
+  function walkAll() {
+    if (!isContrast()) return;
+    var all = document.querySelectorAll('[style]');
+    for (var i = 0; i < all.length; i++) fixInline(all[i]);
+  }
+  function schedule() {
+    if (!isContrast()) return;
+    setTimeout(walkAll, 30);
+    setTimeout(walkAll, 200);
+    setTimeout(walkAll, 500);
+    setTimeout(walkAll, 1000);
+    setTimeout(walkAll, 2000);
+  }
+  try {
+    new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === 'data-theme') schedule();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  } catch (e) {}
+  if (document.body) {
+    try {
+      new MutationObserver(function(mutations) {
+        if (!isContrast()) return;
+        for (var i = 0; i < mutations.length; i++) {
+          if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
+            schedule();
+            return;
+          }
+        }
+      }).observe(document.body, { childList: true, subtree: true });
+    } catch (e) {}
+  }
+  if (isContrast()) setTimeout(walkAll, 500);
+  window.__jstContrastEnforce = walkAll;
 })();
