@@ -1,4 +1,4 @@
-const VERSION = 'v5.1.2';
+const VERSION = 'v5.2.0';
 const CACHE_STATIC = 'jst-static-' + VERSION;
 const CACHE_OFFL = 'jst-offl-' + VERSION;
 
@@ -7,6 +7,8 @@ const PRECACHE = [
   '/offline',
   '/static/style.css',
   '/static/style-clean.css',
+  '/static/style-contrast.css',
+  '/static/help-fix.js',
   '/static/dots.js',
   '/static/wand.js',
   '/static/img/ph_b2.png',

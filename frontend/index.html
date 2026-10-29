@@ -8,7 +8,7 @@
 var t="day";
 if(m==="night")t="night";
 else if(m==="auto")t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"night":"day";
-else if(m==="scheduled"){var h=new Date().getHours();t=(h>=6&&h<18)?"day":"night";}
+else if(m==="scheduled"){var h=new Date().getHours();t=(h>=6&&h<18)?"day":"night";}else if(m==="contrast"){t="contrast";}
 document.documentElement.setAttribute("data-theme",t);})();
 </script>
 
@@ -42,6 +42,7 @@ document.documentElement.setAttribute("data-theme",t);})();
   <link rel="stylesheet" href="/static/fixes-v1.10.67.css">
   <link rel="stylesheet" href="/static/fixes-v1.10.68.css">
 <link rel="stylesheet" href="/static/style-clean.css?t=1793258314">
+<link rel="stylesheet" href="/static/style-contrast.css?t=1793258629">
 </head>
 <body>
 <div class="bg"><div class="bg-image"></div></div>
@@ -461,7 +462,8 @@ if ('serviceWorker' in navigator) {
   <script src="/static/dropdown-stable.js" defer></script>
   <script src="/static/splitter.js" defer></script>
   <script src="/static/batch-table-adaptive.js" defer></script>
-<script src="/static/dots.js?t=1793258314" defer></script>
-<script src="/static/wand.js?t=1793258314" defer></script>
+<script src="/static/dots.js?t=1793258629" defer></script>
+<script src="/static/wand.js?t=1793258629" defer></script>
+<script src="/static/help-fix.js?t=1793258629" defer></script>
 </body>
 </html>

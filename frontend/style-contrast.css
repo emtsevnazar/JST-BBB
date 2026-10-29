@@ -1,0 +1,225 @@
+/* === CONTRAST THEME — B&W high-contrast (accessibility) === */
+
+html[data-theme="contrast"] {
+  --bg: #ffffff;
+  --text: #000000;
+  --text-dim: #2a2a2a;
+  --accent: #000000;
+  --gold: #000000;
+  --gold-light: #000000;
+  --navy: #000000;
+  --red: #000000;
+  --panel-bg: #ffffff;
+  --panel-border: #000000;
+  --input-bg: #ffffff;
+  --card-bg: #ffffff;
+  color-scheme: light;
+}
+
+/* Base — white background, black text */
+html[data-theme="contrast"] body {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
+
+/* Kill all decorative effects */
+html[data-theme="contrast"] *,
+html[data-theme="contrast"] *::before,
+html[data-theme="contrast"] *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Images — grayscale + contrast (accessibility standard) */
+html[data-theme="contrast"] img,
+html[data-theme="contrast"] picture,
+html[data-theme="contrast"] video,
+html[data-theme="contrast"] canvas {
+  filter: grayscale(1) contrast(1.3) !important;
+}
+
+/* Hide decorative backgrounds (photos, gradients) */
+html[data-theme="contrast"] .bg-image,
+html[data-theme="contrast"] .bg-fallback,
+html[data-theme="contrast"] .bg-gradient,
+html[data-theme="contrast"] [class*="bg-"]:not([class*="bg-fallback-trigger"]) {
+  background-image: none !important;
+  background-color: #ffffff !important;
+}
+
+/* Panels, cards — white with black border */
+html[data-theme="contrast"] .panel,
+html[data-theme="contrast"] .card,
+html[data-theme="contrast"] .sidebar,
+html[data-theme="contrast"] .main,
+html[data-theme="contrast"] .dropdown-menu,
+html[data-theme="contrast"] .history-menu,
+html[data-theme="contrast"] .modal,
+html[data-theme="contrast"] .help-modal {
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+}
+
+/* Buttons, inputs, selects, textarea */
+html[data-theme="contrast"] button,
+html[data-theme="contrast"] .btn,
+html[data-theme="contrast"] .icon-btn,
+html[data-theme="contrast"] select,
+html[data-theme="contrast"] input[type="text"],
+html[data-theme="contrast"] input[type="number"],
+html[data-theme="contrast"] input[type="search"],
+html[data-theme="contrast"] input[type="email"],
+html[data-theme="contrast"] input[type="password"],
+html[data-theme="contrast"] textarea,
+html[data-theme="contrast"] summary,
+html[data-theme="contrast"] .dropdown > .btn,
+html[data-theme="contrast"] .dropdown > button {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+html[data-theme="contrast"] button:hover,
+html[data-theme="contrast"] .btn:hover,
+html[data-theme="contrast"] .icon-btn:hover,
+html[data-theme="contrast"] .dropdown > .btn:hover,
+html[data-theme="contrast"] button:focus-visible,
+html[data-theme="contrast"] .btn:focus-visible {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+html[data-theme="contrast"] button:active,
+html[data-theme="contrast"] .btn:active {
+  background: #000000 !important;
+  color: #ffffff !important;
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px !important;
+}
+
+/* Dropdown menu items */
+html[data-theme="contrast"] .dropdown-menu a,
+html[data-theme="contrast"] .history-menu a,
+html[data-theme="contrast"] .dropdown-menu li,
+html[data-theme="contrast"] .history-menu li {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+}
+html[data-theme="contrast"] .dropdown-menu a:hover,
+html[data-theme="contrast"] .history-menu a:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Links — underline */
+html[data-theme="contrast"] a {
+  color: #000000 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+}
+
+/* Headings — heavy */
+html[data-theme="contrast"] h1,
+html[data-theme="contrast"] h2,
+html[data-theme="contrast"] h3,
+html[data-theme="contrast"] h4,
+html[data-theme="contrast"] h5,
+html[data-theme="contrast"] h6,
+html[data-theme="contrast"] .panel-title,
+html[data-theme="contrast"] .help-title {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
+
+/* Status dots */
+html[data-theme="contrast"] .status-dot {
+  background: #000000 !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+/* Range slider track/thumb */
+html[data-theme="contrast"] input[type="range"] {
+  background: #ffffff !important;
+}
+html[data-theme="contrast"] input[type="range"]::-webkit-slider-runnable-track {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  height: 4px !important;
+}
+html[data-theme="contrast"] input[type="range"]::-webkit-slider-thumb {
+  background: #000000 !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+  -webkit-appearance: none !important;
+}
+html[data-theme="contrast"] input[type="range"]::-moz-range-track {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+html[data-theme="contrast"] input[type="range"]::-moz-range-thumb {
+  background: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Scrollbar */
+html[data-theme="contrast"] ::-webkit-scrollbar {
+  background: #ffffff !important;
+  width: 10px !important;
+}
+html[data-theme="contrast"] ::-webkit-scrollbar-thumb {
+  background: #000000 !important;
+  border-radius: 0 !important;
+}
+
+/* Focus ring */
+html[data-theme="contrast"] *:focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px !important;
+}
+
+/* Help modal */
+html[data-theme="contrast"] .help-content,
+html[data-theme="contrast"] .help-doc,
+html[data-theme="contrast"] .help-section,
+html[data-theme="contrast"] .help-header {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Table borders */
+html[data-theme="contrast"] table,
+html[data-theme="contrast"] th,
+html[data-theme="contrast"] td {
+  border-color: #000000 !important;
+}
+html[data-theme="contrast"] th {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-bottom: 2px solid #000000 !important;
+}
+
+/* Video player controls */
+html[data-theme="contrast"] .jst-player,
+html[data-theme="contrast"] .jstp-controls {
+  background: #ffffff !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+/* Hide pulse / glow animations for a11y */
+html[data-theme="contrast"] .status-dot,
+html[data-theme="contrast"] [class*="pulse"] {
+  animation: none !important;
+}
