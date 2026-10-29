@@ -1,6 +1,6 @@
-/* CONTRAST — minimal safe */
+/* CONTRAST THEME — ABSOLUTE B&W */
 
-/* 1. Все CSS-переменные → ч/б */
+/* 1. CSS variables → ч/б */
 html[data-theme="contrast"] {
   --bg: #ffffff;
   --text: #000000;
@@ -26,23 +26,52 @@ html[data-theme="contrast"] {
   --input-bg: #ffffff;
   --surface-1: #ffffff;
   --card-bg: #ffffff;
-  --input-border: #000000;
   color-scheme: light;
 }
 
-/* 2. Body — белый фон */
+/* 2. Body — белый */
 html[data-theme="contrast"] body {
   background-color: #ffffff !important;
+  background-image: none !important;
   color: #000000 !important;
 }
 
-/* 3. Все кнопки — белые с чёрным текстом */
+/* 3. Все контейнеры → белый фон */
+html[data-theme="contrast"] .panel,
+html[data-theme="contrast"] .card,
+html[data-theme="contrast"] .sidebar,
+html[data-theme="contrast"] .main,
+html[data-theme="contrast"] .controls,
+html[data-theme="contrast"] .controls-bar,
+html[data-theme="contrast"] .topbar,
+html[data-theme="contrast"] header,
+html[data-theme="contrast"] footer,
+html[data-theme="contrast"] .dropdown-menu,
+html[data-theme="contrast"] .history-menu,
+html[data-theme="contrast"] .modal,
+html[data-theme="contrast"] .help-modal,
+html[data-theme="contrast"] .help-doc,
+html[data-theme="contrast"] .help-content,
+html[data-theme="contrast"] .help-body,
+html[data-theme="contrast"] .help-section,
+html[data-theme="contrast"] .help-header,
+html[data-theme="contrast"] .jst-player {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* 4. Кнопки — БЕЛЫЙ фон + ЧЁРНЫЙ текст */
 html[data-theme="contrast"] button,
 html[data-theme="contrast"] .btn,
 html[data-theme="contrast"] .icon-btn,
 html[data-theme="contrast"] .carousel-btn,
 html[data-theme="contrast"] .controls-btn,
-html[data-theme="contrast"] [role="button"] {
+html[data-theme="contrast"] [role="button"],
+html[data-theme="contrast"] select,
+html[data-theme="contrast"] summary {
+  background: #ffffff !important;
   background-color: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
@@ -53,38 +82,49 @@ html[data-theme="contrast"] button *,
 html[data-theme="contrast"] .btn *,
 html[data-theme="contrast"] .icon-btn *,
 html[data-theme="contrast"] .carousel-btn *,
-html[data-theme="contrast"] .controls-btn * {
+html[data-theme="contrast"] .controls-btn *,
+html[data-theme="contrast"] [role="button"] * {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
 }
 html[data-theme="contrast"] button svg,
 html[data-theme="contrast"] .btn svg,
-html[data-theme="contrast"] .icon-btn svg {
+html[data-theme="contrast"] .icon-btn svg,
+html[data-theme="contrast"] .carousel-btn svg,
+html[data-theme="contrast"] .controls-btn svg {
   stroke: #000000 !important;
-  color: #000000 !important;
+  fill: none !important;
 }
 
-/* 4. Hover/active/pressed — чёрные с белым текстом */
+/* 5. АКТИВНЫЕ/НАЖАТЫЕ/HOVER кнопки — ЧЁРНЫЙ фон + БЕЛЫЙ текст */
 html[data-theme="contrast"] button:hover,
+html[data-theme="contrast"] button:focus,
 html[data-theme="contrast"] button:active,
+html[data-theme="contrast"] button.pressed,
 html[data-theme="contrast"] button.active,
 html[data-theme="contrast"] button.is-active,
 html[data-theme="contrast"] button.selected,
+html[data-theme="contrast"] button.on,
 html[data-theme="contrast"] button[aria-pressed="true"],
 html[data-theme="contrast"] button[aria-selected="true"],
 html[data-theme="contrast"] .btn:hover,
+html[data-theme="contrast"] .btn:focus,
 html[data-theme="contrast"] .btn:active,
 html[data-theme="contrast"] .btn.active,
+html[data-theme="contrast"] .btn.selected,
 html[data-theme="contrast"] .icon-btn:hover,
+html[data-theme="contrast"] .icon-btn:focus,
 html[data-theme="contrast"] .icon-btn:active,
 html[data-theme="contrast"] .carousel-btn:hover,
 html[data-theme="contrast"] .carousel-btn:active,
+html[data-theme="contrast"] .carousel-btn.active,
 html[data-theme="contrast"] .controls-btn:hover,
 html[data-theme="contrast"] .controls-btn:active,
-html[data-theme="contrast"] .dropdown.open > .btn,
-html[data-theme="contrast"] .dropdown.open > button,
 html[data-theme="contrast"] [role="button"]:hover,
-html[data-theme="contrast"] [role="button"]:active {
+html[data-theme="contrast"] [role="button"]:active,
+html[data-theme="contrast"] .dropdown.open > .btn,
+html[data-theme="contrast"] .dropdown.open > button {
+  background: #000000 !important;
   background-color: #000000 !important;
   background-image: none !important;
   color: #ffffff !important;
@@ -92,40 +132,53 @@ html[data-theme="contrast"] [role="button"]:active {
   border-color: #000000 !important;
 }
 html[data-theme="contrast"] button:hover *,
+html[data-theme="contrast"] button:focus *,
 html[data-theme="contrast"] button:active *,
+html[data-theme="contrast"] button.pressed *,
 html[data-theme="contrast"] button.active *,
 html[data-theme="contrast"] button.is-active *,
 html[data-theme="contrast"] button.selected *,
 html[data-theme="contrast"] button[aria-pressed="true"] *,
 html[data-theme="contrast"] .btn:hover *,
+html[data-theme="contrast"] .btn:focus *,
 html[data-theme="contrast"] .btn:active *,
 html[data-theme="contrast"] .btn.active *,
 html[data-theme="contrast"] .icon-btn:hover *,
 html[data-theme="contrast"] .icon-btn:active *,
 html[data-theme="contrast"] .carousel-btn:hover *,
 html[data-theme="contrast"] .carousel-btn:active *,
+html[data-theme="contrast"] .carousel-btn.active *,
 html[data-theme="contrast"] .controls-btn:hover *,
 html[data-theme="contrast"] .controls-btn:active * {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 html[data-theme="contrast"] button:hover svg,
+html[data-theme="contrast"] button:focus svg,
 html[data-theme="contrast"] button:active svg,
 html[data-theme="contrast"] button.active svg,
 html[data-theme="contrast"] .btn:hover svg,
+html[data-theme="contrast"] .btn:focus svg,
 html[data-theme="contrast"] .btn:active svg,
+html[data-theme="contrast"] .btn.active svg,
 html[data-theme="contrast"] .icon-btn:hover svg,
-html[data-theme="contrast"] .icon-btn:active svg {
+html[data-theme="contrast"] .icon-btn:active svg,
+html[data-theme="contrast"] .carousel-btn:hover svg,
+html[data-theme="contrast"] .carousel-btn:active svg,
+html[data-theme="contrast"] .carousel-btn.active svg,
+html[data-theme="contrast"] .controls-btn:hover svg,
+html[data-theme="contrast"] .controls-btn:active svg {
   stroke: #ffffff !important;
+  fill: none !important;
   color: #ffffff !important;
 }
 
-/* 5. Disabled — белый + чёрный + opacity */
+/* 6. Disabled — белый + чёрный + opacity */
 html[data-theme="contrast"] button:disabled,
 html[data-theme="contrast"] button[disabled],
 html[data-theme="contrast"] .btn:disabled,
 html[data-theme="contrast"] .btn[disabled] {
-  background-color: #ffffff !important;
+  background: #ffffff !important;
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
   border-color: #000000 !important;
@@ -137,22 +190,14 @@ html[data-theme="contrast"] .btn:disabled * {
   color: #000000 !important;
   -webkit-text-fill-color: #000000 !important;
 }
-html[data-theme="contrast"] button:disabled svg,
-html[data-theme="contrast"] .btn:disabled svg {
-  stroke: #000000 !important;
-}
 
-/* 6. HELP MODAL — всё ч/б */
-html[data-theme="contrast"] .help-modal,
+/* 7. Help modal — всё ч/б */
 html[data-theme="contrast"] .help-modal *,
-html[data-theme="contrast"] .help-doc,
 html[data-theme="contrast"] .help-doc *,
-html[data-theme="contrast"] .help-content,
 html[data-theme="contrast"] .help-content *,
-html[data-theme="contrast"] .help-section,
 html[data-theme="contrast"] .help-section *,
-html[data-theme="contrast"] .help-header,
-html[data-theme="contrast"] .help-body,
+html[data-theme="contrast"] .help-header *,
+html[data-theme="contrast"] .help-body *,
 html[data-theme="contrast"] .help-title,
 html[data-theme="contrast"] .help-pill,
 html[data-theme="contrast"] .help-arrow {
@@ -165,23 +210,18 @@ html[data-theme="contrast"] .help-arrow {
   text-shadow: none !important;
 }
 html[data-theme="contrast"] .help-modal th {
-  background-color: #000000 !important;
+  background: #000000 !important;
   color: #ffffff !important;
 }
 html[data-theme="contrast"] .help-modal th * {
   color: #ffffff !important;
 }
-html[data-theme="contrast"] .help-modal a,
-html[data-theme="contrast"] .help-doc a {
+html[data-theme="contrast"] .help-modal a {
   color: #000000 !important;
   text-decoration: underline !important;
 }
-html[data-theme="contrast"] .help-modal-close:hover {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-}
 
-/* 7. Error text — чёрный + underline */
+/* 8. Error text — чёрный + underline */
 html[data-theme="contrast"] .error,
 html[data-theme="contrast"] .err,
 html[data-theme="contrast"] .status.error,
@@ -198,14 +238,8 @@ html[data-theme="contrast"] .invalid {
   text-decoration: underline !important;
   text-decoration-thickness: 2px !important;
 }
-html[data-theme="contrast"] .status.error::before,
-html[data-theme="contrast"] .status.error .status-dot {
-  background-color: #000000 !important;
-  border-color: #000000 !important;
-  animation: none !important;
-}
 
-/* 8. Dropdown/History menu */
+/* 9. Dropdown/History */
 html[data-theme="contrast"] .dropdown-menu,
 html[data-theme="contrast"] .dropdown-menu *,
 html[data-theme="contrast"] .history-menu,
@@ -222,18 +256,18 @@ html[data-theme="contrast"] .history-item:hover {
   color: #ffffff !important;
 }
 
-/* 9. Links */
+/* 10. Links */
 html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn):not(.carousel-btn) {
   color: #000000 !important;
   text-decoration: underline !important;
 }
 
-/* 10. img — grayscale (только img, не контейнеры) */
+/* 11. img — grayscale */
 html[data-theme="contrast"] img {
   filter: grayscale(1) !important;
 }
 
-/* 11. accent-grid 135×38 */
+/* 12. accent-grid 135×38 */
 html #accent-grid {
   grid-template-columns: repeat(auto-fill, 135px) !important;
   gap: 6px !important;
@@ -256,7 +290,7 @@ html #accent-grid > * {
   font-size: 11px !important;
 }
 
-/* 12. Badge — 6px, наследует цвет кнопки */
+/* 13. Badge — 6px, наследует цвет */
 #theme-toggle {
   position: relative !important;
   overflow: visible !important;

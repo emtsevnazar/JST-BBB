@@ -210,7 +210,7 @@ textarea{flex:1;min-height:140px;resize:none;line-height:1.6;font-size:13.5px}
 /* v1.6.1: error toast — ярко-красный фон + жёлтый текст + чуть больше padding */
 .toast.toast-error{
   background:#c81e2b !important;
-  color:#f5b800 !important;
+  color:var(--gold) !important;
   border:2px solid #c81e2b;
   font-size:14px;
   font-weight:700;
@@ -1627,11 +1627,11 @@ html[data-theme="night"] .help-content {
   border-top-color: rgba(0,0,0,0.25) !important;
 }
 html[data-theme="night"] .help-content code {
-  background: rgba(255,199,44,0.12) !important;
+  background: rgba(0,0,0,0.12) !important;
   color: var(--gold) !important;
 }
 html[data-theme="night"] .help-content b {
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 
@@ -1703,7 +1703,7 @@ html[data-theme="night"] .history-menu a {
 html[data-theme="night"] .dropdown-menu a:hover,
 html[data-theme="night"] .history-menu a:hover {
   background: rgba(0,0,0,0.15) !important;
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 /* История: дата */
@@ -1712,7 +1712,7 @@ html[data-theme="night"] .history-menu a:hover {
   font-size: 10.5px !important;
 }
 html[data-theme="night"] .history-menu .history-list .date {
-  color: rgba(255,199,44,0.55) !important;
+  color: rgba(0,0,0,0.55) !important;
 }
 
 /* ============================================================
@@ -1814,7 +1814,7 @@ html[data-theme="night"] body .dropdown-menu a:focus,
 html[data-theme="night"] body .history-menu a:focus,
 html[data-theme="night"] body .history-menu .history-list > div:hover {
   background: rgba(0, 0, 0, 0.20) !important;
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 html[data-theme="night"] body .dropdown-menu a.active,
@@ -1825,7 +1825,7 @@ html[data-theme="night"] body .history-menu a.active {
 
 /* Дата в истории ночью — приглушённо-жёлтая */
 html[data-theme="night"] body .history-menu .history-list .date {
-  color: rgba(255, 199, 44, 0.60) !important;
+  color: rgba(0,0,0, 0.60) !important;
 }
 
 /* ============================================================
@@ -2088,7 +2088,7 @@ html[data-theme="night"] body .dropdown[open] > .btn {
    - Инструкция: rgba(13,26,63,0.55)
    - 9 блоков инструкции + шапки: #0d1a3f
    - Кнопки Случайный/Скачать/История + бургер-меню: rgba(13,26,63,0.55)
-   - Карточки Пауза/Эмфаза/Шёпот: текст rgb(245,184,0)
+   - Карточки Пауза/Эмфаза/Шёпот: текст rgb(0,0,0)
    ============================================================ */
 
 /* ---------- ИНСТРУКЦИЯ: внешний фон ---------- */
@@ -2183,7 +2183,7 @@ html body .history-menu > * {
 html body .dropdown-menu a:hover,
 html body .history-menu a:hover {
   background: rgba(0, 0, 0, 0.20) !important;
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 /* ---------- КАРТОЧКИ «ПАУЗА / ЭМФАЗА / ШЁПОТ / ...» ---------- */
@@ -2195,7 +2195,7 @@ html body .toast,
   .card,
 html body .cards button,
 html body #cards button {
-  color: rgb(245, 184, 0) !important;
+  color: rgb(0,0,0) !important;
 }
 html body .toast,
   .show,
@@ -2205,7 +2205,7 @@ html body .toast,
   .card *,
 html body .cards button *,
 html body #cards button * {
-  color: rgb(245, 184, 0) !important;
+  color: rgb(0,0,0) !important;
 }
 
 /* ============================================================
@@ -2412,7 +2412,7 @@ html[data-theme="night"] body .history-menu > * {
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
   background: rgba(0,0,0,0.20) !important;
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 /* ================================================
@@ -2557,7 +2557,7 @@ html[data-theme="night"] body .history-menu > * {
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
   background: rgba(0, 0, 0, 0.20) !important;
-  color: #FFD859 !important;
+  color: var(--gold-light) !important;
 }
 
 /* ============================================================
@@ -5453,7 +5453,7 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch):active,
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body :is(#btn-random, #btn-batch):focus,
 html[data-theme="night"] body :is(#btn-random, #btn-batch):active {
-  border-color: rgb(245, 184, 0) !important;
+  border-color: rgb(0,0,0) !important;
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.45) !important;
 }
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
@@ -5491,7 +5491,7 @@ html body #btn-random.btn.btn-ghost:focus,
 html body #btn-batch.btn.btn-ghost:focus,
 html body #btn-random.btn.btn-ghost:active,
 html body #btn-batch.btn.btn-ghost:active {
-  border-color: rgb(245, 184, 0) !important;
+  border-color: rgb(0,0,0) !important;
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.45) !important;
 }
 html[data-theme="night"] body #btn-random.btn.btn-ghost:hover,
@@ -5529,7 +5529,7 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P6
 html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):hover,
 html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):focus,
 html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):active {
-  border-color: rgb(245, 184, 0) !important;
+  border-color: rgb(0,0,0) !important;
   box-shadow: 0 0 18px rgba(0, 0, 0, 0.55) !important;
 }
 
