@@ -278,10 +278,10 @@ function applyTheme(th) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   const themeBtn = $("theme-toggle");
-  if (themeBtn) themeBtn.addEventListener("click", () => {
+  if (themeBtn) /* [theme-mode.js owns this] themeBtn.addEventListener("click", () => {
     const cur = document.documentElement.getAttribute("data-theme");
     applyTheme(cur === "night" ? "day" : "night");
-  });
+  }) */;
 });
 applyTheme(localStorage.getItem("jst-theme") || "day");
 

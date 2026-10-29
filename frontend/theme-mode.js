@@ -2,6 +2,7 @@
   "use strict";
   var KEY = "jst-theme-mode";
   var ORDER = ["day", "night", "auto", "scheduled", "contrast"];
+  var LABELS = { day: "Day", night: "Night", auto: "Auto", scheduled: "Schedule", contrast: "B&W" };
   var SVG = {
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
@@ -40,14 +41,14 @@
       var h = new Date().getHours();
       return (h >= 6 && h < 18) ? "day" : "night";
     }
-    if (mode === "contrast") {
-      return "contrast";
-    }
+    if (mode === "contrast") return "contrast";
     return mode;
   }
   function apply() {
-    var actual = _actual(getMode());
+    var mode = getMode();
+    var actual = _actual(mode);
     document.documentElement.setAttribute("data-theme", actual);
+    document.documentElement.setAttribute("data-mode", mode);  /* ← для CSS/debug */
     try { localStorage.setItem("jst-theme", actual); } catch (e) {}
   }
   function render() {
@@ -59,7 +60,21 @@
       var t = TITLES[mode] || {};
       btn.setAttribute("title", t[_lang()] || t.ru || mode);
       btn.setAttribute("aria-label", t[_lang()] || t.ru || mode);
+      btn.setAttribute("data-current-mode", mode);
     }
+    // badge
+    var badge = document.getElementById("theme-mode-badge");
+    if (!badge) {
+      var btn2 = document.getElementById("theme-toggle");
+      if (btn2) {
+        badge = document.createElement("span");
+        badge.id = "theme-mode-badge";
+        badge.className = "theme-mode-badge";
+        btn2.style.position = "relative";
+        btn2.appendChild(badge);
+      }
+    }
+    if (badge) badge.textContent = LABELS[mode] || mode;
   }
   function nextMode() {
     var cur = getMode();
@@ -70,7 +85,7 @@
   function _intercept(e) {
     var t = e.target;
     while (t && t !== document) {
-      if (t.id === "theme-toggle") {
+      if (t.id === "theme-toggle" || (t.closest && t.closest("#theme-toggle"))) {
         e.preventDefault();
         e.stopPropagation();
         if (e.stopImmediatePropagation) e.stopImmediatePropagation();
@@ -90,10 +105,12 @@
         else if (mq.addListener) mq.addListener(h);
       } catch (e) {}
     }
-    setInterval(function () { if (getMode() === "scheduled") apply(); }, 60000);
+    setInterval(function () {
+      if (getMode() === "scheduled") apply();
+    }, 60000);
     apply();
     render();
-    try { console.log("[theme-mode] ready, ORDER:", ORDER.join(",")); } catch (e) {}
+    try { console.log("[theme-mode] ready. ORDER:", ORDER.join("→"), "mode:", getMode(), "actual:", document.documentElement.getAttribute("data-theme")); } catch (e) {}
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
