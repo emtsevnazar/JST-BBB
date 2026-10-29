@@ -4,7 +4,7 @@
   function L(){ try{ console.log.apply(console, ['[wand]'].concat([].slice.call(arguments))); }catch(e){} }
   function W(){ try{ console.warn.apply(console, ['[wand]'].concat([].slice.call(arguments))); }catch(e){} }
   function theme(){ try{ return document.documentElement.getAttribute('data-theme') || 'day'; }catch(e){ return 'day'; } }
-  function bodyColor(){ return theme() === 'night' ? GOLD : NAVY; }
+  function bodyColor(){ var t=theme(); if(t==='contrast') return '#000000'; return t === 'night' ? GOLD : NAVY; }
 
   function init(){
     try {
@@ -71,8 +71,10 @@
             var a = Math.random() * Math.PI * 2;
             var d = burst ? (22 + Math.random() * 55) : (8 + Math.random() * 28);
             var sz = burst ? (3 + Math.random() * 5) : (1.8 + Math.random() * 2.5);
-            var isGold = Math.random() > 0.4;
-            s.style.cssText = 'position:absolute;border-radius:50%;pointer-events:none;width:' + sz + 'px;height:' + sz + 'px;background:' + (isGold ? GOLD : NAVY) + ';box-shadow:0 0 ' + (burst ? 6 : 4) + 'px ' + (isGold ? GOLD : NAVY) + ';transform:translate(-50%,-50%);will-change:transform,opacity;';
+            var isContrast = theme() === 'contrast';
+            var isGold = isContrast ? (Math.random() > 0.5) : (Math.random() > 0.4);
+            var sparkColor = isContrast ? (isGold ? '#ffffff' : '#000000') : (isGold ? GOLD : NAVY);
+            s.style.cssText = 'position:absolute;border-radius:50%;pointer-events:none;width:' + sz + 'px;height:' + sz + 'px;background:' + sparkColor + ';box-shadow:0 0 ' + (burst ? 6 : 4) + 'px ' + sparkColor + ';transform:translate(-50%,-50%);will-change:transform,opacity;';
             sparks.appendChild(s);
             var dx = Math.cos(a) * d, dy = Math.sin(a) * d, dur = burst ? 1200 : 800;
             if (s.animate) {

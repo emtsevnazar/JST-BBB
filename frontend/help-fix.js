@@ -127,3 +127,65 @@
   window.__jstHelpFix = { checkAndFix: checkAndFix, findBtn: findBtn, findModal: findModal };
   console.log('[help-fix] ready');
 })();
+
+
+/* === LOGO CLICK FIX — prevent theme reset on .logo-text click === */
+(function(){
+  'use strict';
+  try {
+    var logoSels = ['.logo-text', '.logo', '#logo', '.brand', '.logo-img', '.brand-text'];
+    function findLogos() {
+      var els = [];
+      logoSels.forEach(function(sel){
+        try {
+          document.querySelectorAll(sel).forEach(function(el){ if (els.indexOf(el) === -1) els.push(el); });
+        } catch(e){}
+      });
+      return els;
+    }
+
+    function blockThemeReset(e) {
+      var target = e.target;
+      while (target && target !== document.body) {
+        if (target.matches && (target.matches('.logo-text, .logo, #logo, .brand, .logo-img, .brand-text'))) {
+          // Stop propagation — не дать обработчикам выше сбросить тему
+          e.stopPropagation();
+          if (e.cancelable) e.preventDefault();
+
+          // Сохраняем текущую тему
+          var theme = document.documentElement.getAttribute('data-theme');
+          var mode = null;
+          try { mode = localStorage.getItem('jst-theme-mode'); } catch(err) {}
+
+          // Перепроверить через 50ms — если тема сбросилась, восстановить
+          setTimeout(function(){
+            var now = document.documentElement.getAttribute('data-theme');
+            if (now !== theme) {
+              document.documentElement.setAttribute('data-theme', theme);
+              if (mode) try { localStorage.setItem('jst-theme-mode', mode); } catch(err) {}
+            }
+          }, 50);
+
+          setTimeout(function(){
+            var now2 = document.documentElement.getAttribute('data-theme');
+            if (now2 !== theme) {
+              document.documentElement.setAttribute('data-theme', theme);
+            }
+          }, 200);
+          return;
+        }
+        target = target.parentNode;
+      }
+    }
+
+    // Capture phase — перехватываем ДО обработчиков app.js
+    document.addEventListener('click', blockThemeReset, true);
+
+    // На mousedown тоже — для страховки
+    document.addEventListener('mousedown', blockThemeReset, true);
+
+    console.log('[logo-fix] active');
+  } catch(e) {
+    console.warn('[logo-fix]', e);
+  }
+})();
