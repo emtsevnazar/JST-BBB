@@ -1,5 +1,6 @@
-/* === CONTRAST THEME — preserve design, B&W colors only === */
+/* ============ CONTRAST THEME — preserve design, only colors B&W ============ */
 
+/* 1. Все CSS-переменные → ч/б */
 html[data-theme="contrast"] {
   --bg: #ffffff;
   --text: #000000;
@@ -14,32 +15,26 @@ html[data-theme="contrast"] {
   --input-bg: #ffffff;
   --surface-1: #ffffff;
   --card-bg: #ffffff;
+  --muted: #000000;
+  --border: #000000;
   color-scheme: light;
 }
 
-/* Body */
+/* 2. Body */
 html[data-theme="contrast"] body {
   background: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
 }
-html[data-theme="contrast"] body::before,
-html[data-theme="contrast"] body::after {
-  background: #ffffff !important;
-  background-image: none !important;
+
+/* 3. Прячем фоновые картинки (bg-image, bg-fallback, bg-gradient) */
+html[data-theme="contrast"] .bg-image,
+html[data-theme="contrast"] .bg-fallback,
+html[data-theme="contrast"] .bg-gradient {
+  display: none !important;
 }
 
-/* Kill decorative effects (NOT sizes/borders) */
-html[data-theme="contrast"] *,
-html[data-theme="contrast"] *::before,
-html[data-theme="contrast"] *::after {
-  box-shadow: none !important;
-  text-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* All text → black */
+/* 4. Текст — все чёрное */
 html[data-theme="contrast"] p,
 html[data-theme="contrast"] span,
 html[data-theme="contrast"] label,
@@ -57,16 +52,69 @@ html[data-theme="contrast"] h5,
 html[data-theme="contrast"] h6 {
   color: #000000 !important;
 }
-html[data-theme="contrast"] h1,
-html[data-theme="contrast"] h2,
-html[data-theme="contrast"] h3,
-html[data-theme="contrast"] h4,
-html[data-theme="contrast"] h5,
-html[data-theme="contrast"] h6 {
-  font-weight: 900 !important;
+
+/* 5. Ссылки */
+html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn) {
+  color: #000000 !important;
+  text-decoration: underline !important;
 }
 
-/* Panels — white bg, preserve radius/size */
+/* 6. Кнопки — только цвета (без изменения размеров/border-width/radius/padding/font) */
+html[data-theme="contrast"] button,
+html[data-theme="contrast"] .btn,
+html[data-theme="contrast"] .icon-btn,
+html[data-theme="contrast"] select,
+html[data-theme="contrast"] input:not([type="range"]),
+html[data-theme="contrast"] textarea,
+html[data-theme="contrast"] summary,
+html[data-theme="contrast"] .dropdown > .btn,
+html[data-theme="contrast"] .dropdown > button {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+html[data-theme="contrast"] button *,
+html[data-theme="contrast"] .btn *,
+html[data-theme="contrast"] .icon-btn * {
+  color: #000000 !important;
+}
+html[data-theme="contrast"] button svg,
+html[data-theme="contrast"] .btn svg,
+html[data-theme="contrast"] .icon-btn svg {
+  stroke: #000000 !important;
+  color: #000000 !important;
+}
+
+/* Hover / active — инверсия (черный bg + белый текст) */
+html[data-theme="contrast"] button:hover:not([disabled]),
+html[data-theme="contrast"] .btn:hover:not([disabled]),
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]),
+html[data-theme="contrast"] .dropdown > .btn:hover:not([disabled]),
+html[data-theme="contrast"] button:active,
+html[data-theme="contrast"] .btn:active,
+html[data-theme="contrast"] .icon-btn:active,
+html[data-theme="contrast"] button:focus-visible,
+html[data-theme="contrast"] .btn:focus-visible {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+html[data-theme="contrast"] button:hover:not([disabled]) *,
+html[data-theme="contrast"] .btn:hover:not([disabled]) *,
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) *,
+html[data-theme="contrast"] button:active *,
+html[data-theme="contrast"] .btn:active * {
+  color: #ffffff !important;
+}
+html[data-theme="contrast"] button:hover:not([disabled]) svg,
+html[data-theme="contrast"] .btn:hover:not([disabled]) svg,
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) svg {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* 7. Панели */
 html[data-theme="contrast"] .panel,
 html[data-theme="contrast"] .card,
 html[data-theme="contrast"] .sidebar,
@@ -83,194 +131,96 @@ html[data-theme="contrast"] .help-header,
 html[data-theme="contrast"] .topbar,
 html[data-theme="contrast"] header,
 html[data-theme="contrast"] footer {
-  background: #ffffff !important;
-  background-image: none !important;
-  border-color: #000000 !important;
-  color: #000000 !important;
-}
-
-/* === BUTTONS — preserve design, only B&W colors === */
-
-/* Base: white bg, black text, border-color black if exists */
-html[data-theme="contrast"] button,
-html[data-theme="contrast"] .btn,
-html[data-theme="contrast"] .icon-btn,
-html[data-theme="contrast"] select,
-html[data-theme="contrast"] input:not([type="range"]),
-html[data-theme="contrast"] textarea,
-html[data-theme="contrast"] summary,
-html[data-theme="contrast"] .dropdown > .btn,
-html[data-theme="contrast"] .dropdown > button {
-  background: #ffffff !important;
-  background-image: none !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
-}
-
-/* Outline — doesn't affect layout, makes button visible */
-html[data-theme="contrast"] button:not([disabled]),
-html[data-theme="contrast"] .btn:not([disabled]),
-html[data-theme="contrast"] .icon-btn:not([disabled]),
-html[data-theme="contrast"] .dropdown > .btn:not([disabled]) {
-  outline: 2px solid #000000 !important;
-  outline-offset: -2px !important;
-}
-
-/* SVG icons black */
-html[data-theme="contrast"] button svg,
-html[data-theme="contrast"] .btn svg,
-html[data-theme="contrast"] .icon-btn svg {
-  stroke: #000000 !important;
-  fill: none !important;
-  color: #000000 !important;
-}
-
-/* Children text black */
-html[data-theme="contrast"] button *,
-html[data-theme="contrast"] .btn *,
-html[data-theme="contrast"] .icon-btn * {
-  color: #000000 !important;
-}
-
-/* Hover / active / focus → INVERT: black bg, white text */
-html[data-theme="contrast"] button:hover:not([disabled]),
-html[data-theme="contrast"] .btn:hover:not([disabled]),
-html[data-theme="contrast"] .icon-btn:hover:not([disabled]),
-html[data-theme="contrast"] .dropdown > .btn:hover:not([disabled]),
-html[data-theme="contrast"] button:active,
-html[data-theme="contrast"] .btn:active,
-html[data-theme="contrast"] .icon-btn:active,
-html[data-theme="contrast"] button:focus-visible,
-html[data-theme="contrast"] .btn:focus-visible {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
-  outline-color: #000000 !important;
-}
-
-html[data-theme="contrast"] button:hover:not([disabled]) *,
-html[data-theme="contrast"] .btn:hover:not([disabled]) *,
-html[data-theme="contrast"] .icon-btn:hover:not([disabled]) *,
-html[data-theme="contrast"] button:active *,
-html[data-theme="contrast"] .btn:active *,
-html[data-theme="contrast"] .icon-btn:active * {
-  color: #ffffff !important;
-}
-
-html[data-theme="contrast"] button:hover:not([disabled]) svg,
-html[data-theme="contrast"] .btn:hover:not([disabled]) svg,
-html[data-theme="contrast"] .icon-btn:hover:not([disabled]) svg {
-  stroke: #ffffff !important;
-  color: #ffffff !important;
-}
-
-/* === LOGO — clearly visible, no filter === */
-html[data-theme="contrast"] .logo,
-html[data-theme="contrast"] .logo-img,
-html[data-theme="contrast"] .logo img,
-html[data-theme="contrast"] .logo-text,
-html[data-theme="contrast"] .brand,
-html[data-theme="contrast"] .brand-text {
-  filter: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  background: transparent !important;
-}
-html[data-theme="contrast"] .logo-img {
-  display: inline-block !important;
-  max-width: none !important;
-}
-
-/* Other images — grayscale only */
-html[data-theme="contrast"] img:not(.logo-img),
-html[data-theme="contrast"] picture,
-html[data-theme="contrast"] video,
-html[data-theme="contrast"] canvas {
-  filter: grayscale(1) !important;
-}
-
-/* Hide background images */
-html[data-theme="contrast"] .bg-image,
-html[data-theme="contrast"] .bg-fallback,
-html[data-theme="contrast"] .bg-gradient {
-  background-image: none !important;
   background-color: #ffffff !important;
-  display: none !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
 }
 
-/* Dropdown items */
+/* 8. Dropdown items */
 html[data-theme="contrast"] .dropdown-menu a,
 html[data-theme="contrast"] .history-menu a,
-html[data-theme="contrast"] .history-item {
-  background: #ffffff !important;
+html[data-theme="contrast"] .history-item,
+html[data-theme="contrast"] .dropdown-menu li,
+html[data-theme="contrast"] .history-menu li {
+  background-color: #ffffff !important;
   color: #000000 !important;
 }
 html[data-theme="contrast"] .dropdown-menu a:hover,
 html[data-theme="contrast"] .history-menu a:hover,
 html[data-theme="contrast"] .history-item:hover {
-  background: #000000 !important;
+  background-color: #000000 !important;
   color: #ffffff !important;
 }
 
-/* Links */
-html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn) {
-  color: #000000 !important;
-  text-decoration: underline !important;
+/* 9. Логотип — БЕЗ filter, чёткий */
+html[data-theme="contrast"] .logo,
+html[data-theme="contrast"] .logo *,
+html[data-theme="contrast"] .logo-img,
+html[data-theme="contrast"] .logo-text,
+html[data-theme="contrast"] .brand,
+html[data-theme="contrast"] .brand * {
+  filter: none !important;
+  opacity: 1 !important;
 }
 
-/* Status dots */
-html[data-theme="contrast"] .status-dot,
-html[data-theme="contrast"] .jst-dot::before {
-  background: #000000 !important;
-  border-color: #000000 !important;
-  box-shadow: none !important;
-  animation: none !important;
+/* 10. Остальные img → grayscale, логотип исключён (правило выше) */
+html[data-theme="contrast"] img {
+  filter: grayscale(1) !important;
+}
+html[data-theme="contrast"] .logo img,
+html[data-theme="contrast"] .logo-img {
+  filter: none !important;
 }
 
-/* Range slider */
+/* 11. Range slider */
 html[data-theme="contrast"] input[type="range"]::-webkit-slider-runnable-track {
   background: #ffffff !important;
-  border: 2px solid #000000 !important;
+  border-color: #000000 !important;
 }
 html[data-theme="contrast"] input[type="range"]::-webkit-slider-thumb {
   background: #000000 !important;
-  border: 2px solid #ffffff !important;
-  box-shadow: 0 0 0 2px #000000 !important;
-  -webkit-appearance: none !important;
+  border-color: #000000 !important;
 }
 html[data-theme="contrast"] input[type="range"]::-moz-range-track {
   background: #ffffff !important;
-  border: 2px solid #000000 !important;
+  border-color: #000000 !important;
 }
 html[data-theme="contrast"] input[type="range"]::-moz-range-thumb {
   background: #000000 !important;
-  border: 2px solid #ffffff !important;
+  border-color: #000000 !important;
 }
 
-/* Focus ring */
-html[data-theme="contrast"] *:focus-visible {
-  outline: 2px solid #000000 !important;
-  outline-offset: 2px !important;
-}
-
-/* Scrollbar */
+/* 12. Scrollbar */
 html[data-theme="contrast"] ::-webkit-scrollbar { background: #ffffff !important; }
-html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000000 !important; border-radius: 0 !important; }
+html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000000 !important; }
 
-/* Table */
+/* 13. Focus */
+html[data-theme="contrast"] *:focus-visible {
+  outline-color: #000000 !important;
+}
+
+/* 14. Таблицы */
 html[data-theme="contrast"] table,
 html[data-theme="contrast"] th,
 html[data-theme="contrast"] td {
-  border: 2px solid #000000 !important;
+  border-color: #000000 !important;
   color: #000000 !important;
-  background: #ffffff !important;
+  background-color: #ffffff !important;
 }
 html[data-theme="contrast"] th {
-  background: #000000 !important;
+  background-color: #000000 !important;
   color: #ffffff !important;
 }
 
-/* Wand — B&W */
+/* 15. Статус-точки */
+html[data-theme="contrast"] .status-dot,
+html[data-theme="contrast"] .jst-dot::before {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* 16. Палочка — B&W */
 html[data-theme="contrast"] #jst-wand .jst-wand-body,
 html[data-theme="contrast"] #jst-wand .jst-wand-star {
   stroke: #000000 !important;
@@ -281,4 +231,77 @@ html[data-theme="contrast"] .jst-wand-spark,
 html[data-theme="contrast"] .jst-wand-spark-blue {
   background: #000000 !important;
   box-shadow: 0 0 4px #000000 !important;
+}
+
+/* ============ ОТКАТ: OVERLAY ОШИБКИ — в самом конце, побеждает всё ============ */
+
+html[data-theme="contrast"] #jst-err-overlay {
+  background: url('/static/img/ph_b2.png') center/cover no-repeat #2a0606 !important;
+  filter: none !important;
+}
+html[data-theme="contrast"] #jst-err-overlay *,
+html[data-theme="contrast"] #jst-err-overlay *::before,
+html[data-theme="contrast"] #jst-err-overlay *::after {
+  filter: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  color: inherit;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-toast {
+  background-color: #c62828 !important;
+  background-image: none !important;
+  border: 2px solid #ef5350 !important;
+  box-shadow: 0 8px 32px rgba(198,40,40,0.55), 0 0 0 1px rgba(255,255,255,0.08) inset !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-title {
+  color: #ffeb3b !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  margin-bottom: 2px !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-msg {
+  color: #fff59d !important;
+  font-size: 12px !important;
+  font-weight: normal !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  line-height: 1.35 !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-icon {
+  color: #ffeb3b !important;
+  flex-shrink: 0 !important;
+  width: 34px !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-icon svg {
+  stroke: #ffeb3b !important;
+  color: #ffeb3b !important;
+  fill: none !important;
+  filter: none !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-btn {
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 2px solid #ffeb3b !important;
+  color: #ffeb3b !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-btn:hover,
+html[data-theme="contrast"] #jst-err-overlay .jst-err-btn:active {
+  background-color: rgba(255,235,59,0.18) !important;
+  color: #ffeb3b !important;
+}
+html[data-theme="contrast"] #jst-err-overlay .jst-err-btn svg {
+  stroke: #ffeb3b !important;
+  color: #ffeb3b !important;
+  fill: none !important;
+  filter: none !important;
 }

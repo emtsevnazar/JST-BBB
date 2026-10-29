@@ -1,4 +1,4 @@
-const VERSION = 'v5.4.0';
+const VERSION = 'v5.5.0';
 const CACHE_STATIC = 'jst-static-' + VERSION;
 const CACHE_OFFL = 'jst-offl-' + VERSION;
 
