@@ -430,3 +430,113 @@
   window.__jstContrastEnforce = enforceAll;
   console.log('[contrast-enforcer] ready');
 })();
+
+/* === CONTRAST INLINE ENFORCER === */
+(function(){
+  'use strict';
+  var SKIP_IDS = { 'jst-err-overlay': 1, 'jst-wand': 1, 'jst-wand-sparks': 1 };
+
+  function isContrast() {
+    return document.documentElement.getAttribute('data-theme') === 'contrast';
+  }
+  function isSkipped(el) {
+    if (!el || !el.id) return false;
+    if (SKIP_IDS[el.id]) return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id && SKIP_IDS[p.id]) return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  function fixInline(el) {
+    if (!el || el.nodeType !== 1) return;
+    if (isSkipped(el)) return;
+    var style = el.getAttribute('style');
+    if (!style) return;
+    var needs = false;
+    // Check for gold/accent/navy/red colors or F5B800
+    if (style.indexOf('F5B800') !== -1 ||
+        style.indexOf('--gold') !== -1 ||
+        style.indexOf('--accent') !== -1 ||
+        style.indexOf('--navy') !== -1 ||
+        style.indexOf('--red') !== -1 ||
+        style.indexOf('rgb(245') !== -1 ||
+        style.indexOf('linear-gradient') !== -1) {
+      needs = true;
+    }
+    // Check colored background/color in style
+    var colorMatch = style.match(/color\s*:\s*([^;]+)/i);
+    if (colorMatch) {
+      var c = colorMatch[1].trim().toLowerCase();
+      if (c.indexOf('gold') !== -1 || c.indexOf('accent') !== -1 ||
+          c.indexOf('navy') !== -1 || c.indexOf('red') !== -1 ||
+          c.indexOf('#f5') !== -1 || c.indexOf('245') !== -1) {
+        needs = true;
+      }
+    }
+    var bgMatch = style.match(/background\s*:\s*([^;]+)/i);
+    if (bgMatch) {
+      var bg = bgMatch[1].trim().toLowerCase();
+      if (bg.indexOf('linear-gradient') !== -1 || bg.indexOf('gold') !== -1 ||
+          bg.indexOf('navy') !== -1 || bg.indexOf('#f5') !== -1 ||
+          bg.indexOf('245') !== -1) {
+        needs = true;
+      }
+    }
+    if (!needs) return;
+    el.style.setProperty('color', '#000000', 'important');
+    el.style.setProperty('-webkit-text-fill-color', '#000000', 'important');
+    if (style.indexOf('background') !== -1) {
+      el.style.setProperty('background-color', '#ffffff', 'important');
+      el.style.setProperty('background-image', 'none', 'important');
+    }
+    if (style.indexOf('border') !== -1) {
+      el.style.setProperty('border-color', '#000000', 'important');
+    }
+  }
+  function walkAll() {
+    if (!isContrast()) return;
+    // Walk all elements with style attr
+    var all = document.querySelectorAll('[style]');
+    for (var i = 0; i < all.length; i++) {
+      fixInline(all[i]);
+    }
+  }
+  function schedule() {
+    if (!isContrast()) return;
+    setTimeout(walkAll, 30);
+    setTimeout(walkAll, 150);
+    setTimeout(walkAll, 400);
+    setTimeout(walkAll, 900);
+  }
+
+  // Trigger on theme change
+  try {
+    new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === 'data-theme') schedule();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  } catch (e) {}
+
+  // Trigger on help modal DOM changes
+  if (document.body) {
+    try {
+      new MutationObserver(function(mutations) {
+        if (!isContrast()) return;
+        for (var i = 0; i < mutations.length; i++) {
+          if (mutations[i].addedNodes && mutations[i].addedNodes.length) {
+            schedule();
+            return;
+          }
+        }
+      }).observe(document.body, { childList: true, subtree: true });
+    } catch (e) {}
+  }
+
+  // Initial
+  if (isContrast()) setTimeout(walkAll, 500);
+
+  window.__jstContrastEnforce = walkAll;
+})();
