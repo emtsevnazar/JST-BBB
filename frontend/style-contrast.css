@@ -1,4 +1,4 @@
-/* === CONTRAST THEME — STRICT B&W (only #000 and #fff) === */
+/* === CONTRAST THEME — preserve design, B&W colors only === */
 
 html[data-theme="contrast"] {
   --bg: #ffffff;
@@ -12,20 +12,24 @@ html[data-theme="contrast"] {
   --panel-bg: #ffffff;
   --panel-border: #000000;
   --input-bg: #ffffff;
+  --surface-1: #ffffff;
   --card-bg: #ffffff;
   color-scheme: light;
 }
 
-/* Body — pure white, no images */
-html[data-theme="contrast"] body,
-html[data-theme="contrast"] body::before,
-html[data-theme="contrast"] body::after {
+/* Body */
+html[data-theme="contrast"] body {
   background: #ffffff !important;
   background-image: none !important;
   color: #000000 !important;
 }
+html[data-theme="contrast"] body::before,
+html[data-theme="contrast"] body::after {
+  background: #ffffff !important;
+  background-image: none !important;
+}
 
-/* Kill ALL decorative effects */
+/* Kill decorative effects (NOT sizes/borders) */
 html[data-theme="contrast"] *,
 html[data-theme="contrast"] *::before,
 html[data-theme="contrast"] *::after {
@@ -33,129 +37,9 @@ html[data-theme="contrast"] *::after {
   text-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  text-decoration-color: #000000 !important;
-  border-color: #000000 !important;
-  outline-color: #000000 !important;
 }
 
-/* Hide all decorative backgrounds & images */
-html[data-theme="contrast"] img,
-html[data-theme="contrast"] picture,
-html[data-theme="contrast"] video,
-html[data-theme="contrast"] canvas {
-  filter: grayscale(1) contrast(2) brightness(1.05) !important;
-}
-
-html[data-theme="contrast"] .bg-image,
-html[data-theme="contrast"] .bg-fallback,
-html[data-theme="contrast"] .bg-gradient,
-html[data-theme="contrast"] [class*="bg-"] {
-  background-image: none !important;
-  background-color: #ffffff !important;
-  display: none !important;
-}
-
-/* ALL backgrounds — white or black */
-html[data-theme="contrast"] .panel,
-html[data-theme="contrast"] .card,
-html[data-theme="contrast"] .sidebar,
-html[data-theme="contrast"] .main,
-html[data-theme="contrast"] .controls,
-html[data-theme="contrast"] .dropdown-menu,
-html[data-theme="contrast"] .history-menu,
-html[data-theme="contrast"] .modal,
-html[data-theme="contrast"] .help-modal,
-html[data-theme="contrast"] .help-section,
-html[data-theme="contrast"] .help-content,
-html[data-theme="contrast"] .help-doc,
-html[data-theme="contrast"] .help-header,
-html[data-theme="contrast"] .jst-player,
-html[data-theme="contrast"] .jstp-controls,
-html[data-theme="contrast"] .topbar,
-html[data-theme="contrast"] header,
-html[data-theme="contrast"] footer {
-  background: #ffffff !important;
-  background-image: none !important;
-  border: 2px solid #000000 !important;
-  color: #000000 !important;
-  border-radius: 0 !important;
-}
-
-/* Buttons — white bg, black border, black text */
-html[data-theme="contrast"] button,
-html[data-theme="contrast"] .btn,
-html[data-theme="contrast"] .icon-btn,
-html[data-theme="contrast"] select,
-html[data-theme="contrast"] input,
-html[data-theme="contrast"] textarea,
-html[data-theme="contrast"] summary,
-html[data-theme="contrast"] .dropdown > .btn,
-html[data-theme="contrast"] .dropdown > button {
-  background: #ffffff !important;
-  background-image: none !important;
-  color: #000000 !important;
-  border: 2px solid #000000 !important;
-  font-weight: 700 !important;
-  text-shadow: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-html[data-theme="contrast"] button:hover,
-html[data-theme="contrast"] .btn:hover,
-html[data-theme="contrast"] .icon-btn:hover,
-html[data-theme="contrast"] .dropdown > .btn:hover,
-html[data-theme="contrast"] button:focus-visible,
-html[data-theme="contrast"] .btn:focus-visible {
-  background: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
-}
-
-html[data-theme="contrast"] button:hover *,
-html[data-theme="contrast"] .btn:hover * {
-  color: #ffffff !important;
-}
-
-html[data-theme="contrast"] button:active,
-html[data-theme="contrast"] .btn:active {
-  background: #000000 !important;
-  color: #ffffff !important;
-  outline: 3px solid #000000 !important;
-  outline-offset: 2px !important;
-}
-
-/* Menu items */
-html[data-theme="contrast"] .dropdown-menu a,
-html[data-theme="contrast"] .history-menu a,
-html[data-theme="contrast"] .dropdown-menu li,
-html[data-theme="contrast"] .history-menu li,
-html[data-theme="contrast"] .history-item {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border-bottom: 2px solid #000000 !important;
-}
-html[data-theme="contrast"] .dropdown-menu a:hover,
-html[data-theme="contrast"] .history-menu a:hover,
-html[data-theme="contrast"] .history-item:hover {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Links */
-html[data-theme="contrast"] a {
-  color: #000000 !important;
-  text-decoration: underline !important;
-  text-decoration-thickness: 2px !important;
-}
-
-/* Text elements — pure black, heavy */
-html[data-theme="contrast"] h1, html[data-theme="contrast"] h2,
-html[data-theme="contrast"] h3, html[data-theme="contrast"] h4,
-html[data-theme="contrast"] h5, html[data-theme="contrast"] h6,
-html[data-theme="contrast"] .panel-title,
-html[data-theme="contrast"] .help-title,
-html[data-theme="contrast"] .logo-text,
+/* All text → black */
 html[data-theme="contrast"] p,
 html[data-theme="contrast"] span,
 html[data-theme="contrast"] label,
@@ -165,36 +49,188 @@ html[data-theme="contrast"] b,
 html[data-theme="contrast"] li,
 html[data-theme="contrast"] td,
 html[data-theme="contrast"] th,
-html[data-theme="contrast"] div {
+html[data-theme="contrast"] h1,
+html[data-theme="contrast"] h2,
+html[data-theme="contrast"] h3,
+html[data-theme="contrast"] h4,
+html[data-theme="contrast"] h5,
+html[data-theme="contrast"] h6 {
   color: #000000 !important;
 }
-
-html[data-theme="contrast"] h1, html[data-theme="contrast"] h2,
-html[data-theme="contrast"] h3, html[data-theme="contrast"] h4,
-html[data-theme="contrast"] h5, html[data-theme="contrast"] h6,
-html[data-theme="contrast"] .panel-title,
-html[data-theme="contrast"] .help-title {
+html[data-theme="contrast"] h1,
+html[data-theme="contrast"] h2,
+html[data-theme="contrast"] h3,
+html[data-theme="contrast"] h4,
+html[data-theme="contrast"] h5,
+html[data-theme="contrast"] h6 {
   font-weight: 900 !important;
 }
 
-/* Status dots & any indicators */
+/* Panels — white bg, preserve radius/size */
+html[data-theme="contrast"] .panel,
+html[data-theme="contrast"] .card,
+html[data-theme="contrast"] .sidebar,
+html[data-theme="contrast"] .main,
+html[data-theme="contrast"] .controls,
+html[data-theme="contrast"] .dropdown-menu,
+html[data-theme="contrast"] .history-menu,
+html[data-theme="contrast"] .modal,
+html[data-theme="contrast"] .help-modal,
+html[data-theme="contrast"] .help-content,
+html[data-theme="contrast"] .help-doc,
+html[data-theme="contrast"] .help-section,
+html[data-theme="contrast"] .help-header,
+html[data-theme="contrast"] .topbar,
+html[data-theme="contrast"] header,
+html[data-theme="contrast"] footer {
+  background: #ffffff !important;
+  background-image: none !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+/* === BUTTONS — preserve design, only B&W colors === */
+
+/* Base: white bg, black text, border-color black if exists */
+html[data-theme="contrast"] button,
+html[data-theme="contrast"] .btn,
+html[data-theme="contrast"] .icon-btn,
+html[data-theme="contrast"] select,
+html[data-theme="contrast"] input:not([type="range"]),
+html[data-theme="contrast"] textarea,
+html[data-theme="contrast"] summary,
+html[data-theme="contrast"] .dropdown > .btn,
+html[data-theme="contrast"] .dropdown > button {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+/* Outline — doesn't affect layout, makes button visible */
+html[data-theme="contrast"] button:not([disabled]),
+html[data-theme="contrast"] .btn:not([disabled]),
+html[data-theme="contrast"] .icon-btn:not([disabled]),
+html[data-theme="contrast"] .dropdown > .btn:not([disabled]) {
+  outline: 2px solid #000000 !important;
+  outline-offset: -2px !important;
+}
+
+/* SVG icons black */
+html[data-theme="contrast"] button svg,
+html[data-theme="contrast"] .btn svg,
+html[data-theme="contrast"] .icon-btn svg {
+  stroke: #000000 !important;
+  fill: none !important;
+  color: #000000 !important;
+}
+
+/* Children text black */
+html[data-theme="contrast"] button *,
+html[data-theme="contrast"] .btn *,
+html[data-theme="contrast"] .icon-btn * {
+  color: #000000 !important;
+}
+
+/* Hover / active / focus → INVERT: black bg, white text */
+html[data-theme="contrast"] button:hover:not([disabled]),
+html[data-theme="contrast"] .btn:hover:not([disabled]),
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]),
+html[data-theme="contrast"] .dropdown > .btn:hover:not([disabled]),
+html[data-theme="contrast"] button:active,
+html[data-theme="contrast"] .btn:active,
+html[data-theme="contrast"] .icon-btn:active,
+html[data-theme="contrast"] button:focus-visible,
+html[data-theme="contrast"] .btn:focus-visible {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+  outline-color: #000000 !important;
+}
+
+html[data-theme="contrast"] button:hover:not([disabled]) *,
+html[data-theme="contrast"] .btn:hover:not([disabled]) *,
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) *,
+html[data-theme="contrast"] button:active *,
+html[data-theme="contrast"] .btn:active *,
+html[data-theme="contrast"] .icon-btn:active * {
+  color: #ffffff !important;
+}
+
+html[data-theme="contrast"] button:hover:not([disabled]) svg,
+html[data-theme="contrast"] .btn:hover:not([disabled]) svg,
+html[data-theme="contrast"] .icon-btn:hover:not([disabled]) svg {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* === LOGO — clearly visible, no filter === */
+html[data-theme="contrast"] .logo,
+html[data-theme="contrast"] .logo-img,
+html[data-theme="contrast"] .logo img,
+html[data-theme="contrast"] .logo-text,
+html[data-theme="contrast"] .brand,
+html[data-theme="contrast"] .brand-text {
+  filter: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+}
+html[data-theme="contrast"] .logo-img {
+  display: inline-block !important;
+  max-width: none !important;
+}
+
+/* Other images — grayscale only */
+html[data-theme="contrast"] img:not(.logo-img),
+html[data-theme="contrast"] picture,
+html[data-theme="contrast"] video,
+html[data-theme="contrast"] canvas {
+  filter: grayscale(1) !important;
+}
+
+/* Hide background images */
+html[data-theme="contrast"] .bg-image,
+html[data-theme="contrast"] .bg-fallback,
+html[data-theme="contrast"] .bg-gradient {
+  background-image: none !important;
+  background-color: #ffffff !important;
+  display: none !important;
+}
+
+/* Dropdown items */
+html[data-theme="contrast"] .dropdown-menu a,
+html[data-theme="contrast"] .history-menu a,
+html[data-theme="contrast"] .history-item {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+html[data-theme="contrast"] .dropdown-menu a:hover,
+html[data-theme="contrast"] .history-menu a:hover,
+html[data-theme="contrast"] .history-item:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Links */
+html[data-theme="contrast"] a:not(.logo):not(.btn):not(.icon-btn) {
+  color: #000000 !important;
+  text-decoration: underline !important;
+}
+
+/* Status dots */
 html[data-theme="contrast"] .status-dot,
-html[data-theme="contrast"] .jst-dot::before,
-html[data-theme="contrast"] .jst-dot::after {
+html[data-theme="contrast"] .jst-dot::before {
   background: #000000 !important;
   border-color: #000000 !important;
   box-shadow: none !important;
   animation: none !important;
-}
-html[data-theme="contrast"] .jst-dot::before {
-  border-color: #000000 !important;
 }
 
 /* Range slider */
 html[data-theme="contrast"] input[type="range"]::-webkit-slider-runnable-track {
   background: #ffffff !important;
   border: 2px solid #000000 !important;
-  height: 6px !important;
 }
 html[data-theme="contrast"] input[type="range"]::-webkit-slider-thumb {
   background: #000000 !important;
@@ -211,15 +247,15 @@ html[data-theme="contrast"] input[type="range"]::-moz-range-thumb {
   border: 2px solid #ffffff !important;
 }
 
-/* Scrollbar */
-html[data-theme="contrast"] ::-webkit-scrollbar { background: #ffffff !important; width: 12px !important; }
-html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000000 !important; border-radius: 0 !important; }
-
 /* Focus ring */
 html[data-theme="contrast"] *:focus-visible {
-  outline: 3px solid #000000 !important;
+  outline: 2px solid #000000 !important;
   outline-offset: 2px !important;
 }
+
+/* Scrollbar */
+html[data-theme="contrast"] ::-webkit-scrollbar { background: #ffffff !important; }
+html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000000 !important; border-radius: 0 !important; }
 
 /* Table */
 html[data-theme="contrast"] table,
@@ -234,14 +270,7 @@ html[data-theme="contrast"] th {
   color: #ffffff !important;
 }
 
-/* Hide animations */
-html[data-theme="contrast"] [class*="pulse"],
-html[data-theme="contrast"] [class*="glow"],
-html[data-theme="contrast"] [class*="animation"] {
-  animation: none !important;
-}
-
-/* Wand in contrast mode — B&W */
+/* Wand — B&W */
 html[data-theme="contrast"] #jst-wand .jst-wand-body,
 html[data-theme="contrast"] #jst-wand .jst-wand-star {
   stroke: #000000 !important;
@@ -252,23 +281,4 @@ html[data-theme="contrast"] .jst-wand-spark,
 html[data-theme="contrast"] .jst-wand-spark-blue {
   background: #000000 !important;
   box-shadow: 0 0 4px #000000 !important;
-}
-
-/* Kill pseudo-element decorations */
-html[data-theme="contrast"] .select-wrap::after {
-  background: #ffffff !important;
-  border: 2px solid #000000 !important;
-  color: #000000 !important;
-}
-
-/* Icons in buttons — pure black */
-html[data-theme="contrast"] .icon-btn svg,
-html[data-theme="contrast"] button svg {
-  stroke: #000000 !important;
-  fill: none !important;
-  color: #000000 !important;
-}
-html[data-theme="contrast"] button:hover svg {
-  stroke: #ffffff !important;
-  color: #ffffff !important;
 }

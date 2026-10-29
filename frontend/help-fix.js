@@ -129,7 +129,6 @@
 })();
 
 
-/* === LOGO CLICK FIX — prevent theme reset on .logo-text click === */
 (function(){
   'use strict';
   try {
@@ -188,4 +187,104 @@
   } catch(e) {
     console.warn('[logo-fix]', e);
   }
+})();
+
+/* === PERSIST CONTRAST THEME — robust across page reloads === */
+(function(){
+  'use strict';
+  var KEY = 'jst-theme-mode';
+  var BACKUP = 'jst-theme-mode-backup';
+  var THEME_ATTR = 'data-theme';
+
+  function getStored(){
+    try { return localStorage.getItem(KEY); } catch(e){ return null; }
+  }
+  function getBackup(){
+    try { return sessionStorage.getItem(BACKUP); } catch(e){ return null; }
+  }
+  function getCurrent(){
+    return document.documentElement.getAttribute(THEME_ATTR);
+  }
+  function applyContrast(){
+    document.documentElement.setAttribute(THEME_ATTR, 'contrast');
+  }
+
+  // 1. Backup current theme-mode to sessionStorage (survives localStorage reset)
+  function backup(){
+    var m = getStored();
+    if (m) try { sessionStorage.setItem(BACKUP, m); } catch(e){}
+  }
+
+  // 2. Restore contrast if localStorage was reset
+  function restore(){
+    var stored = getStored();
+    var backupMode = getBackup();
+    var current = getCurrent();
+
+    // If localStorage lost 'contrast' but sessionStorage still has it → restore
+    if (backupMode === 'contrast' && stored !== 'contrast') {
+      try { localStorage.setItem(KEY, 'contrast'); } catch(e){}
+      applyContrast();
+      console.log('[persist] restored contrast from sessionStorage');
+      return;
+    }
+
+    // If localStorage says contrast but page shows different theme → force
+    if (stored === 'contrast' && current !== 'contrast') {
+      applyContrast();
+      console.log('[persist] forced contrast (was ' + current + ')');
+    }
+  }
+
+  // Backup on every change
+  setInterval(backup, 500);
+  backup();
+
+  // Restore immediately
+  restore();
+
+  // Re-check after scripts run
+  setTimeout(restore, 100);
+  setTimeout(restore, 300);
+  setTimeout(restore, 1000);
+
+  // Watch for theme attr changes — if changed away from contrast while backup says contrast → restore
+  var observer = new MutationObserver(function(mutations){
+    for (var i = 0; i < mutations.length; i++) {
+      var m = mutations[i];
+      if (m.attributeName === THEME_ATTR) {
+        var now = getCurrent();
+        var backupMode = getBackup();
+        // Only fight if backup says contrast and page changed away
+        if (backupMode === 'contrast' && now !== 'contrast') {
+          // Delay slightly to let intentional changes through
+          setTimeout(function(){
+            var b = getBackup();
+            var s = getStored();
+            if (b === 'contrast' && s === 'contrast' && getCurrent() !== 'contrast') {
+              applyContrast();
+            }
+          }, 200);
+        }
+      }
+    }
+  });
+  try {
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: [THEME_ATTR] });
+  } catch(e){}
+
+  // Block logo click from clearing localStorage
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    while (t && t !== document.body) {
+      if (t.matches && t.matches('.logo, .logo-text, .logo-img, .brand, .brand-text, #logo')) {
+        // Save current state right before navigation
+        backup();
+        return;
+      }
+      t = t.parentNode;
+    }
+  }, true);
+
+  console.log('[persist] active, stored=' + getStored() + ' backup=' + getBackup() + ' current=' + getCurrent());
 })();
