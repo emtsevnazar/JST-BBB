@@ -12,7 +12,7 @@ body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a060
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(calc(100% + 40px));z-index:100;display:flex;align-items:center;gap:12px;width:max-content;max-width:min(520px,calc(100vw - 32px));padding:12px 16px;background:#c62828;border:2px solid #ef5350;border-radius:12px;box-shadow:0 8px 32px rgba(198,40,40,.55);animation:slideUp .5s cubic-bezier(.34,1.56,.64,1) .15s forwards}
 @keyframes slideUp{to{transform:translateX(-50%) translateY(0)}}
 @media (prefers-reduced-motion:reduce){.toast{animation:none;transform:translateX(-50%) translateY(0)}}
-.toast-icon{flex-shrink:0;width:28px;height:28px;color:#ffeb3b;display:flex;align-items:center;justify-content:center}
+.toast-icon{flex-shrink:0;width:34px;height:34px;color:#ffeb3b;display:flex;align-items:center;justify-content:center}
 .toast-icon svg{width:100%;height:100%;display:block}
 .toast-body{flex:1;min-width:0}
 .toast-title{font-size:13.5px;font-weight:700;color:#ffeb3b;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -25,7 +25,7 @@ body{background:url('/static/img/ph_b2.png') center/cover no-repeat fixed #2a060
 <body>
 <noscript><meta http-equiv="refresh" content="5;url=/"></noscript>
 <div class="toast" role="alert">
-  <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+  <div class="toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13" stroke-width="3"/><line x1="12" y1="17" x2="12.01" y2="17" stroke-width="3.5"/></svg></div>
   <div class="toast-body"><div class="toast-title" id="t">Error</div><div class="toast-msg" id="m">Checking server status...</div></div>
   <button class="toast-btn" id="b" type="button" aria-label="Retry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>
 </div>
