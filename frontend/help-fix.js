@@ -335,7 +335,6 @@
   if (isContrast()) setTimeout(walkAll, 500);
   window.__jstContrastEnforce = walkAll;
 })();
-/* === CONTRAST INLINE ENFORCER === */
 (function(){
   "use strict";
   function isContrast() {
@@ -410,6 +409,78 @@
           if (m[i].type === "attributes" && m[i].attributeName === "style") {
             cleanInline(m[i].target);
           }
+          if (m[i].addedNodes && m[i].addedNodes.length) schedule();
+        }
+      }).observe(document.body, { attributes: true, attributeFilter: ["style"], childList: true, subtree: true });
+    } catch (e) {}
+  }
+  setInterval(function() { if (isContrast()) walkAll(); }, 500);
+  if (isContrast()) setTimeout(walkAll, 300);
+  window.__jstContrastEnforce = walkAll;
+})();
+/* === CONTRAST ENFORCER === */
+(function(){
+  "use strict";
+  function isContrast() {
+    return document.documentElement.getAttribute("data-theme") === "contrast";
+  }
+  function isSkipped(el) {
+    if (!el) return true;
+    if (el.id === "jst-err-overlay" || el.id === "jst-wand") return true;
+    var p = el.parentNode;
+    while (p && p !== document.body) {
+      if (p.id === "jst-err-overlay" || p.id === "jst-wand") return true;
+      p = p.parentNode;
+    }
+    return false;
+  }
+  var RULES = [
+    [/#F5B800/gi, "#000000"], [/#f5b800/gi, "#000000"],
+    [/#FFC72C/gi, "#000000"], [/#FFD859/gi, "#000000"],
+    [/#FFD700/gi, "#000000"], [/#FFC107/gi, "#000000"],
+    [/#FFB300/gi, "#000000"], [/#FFA000/gi, "#000000"],
+    [/background(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "background$1: #ffffff"],
+    [/background(-color)?\s*:\s*rgba\(\s*255\s*,\s*(199|215|235|216)\s*,[^)]+\)/gi, "background$1: #ffffff"],
+    [/border(-color)?\s*:\s*rgba\(\s*245\s*,\s*184\s*,\s*0\s*,[^)]+\)/gi, "border$1: #000000"],
+    [/border\s*:\s*2px\s+solid\s+#F5B800/gi, "border: 2px solid #000000"],
+    [/box-shadow\s*:\s*[^;]*rgba\(\s*245\s*,\s*184\s*,\s*0[^)]*\)[^;]*/gi, "box-shadow: none"],
+  ];
+  function fix(el) {
+    if (!el || el.nodeType !== 1 || isSkipped(el)) return;
+    var style = el.getAttribute("style");
+    if (!style) return;
+    var ns = style, ch = false;
+    for (var i = 0; i < RULES.length; i++) {
+      if (RULES[i][0].test(ns)) {
+        ns = ns.replace(RULES[i][0], RULES[i][1]);
+        ch = true;
+      }
+    }
+    if (ch) try { el.setAttribute("style", ns); } catch(e) {}
+  }
+  function walkAll() {
+    if (!isContrast()) return;
+    document.querySelectorAll("[style]").forEach(fix);
+  }
+  var sched = false;
+  function schedule() {
+    if (!isContrast() || sched) return;
+    sched = true;
+    setTimeout(function() { sched = false; walkAll(); }, 100);
+  }
+  try {
+    new MutationObserver(function(m) {
+      for (var i = 0; i < m.length; i++) {
+        if (m[i].attributeName === "data-theme") schedule();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  } catch (e) {}
+  if (document.body) {
+    try {
+      new MutationObserver(function(m) {
+        if (!isContrast()) return;
+        for (var i = 0; i < m.length; i++) {
+          if (m[i].type === "attributes" && m[i].attributeName === "style") fix(m[i].target);
           if (m[i].addedNodes && m[i].addedNodes.length) schedule();
         }
       }).observe(document.body, { attributes: true, attributeFilter: ["style"], childList: true, subtree: true });
