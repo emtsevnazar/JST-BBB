@@ -3,7 +3,7 @@
   var KEY = "jst-theme-mode";
   var ORDER = ["day", "night", "auto", "scheduled", "contrast"];
   var LABELS = { day: "Day", night: "Night", auto: "Auto", scheduled: "Sched", contrast: "B&W" };
-  var BADGE_COLORS = { day: "#1a2a5e", night: "#F5B800", contrast: "#000000" };
+  /* badge inherits color from button */
   var SVG = {
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
@@ -59,17 +59,14 @@
     _applying = false;
     updateBadgeColor(actual);
   }
-  function updateBadgeColor(actual) {
+  function updateBadgeColor() {
     var badge = document.getElementById("theme-mode-badge");
     if (!badge) return;
-    var color = BADGE_COLORS[actual] || BADGE_COLORS.day;
-    badge.style.setProperty("color", color, "important");
-    badge.style.setProperty("-webkit-text-fill-color", color, "important");
-    badge.style.setProperty("background", "transparent", "important");
-    badge.style.setProperty("background-color", "transparent", "important");
-    badge.style.setProperty("background-image", "none", "important");
-    badge.style.setProperty("border", "none", "important");
-    badge.style.setProperty("box-shadow", "none", "important");
+    badge.style.removeProperty("color");
+    badge.style.removeProperty("-webkit-text-fill-color");
+    badge.style.removeProperty("background");
+    badge.style.removeProperty("background-color");
+    badge.style.removeProperty("background-image");
   }
   function render() {
     var mode = getMode();
@@ -159,4 +156,21 @@
   } else {
     init();
   }
+
+  window.__jstThemeLoaded = true;
+  window.__jstThemeDebug = function() {
+    var btn = document.getElementById("theme-toggle");
+    var badge = document.querySelector(".theme-mode-badge");
+    return {
+      dataTheme: document.documentElement.getAttribute("data-theme"),
+      dataMode: document.documentElement.getAttribute("data-mode"),
+      storageMode: localStorage.getItem("jst-theme-mode"),
+      storageTheme: localStorage.getItem("jst-theme"),
+      badge: badge ? badge.textContent : null,
+      badgeColor: badge ? getComputedStyle(badge).color : null,
+      buttonBg: btn ? getComputedStyle(btn).backgroundColor : null,
+      buttonColor: btn ? getComputedStyle(btn).color : null,
+      applyThemeType: typeof window.applyTheme
+    };
+  };
 })();

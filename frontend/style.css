@@ -692,7 +692,7 @@ summary.help-header {
 
 /* Доступная модель: жёлтая рамка при hover, поднимается */
 #model-grid .model-card:not(.unavailable_old):hover {
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 14px rgba(245,184,0,0.20) !important;
 }
@@ -700,9 +700,9 @@ summary.help-header {
 /* Активная модель: жёлтый фон, синий текст */
 #model-grid .model-card.active,
 #model-grid .model-card.active:hover {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 #model-grid .model-card.active .model-name { color: var(--navy, #1a2a5e) !important; }
 
@@ -762,15 +762,15 @@ summary.help-header {
 
 /* Доступный язык: жёлтая рамка при hover */
 #lang-grid .lang-card:not(.unavailable_old):hover {
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   transform: translateY(-2px) !important;
 }
 /* Активный язык: жёлтый фон, синий текст */
 #lang-grid .lang-card.active,
 #lang-grid .lang-card.active:hover {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 #lang-grid .lang-card.active .lang-code,
 #lang-grid .lang-card.active .lang-name { color: var(--navy, #1a2a5e) !important; }
@@ -1006,7 +1006,7 @@ html.dark #lang-grid .lang-card.active,
 html.dark #lang-grid .lang-card.active .lang-code,
 html.dark #lang-grid .lang-card.active .lang-name {
   color: var(--navy, #1a2a5e) !important;
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
 }
 
 /* ---------- 5. СВЕТЛАЯ ТЕМА: ОСНОВНОЙ ТЕКСТ СИНИЙ ---------- */
@@ -1074,9 +1074,9 @@ html[data-theme="night"] #lang-grid .lang-card.active,
 html[data-theme="night"] #model-grid .model-card.active .model-name,
 html[data-theme="night"] #lang-grid .lang-card.active .lang-code,
 html[data-theme="night"] #lang-grid .lang-card.active .lang-name {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* ---------- ДЕНЬ: НЕДОСТУПНЫЕ ПРИ HOVER — фон прозрачно-жёлтый, рамка КРАСНАЯ ---------- */
@@ -1374,7 +1374,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
 /* Кнопки «Скачать», «История» — точка после текста */
 .dropdown > .btn::after {
   content: "●" !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
   font-weight: 900 !important;
   font-size: 14px !important;
   width: 26px !important;
@@ -1394,29 +1394,29 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
 /* Hover на кнопку — точка становится ярко-жёлтой */
 .dropdown:hover > .btn::after,
 .dropdown:focus-within > .btn::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* Тёмная тема — фон точки тёмный, сама точка жёлтая */
 html[data-theme="night"] .dropdown > .btn::after {
   background: rgba(255,255,255,0.08) !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
   border-color: rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] .dropdown:hover > .btn::after,
 html[data-theme="night"] .dropdown:focus-within > .btn::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* Select — точка вместо стрелки */
 .select::after,
 select.select::-ms-expand {
   content: "●" !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
   font-weight: 900 !important;
 }
 /* Стандартный селект — скрываем нативную стрелку */
@@ -1437,7 +1437,7 @@ select {
   right: 10px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
   font-weight: 900 !important;
   font-size: 14px !important;
   pointer-events: none !important;
@@ -1539,7 +1539,7 @@ html body #lang-grid .lang-card .lang-name {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 .help-section:hover {
-  border-color: var(--gold, #F5B800);
+  border-color: var(--gold, var(--gold));
 }
 .help-header {
   display: flex;
@@ -1560,7 +1560,7 @@ html body #lang-grid .lang-card .lang-name {
   display: inline-block;
   padding: 2px 10px;
   border-radius: 8px;
-  background: var(--gold, #F5B800);
+  background: var(--gold, var(--gold));
   color: var(--navy, #1a2a5e);
   font-weight: 700;
   font-size: 12px;
@@ -1574,7 +1574,7 @@ html body #lang-grid .lang-card .lang-name {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--gold, #F5B800);
+  background: var(--gold, var(--gold));
   color: var(--navy, #1a2a5e);
   font-weight: 900;
   font-size: 12px;
@@ -1620,7 +1620,7 @@ html[data-theme="night"] .help-section {
   border-color: rgba(245,184,0,0.35) !important;
 }
 html[data-theme="night"] .help-section:hover {
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 0 0 1px rgba(245,184,0,0.25) !important;
 }
 html[data-theme="night"] .help-content {
@@ -1672,7 +1672,7 @@ html[data-theme="night"] .help-content b {
 }
 .dropdown-menu a.active,
 .history-menu a.active {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -1684,7 +1684,7 @@ html[data-theme="night"] .help-content b {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--gold, #F5B800);
+  background: var(--gold, var(--gold));
   margin-right: 4px;
   opacity: 0.6;
   flex-shrink: 0;
@@ -1764,7 +1764,7 @@ html body .history-menu .history-list > div:hover {
 /* Активный пункт — жёлтый фон, синий текст */
 html body .dropdown-menu a.active,
 html body .history-menu a.active {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -1776,7 +1776,7 @@ html body .history-menu a::before {
   width: 5px !important;
   height: 5px !important;
   border-radius: 50% !important;
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   margin-right: 6px !important;
   opacity: 0.85 !important;
   flex-shrink: 0 !important;
@@ -1819,7 +1819,7 @@ html[data-theme="night"] body .history-menu .history-list > div:hover {
 
 html[data-theme="night"] body .dropdown-menu a.active,
 html[data-theme="night"] body .history-menu a.active {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -1897,7 +1897,7 @@ html body select:hover,
 html body select.select:hover,
 html body .select:hover,
 html body .help-section:hover {
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.20) !important;
 }
 
@@ -1939,14 +1939,14 @@ html[data-theme="night"] body #help-toggle:hover,
 html[data-theme="night"] body select:hover,
 html[data-theme="night"] body .select:hover,
 html[data-theme="night"] body .help-section:hover {
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.30) !important;
 }
 
 /* Активный пункт инструкции — жёлтая пилюля, синий текст */
 html body .help-section[open] .help-header .help-pill,
 html body .help-section .help-pill {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -1992,24 +1992,24 @@ html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
 html[data-theme="night"] body .dropdown > .btn:hover {
   background: rgba(255, 255, 255, 0.08) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245, 184, 0, 0.30) !important;
 }
 html[data-theme="night"] body #btn-download-toggle:hover::after,
 html[data-theme="night"] body #history-toggle:hover::after,
 html[data-theme="night"] body .dropdown > .btn:hover::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* Активное/открытое состояние — жёлтый фон, синий текст */
 html[data-theme="night"] body .dropdown:has(#btn-download-toggle)[open] > .btn,
 html[data-theme="night"] body .dropdown:has(#history-toggle)[open] > .btn,
 html[data-theme="night"] body .dropdown.open > .btn {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* ============================================================
@@ -2061,7 +2061,7 @@ html[data-theme="night"] body #history-toggle:hover,
 html[data-theme="night"] body #dl-dropdown > .btn:hover,
 html[data-theme="night"] body #history-dropdown > .btn:hover {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245, 184, 0, 0.30) !important;
 }
 
@@ -2070,17 +2070,17 @@ html[data-theme="night"] body #btn-download-toggle:hover::after,
 html[data-theme="night"] body #history-toggle:hover::after,
 html[data-theme="night"] body #dl-dropdown > .btn:hover::after,
 html[data-theme="night"] body #history-dropdown > .btn:hover::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* Активное / открытое состояние — жёлтый фон, синий текст */
 html[data-theme="night"] body .dropdown.open > .btn,
 html[data-theme="night"] body .dropdown[open] > .btn {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 
 /* ============================================================
@@ -2114,11 +2114,11 @@ html body .help-section .help-content * {
   color: #FFC72C !important;
 }
 html body .help-section .help-pill {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #0d1a3f !important;
 }
 html body .help-section .help-arrow {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #0d1a3f !important;
 }
 
@@ -2155,14 +2155,14 @@ html body #btn-download-toggle:hover,
 html body #history-toggle:hover,
 html body .dropdown > .btn:hover {
   background: rgba(13, 26, 63, 0.55) !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(245, 184, 0, 0.30) !important;
 }
 html body #btn-download-toggle:hover::after,
 html body #history-toggle:hover::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #0d1a3f !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 
 /* ---------- РАСКРЫТЫЕ БУРГЕР-МЕНЮ ---------- */
@@ -2229,7 +2229,7 @@ html[data-theme="night"] body #help-body,
 html[data-theme="night"] body .help-body {
   background: rgba(13, 26, 63, 0.55) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 
 /* ================================================
@@ -2248,11 +2248,11 @@ html[data-theme="day"] body .help-section .help-content * {
   color: var(--navy, #1a2a5e) !important;
 }
 html[data-theme="day"] body .help-section .help-pill {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 html[data-theme="day"] body .help-section .help-arrow {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -2260,20 +2260,20 @@ html[data-theme="day"] body .help-section .help-arrow {
 html[data-theme="night"] body .help-section {
   background: #0d1a3f !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body .help-section .help-header,
 html[data-theme="night"] body .help-section .help-content,
 html[data-theme="night"] body .help-section .help-content * {
   background: transparent !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body .help-section .help-pill {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: #0d1a3f !important;
 }
 html[data-theme="night"] body .help-section .help-arrow {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: #0d1a3f !important;
 }
 
@@ -2292,11 +2292,11 @@ html[data-theme="day"] body .help-close * {
 html[data-theme="night"] body #help-close,
 html[data-theme="night"] body .help-close,
 html[data-theme="night"] body #help-toggle {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body #help-close *,
 html[data-theme="night"] body .help-close * {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 
 /* ================================================
@@ -2322,9 +2322,9 @@ html[data-theme="day"] body .dropdown > .btn * {
 html[data-theme="day"] body #btn-download-toggle::after,
 html[data-theme="day"] body #history-toggle::after,
 html[data-theme="day"] body .dropdown > .btn::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="day"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="day"] body #btn-clear-history:hover,
@@ -2332,7 +2332,7 @@ html[data-theme="day"] body #btn-download-toggle:hover,
 html[data-theme="day"] body #history-toggle:hover,
 html[data-theme="day"] body .dropdown > .btn:hover {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.20) !important;
 }
 
@@ -2343,7 +2343,7 @@ html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle,
 html[data-theme="night"] body .dropdown > .btn {
   background: #0d1a3f !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
@@ -2351,14 +2351,14 @@ html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle *,
 html[data-theme="night"] body .dropdown > .btn * {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body #btn-download-toggle::after,
 html[data-theme="night"] body #history-toggle::after,
 html[data-theme="night"] body .dropdown > .btn::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: #0d1a3f !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear-history:hover,
@@ -2366,7 +2366,7 @@ html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
 html[data-theme="night"] body .dropdown > .btn:hover {
   background: #0d1a3f !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.30) !important;
 }
 
@@ -2401,13 +2401,13 @@ html[data-theme="night"] body .history-menu {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1.5px solid rgba(245,184,0,0.40) !important;
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body .dropdown-menu a,
 html[data-theme="night"] body .history-menu a,
 html[data-theme="night"] body .dropdown-menu > *,
 html[data-theme="night"] body .history-menu > * {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
@@ -2440,14 +2440,14 @@ html[data-theme="night"] body #cards button,
 html[data-theme="night"] body .card-btn,
 html[data-theme="night"] body .tag-btn,
 html[data-theme="night"] body .chip {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 html[data-theme="night"] body .cards button *,
 html[data-theme="night"] body #cards button *,
 html[data-theme="night"] body .card-btn *,
 html[data-theme="night"] body .tag-btn *,
 html[data-theme="night"] body .chip * {
-  color: var(--gold, #F5B800) !important;
+  color: var(--gold, var(--gold)) !important;
 }
 
 /* ============================================================
@@ -2461,27 +2461,27 @@ html[data-theme="night"] body #help-body,
 html[data-theme="night"] body .help-doc {
   background: #1a2a5e !important;
   border-color: rgba(245, 184, 0, 0.40) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- 9 БЛОКОВ ИНСТРУКЦИИ ---------- */
 html[data-theme="night"] body .help-section {
   background: #1a2a5e !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .help-section .help-header,
 html[data-theme="night"] body .help-section .help-content,
 html[data-theme="night"] body .help-section .help-content * {
   background: transparent !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .help-section .help-pill {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
 }
 html[data-theme="night"] body .help-section .help-arrow {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
 }
 
@@ -2490,19 +2490,19 @@ html[data-theme="night"] body #btn-stop,
 html[data-theme="night"] body :is(#btn-random, #btn-batch),
 html[data-theme="night"] body #btn-clear-history {
   background: #1a2a5e !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body #btn-stop *,
 html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body #btn-stop:hover,
 html[data-theme="night"] body :is(#btn-random, #btn-batch):hover,
 html[data-theme="night"] body #btn-clear-history:hover {
   background: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.30) !important;
 }
 
@@ -2512,31 +2512,31 @@ html[data-theme="night"] body .dropdown > .btn.btn-ghost,
 html[data-theme="night"] body .dropdown > button,
 html[data-theme="night"] body .btn.btn-ghost {
   background: #1a2a5e !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body .dropdown > .btn *,
 html[data-theme="night"] body .btn.btn-ghost * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .dropdown > .btn::after,
 html[data-theme="night"] body .btn.btn-ghost::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 html[data-theme="night"] body .dropdown > .btn:hover,
 html[data-theme="night"] body .dropdown > .btn.btn-ghost:hover,
 html[data-theme="night"] body .btn.btn-ghost:hover {
   background: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(245,184,0,0.30) !important;
 }
 html[data-theme="night"] body .dropdown > .btn:hover::after,
 html[data-theme="night"] body .btn.btn-ghost:hover::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 
 /* ---------- РАСКРЫТОЕ БУРГЕР-МЕНЮ ---------- */
@@ -2546,13 +2546,13 @@ html[data-theme="night"] body .history-menu {
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .dropdown-menu a,
 html[data-theme="night"] body .history-menu a,
 html[data-theme="night"] body .dropdown-menu > *,
 html[data-theme="night"] body .history-menu > * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .dropdown-menu a:hover,
 html[data-theme="night"] body .history-menu a:hover {
@@ -2584,7 +2584,7 @@ html[data-theme="night"] body .btn.btn-ghost,
 html[data-theme="night"] body .dropdown-menu,
 html[data-theme="night"] body .history-menu {
   background: rgba(255, 255, 255, 0.55) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* Текст внутри — остаётся жёлтым */
@@ -2602,7 +2602,7 @@ html[data-theme="night"] body .dropdown-menu a,
 html[data-theme="night"] body .history-menu a,
 html[data-theme="night"] body .dropdown-menu > *,
 html[data-theme="night"] body .history-menu > * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* Точка ● у Скачать / История — жёлтый кружок, синий символ (контраст на светлом фоне) */
@@ -2610,9 +2610,9 @@ html[data-theme="night"] body #btn-download-toggle::after,
 html[data-theme="night"] body #history-toggle::after,
 html[data-theme="night"] body .dropdown > .btn::after,
 html[data-theme="night"] body .btn.btn-ghost::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 
 /* ---------- 2. УБРАТЬ РАМКИ В ИНСТРУКЦИИ (день + ночь) ---------- */
@@ -2653,7 +2653,7 @@ html[data-theme="night"] body #btn-clear-history,
 html[data-theme="night"] body #btn-download-toggle,
 html[data-theme="night"] body #history-toggle {
   background: rgba(255, 255, 255, 0.55) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
 }
 html[data-theme="night"] body #btn-stop *,
@@ -2661,15 +2661,15 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
 html[data-theme="night"] body #btn-clear-history *,
 html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* Точка ● (псевдоэлемент ::after) — жёлтый кружок, синий символ */
 html[data-theme="night"] body #btn-download-toggle::after,
 html[data-theme="night"] body #history-toggle::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 
 /* ---------- 2. HELP-ЭЛЕМЕНТЫ: ДЕНЬ + НОЧЬ ---------- */
@@ -2697,13 +2697,13 @@ html[data-theme="night"] body .help-doc,
 html[data-theme="night"] body .help-section,
 html[data-theme="night"] body .help-content {
   background: rgba(255, 255, 255, 0.55) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border: none !important;
   box-shadow: none !important;
 }
 html[data-theme="night"] body .help-section .help-header,
 html[data-theme="night"] body .help-section .help-content * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ============================================================
@@ -3099,7 +3099,7 @@ html body .help-modal-close {
   background: rgba(0, 0, 0, 0.35) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
   border-radius: 50% !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: 22px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
@@ -3112,7 +3112,7 @@ html body .help-modal-close:hover {
 }
 html body #help-close *,
 html body .help-modal-close * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: inherit !important;
 }
 
@@ -3148,10 +3148,10 @@ html[data-theme="night"] body button.btn.btn-ghost:not(#_a):not(#_b) {
    ФИКС (по ответам пользователя)
    - Кнопки стоп/случайный/очистить/скачать/история:
        день: color #1a2a5e
-       ночь: color #F5B800, background rgba(13,26,63,0.55)
+       ночь: color var(--gold), background rgba(13,26,63,0.55)
    - Карточки .carousel .card (пауза/эмфаза/шёпот):
        день: color #1a2a5e
-       ночь: color #F5B800
+       ночь: color var(--gold)
        (фон не трогаю — у них уже rgba+blur)
    ============================================================ */
 
@@ -3164,7 +3164,7 @@ html[data-theme="night"] body #history-toggle,
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost,
 html[data-theme="night"] body button.btn.btn-ghost {
   background: rgba(13, 26, 63, 0.55) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body #btn-stop *,
 html[data-theme="night"] body :is(#btn-random, #btn-batch) *,
@@ -3173,7 +3173,7 @@ html[data-theme="night"] body #btn-download-toggle *,
 html[data-theme="night"] body #history-toggle *,
 html[data-theme="night"] body .dropdown > button.btn.btn-ghost *,
 html[data-theme="night"] body button.btn.btn-ghost * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- КНОПКИ: ДЕНЬ ---------- */
@@ -3199,11 +3199,11 @@ html[data-theme="day"] body button.btn.btn-ghost * {
 /* ---------- КАРТОЧКИ .carousel .card: НОЧЬ ---------- */
 html[data-theme="night"] body .carousel .card,
 html[data-theme="night"] body .card {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .carousel .card *,
 html[data-theme="night"] body .card * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- КАРТОЧКИ .carousel .card: ДЕНЬ ---------- */
@@ -3221,7 +3221,7 @@ html[data-theme="day"] body .card * {
    1. #help-body — прозрачный, без padding (нет "второго блока")
    2. .help-doc — единственный блок с фоном + красивая прокрутка
    3. Бургер-меню поверх, размер инструкции не меняется
-   4. Карточки (.card, .chip, .tag) — день #1a2a5e, ночь #F5B800
+   4. Карточки (.card, .chip, .tag) — день #1a2a5e, ночь var(--gold)
    ============================================================ */
 
 /* ---------- 1. .help-modal-content — прозрачен ---------- */
@@ -3305,7 +3305,7 @@ html[data-theme="night"] body .tag-btn,
 html[data-theme="night"] body .carousel .card,
 html[data-theme="night"] body .cards button,
 html[data-theme="night"] body #cards button {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body .card *,
 html[data-theme="night"] body .chip *,
@@ -3315,7 +3315,7 @@ html[data-theme="night"] body .tag-btn *,
 html[data-theme="night"] body .carousel .card *,
 html[data-theme="night"] body .cards button *,
 html[data-theme="night"] body #cards button * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 html[data-theme="day"] body .card,
@@ -3353,7 +3353,7 @@ html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4
   background-color: rgba(13, 26, 63, 0.55) !important;
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border: none !important;
   border-radius: 14px !important;
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.35) !important;
@@ -3363,7 +3363,7 @@ html[data-theme="night"] body :is(#btn-random, #btn-batch):not(#z1):not(#z2):not
 html[data-theme="night"] body #btn-clear-history:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="night"] body #btn-download-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) *,
 html[data-theme="night"] body #history-toggle:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- КНОПКИ: ДЕНЬ (белый + синий) ---------- */
@@ -3493,7 +3493,7 @@ html body .help-doc > h2:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
 
   /* Фон, чтобы текст под ним не просвечивал при прокрутке */
   background: rgba(13, 26, 63, 0.92) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   padding: 12px 8px 10px !important;
   margin: -20px -22px 8px !important;
   border-radius: 22px 22px 0 0 !important;
@@ -3553,8 +3553,8 @@ html body .help-doc:not(#z1):not(#z2):not(#z3):not(#z4):not(#z5) {
 html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
 html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):focus,
 html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active {
-  background: var(--gold, #F5B800) !important;
-  background-color: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
+  background-color: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
   box-shadow: 0 0 24px rgba(245,184,0,0.65), 0 0 8px rgba(245,184,0,0.45) !important;
 }
@@ -3629,13 +3629,13 @@ html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2)
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) {
   border-color: rgba(245, 184, 0, 0.40) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) *,
 html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- 7. HOVER / ACTIVE — КАК У .card ---------- */
@@ -3656,12 +3656,12 @@ html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4)
 /* ---------- 8. ТОЧКА ● на Скачать/История — жёлтый кружок ---------- */
 html[data-theme="day"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)::after,
 html[data-theme="day"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)::after {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
 html[data-theme="night"] body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)::after,
 html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)::after {
-  background: #F5B800 !important;
+  background: var(--gold) !important;
   color: #1a2a5e !important;
 }
 
@@ -3674,19 +3674,19 @@ html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):no
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
   background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
   border: 1.5px solid rgba(245, 184, 0, 0.40) !important;
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   border-radius: 14px !important;
 }
 
 html[data-theme="night"] body #btn-upload:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5),
 html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5) * {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 html[data-theme="night"] body #btn-upload:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5),
 html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5):hover {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
   box-shadow: 0 4px 14px rgba(245,184,0,0.20) !important;
   transform: translateY(-2px) !important;
 }
@@ -3760,7 +3760,7 @@ html body .help-doc .help-title {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
-  border: 1.5px solid #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
   border-radius: 36px 36px 0 0 !important;
   box-shadow: 0 2px 18px rgba(245,184,0,0.28) !important;
   color: var(--navy, #1a2a5e) !important;
@@ -3771,7 +3771,7 @@ html body .help-doc .help-title {
 }
 
 html[data-theme="night"] body .help-doc .help-title {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- 3. ЯЗЫК: только текущий, без перевода ---------- */
@@ -3815,8 +3815,8 @@ html body #help-close {
 }
 html[data-theme="night"] body #help-close {
   background: rgba(13, 26, 63, 0.85) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
 }
 html[data-theme="night"] body #help-close:hover {
   background: rgba(245, 184, 0, 0.25) !important;
@@ -3926,7 +3926,7 @@ html body .help-doc .help-title {
   background: var(--input-bg, rgba(255,255,255,0.55)) !important;
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
-  border: 1.5px solid #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
   border-radius: 36px 36px 0 0 !important;
   box-shadow: 0 2px 18px rgba(245,184,0,0.28) !important;
   color: var(--navy, #1a2a5e) !important;
@@ -3936,7 +3936,7 @@ html body .help-doc .help-title {
   text-align: center !important;
 }
 html[data-theme="night"] body .help-doc .help-title {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ---------- 5. ЯЗЫК: только текущий ---------- */
@@ -3972,8 +3972,8 @@ html body .help-modal.open #help-close {
 }
 html[data-theme="night"] body .help-modal.open #help-close {
   background: rgba(13, 26, 63, 0.85) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
 }
 html[data-theme="day"] body .help-modal.open #help-close {
   background: rgba(255, 255, 255, 0.95) !important;
@@ -4080,12 +4080,12 @@ html body .help-modal.open .help-doc h2.help-title {
   background: rgba(245, 184, 0, 0.14) !important;
   backdrop-filter: blur(28px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
-  border: 2px solid #F5B800 !important;
+  border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(245, 184, 0, 0.35),
               0 2px 8px rgba(0, 0, 0, 0.20) !important;
 
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: 20px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -4096,7 +4096,7 @@ html body .help-modal.open .help-doc h2.help-title {
 html[data-theme="day"] body .help-modal.open .help-doc .help-title {
   color: #1a2a5e !important;
   background: rgba(255, 255, 255, 0.75) !important;
-  border-color: #F5B800 !important;
+  border-color: var(--gold) !important;
 }
 
 /* Только текущий язык */
@@ -4152,8 +4152,8 @@ html body .help-modal-close > * {
 html[data-theme="night"] body #help-close,
 html[data-theme="night"] body .help-modal-close {
   background: rgba(13, 26, 63, 0.90) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.40) !important;
 }
 html[data-theme="night"] body #help-close:hover {
@@ -4216,7 +4216,7 @@ html body .help-modal.open .help-section .help-header {
   cursor: pointer !important;
 }
 html[data-theme="night"] body .help-modal.open .help-section .help-header {
-  color: #F5B800 !important;
+  color: var(--gold) !important;
 }
 
 /* ============================================================
@@ -4327,11 +4327,11 @@ html body .help-modal.open .help-doc h2.help-title {
   background: rgba(245, 184, 0, 0.15) !important;
   backdrop-filter: blur(28px) saturate(1.4) !important;
   -webkit-backdrop-filter: blur(28px) saturate(1.4) !important;
-  border: 2px solid #F5B800 !important;
+  border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(245, 184, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.25) !important;
 
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: 20px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -4394,8 +4394,8 @@ html body .help-modal.open .help-modal-close > * {
 
 html[data-theme="night"] body .help-modal.open #help-close {
   background: rgba(13, 26, 63, 0.90) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.45) !important;
 }
 html[data-theme="night"] body .help-modal.open #help-close:hover {
@@ -4621,11 +4621,11 @@ html body .help-modal.open .help-doc h2.help-title {
   margin: 0 !important;
 
   background: rgba(245, 184, 0, 0.20) !important;
-  border: 2px solid #F5B800 !important;
+  border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(245, 184, 0, 0.40), 0 2px 10px rgba(0, 0, 0, 0.30) !important;
 
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: 20px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -4692,8 +4692,8 @@ html body .help-modal.open .help-modal-close > * {
 
 html[data-theme="night"] body .help-modal.open #help-close {
   background: rgba(13, 26, 63, 0.95) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.50) !important;
 }
 html[data-theme="night"] body .help-modal.open #help-close:hover {
@@ -4867,11 +4867,11 @@ html body .help-modal.open .help-doc h2.help-title {
   margin: 0 !important;
 
   background: rgba(245, 184, 0, 0.20) !important;
-  border: 2px solid #F5B800 !important;
+  border: 2px solid var(--gold) !important;
   border-radius: 24px !important;
   box-shadow: 0 4px 24px rgba(245, 184, 0, 0.40), 0 2px 10px rgba(0, 0, 0, 0.25) !important;
 
-  color: #F5B800 !important;
+  color: var(--gold) !important;
   font-size: 20px !important;
   font-weight: 700 !important;
   letter-spacing: 1.5px !important;
@@ -4944,8 +4944,8 @@ html body .help-modal.open .help-title #help-close > * {
 
 html[data-theme="night"] body .help-modal.open .help-title #help-close {
   background: rgba(13, 26, 63, 0.95) !important;
-  border: 1.5px solid #F5B800 !important;
-  color: #F5B800 !important;
+  border: 1.5px solid var(--gold) !important;
+  color: var(--gold) !important;
 }
 html[data-theme="day"] body .help-modal.open .help-title #help-close {
   background: rgba(255, 255, 255, 0.95) !important;
@@ -5673,7 +5673,7 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   width: 0%;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(245,184,0,0.06), rgba(245,184,0,0.14));
-  border-right: 2px solid var(--gold, #F5B800);
+  border-right: 2px solid var(--gold, var(--gold));
   box-sizing: border-box;
 }
 
@@ -5700,14 +5700,14 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   flex-shrink: 0;
 }
 .jstp-btn:hover:not(:disabled) {
-  border-color: var(--gold, #F5B800);
-  color: var(--gold, #F5B800);
+  border-color: var(--gold, var(--gold));
+  color: var(--gold, var(--gold));
   box-shadow: 0 0 12px rgba(245,184,0,0.35);
 }
 .jstp-btn:disabled { opacity: .5; cursor: not-allowed; }
 .jstp-btn.jstp-play {
   width: 44px; height: 44px; min-width: 44px;
-  background: linear-gradient(135deg, var(--gold-light, #FFC72C), var(--gold, #F5B800));
+  background: linear-gradient(135deg, var(--gold-light, #FFC72C), var(--gold, var(--gold)));
   color: var(--navy-dark, #0d1a3f);
   border-color: transparent;
 }
@@ -5732,7 +5732,7 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   font-size: 12px;
   color: var(--text-dim);
 }
-.jstp-ctrl input[type="range"] { width: 80px; accent-color: var(--gold, #F5B800); }
+.jstp-ctrl input[type="range"] { width: 80px; accent-color: var(--gold, var(--gold)); }
 .jstp-rate {
   padding: 6px 8px;
   border-radius: 8px;
@@ -5742,7 +5742,7 @@ html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a
   font-size: 12px;
   cursor: pointer;
 }
-.jstp-rate:hover { border-color: var(--gold, #F5B800); }
+.jstp-rate:hover { border-color: var(--gold, var(--gold)); }
 [data-theme="night"] .jstp-wave-wrap { background: rgba(0,0,0,0.35); }
 
 /* 4. АДАПТИВНОСТЬ — правильный скролл + масштабирование */
@@ -5953,9 +5953,9 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
 /* === P6.14-fix3: активные Loop / Boost === */
 .jstp-btn.active,
 .jstp-btn.active:hover {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: #1a2a5e !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 0 12px rgba(245,184,0,0.5) !important;
 }
 .jstp-btn.active svg {
@@ -5963,9 +5963,9 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
 }
 html[data-theme="night"] .jstp-btn.active,
 html[data-theme="night"] .jstp-btn.active:hover {
-  background: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
   color: #1a2a5e !important;
-  border-color: var(--gold, #F5B800) !important;
+  border-color: var(--gold, var(--gold)) !important;
   box-shadow: 0 0 16px rgba(245,184,0,0.7) !important;
 }
 
@@ -6019,7 +6019,7 @@ html[data-theme="night"] .jstp-btn.active:hover {
 
 .jstp-set-label em {
   font-style: normal;
-  color: var(--gold, #F5B800);
+  color: var(--gold, var(--gold));
   font-weight: 700;
   margin-left: 2px;
 }
@@ -6036,21 +6036,21 @@ html[data-theme="night"] .jstp-btn.active:hover {
 }
 .jstp-set-item select:focus {
   outline: none;
-  border-color: var(--gold, #F5B800);
+  border-color: var(--gold, var(--gold));
 }
 
 .jstp-set-item input[type="checkbox"] {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: var(--gold, #F5B800);
+  accent-color: var(--gold, var(--gold));
 }
 
 /* Слайдеры — короткие и inline */
 .jstp-set-item.jstp-set-range input[type="range"] {
   width: 80px;
   height: 4px;
-  accent-color: var(--gold, #F5B800);
+  accent-color: var(--gold, var(--gold));
   cursor: pointer;
 }
 
@@ -6164,11 +6164,11 @@ html[data-theme="night"] body #jstp-play:hover:not(:disabled),
 html[data-theme="night"] body #jstp-play:focus:not(:disabled),
 html[data-theme="night"] body #jstp-play:active:not(:disabled),
 html[data-theme="night"] body #jstp-play:focus-visible:not(:disabled) {
-  background: var(--gold, #F5B800) !important;
-  background-color: var(--gold, #F5B800) !important;
+  background: var(--gold, var(--gold)) !important;
+  background-color: var(--gold, var(--gold)) !important;
   background-image: none !important;
   color: var(--navy, #1a2a5e) !important;
-  border: 1.5px solid var(--gold, #F5B800) !important;
+  border: 1.5px solid var(--gold, var(--gold)) !important;
   box-shadow: none !important;
   outline: none !important;
 }
