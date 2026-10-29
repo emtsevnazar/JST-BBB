@@ -283,19 +283,19 @@ html[data-theme="night"] body .slider {
   background: transparent !important;
   background-color: transparent !important;
 }
-html[data-theme="light"] body .panel,
-html[data-theme="light"] body .jstp-settings,
-html[data-theme="light"] body .jstp-settings.visible,
-html[data-theme="light"] body .jstp-set-item.jstp-set-range,
-html[data-theme="light"] body .slider {
+html[data-theme="day"] body .panel,
+html[data-theme="day"] body .jstp-settings,
+html[data-theme="day"] body .jstp-settings.visible,
+html[data-theme="day"] body .jstp-set-item.jstp-set-range,
+html[data-theme="day"] body .slider {
   background: #ffffff !important;
   background-color: #ffffff !important;
 }
-html[data-theme="dark"] body .panel,
-html[data-theme="dark"] body .jstp-settings,
-html[data-theme="dark"] body .jstp-settings.visible,
-html[data-theme="dark"] body .jstp-set-item.jstp-set-range,
-html[data-theme="dark"] body .slider {
+html[data-theme="night"] body .panel,
+html[data-theme="night"] body .jstp-settings,
+html[data-theme="night"] body .jstp-settings.visible,
+html[data-theme="night"] body .jstp-set-item.jstp-set-range,
+html[data-theme="night"] body .slider {
   background: transparent !important;
   background-color: transparent !important;
 }

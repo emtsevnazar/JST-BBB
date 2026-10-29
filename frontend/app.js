@@ -742,7 +742,7 @@ function drawWaveform(chunks) {
     }
   }
   const isNight = document.documentElement.getAttribute("data-theme") === "night";
-  ctx.strokeStyle = __jstContrast() ? "#000000" : (isNight ? "#F5B800" : "#1a2a5e");
+  ctx.strokeStyle = __jstContrast() ? "#000" : (isNight ? "#F5B800" : "#1a2a5e");
   ctx.lineWidth = 2 * dpr; ctx.beginPath();
   const mid = h / 2;
   for (let i = 0; i < samples.length; i++) {
@@ -1186,7 +1186,7 @@ window.addEventListener("load", init);
     var isNight = document.documentElement.getAttribute("data-theme") === "night";
     var lang = (document.documentElement.lang || "ru").toLowerCase();
     var inputBg = isNight ? "rgba(13, 26, 63, 0.55)" : "rgba(255, 255, 255, 0.55)";
-    var textColor = __jstContrast() ? "#000000" : (isNight ? "#F5B800" : "#1a2a5e");
+    var textColor = __jstContrast() ? "#000" : (isNight ? "#F5B800" : "#1a2a5e");
 
     // ---- 1. Модалка ----
     var ms = modal.style;
@@ -1263,7 +1263,7 @@ window.addEventListener("load", init);
     hs.setProperty("align-items", "center", "important");
     hs.setProperty("justify-content", "center", "important");
     hs.setProperty("padding", "10px 28px", "important");
-    hs.setProperty("background", __jstContrast() ? "#ffffff" : (isNight ? "rgba(245,184,0,0.20)" : "rgba(255,255,255,0.92)"), "important");
+    hs.setProperty("background", __jstContrast() ? "#000" : (isNight ? "rgba(245,184,0,0.20)" : "rgba(255,255,255,0.92)"), "important");
     hs.setProperty("border", __jstContrast() ? "2px solid #000000" : "2px solid #F5B800", "important");
     hs.setProperty("border-radius", "22px", "important");
     hs.setProperty("box-shadow", __jstContrast() ? "none" : "0 4px 24px rgba(245,184,0,0.40), 0 2px 10px rgba(0,0,0,0.30)", "important");
@@ -1330,7 +1330,7 @@ window.addEventListener("load", init);
       cs.setProperty("isolation", "isolate", "important");
       cs.setProperty("background", isNight ? "rgba(13,26,63,0.95)" : "rgba(255,255,255,0.95)", "important");
       cs.setProperty("border", __jstContrast() ? "1.5px solid #000000" : (isNight ? "1.5px solid #F5B800" : "1.5px solid #1a2a5e"), "important");
-      cs.setProperty("color", __jstContrast() ? "#000000" : (isNight ? "#F5B800" : "#1a2a5e"), "important");
+      cs.setProperty("color", __jstContrast() ? "#000" : (isNight ? "#F5B800" : "#1a2a5e"), "important");
       cs.setProperty("box-shadow", "0 2px 8px rgba(0,0,0,0.45)", "important");
     }
 
@@ -1411,6 +1411,8 @@ window.addEventListener("load", init);
     var STYLE_ID = "help-shutters-style";
 
     function injectStyle() {
+        /* JST_CONTRAST_SKIP_INJECT: в contrast injectStyle не применяем */
+        if (document.documentElement.getAttribute("data-theme") === "contrast") return;
         var old = document.getElementById(STYLE_ID);
         if (old) old.remove();
         var s = document.createElement("style");
@@ -1460,6 +1462,8 @@ window.addEventListener("load", init);
     }
 
     function apply() {
+        /* JST_CONTRAST_SKIP_APPLY: в contrast не ставим inline */
+        if (document.documentElement.getAttribute("data-theme") === "contrast") return;
         var modal = document.getElementById("help-modal");
         if (!modal || !modal.classList.contains("open")) return;
         injectStyle();
@@ -1581,7 +1585,7 @@ window.addEventListener("load", init);
 // === Yellow border on button hover v6: dropdown-items без рамки ===
 (function() {
     var TARGET_WORDS    = ["случайный", "очистить", "скачать", "история", "историю", "истории"];
-    var YELLOW          = __jstContrast() ? "#000000" : "#F5B800";
+    var YELLOW          = __jstContrast() ? "#000" : "#F5B800";
     var GLOW            = __jstContrast() ? "none" : "0 0 14px rgba(245, 184, 0, 0.45)";
     var BASE_BORDER     = "var(--panel-border, rgba(26, 42, 94, 0.12))";
     var BORDER_WIDTH    = "1.5px";

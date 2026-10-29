@@ -834,22 +834,22 @@ select,
 }
 
 /* --- ТЁМНАЯ ТЕМА: жёлтый текст --- */
-html[data-theme="dark"] body,
-html[data-theme="dark"] .panel,
-html[data-theme="dark"] .panel-title,
-html[data-theme="dark"] label,
-html[data-theme="dark"] .select,
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] input[type="text"],
-html[data-theme="dark"] select,
-html[data-theme="dark"] .btn,
-html[data-theme="dark"] .btn-ghost,
-html[data-theme="dark"] .model-card:not(.unavailable_old),
-html[data-theme="dark"] .lang-card:not(.unavailable_old),
-html[data-theme="dark"] .dropdown > .btn,
-html[data-theme="dark"] .model-card:not(.unavailable_old) .model-name,
-html[data-theme="dark"] .lang-card:not(.unavailable_old) .lang-code,
-html[data-theme="dark"] .lang-card:not(.unavailable_old) .lang-name,
+html[data-theme="night"] body,
+html[data-theme="night"] .panel,
+html[data-theme="night"] .panel-title,
+html[data-theme="night"] label,
+html[data-theme="night"] .select,
+html[data-theme="night"] textarea,
+html[data-theme="night"] input[type="text"],
+html[data-theme="night"] select,
+html[data-theme="night"] .btn,
+html[data-theme="night"] .btn-ghost,
+html[data-theme="night"] .model-card:not(.unavailable_old),
+html[data-theme="night"] .lang-card:not(.unavailable_old),
+html[data-theme="night"] .dropdown > .btn,
+html[data-theme="night"] .model-card:not(.unavailable_old) .model-name,
+html[data-theme="night"] .lang-card:not(.unavailable_old) .lang-code,
+html[data-theme="night"] .lang-card:not(.unavailable_old) .lang-name,
 html.dark body,
 html.dark .panel,
 html.dark .panel-title,
@@ -870,11 +870,11 @@ body.dark .dropdown > .btn {
 }
 
 /* Активная модель/язык в обеих темах — синий текст на жёлтом */
-html[data-theme="dark"] #model-grid .model-card.active,
-html[data-theme="dark"] #model-grid .model-card.active .model-name,
-html[data-theme="dark"] #lang-grid .lang-card.active,
-html[data-theme="dark"] #lang-grid .lang-card.active .lang-code,
-html[data-theme="dark"] #lang-grid .lang-card.active .lang-name,
+html[data-theme="night"] #model-grid .model-card.active,
+html[data-theme="night"] #model-grid .model-card.active .model-name,
+html[data-theme="night"] #lang-grid .lang-card.active,
+html[data-theme="night"] #lang-grid .lang-card.active .lang-code,
+html[data-theme="night"] #lang-grid .lang-card.active .lang-name,
 html.dark #model-grid .model-card.active,
 html.dark #model-grid .model-card.active .model-name,
 html.dark #lang-grid .lang-card.active,
@@ -884,11 +884,11 @@ html.dark #lang-grid .lang-card.active .lang-name {
 }
 
 /* Недоступные в тёмной теме: жёлтый текст на синем */
-html[data-theme="dark"] #model-grid .model-card.unavailable_old,
-html[data-theme="dark"] #model-grid .model-card.unavailable_old .model-name,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old .lang-code,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old .lang-name,
+html[data-theme="night"] #model-grid .model-card.unavailable_old,
+html[data-theme="night"] #model-grid .model-card.unavailable_old .model-name,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old .lang-code,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old .lang-name,
 html.dark #model-grid .model-card.unavailable_old,
 html.dark #model-grid .model-card.unavailable_old .model-name,
 html.dark #lang-grid .lang-card.unavailable_old,
@@ -900,8 +900,8 @@ html.dark #lang-grid .lang-card.unavailable_old .lang-name {
 }
 
 /* Hover на недоступных — красная рамка, фон синий остаётся */
-html[data-theme="dark"] #model-grid .model-card.unavailable_old:hover,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old:hover,
+html[data-theme="night"] #model-grid .model-card.unavailable_old:hover,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old:hover,
 html.dark #model-grid .model-card.unavailable_old:hover,
 html.dark #lang-grid .lang-card.unavailable_old:hover {
   background: var(--navy, #1a2a5e) !important;
@@ -927,22 +927,22 @@ button.btn:not(.active):not(.unavailable_old):hover {
 }
 
 /* ---------- 2. ТЁМНАЯ ТЕМА: ВЕСЬ ТЕКСТ ЖЁЛТЫЙ ---------- */
-html[data-theme="dark"] body,
-html[data-theme="dark"] .panel,
-html[data-theme="dark"] .panel-title,
-html[data-theme="dark"] label,
-html[data-theme="dark"] .select,
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] input[type="text"],
-html[data-theme="dark"] select,
-html[data-theme="dark"] .btn,
-html[data-theme="dark"] .btn-ghost,
-html[data-theme="dark"] .model-card:not(.active),
-html[data-theme="dark"] .lang-card:not(.active),
-html[data-theme="dark"] .dropdown > .btn,
-html[data-theme="dark"] .model-card:not(.active) .model-name,
-html[data-theme="dark"] .lang-card:not(.active) .lang-code,
-html[data-theme="dark"] .lang-card:not(.active) .lang-name,
+html[data-theme="night"] body,
+html[data-theme="night"] .panel,
+html[data-theme="night"] .panel-title,
+html[data-theme="night"] label,
+html[data-theme="night"] .select,
+html[data-theme="night"] textarea,
+html[data-theme="night"] input[type="text"],
+html[data-theme="night"] select,
+html[data-theme="night"] .btn,
+html[data-theme="night"] .btn-ghost,
+html[data-theme="night"] .model-card:not(.active),
+html[data-theme="night"] .lang-card:not(.active),
+html[data-theme="night"] .dropdown > .btn,
+html[data-theme="night"] .model-card:not(.active) .model-name,
+html[data-theme="night"] .lang-card:not(.active) .lang-code,
+html[data-theme="night"] .lang-card:not(.active) .lang-name,
 html.dark body,
 html.dark .panel,
 html.dark .panel-title,
@@ -964,11 +964,11 @@ html.dark .lang-card:not(.active) .lang-name {
 
 /* ---------- 3. НЕАКТИВНЫЕ (UNAVAILABLE) В ТЁМНОЙ ТЕМЕ ---------- */
 /* Фон всегда тёмный (--navy), текст жёлтый, рамка приглушённо-жёлтая */
-html[data-theme="dark"] #model-grid .model-card.unavailable_old,
-html[data-theme="dark"] #model-grid .model-card.unavailable_old .model-name,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old .lang-code,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old .lang-name,
+html[data-theme="night"] #model-grid .model-card.unavailable_old,
+html[data-theme="night"] #model-grid .model-card.unavailable_old .model-name,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old .lang-code,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old .lang-name,
 html.dark #model-grid .model-card.unavailable_old,
 html.dark #model-grid .model-card.unavailable_old .model-name,
 html.dark #lang-grid .lang-card.unavailable_old,
@@ -980,8 +980,8 @@ html.dark #lang-grid .lang-card.unavailable_old .lang-name {
 }
 
 /* Hover на недоступную в тёмной теме — фон ОСТАЁТСЯ ТЁМНЫМ, только рамка краснеет */
-html[data-theme="dark"] #model-grid .model-card.unavailable_old:hover,
-html[data-theme="dark"] #lang-grid .lang-card.unavailable_old:hover,
+html[data-theme="night"] #model-grid .model-card.unavailable_old:hover,
+html[data-theme="night"] #lang-grid .lang-card.unavailable_old:hover,
 html.dark #model-grid .model-card.unavailable_old:hover,
 html.dark #lang-grid .lang-card.unavailable_old:hover {
   background: var(--navy, #1a2a5e) !important;  /* НЕ меняем на светлый */
@@ -991,11 +991,11 @@ html.dark #lang-grid .lang-card.unavailable_old:hover {
 }
 
 /* ---------- 4. АКТИВНЫЕ В ТЁМНОЙ ТЕМЕ: СИНИЙ ТЕКСТ НА ЖЁЛТОМ ---------- */
-html[data-theme="dark"] #model-grid .model-card.active,
-html[data-theme="dark"] #model-grid .model-card.active .model-name,
-html[data-theme="dark"] #lang-grid .lang-card.active,
-html[data-theme="dark"] #lang-grid .lang-card.active .lang-code,
-html[data-theme="dark"] #lang-grid .lang-card.active .lang-name,
+html[data-theme="night"] #model-grid .model-card.active,
+html[data-theme="night"] #model-grid .model-card.active .model-name,
+html[data-theme="night"] #lang-grid .lang-card.active,
+html[data-theme="night"] #lang-grid .lang-card.active .lang-code,
+html[data-theme="night"] #lang-grid .lang-card.active .lang-name,
 html.dark #model-grid .model-card.active,
 html.dark #model-grid .model-card.active .model-name,
 html.dark #lang-grid .lang-card.active,
@@ -1007,12 +1007,12 @@ html.dark #lang-grid .lang-card.active .lang-name {
 
 /* ---------- 5. СВЕТЛАЯ ТЕМА: ОСНОВНОЙ ТЕКСТ СИНИЙ ---------- */
 /* (на случай, если предыдущие правила сбили цвет) */
-body:not([data-theme="dark"]) .btn:not(.active):not(.unavailable_old),
-body:not([data-theme="dark"]) .model-card:not(.active):not(.unavailable_old),
-body:not([data-theme="dark"]) .lang-card:not(.active):not(.unavailable_old),
-html:not([data-theme="dark"]) .btn:not(.active):not(.unavailable_old),
-html:not([data-theme="dark"]) .model-card:not(.active):not(.unavailable_old),
-html:not([data-theme="dark"]) .lang-card:not(.active):not(.unavailable_old) {
+body:not([data-theme="night"]) .btn:not(.active):not(.unavailable_old),
+body:not([data-theme="night"]) .model-card:not(.active):not(.unavailable_old),
+body:not([data-theme="night"]) .lang-card:not(.active):not(.unavailable_old),
+html:not([data-theme="night"]) .btn:not(.active):not(.unavailable_old),
+html:not([data-theme="night"]) .model-card:not(.active):not(.unavailable_old),
+html:not([data-theme="night"]) .lang-card:not(.active):not(.unavailable_old) {
   color: var(--navy, #1a2a5e) !important;
 }
 
@@ -6470,3 +6470,18 @@ html[data-theme="night"] #jst-wand-v4 .jst-wand-body { stroke: var(--gold); }
 body.jst-wand-active, body.jst-wand-active * { cursor: none !important; }
 body.jst-wand-active input, body.jst-wand-active textarea, body.jst-wand-active [contenteditable="true"] { cursor: text !important; }
 /* === /WAND V4 === */
+
+/* ═══ v33 — theme-mode-badge + night panel ═══ */
+/* Глобально, во всех темах: бейдж режима темы = 10px */
+#theme-mode-badge,
+#themeModeBadge,
+.theme-mode-badge {
+  font-size: 10px !important;
+  line-height: 1 !important;
+}
+
+/* Только ночь: .panel полупрозрачный тёмно-синий */
+html[data-theme="night"] body .panel,
+html[data-theme="night"] .panel {
+  background-color: rgba(13, 26, 63, 0.55) !important;
+}

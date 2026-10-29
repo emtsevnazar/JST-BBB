@@ -1,17 +1,22 @@
 (function () {
   "use strict";
   var KEY = "jst-theme-mode";
-  var ORDER = ["day", "night", "auto", "scheduled", "contrast"];
-  var LABELS = { day: "Day", night: "Night", auto: "Auto", scheduled: "Sched", contrast: "B&W" };
+  var ORDER = ["day", "night", "auto", "time", "contrast"];
+  var LABELS_EN = { day: "Day", night: "Night", auto: "Auto", time: "Time", contrast: "B&W" };
+  var LABELS_RU = { day: "День", night: "Ночь", auto: "Авто", time: "Время", contrast: "Ч/Б" };
+  function _labels() {
+    var lang = (document.documentElement.lang || "en").toLowerCase();
+    return lang.indexOf("ru") === 0 ? LABELS_RU : LABELS_EN;
+  }
   var SVG = {
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v3M12 3h3M21 12h-3M21 12v-3"/></svg>',
-    scheduled: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    time: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     contrast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg>'
   };
   var TITLES = {
-    day: "Light", night: "Dark", auto: "Auto", scheduled: "Schedule", contrast: "B&W"
+    day: "Light", night: "Dark", auto: "Auto", time: "Time", contrast: "B&W"
   };
 
   var _applying = false;
@@ -32,7 +37,7 @@
     if (mode === "auto") {
       return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "night" : "day";
     }
-    if (mode === "scheduled") {
+    if (mode === "time") {
       var h = new Date().getHours();
       return (h >= 6 && h < 18) ? "day" : "night";
     }
@@ -69,7 +74,7 @@
         btn2.appendChild(badge);
       }
     }
-    if (badge) badge.textContent = LABELS[mode] || mode;
+    if (badge) badge.textContent = _labels()[mode] || mode;
   }
   function nextMode() {
     var cur = getMode();
@@ -91,6 +96,8 @@
     }
   }
   function init() {
+    /* __JST_FORCE_AUTO: по требованию — при загрузке всегда auto */
+    try { localStorage.setItem(KEY, "auto"); } catch (e) {}
     document.addEventListener("click", _intercept, true);
 
     try {
@@ -120,9 +127,15 @@
       } catch (e) {}
     }
 
-    setInterval(function () { if (getMode() === "scheduled") apply(); }, 60000);
+    setInterval(function () { if (getMode() === "time") apply(); }, 60000);
+    /* __JST_LANG_OBS: обновление badge при смене языка */
+    try {
+      new MutationObserver(function(){ render(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    } catch(e) {}
     apply();
     render();
+    setTimeout(render, 100);
+    setTimeout(render, 500);
 
     window.__jstThemeLoaded = true;
     window.__jstThemeDebug = function() {

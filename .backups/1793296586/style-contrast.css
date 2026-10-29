@@ -1,0 +1,447 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CONTRAST (B&W) — v26 full rewrite
+   Order matters: this file loads LAST. !important used only where
+   other stylesheets use !important.
+   
+   Principle:
+     Surfaces: white bg + black 1px border (no shadows)
+     Primary (main actions): black bg / white text
+     Secondary (everything else): white bg / black text / black border
+     Hover: ALWAYS inverts the pair (never "darker", always opposite)
+     No background:transparent on text; every component = bg+fg pair
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Tokens ──────────────────────────────────────────────────── */
+html[data-theme="contrast"] {
+  --bg: #fff; --bg-elev: #fff; --surface: #fff; --surface-1: #fff;
+  --surface-2: #fff; --panel: #fff; --panel-bg: #fff;
+  --card: #fff; --card-bg: #fff; --input-bg: #fff;
+  --text: #000; --text-primary: #000; --text-secondary: #333;
+  --text-dim: #333; --text-muted: #666; --text-invert: #fff;
+  --border: #000; --border-color: #000; --divider: #000;
+  --accent: #000; --accent-fg: #fff; --primary: #000; --primary-fg: #fff;
+  --gold: #000; --gold-light: #000; --gold-dark: #000; --gold-rgb: 0,0,0;
+  --navy: #000; --navy-light: #000; --navy-dark: #000;
+  --red: #000; --red-light: #000; --red-dark: #000;
+  --error: #000; --danger: #000; --success: #000; --warning: #000; --info: #000;
+  --shadow: none; --shadow-sm: none; --shadow-md: none; --shadow-lg: none;
+  color-scheme: light;
+}
+
+/* ── 2. Page ────────────────────────────────────────────────────── */
+html[data-theme="contrast"],
+html[data-theme="contrast"] body {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* ── 3. Typography baseline ─────────────────────────────────────── */
+html[data-theme="contrast"] body {
+  color: #000;
+}
+html[data-theme="contrast"] body h1,
+html[data-theme="contrast"] body h2,
+html[data-theme="contrast"] body h3,
+html[data-theme="contrast"] body h4,
+html[data-theme="contrast"] body h5,
+html[data-theme="contrast"] body h6 {
+  color: #000 !important;
+}
+html[data-theme="contrast"] body small,
+html[data-theme="contrast"] body .muted,
+html[data-theme="contrast"] body .text-muted,
+html[data-theme="contrast"] body .dim {
+  color: #666 !important;
+}
+
+/* ── 4. Surfaces ────────────────────────────────────────────────── */
+html[data-theme="contrast"] body .panel,
+html[data-theme="contrast"] body .card,
+html[data-theme="contrast"] body .modal-content,
+html[data-theme="contrast"] body [class*="-panel"]:not(.btn):not(button),
+html[data-theme="contrast"] body [class*="-card"]:not(.btn):not(button) {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  box-shadow: none !important;
+}
+
+/* ── 5. Buttons — secondary (default) ──────────────────────────── */
+html[data-theme="contrast"] body button:not(.primary):not(.btn-primary):not([class*="btn-primary"]):not([class*="button-primary"]),
+html[data-theme="contrast"] body .btn:not(.primary):not(.btn-primary):not([class*="btn-primary"]):not([class*="button-primary"]),
+html[data-theme="contrast"] body [role="button"]:not(.primary):not(.btn-primary):not([class*="btn-primary"]) {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  box-shadow: none !important;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+html[data-theme="contrast"] body button:not(.primary) svg,
+html[data-theme="contrast"] body button:not(.primary) svg * {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+/* Secondary hover = INVERT */
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):hover,
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):active,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):hover,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):active,
+html[data-theme="contrast"] body [role="button"]:not(.primary):not([disabled]):hover,
+html[data-theme="contrast"] body [role="button"]:not(.primary):not([disabled]):active {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+}
+
+/* ── 6. Buttons — primary ──────────────────────────────────────── */
+html[data-theme="contrast"] body .primary,
+html[data-theme="contrast"] body .btn-primary,
+html[data-theme="contrast"] body [class*="btn-primary"],
+html[data-theme="contrast"] body [class*="button-primary"],
+html[data-theme="contrast"] body button[data-variant="primary"] {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .primary svg,
+html[data-theme="contrast"] body .primary svg *,
+html[data-theme="contrast"] body .btn-primary svg,
+html[data-theme="contrast"] body .btn-primary svg * {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+/* Primary hover = INVERT */
+html[data-theme="contrast"] body .primary:hover,
+html[data-theme="contrast"] body .primary:active,
+html[data-theme="contrast"] body .btn-primary:hover,
+html[data-theme="contrast"] body .btn-primary:active {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+/* ── 7. Disabled ───────────────────────────────────────────────── */
+html[data-theme="contrast"] body button[disabled],
+html[data-theme="contrast"] body button:disabled,
+html[data-theme="contrast"] body .btn[disabled] {
+  background: #fff !important;
+  color: #888 !important;
+  border: 1px dashed #888 !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+/* ── 8. Inputs ─────────────────────────────────────────────────── */
+html[data-theme="contrast"] body input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]):not([type=submit]):not([type=button]),
+html[data-theme="contrast"] body textarea,
+html[data-theme="contrast"] body select {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  caret-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body input::placeholder,
+html[data-theme="contrast"] body textarea::placeholder {
+  color: #666 !important;
+  opacity: 1 !important;
+}
+
+/* ── 9. Focus ──────────────────────────────────────────────────── */
+html[data-theme="contrast"] body *:focus-visible {
+  outline: 2px solid #000 !important;
+  outline-offset: 2px !important;
+}
+
+/* ── 10. Links ─────────────────────────────────────────────────── */
+html[data-theme="contrast"] body a {
+  color: #000 !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+html[data-theme="contrast"] body a:hover,
+html[data-theme="contrast"] body a:focus {
+  background: #000 !important;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+/* ── 11. Tables ────────────────────────────────────────────────── */
+html[data-theme="contrast"] body table {
+  border-collapse: collapse;
+}
+html[data-theme="contrast"] body th {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+  font-weight: 600;
+}
+html[data-theme="contrast"] body th * { color: #fff !important; }
+html[data-theme="contrast"] body td {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body tr:hover td {
+  background: #000 !important;
+  color: #fff !important;
+}
+html[data-theme="contrast"] body tr:hover td * { color: #fff !important; }
+
+/* ── 12. Badges / pills / tags ─────────────────────────────────── */
+html[data-theme="contrast"] body .badge,
+html[data-theme="contrast"] body .pill,
+html[data-theme="contrast"] body .tag,
+html[data-theme="contrast"] body [class*="badge"]:not(button),
+html[data-theme="contrast"] body [class*="pill"]:not(button) {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body .badge *,
+html[data-theme="contrast"] body .pill *,
+html[data-theme="contrast"] body .tag * { color: #fff !important; }
+
+/* ── 13. Alerts — emphasis by inversion/border, not color ──────── */
+html[data-theme="contrast"] body .alert,
+html[data-theme="contrast"] body [class*="alert"] {
+  background: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+}
+html[data-theme="contrast"] body .error,
+html[data-theme="contrast"] body .danger,
+html[data-theme="contrast"] body .alert-error,
+html[data-theme="contrast"] body [class*="alert-error"],
+html[data-theme="contrast"] body [class*="-danger"]:not(button):not(.btn) {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+}
+html[data-theme="contrast"] body .error *,
+html[data-theme="contrast"] body .alert-error * { color: #fff !important; }
+
+/* ── 14. SVG inherit ───────────────────────────────────────────── */
+html[data-theme="contrast"] body svg [fill]:not([fill="none"]):not([fill="currentColor"]):not([fill^="url"]) {
+  fill: currentColor !important;
+}
+html[data-theme="contrast"] body svg [stroke]:not([stroke="none"]):not([stroke="currentColor"]):not([stroke^="url"]) {
+  stroke: currentColor !important;
+}
+
+/* ── 15. Canvas / images B&W ───────────────────────────────────── */
+html[data-theme="contrast"] body canvas { filter: grayscale(1) !important; }
+
+/* ── 16. Dividers ──────────────────────────────────────────────── */
+html[data-theme="contrast"] body hr,
+html[data-theme="contrast"] body .divider {
+  border: none !important;
+  border-top: 1px solid #000 !important;
+  background: transparent !important;
+  height: 0 !important;
+}
+
+/* ── 17. Selection / scrollbar ─────────────────────────────────── */
+html[data-theme="contrast"] ::selection { background: #000 !important; color: #fff !important; }
+html[data-theme="contrast"] ::-webkit-scrollbar { width: 10px; height: 10px; background: #fff; }
+html[data-theme="contrast"] ::-webkit-scrollbar-thumb { background: #000; }
+html[data-theme="contrast"] ::-webkit-scrollbar-thumb:hover { background: #333; }
+
+/* ── 18. Range / checkbox / progress ───────────────────────────── */
+html[data-theme="contrast"] body input[type=range],
+html[data-theme="contrast"] body input[type=checkbox],
+html[data-theme="contrast"] body input[type=radio],
+html[data-theme="contrast"] body progress {
+  accent-color: #000 !important;
+}
+
+/* ── 19. Modal / drawer ────────────────────────────────────────── */
+html[data-theme="contrast"] body .modal { background: rgba(0,0,0,0.5) !important; }
+
+/* ── 20. Menu / dropdown ──────────────────────────────────────── */
+html[data-theme="contrast"] body .menu,
+html[data-theme="contrast"] body .dropdown-menu,
+html[data-theme="contrast"] body [role="menu"],
+html[data-theme="contrast"] body [class*="dropdown-menu"] {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  box-shadow: 4px 4px 0 #000 !important;
+}
+html[data-theme="contrast"] body .menu-item,
+html[data-theme="contrast"] body .dropdown-item,
+html[data-theme="contrast"] body [role="menuitem"] {
+  background: #fff !important;
+  color: #000 !important;
+}
+html[data-theme="contrast"] body .menu-item:hover,
+html[data-theme="contrast"] body .dropdown-item:hover,
+html[data-theme="contrast"] body [role="menuitem"]:hover {
+  background: #000 !important;
+  color: #fff !important;
+}
+
+/* ── 21. Tabs ──────────────────────────────────────────────────── */
+html[data-theme="contrast"] body [role="tab"][aria-selected="false"] {
+  background: #fff !important;
+  color: #000 !important;
+  border-bottom: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body [role="tab"][aria-selected="true"] {
+  background: #000 !important;
+  color: #fff !important;
+}
+html[data-theme="contrast"] body [role="tab"][aria-selected="true"] * { color: #fff !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   #theme-toggle — восстановление формы (все темы)
+   ═══════════════════════════════════════════════════════════════════ */
+#theme-toggle,
+#themeToggle,
+.theme-toggle {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 5px 3px 3px !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  gap: 0 !important;
+  overflow: hidden !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+#theme-toggle svg,
+#themeToggle svg,
+.theme-toggle svg {
+  width: 22px !important;
+  height: 22px !important;
+  flex-shrink: 0 !important;
+}
+#theme-toggle span,
+#theme-toggle small,
+#theme-toggle .label,
+#themeToggle span,
+#themeToggle small,
+#themeToggle .label,
+.theme-toggle span,
+.theme-toggle small,
+.theme-toggle .label {
+  font-size: 9px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  letter-spacing: -0.02em !important;
+  padding-bottom: 1px !important;
+}
+/* Colors in contrast mode */
+html[data-theme="contrast"] body #theme-toggle,
+html[data-theme="contrast"] body #themeToggle,
+html[data-theme="contrast"] body .theme-toggle {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body #theme-toggle *,
+html[data-theme="contrast"] body #themeToggle *,
+html[data-theme="contrast"] body .theme-toggle * {
+  color: inherit !important;
+}
+html[data-theme="contrast"] body #theme-toggle:hover,
+html[data-theme="contrast"] body #themeToggle:hover,
+html[data-theme="contrast"] body .theme-toggle:hover {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+
+/* ═══ v27.2 CHILD-INHERIT ═══ */
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):hover > *,
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):hover > * *,
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):active > *,
+html[data-theme="contrast"] body button:not(.primary):not([disabled]):active > * *,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):hover > *,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):hover > * *,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):active > *,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]):active > * *,
+html[data-theme="contrast"] body [role="button"]:not(.primary):not([disabled]):hover > *,
+html[data-theme="contrast"] body [role="button"]:not(.primary):not([disabled]):active > * {
+  color: #fff !important;
+}
+html[data-theme="contrast"] body button:not(.primary):not([disabled]) > *,
+html[data-theme="contrast"] body .btn:not(.primary):not([disabled]) > *,
+html[data-theme="contrast"] body [role="button"]:not(.primary):not([disabled]) > * {
+  color: #000 !important;
+}
+html[data-theme="contrast"] body .primary > *,
+html[data-theme="contrast"] body .primary > * *,
+html[data-theme="contrast"] body .btn-primary > *,
+html[data-theme="contrast"] body .btn-primary > * *,
+html[data-theme="contrast"] body [class*="btn-primary"] > *,
+html[data-theme="contrast"] body [class*="btn-primary"] > * *,
+html[data-theme="contrast"] body [class*="button-primary"] > *,
+html[data-theme="contrast"] body [class*="button-primary"] > * * {
+  color: #fff !important;
+}
+html[data-theme="contrast"] body .primary:hover > *,
+html[data-theme="contrast"] body .primary:hover > * *,
+html[data-theme="contrast"] body .primary:active > *,
+html[data-theme="contrast"] body .primary:active > * *,
+html[data-theme="contrast"] body .btn-primary:hover > *,
+html[data-theme="contrast"] body .btn-primary:hover > * *,
+html[data-theme="contrast"] body .btn-primary:active > *,
+html[data-theme="contrast"] body .btn-primary:active > * * {
+  color: #000 !important;
+}
+html[data-theme="contrast"] body .menu-item > *,
+html[data-theme="contrast"] body .dropdown-item > *,
+html[data-theme="contrast"] body [role="menuitem"] > * { color: #000 !important; }
+html[data-theme="contrast"] body .menu-item:hover > *,
+html[data-theme="contrast"] body .dropdown-item:hover > *,
+html[data-theme="contrast"] body [role="menuitem"]:hover > * { color: #fff !important; }
+
+
+/* ═══ v27.2 THEME-TOGGLE ═══ */
+#theme-toggle {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  max-width: 52px !important;
+  max-height: 52px !important;
+  padding: 4px 2px !important;
+  border-radius: 10px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  line-height: 1 !important;
+  gap: 1px !important;
+}
+#theme-toggle #theme-icon { font-size: 20px !important; line-height: 1 !important; }
+#theme-toggle::after {
+  content: "ТЕМА";
+  display: block !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.3px !important;
+  color: inherit !important;
+}
+html[lang="en"] #theme-toggle::after { content: "THEME"; }
+html[data-theme="contrast"] body #theme-toggle { background: #000 !important; color: #fff !important; }
+html[data-theme="contrast"] body #theme-toggle > *,
+html[data-theme="contrast"] body #theme-toggle::after { color: #fff !important; }
+html[data-theme="contrast"] body #theme-toggle:hover { background: #fff !important; color: #000 !important; }
+html[data-theme="contrast"] body #theme-toggle:hover > *,
+html[data-theme="contrast"] body #theme-toggle:hover::after { color: #000 !important; }
