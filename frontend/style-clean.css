@@ -71,3 +71,19 @@ html body .dropdown > .btn.btn-ghost::after {
 .jst-err-btn { flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: 2px solid #ffeb3b; color: #ffeb3b; border-radius: 8px; cursor: pointer; padding: 0; }
 .jst-err-btn:hover, .jst-err-btn:active { background: rgba(255,235,59,0.18); }
 .jst-err-btn svg { width: 16px; height: 16px; display: block; stroke: #ffeb3b; fill: none; }
+
+
+/* v75: в Ч/Б убиваем жёлтый glow на jst-dot (style-clean) */
+html[data-theme="contrast"] body .jst-btn-with-dot:hover .jst-dot::before,
+html[data-theme="contrast"] body .jst-btn-with-dot:active .jst-dot::before,
+html[data-theme="contrast"] body .jst-btn-with-dot:focus-visible .jst-dot::before {
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .jst-btn-with-dot:hover .jst-dot::after,
+html[data-theme="contrast"] body .jst-btn-with-dot:active .jst-dot::after {
+  background: #000 !important;
+}
+html[data-theme="contrast"] body .jst-btn-with-dot {
+  --jst-dot-color: #000 !important;
+}
