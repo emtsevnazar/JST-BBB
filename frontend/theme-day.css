@@ -1,586 +1,168 @@
-html[data-theme="day"] body .controls > .btn:not(.btn-primary):hover, html[data-theme="day"] body .controls > .btn:not(.btn-primary):active, html[data-theme="day"] body .controls > .btn:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls > button:not(.btn-primary):hover, html[data-theme="day"] body .controls > button:not(.btn-primary):active, html[data-theme="day"] body .controls > button:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls .dropdown > .btn:not(.btn-primary):hover {
-
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1px var(--gold) !important;
-  outline: none !important;
-
-}
-html[data-theme="day"] body .controls .btn:hover, html[data-theme="day"] body .controls .btn:focus-visible, html[data-theme="day"] body .controls .btn:active, html[data-theme="day"] body .controls .btn-ghost:hover, html[data-theme="day"] body .controls .btn-ghost:focus-visible, html[data-theme="day"] body .controls .btn-ghost:active, html[data-theme="day"] body .controls > .btn:hover, html[data-theme="day"] body .controls > button:hover, html[data-theme="day"] body .controls > [role="button"]:hover, html[data-theme="day"] body .controls .dropdown > .btn:hover, html[data-theme="day"] body .controls .dropdown > .btn:focus-visible {
-
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1.5px var(--gold), 0 0 10px var(--gold) !important;
-  outline: none !important;
-
-}
-html[data-theme="day"] body .controls > .btn:hover, html[data-theme="day"] body .controls > .btn:focus-visible, html[data-theme="day"] body .controls > button:hover, html[data-theme="day"] body .controls > button:focus-visible, html[data-theme="day"] body .controls .dropdown > .btn:hover, html[data-theme="day"] body .controls .dropdown > .btn:focus-visible {
-
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1.5px var(--gold) !important;
-  outline: none !important;
-
-}
-html[data-theme="day"] body .controls > .btn.btn-primary:hover, html[data-theme="day"] body .controls > .btn.btn-primary:focus-visible {
-
-  border-color: transparent !important;
-
-}
-html[data-theme="day"] body .controls > .btn:not(.btn-primary):hover, html[data-theme="day"] body .controls > .btn:not(.btn-primary):focus, html[data-theme="day"] body .controls > .btn:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls > .btn:not(.btn-primary):active, html[data-theme="day"] body .controls > button:not(.btn-primary):hover, html[data-theme="day"] body .controls > button:not(.btn-primary):focus, html[data-theme="day"] body .controls > button:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls > button:not(.btn-primary):active {
-
-  border-color: var(--gold) !important;
-  box-shadow: 0 0 0 1.5px var(--gold) !important;
-  outline: none !important;
-  outline-color: var(--gold) !important;
-
-}
-html[data-theme="day"] body .controls > .btn:not(.btn-primary), html[data-theme="day"] body .controls > button:not(.btn-primary) {
-
-  box-shadow: none !important;
-
-}
-html[data-theme="day"] body .controls > .btn:not(.btn-primary):focus-visible {
-
-  outline: 2px solid var(--gold) !important;
-  outline-offset: 2px !important;
-
-}
-html[data-theme="day"] body .btn, html[data-theme="day"] body button, html[data-theme="day"] body [role="button"], html[data-theme="day"] body .btn-ghost, html[data-theme="day"] body .btn-primary {
-
-  outline: none !important;
-  outline-width: 0 !important;
-
-}
-html[data-theme="day"] body .btn:hover, html[data-theme="day"] body .btn:focus-visible, html[data-theme="day"] body button:hover, html[data-theme="day"] body button:focus-visible, html[data-theme="day"] body [role="button"]:hover, html[data-theme="day"] body [role="button"]:focus-visible, html[data-theme="day"] body .btn-ghost:hover, html[data-theme="day"] body .btn-ghost:focus-visible, html[data-theme="day"] body .btn-primary:hover, html[data-theme="day"] body .btn-primary:focus-visible {
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
-  outline: none !important;
-  border-color: inherit !important;
-
-}
-html[data-theme="day"] body .controls .btn:not(.btn-primary):hover, html[data-theme="day"] body .controls .btn:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls button:not(.btn-primary):hover, html[data-theme="day"] body .controls button:not(.btn-primary):focus-visible {
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
-  border-color: inherit !important;
-  outline: none !important;
-
-}
-html[data-theme="day"] body .controls .btn:not(.btn-primary):hover, html[data-theme="day"] body .controls .btn:not(.btn-primary):focus-visible, html[data-theme="day"] body .controls button:not(.btn-primary):hover, html[data-theme="day"] body .controls button:not(.btn-primary):focus-visible {
-
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
-  border-color: inherit !important;
-  outline: none !important;
-  outline-color: transparent !important;
-
-}
 /* ═══════════════════════════════════════════════════════════════════
-   v54 ФИКСЫ (после split — перебивают его)
+   theme-day.css — ТОЛЬКО день (html[data-theme="day"])
+   Содержит только явно запрошенные фиксы. Остальное — style-v4.css.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ─── 1. Все кнопки: только soft shadow, без жёлтого/чёрного ─── */
-html[data-theme="day"] body .btn:hover,
-html[data-theme="day"] body .btn:focus-visible,
-html[data-theme="day"] body button:not([disabled]):not([aria-disabled="true"]):hover,
-html[data-theme="day"] body button:not([disabled]):not([aria-disabled="true"]):focus-visible,
-html[data-theme="day"] body [role="button"]:not([disabled]):not([aria-disabled="true"]):hover,
-html[data-theme="day"] body [role="button"]:not([disabled]):not([aria-disabled="true"]):focus-visible {
-  background: inherit !important;
-  background-color: inherit !important;
-  color: inherit !important;
-  border-color: inherit !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-  outline: none !important;
-}
-
-/* ─── 2. .btn-ghost — мягкая тень, БЕЗ жёлтой рамки ──────────── */
-html[data-theme="day"] body .btn.btn-ghost:hover,
-html[data-theme="day"] body .btn-ghost:hover,
-html[data-theme="day"] body .btn-ghost:focus-visible {
-  background: inherit !important;
-  color: inherit !important;
-  border-color: inherit !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-  outline: none !important;
-}
-
-/* ─── 3. .btn-primary — мягкая тень, без бело-жёлтого ────────── */
-html[data-theme="day"] body .btn.btn-primary:hover,
-html[data-theme="day"] body .btn-primary:hover,
-html[data-theme="day"] body .btn.btn-primary:focus-visible,
-html[data-theme="day"] body .btn-primary:focus-visible {
-  background: inherit !important;
-  background-color: inherit !important;
-  color: inherit !important;
-  border-color: inherit !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-  outline: none !important;
-}
-
-/* ─── 4. .dropdown — без жёлтой подсветки ────────────────────── */
-html[data-theme="day"] body .dropdown:hover,
-html[data-theme="day"] body .dropdown > .btn:hover,
-html[data-theme="day"] body .dropdown > button:hover,
-html[data-theme="day"] body .dropdown > [role="button"]:hover {
-  background: inherit !important;
-  border-color: inherit !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-  outline: none !important;
-}
-
-/* ─── 5. .controls — те же правила ───────────────────────────── */
-html[data-theme="day"] body .controls .btn:hover,
-html[data-theme="day"] body .controls .btn:focus-visible,
-html[data-theme="day"] body .controls .btn-ghost:hover,
-html[data-theme="day"] body .controls .btn-primary:hover,
-html[data-theme="day"] body .controls button:not([disabled]):hover,
-html[data-theme="day"] body .controls .dropdown > .btn:hover {
-  border-color: inherit !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-  outline: none !important;
-}
-
-/* ═══ v56: ДЕНЬ ═════════════════════════════════════════════════ */
-
-/* .controls — убрать тени */
-html[data-theme="day"] body .controls .btn:hover,
-html[data-theme="day"] body .controls .btn:focus,
-html[data-theme="day"] body .controls .btn:focus-visible,
-html[data-theme="day"] body .controls .btn:active,
-html[data-theme="day"] body .controls .btn-ghost:hover,
-html[data-theme="day"] body .controls .btn-ghost:focus,
-html[data-theme="day"] body .controls .btn-ghost:active,
-html[data-theme="day"] body .controls .btn-primary:hover,
-html[data-theme="day"] body .controls .btn-primary:focus-visible,
-html[data-theme="day"] body .controls > button:hover,
-html[data-theme="day"] body .controls > button:focus,
-html[data-theme="day"] body .controls > button:focus-visible,
-html[data-theme="day"] body .controls > button:active,
-html[data-theme="day"] body .controls > .btn:hover,
-html[data-theme="day"] body .controls > .btn:focus-visible,
-html[data-theme="day"] body .controls > [role="button"]:hover,
-html[data-theme="day"] body .controls .dropdown > .btn:hover,
-html[data-theme="day"] body .controls .dropdown > .btn:focus-visible {
+/* ─── 1. #btn-stop — КРАСНАЯ обводка изначально ──────────────────── */
+html[data-theme="day"] body #btn-stop:disabled,
+html[data-theme="day"] body #btn-stop[disabled],
+html[data-theme="day"] body #btn-stop {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  border: 2px solid #e63946 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #e63946 !important;
   box-shadow: none !important;
 }
-
-/* .btn-primary.is-busy (синтез идёт) — белый bg / красная рамка / красный текст */
-html[data-theme="day"] body .btn.btn-primary.is-busy,
-html[data-theme="day"] body .btn-primary.is-busy,
-html[data-theme="day"] body #btn-synth.is-busy {
-  background: #fff !important;
-  background-color: #fff !important;
-  background-image: none !important;
-  color: #d32f2f !important;
-  -webkit-text-fill-color: #d32f2f !important;
-  border: 2px solid #d32f2f !important;
-  border-color: #d32f2f !important;
-  box-shadow: none !important;
-  cursor: wait !important;
+html[data-theme="day"] body #btn-stop:disabled *,
+html[data-theme="day"] body #btn-stop[disabled] *,
+html[data-theme="day"] body #btn-stop * {
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
 }
-html[data-theme="day"] body .btn.btn-primary.is-busy > *,
-html[data-theme="day"] body .btn.btn-primary.is-busy svg,
-html[data-theme="day"] body .btn.btn-primary.is-busy svg *,
-html[data-theme="day"] body #btn-synth.is-busy > * {
-  color: #d32f2f !important;
-  -webkit-text-fill-color: #d32f2f !important;
+html[data-theme="day"] body #btn-stop:not([disabled]) {
+  background: #e63946 !important;
+  background-color: #e63946 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-color: #e63946 !important;
+}
+html[data-theme="day"] body #btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html[data-theme="day"] body #btn-stop:not([disabled]):hover,
+html[data-theme="day"] body #btn-stop:not([disabled]):focus-visible {
+  background: #f44336 !important;
+  border-color: #f44336 !important;
+  color: #fff !important;
+}
+
+/* ─── 2. #btn-synth.is-busy — треугольник КРАСНЫЙ ────────────────── */
+html[data-theme="day"] body #btn-synth.is-busy svg,
+html[data-theme="day"] body #btn-synth.is-busy svg path,
+html[data-theme="day"] body #btn-synth.is-busy svg *,
+html[data-theme="day"] body #btn-synth.is-busy > span {
   fill: #d32f2f !important;
   stroke: #d32f2f !important;
+  color: #d32f2f !important;
+  -webkit-text-fill-color: #d32f2f !important;
+  background: transparent !important;
 }
 
-/* .btn-ghost вне .controls — мягкая тень */
-html[data-theme="day"] body .btn-ghost:not(.controls *):hover,
-html[data-theme="day"] body .btn-ghost:not(.controls *):focus-visible {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v59: DAY .controls — ВЕРНУТЬ мягкую тень (не жёлтую)
-   Перебивает v56 (там было box-shadow: none)
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ─── 3. .controls кнопки — hover ЖЁЛТЫЙ контур ──────────────────── */
 html[data-theme="day"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):hover,
 html[data-theme="day"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):hover,
-html[data-theme="day"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
 html[data-theme="day"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):hover,
 html[data-theme="day"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls .btn-ghost:not([disabled]):not(.is-busy):hover,
-html[data-theme="day"] body .controls .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls .dropdown > .btn:not(.btn-primary):hover,
-html[data-theme="day"] body .controls .dropdown > .btn:not(.btn-primary):focus-visible,
 html[data-theme="day"] body .controls #btn-random:not([disabled]):hover,
+html[data-theme="day"] body .controls #btn-random:not([disabled]):focus-visible,
 html[data-theme="day"] body .controls #btn-clear-history:not([disabled]):hover,
+html[data-theme="day"] body .controls #btn-clear-history:not([disabled]):focus-visible,
+html[data-theme="day"] body .controls #btn-batch:not([disabled]):hover,
+html[data-theme="day"] body .controls #btn-batch:not([disabled]):focus-visible,
 html[data-theme="day"] body .controls #btn-stop:not([disabled]):hover {
-  background: inherit !important;
-  background-color: inherit !important;
-  color: inherit !important;
-  border-color: inherit !important;
+  border-color: #FFC72C !important;
   border-style: solid !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
-  outline: none !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v61: ДЕНЬ — жёлтые контуры, без теней, красный треугольник при синтезе
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. 3 кнопки .header-buttons — жёлтый контур при hover/active ─── */
-html[data-theme="day"] body .header-buttons > .btn:hover,
-html[data-theme="day"] body .header-buttons > .btn:focus-visible,
-html[data-theme="day"] body .header-buttons > .btn:active,
-html[data-theme="day"] body .header-buttons > button:hover,
-html[data-theme="day"] body .header-buttons > button:focus-visible,
-html[data-theme="day"] body .header-buttons > button:active,
-html[data-theme="day"] body .header-buttons > .icon-btn:hover,
-html[data-theme="day"] body .header-buttons > .icon-btn:focus-visible,
-html[data-theme="day"] body .header-buttons > .icon-btn:active,
-html[data-theme="day"] body .header-buttons #theme-toggle:hover,
-html[data-theme="day"] body .header-buttons #theme-toggle:focus-visible,
-html[data-theme="day"] body .header-buttons #theme-toggle:active,
-html[data-theme="day"] body .header-buttons #lang-toggle:hover,
-html[data-theme="day"] body .header-buttons #lang-toggle:focus-visible,
-html[data-theme="day"] body .header-buttons #lang-toggle:active,
-html[data-theme="day"] body .header-buttons #help-toggle:hover,
-html[data-theme="day"] body .header-buttons #help-toggle:focus-visible,
-html[data-theme="day"] body .header-buttons #help-toggle:active {
-  border-color: var(--gold, #FFC72C) !important;
-  color: var(--gold, #FFC72C) !important;
   box-shadow: none !important;
   outline: none !important;
 }
-html[data-theme="day"] body .header-buttons > *:hover svg,
-html[data-theme="day"] body .header-buttons > *:hover #theme-icon {
-  color: var(--gold, #FFC72C) !important;
-  fill: var(--gold, #FFC72C) !important;
-  stroke: var(--gold, #FFC72C) !important;
-}
 
-/* ─── 2. .btn-mic / .btn-sm — жёлтый контур при hover/active ────── */
-html[data-theme="day"] body .btn.btn-ghost.btn-sm:hover,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm:focus,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm:focus-visible,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm:active,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm.btn-mic:hover,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm.btn-mic:focus,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm.btn-mic:focus-visible,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm.btn-mic:active,
-html[data-theme="day"] body .btn-mic:hover,
-html[data-theme="day"] body .btn-mic:focus-visible,
-html[data-theme="day"] body .btn-mic:active {
-  border-color: var(--gold, #FFC72C) !important;
-  color: var(--gold, #FFC72C) !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-html[data-theme="day"] body .btn.btn-ghost.btn-sm:hover svg,
-html[data-theme="day"] body .btn.btn-ghost.btn-sm.btn-mic:hover svg {
-  color: var(--gold, #FFC72C) !important;
-  fill: var(--gold, #FFC72C) !important;
-  stroke: var(--gold, #FFC72C) !important;
-}
-
-/* ─── 3. Точки .jst-dot (жирные точки в кружочке для скромника) ── */
-/* Синий по умолчанию → жёлтый при hover/active */
-html[data-theme="day"] body .jst-dot,
-html[data-theme="day"] body .jst-btn-with-dot .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot .jst-dot {
-  background: #1a2a5e !important;
-  background-color: #1a2a5e !important;
-  background-image: radial-gradient(circle at center, #1a2a5e 0%, #1a2a5e 35%, #fff 42%, #fff 100%) !important;
+/* ─── 4. .jst-dot — синий → жёлтый при hover ─────────────────────── */
+html[data-theme="day"] body .jst-dot {
+  background: radial-gradient(circle at center, #1a2a5e 0%, #1a2a5e 35%, #fff 42%, #fff 100%) !important;
   border-color: #1a2a5e !important;
   transition: background 0.15s ease, border-color 0.15s ease !important;
 }
 html[data-theme="day"] body .jst-btn-with-dot:hover .jst-dot,
 html[data-theme="day"] body .jst-btn-with-dot:focus-visible .jst-dot,
 html[data-theme="day"] body .jst-btn-with-dot:active .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot:hover .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot:active .jst-dot,
 html[data-theme="day"] body button:hover .jst-dot,
-html[data-theme="day"] body button:active .jst-dot,
 html[data-theme="day"] body .jst-dot:hover {
-  background: var(--gold, #FFC72C) !important;
-  background-color: var(--gold, #FFC72C) !important;
-  background-image: radial-gradient(circle at center, var(--gold, #FFC72C) 0%, var(--gold, #FFC72C) 35%, #fff 42%, #fff 100%) !important;
-  border-color: var(--gold, #FFC72C) !important;
-}
-
-/* ─── 4. УБРАТЬ тени у .btn-ghost / .btn-primary / .btn в .controls ─ */
-html[data-theme="day"] body .btn.btn-ghost:hover,
-html[data-theme="day"] body .btn.btn-ghost:focus,
-html[data-theme="day"] body .btn.btn-ghost:focus-visible,
-html[data-theme="day"] body .btn.btn-ghost:active,
-html[data-theme="day"] body .btn.btn-primary:hover,
-html[data-theme="day"] body .btn.btn-primary:focus,
-html[data-theme="day"] body .btn.btn-primary:focus-visible,
-html[data-theme="day"] body .btn.btn-primary:active,
-html[data-theme="day"] body .btn.btn-primary,
-html[data-theme="day"] body .btn.btn-primary:not(.is-busy),
-html[data-theme="day"] body #btn-synth:not(.is-busy),
-html[data-theme="day"] body #btn-synth:not(.is-busy):hover,
-html[data-theme="day"] body #btn-synth:not(.is-busy):focus-visible {
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-/* Убираем затемнение (backdrop/background-image) у btn-primary */
-html[data-theme="day"] body .btn.btn-primary,
-html[data-theme="day"] body .btn.btn-primary:not(.is-busy),
-html[data-theme="day"] body #btn-synth:not(.is-busy) {
-  background-image: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ─── 5. id-кнопки — жёлтая рамка на hover/active/зажата ──────── */
-html[data-theme="day"] body #btn-random:hover,
-html[data-theme="day"] body #btn-random:focus,
-html[data-theme="day"] body #btn-random:focus-visible,
-html[data-theme="day"] body #btn-random:active,
-html[data-theme="day"] body #btn-random[aria-pressed="true"],
-html[data-theme="day"] body #btn-clear-history:hover,
-html[data-theme="day"] body #btn-clear-history:focus,
-html[data-theme="day"] body #btn-clear-history:focus-visible,
-html[data-theme="day"] body #btn-clear-history:active,
-html[data-theme="day"] body #btn-clear-history[aria-pressed="true"],
-html[data-theme="day"] body #btn-batch:hover,
-html[data-theme="day"] body #btn-batch:focus,
-html[data-theme="day"] body #btn-batch:focus-visible,
-html[data-theme="day"] body #btn-batch:active,
-html[data-theme="day"] body #btn-batch[aria-pressed="true"],
-html[data-theme="day"] body #history-dropdown:hover,
-html[data-theme="day"] body #history-dropdown:focus,
-html[data-theme="day"] body #history-dropdown:focus-visible,
-html[data-theme="day"] body #history-dropdown:active,
-html[data-theme="day"] body #history-dropdown.open,
-html[data-theme="day"] body #history-dropdown[aria-expanded="true"],
-html[data-theme="day"] body #dl-dropdown:hover,
-html[data-theme="day"] body #dl-dropdown:focus,
-html[data-theme="day"] body #dl-dropdown:focus-visible,
-html[data-theme="day"] body #dl-dropdown:active,
-html[data-theme="day"] body #dl-dropdown.open,
-html[data-theme="day"] body #dl-dropdown[aria-expanded="true"] {
-  border-color: var(--gold, #FFC72C) !important;
-  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
-  outline: none !important;
-}
-/* Дочерние .btn внутри dropdown */
-html[data-theme="day"] body #history-dropdown > .btn:hover,
-html[data-theme="day"] body #history-dropdown > .btn:focus-visible,
-html[data-theme="day"] body #dl-dropdown > .btn:hover,
-html[data-theme="day"] body #dl-dropdown > .btn:focus-visible {
-  border-color: var(--gold, #FFC72C) !important;
-  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
-}
-
-/* ─── 6. Треугольник (svg path) у btn-synth — КРАСНЫЙ пока is-busy ─ */
-html[data-theme="day"] body #btn-synth.is-busy svg,
-html[data-theme="day"] body #btn-synth.is-busy svg path,
-html[data-theme="day"] body #btn-synth.is-busy svg *,
-html[data-theme="day"] body .btn.btn-primary.is-busy svg,
-html[data-theme="day"] body .btn.btn-primary.is-busy svg path,
-html[data-theme="day"] body .btn.btn-primary.is-busy svg * {
-  fill: #d32f2f !important;
-  stroke: #d32f2f !important;
-  color: #d32f2f !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v62: ДЕНЬ — точечные фиксы
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. #btn-synth — убрать box-shadow 0 0 24px / 0 0 8px ────── */
-/* Перебиваем инжектированный :not(#p1)... паттерн */
-html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):hover,
-html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):focus,
-html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):active,
-html[data-theme="day"] body #btn-synth:hover,
-html[data-theme="day"] body #btn-synth:focus,
-html[data-theme="day"] body #btn-synth:focus-visible,
-html[data-theme="day"] body #btn-synth:active,
-html[data-theme="day"] body #btn-synth:not(.is-busy):hover {
-  box-shadow: none !important;
-  text-shadow: none !important;
-  outline: none !important;
-}
-
-/* ─── 2. #btn-random / #btn-batch — убрать box-shadow 0 0 18px ── */
-html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):hover,
-html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):focus,
-html[data-theme="day"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):active {
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-
-/* ─── 3. #history-dropdown / #dl-dropdown — hover меняет ЦВЕТ      */
-/*        существующего контура на жёлтый, БЕЗ нового box-shadow   */
-html[data-theme="day"] body #history-dropdown,
-html[data-theme="day"] body #history-dropdown > .btn,
-html[data-theme="day"] body #history-dropdown > button,
-html[data-theme="day"] body #dl-dropdown,
-html[data-theme="day"] body #dl-dropdown > .btn,
-html[data-theme="day"] body #dl-dropdown > button {
-  transition: border-color 0.15s ease !important;
-}
-html[data-theme="day"] body #history-dropdown:hover,
-html[data-theme="day"] body #history-dropdown:focus,
-html[data-theme="day"] body #history-dropdown:focus-visible,
-html[data-theme="day"] body #history-dropdown:active,
-html[data-theme="day"] body #history-dropdown.open,
-html[data-theme="day"] body #history-dropdown[aria-expanded="true"],
-html[data-theme="day"] body #history-dropdown > .btn:hover,
-html[data-theme="day"] body #history-dropdown > .btn:focus-visible,
-html[data-theme="day"] body #dl-dropdown:hover,
-html[data-theme="day"] body #dl-dropdown:focus,
-html[data-theme="day"] body #dl-dropdown:focus-visible,
-html[data-theme="day"] body #dl-dropdown:active,
-html[data-theme="day"] body #dl-dropdown.open,
-html[data-theme="day"] body #dl-dropdown[aria-expanded="true"],
-html[data-theme="day"] body #dl-dropdown > .btn:hover,
-html[data-theme="day"] body #dl-dropdown > .btn:focus-visible {
-  border-color: var(--gold, #FFC72C) !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v63: ДЕНЬ — жёлтый контур .controls, красный треугольник
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. .controls hover → ЖЁЛТЫЙ контур (перебиваем синий) ──── */
-html[data-theme="day"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):hover,
-html[data-theme="day"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):hover,
-html[data-theme="day"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):hover,
-html[data-theme="day"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
-html[data-theme="day"] body .controls #btn-random:not([disabled]):hover,
-html[data-theme="day"] body .controls #btn-random:not([disabled]):focus-visible,
-html[data-theme="day"] body .controls #btn-random:not([disabled]):active,
-html[data-theme="day"] body .controls #btn-clear-history:not([disabled]):hover,
-html[data-theme="day"] body .controls #btn-clear-history:not([disabled]):focus-visible,
-html[data-theme="day"] body .controls #btn-clear-history:not([disabled]):active,
-html[data-theme="day"] body .controls #btn-batch:not([disabled]):hover,
-html[data-theme="day"] body .controls #btn-batch:not([disabled]):focus-visible,
-html[data-theme="day"] body .controls #btn-batch:not([disabled]):active,
-html[data-theme="day"] body .controls #btn-stop:not([disabled]):hover,
-html[data-theme="day"] body .controls #btn-stop:not([disabled]):focus-visible {
-  border-color: #FFC72C !important;
-  border-style: solid !important;
-  box-shadow: none !important;
-  outline: none !important;
-  color: inherit !important;
-  background: inherit !important;
-}
-/* Дочерние элементы — текст/иконки тоже жёлтые */
-html[data-theme="day"] body .controls #btn-random:hover *,
-html[data-theme="day"] body .controls #btn-clear-history:hover *,
-html[data-theme="day"] body .controls #btn-batch:hover * {
-  color: #FFC72C !important;
-  fill: #FFC72C !important;
-  stroke: #FFC72C !important;
-}
-
-/* ─── 2. Треугольник в #btn-synth.is-busy — КРАСНЫЙ ──── */
-/* Перебиваем инжект :not(#p1) — красный только треугольник */
-html body #btn-synth.btn.btn-primary.is-busy svg,
-html body #btn-synth.btn.btn-primary.is-busy svg path,
-html body #btn-synth.btn.btn-primary.is-busy svg *,
-html[data-theme="day"] body #btn-synth.is-busy svg,
-html[data-theme="day"] body #btn-synth.is-busy svg path,
-html[data-theme="day"] body #btn-synth.is-busy svg * {
-  fill: #d32f2f !important;
-  stroke: #d32f2f !important;
-  color: #d32f2f !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v64: ДЕНЬ — жёлтые контуры, range жёлтый, splitter
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. .jst-dot (точка скролла в кружке) — синий → ЖЁЛТЫЙ ─── */
-/* Уже было в v61, но перебиваем синим из style-v4 */
-html[data-theme="day"] body .jst-dot,
-html[data-theme="day"] body .jst-btn-with-dot .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot .jst-dot,
-html[data-theme="day"] body button .jst-dot,
-html[data-theme="day"] body .btn .jst-dot {
-  background: #1a2a5e !important;
-  background-color: #1a2a5e !important;
-  background-image: radial-gradient(circle at center, #1a2a5e 0%, #1a2a5e 35%, #fff 42%, #fff 100%) !important;
-  border-color: #1a2a5e !important;
-  transition: background 0.15s ease, background-image 0.15s ease, border-color 0.15s ease !important;
-}
-html[data-theme="day"] body .jst-btn-with-dot:hover .jst-dot,
-html[data-theme="day"] body .jst-btn-with-dot:focus-visible .jst-dot,
-html[data-theme="day"] body .jst-btn-with-dot:active .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot:hover .jst-dot,
-html[data-theme="day"] body .btn-ghost.jst-btn-with-dot:active .jst-dot,
-html[data-theme="day"] body button:hover .jst-dot,
-html[data-theme="day"] body button:focus-visible .jst-dot,
-html[data-theme="day"] body button:active .jst-dot,
-html[data-theme="day"] body .btn:hover .jst-dot,
-html[data-theme="day"] body .jst-dot:hover,
-html[data-theme="day"] body .jst-dot:active {
-  background: #FFC72C !important;
-  background-color: #FFC72C !important;
-  background-image: radial-gradient(circle at center, #FFC72C 0%, #FFC72C 35%, #fff 42%, #fff 100%) !important;
+  background: radial-gradient(circle at center, #FFC72C 0%, #FFC72C 35%, #fff 42%, #fff 100%) !important;
   border-color: #FFC72C !important;
 }
 
-/* ─── 2. #btn-stt (class="btn-mic") — синий → ЖЁЛТЫЙ при hover ─── */
-html[data-theme="day"] body #btn-stt,
-html[data-theme="day"] body #btn-stt.btn-mic,
-html[data-theme="day"] body .btn-mic#btn-stt {
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease !important;
+/* ─── 5. #btn-stt — синий → жёлтый при hover ─────────────────────── */
+html[data-theme="day"] body #btn-stt {
+  transition: color 0.15s ease, border-color 0.15s ease !important;
 }
 html[data-theme="day"] body #btn-stt:hover,
-html[data-theme="day"] body #btn-stt:focus,
 html[data-theme="day"] body #btn-stt:focus-visible,
-html[data-theme="day"] body #btn-stt:active,
-html[data-theme="day"] body .btn-mic#btn-stt:hover,
-html[data-theme="day"] body .btn-mic#btn-stt:active {
+html[data-theme="day"] body #btn-stt:active {
   border-color: #FFC72C !important;
   color: #FFC72C !important;
   background: transparent !important;
-  background-color: transparent !important;
   box-shadow: none !important;
-  outline: none !important;
 }
 html[data-theme="day"] body #btn-stt:hover svg,
 html[data-theme="day"] body #btn-stt:hover svg *,
-html[data-theme="day"] body #btn-stt:hover i,
-html[data-theme="day"] body #btn-stt:hover #mic-icon,
-html[data-theme="day"] body #btn-stt:hover #mic-icon *,
-html[data-theme="day"] body #btn-stt:hover .mic-icon {
+html[data-theme="day"] body #btn-stt:hover i {
   color: #FFC72C !important;
   fill: #FFC72C !important;
   stroke: #FFC72C !important;
 }
 
-/* ─── 3. .batch-submit — контур синий → ЖЁЛТЫЙ при hover ─────── */
-html[data-theme="day"] body .batch-submit,
-html[data-theme="day"] body button.batch-submit,
-html[data-theme="day"] body .btn.batch-submit {
+/* ─── 6. .batch-submit — hover жёлтый контур ─────────────────────── */
+html[data-theme="day"] body .batch-submit {
   transition: border-color 0.15s ease, color 0.15s ease !important;
 }
 html[data-theme="day"] body .batch-submit:hover,
-html[data-theme="day"] body .batch-submit:focus,
 html[data-theme="day"] body .batch-submit:focus-visible,
-html[data-theme="day"] body .batch-submit:active,
-html[data-theme="day"] body button.batch-submit:hover,
-html[data-theme="day"] body button.batch-submit:active {
+html[data-theme="day"] body .batch-submit:active {
   border-color: #FFC72C !important;
   color: #FFC72C !important;
   box-shadow: none !important;
-  outline: none !important;
 }
 html[data-theme="day"] body .batch-submit:hover *,
-html[data-theme="day"] body .batch-submit:hover svg,
-html[data-theme="day"] body .batch-submit:hover svg * {
+html[data-theme="day"] body .batch-submit:hover svg {
   color: #FFC72C !important;
   fill: #FFC72C !important;
   stroke: #FFC72C !important;
 }
 
-/* ─── 4. input[type="range"] — полупрозрачно-жёлтый ──────────── */
+/* ─── 7. .carousel-btn prev/next — синий → жёлтый при hover ──────── */
+html[data-theme="day"] body .carousel-btn {
+  transition: color 0.15s ease, border-color 0.15s ease !important;
+}
+html[data-theme="day"] body .carousel-btn:hover,
+html[data-theme="day"] body .carousel-btn:focus-visible,
+html[data-theme="day"] body .carousel-btn:active {
+  color: #FFC72C !important;
+  border-color: #FFC72C !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html[data-theme="day"] body .carousel-btn:hover svg {
+  color: #FFC72C !important;
+  fill: #FFC72C !important;
+  stroke: #FFC72C !important;
+}
+
+/* ─── 8. .splitter-h — blur → жёлтый при hover ──────────────────── */
+html[data-theme="day"] body .main > .splitter-h {
+  background: rgba(255, 255, 255, 0.25) !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(8px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.2) !important;
+  border-left: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+html[data-theme="day"] body .main > .splitter-h:hover,
+html[data-theme="day"] body .main > .splitter-h.dragging,
+html[data-theme="day"] body .main > .splitter-h:focus,
+html[data-theme="day"] body .main > .splitter-h:active {
+  background: rgba(245, 184, 0, 0.45) !important;
+  background-color: rgba(245, 184, 0, 0.45) !important;
+  border-left-color: rgba(245, 184, 0, 0.75) !important;
+  border-right-color: rgba(245, 184, 0, 0.75) !important;
+}
+
+/* ─── 9. range — полупрозрачно-жёлтый (только в day) ─────────────── */
 html[data-theme="day"] body input[type="range"] {
   accent-color: rgba(255, 199, 44, 0.6) !important;
 }
@@ -595,6 +177,11 @@ html[data-theme="day"] body input[type="range"]::-webkit-slider-thumb {
   background-color: rgba(255, 199, 44, 0.7) !important;
   border: 1px solid rgba(255, 199, 44, 0.9) !important;
   -webkit-appearance: none !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  margin-top: -4.5px !important;
+  box-sizing: border-box !important;
 }
 html[data-theme="day"] body input[type="range"]::-moz-range-track {
   background: rgba(255, 199, 44, 0.45) !important;
@@ -603,155 +190,19 @@ html[data-theme="day"] body input[type="range"]::-moz-range-thumb {
   background: rgba(255, 199, 44, 0.7) !important;
 }
 
-/* ─── 5. .splitter-h — полупрозрачный → ЖЁЛТЫЙ при hover ────── */
-html[data-theme="day"] body .main > .splitter-h {
-  background: linear-gradient(90deg,
-    rgba(0,0,0,0.05) 0%,
-    rgba(0,0,0,0.15) 50%,
-    rgba(0,0,0,0.05) 100%) !important;
-  border-left-color: rgba(0,0,0,0.08) !important;
-  border-right-color: rgba(0,0,0,0.08) !important;
-  transition: background 0.2s ease, border-color 0.2s ease !important;
-}
-html[data-theme="day"] body .main > .splitter-h:hover,
-html[data-theme="day"] body .main > .splitter-h.dragging,
-html[data-theme="day"] body .main > .splitter-h:focus,
-html[data-theme="day"] body .main > .splitter-h:active {
-  background: linear-gradient(90deg,
-    rgba(255, 199, 44, 0.3) 0%,
-    rgba(255, 199, 44, 0.6) 50%,
-    rgba(255, 199, 44, 0.3) 100%) !important;
-  border-left-color: rgba(255, 199, 44, 0.7) !important;
-  border-right-color: rgba(255, 199, 44, 0.7) !important;
-}
-html[data-theme="day"] body .main > .splitter-h:hover::before,
-html[data-theme="day"] body .main > .splitter-h.dragging::before {
-  background-image: radial-gradient(circle, #FFC72C 1.5px, transparent 1.5px) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v65: ДЕНЬ
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. carousel-btn prev/next — синий → жёлтый при hover ───── */
-html[data-theme="day"] body .carousel-btn,
-html[data-theme="day"] body .carousel-btn.prev,
-html[data-theme="day"] body .carousel-btn.next {
-  transition: color 0.15s ease, border-color 0.15s ease !important;
-}
-html[data-theme="day"] body .carousel-btn:hover,
-html[data-theme="day"] body .carousel-btn:focus,
-html[data-theme="day"] body .carousel-btn:focus-visible,
-html[data-theme="day"] body .carousel-btn:active,
-html[data-theme="day"] body .carousel-btn.prev:hover,
-html[data-theme="day"] body .carousel-btn.prev:focus,
-html[data-theme="day"] body .carousel-btn.prev:active,
-html[data-theme="day"] body .carousel-btn.next:hover,
-html[data-theme="day"] body .carousel-btn.next:focus,
-html[data-theme="day"] body .carousel-btn.next:active {
-  color: var(--gold, #F5B800) !important;
-  border-color: var(--gold, #F5B800) !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-html[data-theme="day"] body .carousel-btn:hover svg,
-html[data-theme="day"] body .carousel-btn:hover svg * {
-  color: var(--gold, #F5B800) !important;
-  fill: var(--gold, #F5B800) !important;
-  stroke: var(--gold, #F5B800) !important;
-}
-
-/* ─── 2. .splitter-h — BLUR как туман → жёлтый при hover ─────── */
-html[data-theme="day"] body .main > .splitter-h {
-  background: rgba(255, 255, 255, 0.25) !important;
-  background-color: rgba(255, 255, 255, 0.25) !important;
-  backdrop-filter: blur(8px) saturate(1.2) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(1.2) !important;
-  border-left: 1px solid rgba(0, 0, 0, 0.06) !important;
-  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
-  transition: background 0.2s ease, backdrop-filter 0.2s ease, border-color 0.2s ease !important;
-}
-html[data-theme="day"] body .main > .splitter-h:hover,
-html[data-theme="day"] body .main > .splitter-h.dragging,
-html[data-theme="day"] body .main > .splitter-h:focus,
-html[data-theme="day"] body .main > .splitter-h:active {
-  background: rgba(245, 184, 0, 0.45) !important;
-  background-color: rgba(245, 184, 0, 0.45) !important;
-  backdrop-filter: blur(8px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(1.4) !important;
-  border-left-color: rgba(245, 184, 0, 0.75) !important;
-  border-right-color: rgba(245, 184, 0, 0.75) !important;
-}
-html[data-theme="day"] body .main > .splitter-h::before {
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.4) 1.5px, transparent 1.5px) !important;
-}
-html[data-theme="day"] body .main > .splitter-h:hover::before,
-html[data-theme="day"] body .main > .splitter-h.dragging::before {
-  background-image: radial-gradient(circle, var(--gold, #F5B800) 1.5px, transparent 1.5px) !important;
-}
-
-/* ─── 3. Треугольник #btn-synth при is-busy — ПОЛНОСТЬЮ КРАСНЫЙ ─ */
-/* Юзер: "весь красным" — значит fill+stroke красный, не только обводка */
-html[data-theme="day"] body #btn-synth.is-busy svg,
-html[data-theme="day"] body #btn-synth.is-busy svg path,
-html[data-theme="day"] body #btn-synth.is-busy svg *,
-html body #btn-synth.btn.btn-primary.is-busy svg,
-html body #btn-synth.btn.btn-primary.is-busy svg path,
-html body #btn-synth.btn.btn-primary.is-busy svg * {
-  fill: #d32f2f !important;
-  stroke: #d32f2f !important;
-  color: #d32f2f !important;
-  background: transparent !important;
-}
-/* Дочерние span (текст) — тоже красные */
-html[data-theme="day"] body #btn-synth.is-busy > span {
-  color: #d32f2f !important;
-  -webkit-text-fill-color: #d32f2f !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v66: ДЕНЬ — btn-stop красная обводка
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── #btn-stop изначально — КРАСНАЯ обводка ────────────────── */
-html[data-theme="day"] body #btn-stop:disabled,
-html[data-theme="day"] body #btn-stop[disabled],
-html[data-theme="day"] body #btn-stop:not([disabled]),
-html[data-theme="day"] body #btn-stop,
-html[data-theme="day"] body .controls #btn-stop {
-  background: transparent !important;
-  background-color: transparent !important;
-  color: #e63946 !important;
-  -webkit-text-fill-color: #e63946 !important;
-  border: 2px solid #e63946 !important;
-  border-style: solid !important;
-  border-width: 2px !important;
-  border-color: #e63946 !important;
+/* ─── 10. #theme-toggle в day — hover жёлтый контур ─────────────── */
+html[data-theme="day"] body #theme-toggle:hover,
+html[data-theme="day"] body #theme-toggle:focus-visible,
+html[data-theme="day"] body #theme-toggle:active {
+  border-color: #FFC72C !important;
+  color: #FFC72C !important;
   box-shadow: none !important;
 }
-html[data-theme="day"] body #btn-stop:disabled *,
-html[data-theme="day"] body #btn-stop[disabled] *,
-html[data-theme="day"] body #btn-stop:not([disabled]) * {
-  color: #e63946 !important;
-  -webkit-text-fill-color: #e63946 !important;
-}
-/* Когда enabled — красная заливка */
-html[data-theme="day"] body #btn-stop:not([disabled]) {
-  background: #e63946 !important;
-  background-color: #e63946 !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border-color: #e63946 !important;
-}
-html[data-theme="day"] body #btn-stop:not([disabled]) * {
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-}
-/* hover — светлее */
-html[data-theme="day"] body #btn-stop:not([disabled]):hover,
-html[data-theme="day"] body #btn-stop:not([disabled]):focus-visible {
-  background: #f44336 !important;
-  border-color: #f44336 !important;
-  color: #fff !important;
+html[data-theme="day"] body #theme-toggle:hover #theme-icon,
+html[data-theme="day"] body #theme-toggle:hover svg,
+html[data-theme="day"] body #theme-toggle:hover #theme-mode-badge {
+  color: #FFC72C !important;
+  fill: #FFC72C !important;
+  stroke: #FFC72C !important;
+  -webkit-text-fill-color: #FFC72C !important;
 }

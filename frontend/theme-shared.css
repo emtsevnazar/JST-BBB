@@ -1,471 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════════
-   theme-shared.css — глобальные правила для всех тем
+   theme-shared.css — ОБЩЕЕ для всех тем
+   Только то что пользователь явно просил для ВСЕХ тем.
+   Ничего theme-specific здесь НЕТ.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ─── A. #theme-toggle 44×44 (40×40 на мобилке) ───────────────── */
-html body #theme-toggle,
-html body #themeToggle {
-  display: inline-flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 1px !important;
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
-  max-width: 44px !important;
-  max-height: 44px !important;
-  padding: 3px 2px !important;
-  box-sizing: border-box !important;
-  border-radius: 10px !important;
-  line-height: 1 !important;
-  text-align: center !important;
-  overflow: hidden !important;
-}
-html body #theme-toggle #theme-icon,
-html body #theme-toggle > svg {
-  font-size: 18px !important;
-  line-height: 1 !important;
-  display: block !important;
-  flex-shrink: 0 !important;
-}
-html body #theme-toggle #theme-mode-badge,
-html body #theme-toggle .theme-mode-badge {
-  display: block !important;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  text-align: center !important;
-  color: inherit !important;
-  margin: 1px 0 0 0 !important;
-  padding: 0 !important;
-  letter-spacing: 0.1px !important;
-  white-space: nowrap !important;
-  flex-shrink: 0 !important;
-}
-@media (max-width: 900px) {
-  html body #theme-toggle,
-  html body #themeToggle {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-    padding: 2px 1px !important;
-  }
-  html body #theme-toggle #theme-icon { font-size: 16px !important; }
-  html body #theme-toggle #theme-mode-badge,
-  html body #theme-toggle .theme-mode-badge { font-size: 8px !important; }
-}
-
-/* ─── B. Убиваем ЛЮБЫЕ старые THEME/ТЕМА псевдоэлементы ───────── */
-/* specificity (0,0,2,2) + последним → перебьёт split shared/day/night/bw */
-html body #theme-toggle::before,
-html body #theme-toggle::after,
-html body #themeToggle::before,
-html body #themeToggle::after {
-  content: none !important;
-  display: none !important;
-}
-
-/* ─── C. #accent-grid 135×38 ──────────────────────────────────── */
-html body #accent-grid .accent-card,
-html body #accent-grid button,
-html body #accent-grid [role="button"] {
-  min-width: 135px !important;
-  width: 135px !important;
-  min-height: 38px !important;
-  height: 38px !important;
-  max-height: 38px !important;
-  padding: 4px 8px !important;
-  box-sizing: border-box !important;
-}
-
-/* ─── D. .icon-btn 40×40 при <=900px ──────────────────────────── */
-@media (max-width: 900px) {
-  html body .icon-btn {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-  }
-}
-
-/* ─── E. TOAST/POPUP над footer, полупрозрачный + blur ────────── */
-html body #toast,
-html body .toast,
-html body .toast.show,
-html body .toast.toast-error,
-html body .jst-toast,
-html body [role="alert"]:not(#status-text),
-html body [role="status"]:not(#status-text) {
-  position: fixed !important;
-  bottom: 80px !important;
-  left: 50% !important;
-  right: auto !important;
-  top: auto !important;
-  transform: translateX(-50%) !important;
-  z-index: 99999 !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(20px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
-  padding: 10px 20px !important;
-  color: inherit !important;
-  font-size: 13px !important;
-  max-width: 340px !important;
-  min-width: 120px !important;
-  text-align: center !important;
-  margin: 0 !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-}
-html body #toast.show,
-html body .toast.show {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-html[data-theme="night"] body #toast,
-html[data-theme="night"] body .toast,
-html[data-theme="night"] body .toast.show {
-  background: rgba(13, 26, 63, 0.7) !important;
-  background-color: rgba(13, 26, 63, 0.7) !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
-  color: #fff !important;
-}
-html[data-theme="contrast"] body #toast,
-html[data-theme="contrast"] body .toast,
-html[data-theme="contrast"] body .toast.show {
-  background: #fff !important;
-  background-color: #fff !important;
-  border: 2px solid #000 !important;
-  color: #000 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: 4px 4px 0 #000 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v56: .splitter-h БАЗОВЫЕ стили для ВСЕХ тем (day/night/auto/time/bw)
-   ═══════════════════════════════════════════════════════════════════ */
-
-@media (min-width: 901px) {
-  body .main {
-    display: grid !important;
-    grid-template-columns: var(--jst-sidebar-w, 350px) 8px 1fr !important;
-    grid-template-rows: 1fr !important;
-    gap: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    position: relative !important;
-  }
-  body .main > .sidebar {
-    grid-row: 1 !important;
-    grid-column: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-  }
-  body .main > .workspace {
-    grid-row: 1 !important;
-    grid-column: 3 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  body .main > .splitter-h {
-    display: flex !important;
-    grid-row: 1 !important;
-    grid-column: 2 !important;
-    width: 8px !important;
-    min-width: 8px !important;
-    max-width: 8px !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    cursor: col-resize !important;
-    align-items: center !important;
-    justify-content: center !important;
-    touch-action: none !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    position: relative !important;
-    z-index: 5 !important;
-    box-sizing: border-box !important;
-    background: linear-gradient(90deg,
-      rgba(0,0,0,0.05) 0%,
-      rgba(0,0,0,0.15) 50%,
-      rgba(0,0,0,0.05) 100%) !important;
-    border-left: 1px solid rgba(0,0,0,0.08) !important;
-    border-right: 1px solid rgba(0,0,0,0.08) !important;
-  }
-  body .main > .splitter-h::before {
-    content: '' !important;
-    display: block !important;
-    height: 40px !important;
-    width: 4px !important;
-    background-image: radial-gradient(circle, rgba(0,0,0,0.55) 1.5px, transparent 1.5px) !important;
-    background-size: 4px 8px !important;
-    background-position: center !important;
-    background-repeat: repeat-y !important;
-    border-radius: 2px !important;
-    pointer-events: none !important;
-  }
-  body .main > .splitter-h:hover {
-    background: linear-gradient(90deg,
-      rgba(0,0,0,0.10) 0%,
-      rgba(0,0,0,0.28) 50%,
-      rgba(0,0,0,0.10) 100%) !important;
-  }
-  body .main > .splitter-h.dragging {
-    background: linear-gradient(90deg,
-      rgba(0,0,0,0.25) 0%,
-      rgba(0,0,0,0.45) 50%,
-      rgba(0,0,0,0.25) 100%) !important;
-  }
-}
-@media (max-width: 900px) {
-  body .main > .splitter-h {
-    display: none !important;
-  }
-}
-
-/* ─── Ошибки: красный фон / жёлтый текст (day/night/auto/time) ── */
-html:not([data-theme="contrast"]) body #toast.toast-error,
-html:not([data-theme="contrast"]) body .toast.toast-error,
-html:not([data-theme="contrast"]) body #toast.toast-error.show,
-html:not([data-theme="contrast"]) body .toast.toast-error.show {
-  background: #d32f2f !important;
-  background-color: #d32f2f !important;
-  color: #FFC72C !important;
-  -webkit-text-fill-color: #FFC72C !important;
-  border: 1px solid #FFC72C !important;
-  font-weight: 600 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v57: TOAST — универсальные (красный bg / жёлтый текст для ошибок)
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* Базовый toast — полупрозрачный + blur */
-html body #toast,
-html body .toast {
-  position: fixed !important;
-  bottom: 80px !important;
-  left: 50% !important;
-  right: auto !important;
-  top: auto !important;
-  transform: translateX(-50%) !important;
-  z-index: 99999 !important;
-  border-radius: 16px !important;
-  padding: 12px 22px !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  max-width: 360px !important;
-  min-width: 140px !important;
-  text-align: center !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.25s ease, visibility 0.25s !important;
-  white-space: pre-line !important;
-}
-html body #toast.show,
-html body .toast.show {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* day/auto/time — обычный toast (нейтральный) */
-html:not([data-theme="contrast"]):not([data-theme="night"]) body #toast,
-html:not([data-theme="contrast"]):not([data-theme="night"]) body .toast {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: #1a2a5e !important;
-  border: 1px solid rgba(0,0,0,0.1) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
-  backdrop-filter: blur(20px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
-}
-
-/* night — обычный toast тёмный */
-html[data-theme="night"] body #toast,
-html[data-theme="night"] body .toast {
-  background: rgba(13, 26, 63, 0.75) !important;
-  color: #fff !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
-  backdrop-filter: blur(20px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
-}
-
-/* contrast — toast чёрный на белом */
-html[data-theme="contrast"] body #toast,
-html[data-theme="contrast"] body .toast {
-  background: #fff !important;
-  color: #000 !important;
-  border: 2px solid #000 !important;
-  box-shadow: 4px 4px 0 #000 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* ⚠️ ОШИБКИ — красный фон / жёлтый текст (day/night/auto/time) */
-html:not([data-theme="contrast"]) body #toast.toast-error,
-html:not([data-theme="contrast"]) body #toast.toast-error.show,
-html:not([data-theme="contrast"]) body .toast.toast-error,
-html:not([data-theme="contrast"]) body .toast.toast-error.show,
-html:not([data-theme="contrast"]) body .toast-error,
-html:not([data-theme="contrast"]) body [role="alert"].toast-error {
-  background: #d32f2f !important;
-  background-color: #d32f2f !important;
-  color: #FFC72C !important;
-  -webkit-text-fill-color: #FFC72C !important;
-  border: 1.5px solid #FFC72C !important;
-  box-shadow: 0 8px 32px rgba(211, 47, 47, 0.4) !important;
-  backdrop-filter: blur(20px) saturate(1.4) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
-  font-weight: 700 !important;
-}
-
-/* ⚠️ ОШИБКИ в Ч/Б — инверсия (чёрный bg / белый текст) */
-html[data-theme="contrast"] body #toast.toast-error,
-html[data-theme="contrast"] body #toast.toast-error.show,
-html[data-theme="contrast"] body .toast.toast-error,
-html[data-theme="contrast"] body .toast-error {
-  background: #000 !important;
-  background-color: #000 !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border: 2px solid #000 !important;
-  box-shadow: 4px 4px 0 #000 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v59: ВСЕ TOAST — красный bg / жёлтый text / ⚠️ через CSS
-   Перебивает всё предыдущее (v57, style-v4 и т.д.)
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── Day / Auto / Time / Night — КРАСНЫЙ + ЖЁЛТЫЙ ──────────────── */
-html:not([data-theme="contrast"]) body #toast,
-html:not([data-theme="contrast"]) body #toast.show,
-html:not([data-theme="contrast"]) body #toast.toast-error,
-html:not([data-theme="contrast"]) body #toast.toast-error.show,
-html:not([data-theme="contrast"]) body .toast,
-html:not([data-theme="contrast"]) body .toast.show,
-html:not([data-theme="contrast"]) body .toast.toast-error,
-html:not([data-theme="contrast"]) body .toast.toast-error.show,
-html:not([data-theme="contrast"]) body [role="alert"],
-html:not([data-theme="contrast"]) body [role="status"].toast {
-  background: #d32f2f !important;
-  background-color: #d32f2f !important;
-  background-image: none !important;
-  color: #FFC72C !important;
-  -webkit-text-fill-color: #FFC72C !important;
-  border: 1.5px solid #FFC72C !important;
-  border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(211, 47, 47, 0.5) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  font-weight: 700 !important;
-  padding: 12px 22px 12px 40px !important;
-  font-size: 14px !important;
-  position: fixed !important;
-  bottom: 80px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  max-width: 380px !important;
-  min-width: 140px !important;
-  text-align: center !important;
-  z-index: 99999 !important;
-  pointer-events: none !important;
-}
-
-/* ⚠️ через ::before */
-html:not([data-theme="contrast"]) body #toast::before,
-html:not([data-theme="contrast"]) body .toast::before,
-html:not([data-theme="contrast"]) body [role="alert"]::before {
-  content: "⚠" !important;
-  display: inline-block !important;
-  position: absolute !important;
-  left: 16px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  color: #FFC72C !important;
-  -webkit-text-fill-color: #FFC72C !important;
-  font-size: 18px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-}
-
-/* ─── Contrast — инвертированный (чёрный bg / белый текст) ───── */
-html[data-theme="contrast"] body #toast,
-html[data-theme="contrast"] body #toast.show,
-html[data-theme="contrast"] body #toast.toast-error,
-html[data-theme="contrast"] body #toast.toast-error.show,
-html[data-theme="contrast"] body .toast,
-html[data-theme="contrast"] body .toast.show,
-html[data-theme="contrast"] body .toast.toast-error,
-html[data-theme="contrast"] body [role="alert"] {
-  background: #000 !important;
-  background-color: #000 !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border: 2px solid #fff !important;
-  box-shadow: 4px 4px 0 #fff !important;
-  backdrop-filter: none !important;
-  font-weight: 700 !important;
-  padding: 12px 22px 12px 40px !important;
-  position: fixed !important;
-  bottom: 80px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  max-width: 380px !important;
-  min-width: 140px !important;
-  text-align: center !important;
-  z-index: 99999 !important;
-  border-radius: 16px !important;
-  pointer-events: none !important;
-}
-html[data-theme="contrast"] body #toast::before,
-html[data-theme="contrast"] body .toast::before {
-  content: "⚠" !important;
-  display: inline-block !important;
-  position: absolute !important;
-  left: 16px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  font-size: 18px !important;
-  font-weight: 900 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v61: ОБЩИЕ — круглые кнопки во всех темах
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. 3 кнопки в .header-buttons — все круглые 50×50 (45×45 mobile) ─── */
+/* ─── 1. .header-buttons — круглые 50×50 / 45×45 ─────────────────── */
 html body .header-buttons > .btn,
 html body .header-buttons > button,
 html body .header-buttons > .icon-btn,
@@ -507,181 +46,9 @@ html body .header-buttons > * {
     max-height: 45px !important;
   }
 }
+html body .header-buttons > * > svg { width: 22px !important; height: 22px !important; }
 
-/* Иконки/бейджи внутри круглых — пропорционально */
-html body .header-buttons > * > svg {
-  width: 22px !important;
-  height: 22px !important;
-}
-html body .header-buttons > * > #theme-icon,
-html body .header-buttons > * > span:not(#theme-mode-badge) {
-  font-size: 20px !important;
-  line-height: 1 !important;
-}
-html body .header-buttons > * > #theme-mode-badge {
-  font-size: 8px !important;
-  position: absolute !important;
-  bottom: 4px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-}
-
-/* ─── 2. .btn-mic — КРУГЛАЯ, размер как btn-sm ─────────────────── */
-html body .btn.btn-ghost.btn-sm.btn-mic,
-html body .btn-mic {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  min-height: 38px !important;
-  max-width: 38px !important;
-  max-height: 38px !important;
-  border-radius: 50% !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  aspect-ratio: 1 / 1 !important;
-  margin: 0 !important;
-  vertical-align: middle !important;
-}
-@media (max-width: 900px) {
-  html body .btn.btn-ghost.btn-sm.btn-mic,
-  html body .btn-mic {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-    min-height: 34px !important;
-    max-width: 34px !important;
-    max-height: 34px !important;
-  }
-}
-
-/* .btn-sm и .btn-mic на одном уровне (align-items: center + одинаковая height) */
-html body .btn.btn-ghost.btn-sm:not(.btn-mic) {
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  vertical-align: middle !important;
-  margin: 0 !important;
-}
-html body .btn.btn-ghost.btn-sm:not(.btn-mic) + .btn.btn-ghost.btn-sm.btn-mic,
-html body .btn.btn-ghost.btn-sm + .btn-mic,
-html body .btn-mic + .btn.btn-ghost.btn-sm {
-  margin-left: 6px !important;
-}
-
-/* ─── 3. Плеер — изначально скрыт, если нет audio ─────────────── */
-html body .jst-player:not([data-has-audio="true"]):not([data-playing="true"]) {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-html body .jst-player.visible[data-has-audio="true"],
-html body .jst-player.visible[data-playing="true"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v62: ОБЩИЕ ФИКСЫ
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. Убираем padding-right: 52px у кнопок-триггеров dropdown ─── */
-html body #btn-download-toggle,
-html body #history-dropdown > .btn,
-html body #history-dropdown > button,
-html body #dl-dropdown > .btn,
-html body #dl-dropdown > button,
-html body .dropdown > .btn,
-html body .dropdown > button {
-  padding-right: initial !important;
-}
-
-/* ─── 2. #theme-toggle — круг с текстом ВНУТРИ (все темы) ─────── */
-/* Отключаем ::before/::after круг + текст под ним */
-html body #theme-toggle::before,
-html body #themeToggle::before {
-  content: none !important;
-  display: none !important;
-}
-html body #theme-toggle::after,
-html body #themeToggle::after {
-  content: none !important;
-  display: none !important;
-}
-/* Внутри кнопки текст = #theme-mode-badge (создаётся JS) */
-html body #theme-toggle #theme-mode-badge,
-html body #theme-toggle .theme-mode-badge {
-  font-size: 8px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  color: inherit !important;
-  position: static !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: inline-block !important;
-  text-align: center !important;
-  transform: none !important;
-}
-/* Кнопка = круг, текст внутри по центру */
-html body #theme-toggle,
-html body #themeToggle {
-  display: inline-flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 50px !important;
-  height: 50px !important;
-  min-width: 50px !important;
-  min-height: 50px !important;
-  max-width: 50px !important;
-  max-height: 50px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-}
-html body #theme-toggle #theme-icon,
-html body #theme-toggle > svg {
-  display: none !important;
-}
-@media (max-width: 900px) {
-  html body #theme-toggle,
-  html body #themeToggle {
-    width: 45px !important;
-    height: 45px !important;
-    min-width: 45px !important;
-    min-height: 45px !important;
-    max-width: 45px !important;
-    max-height: 45px !important;
-  }
-  html body #theme-toggle #theme-mode-badge,
-  html body #theme-toggle .theme-mode-badge {
-    font-size: 7px !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   v63: ОБЩИЕ
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. ВЕРНУТЬ padding-right: 52px (v62 убрал — ломало dropdown) ─ */
-html body #btn-download-toggle,
-html body #history-dropdown > .btn,
-html body #history-dropdown > button,
-html body #dl-dropdown > .btn,
-html body #dl-dropdown > button,
-html body .dropdown > .btn,
-html body .dropdown > button {
-  padding-right: 52px !important;
-}
-
-/* ─── 2. #theme-toggle — КРУГ с иконкой + текст внутри по контуру 8px ─ */
-/* Сбрасываем старое v62 (content: none) и возвращаем иконку */
+/* ─── 2. #theme-toggle — 44×44 / 40×40, текст B&W/Ч/Б снизу 8px ──── */
 html body #theme-toggle,
 html body #themeToggle {
   display: inline-flex !important;
@@ -699,9 +66,7 @@ html body #themeToggle {
   border-radius: 50% !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
-  transition: border-color 0.15s ease, color 0.15s ease !important;
 }
-/* Иконка внутри (SVG или span) — ВИДИМА */
 html body #theme-toggle #theme-icon,
 html body #theme-toggle > svg,
 html body #theme-toggle > i {
@@ -715,13 +80,6 @@ html body #theme-toggle > i {
   fill: currentColor !important;
   stroke: currentColor !important;
 }
-/* Убираем ::before/::after (полукруг) */
-html body #theme-toggle::before,
-html body #theme-toggle::after {
-  content: none !important;
-  display: none !important;
-}
-/* Текст B&W/Ч/Б — ВНУТРИ по контуру, 8px */
 html body #theme-toggle #theme-mode-badge,
 html body #theme-toggle .theme-mode-badge {
   display: block !important;
@@ -737,8 +95,7 @@ html body #theme-toggle .theme-mode-badge {
   white-space: nowrap !important;
 }
 @media (max-width: 900px) {
-  html body #theme-toggle,
-  html body #themeToggle {
+  html body #theme-toggle {
     width: 45px !important;
     height: 45px !important;
     min-width: 45px !important;
@@ -746,24 +103,28 @@ html body #theme-toggle .theme-mode-badge {
     max-width: 45px !important;
     max-height: 45px !important;
   }
-  html body #theme-toggle #theme-icon {
-    font-size: 14px !important;
-    width: 14px !important;
-    height: 14px !important;
-  }
+  html body #theme-toggle #theme-icon { font-size: 14px !important; width: 14px !important; height: 14px !important; }
   html body #theme-toggle #theme-mode-badge,
-  html body #theme-toggle .theme-mode-badge {
-    font-size: 7px !important;
+  html body #theme-toggle .theme-mode-badge { font-size: 7px !important; }
+}
+
+/* ─── 3. .icon-btn 40×40 при <=900px ─────────────────────────────── */
+@media (max-width: 900px) {
+  html body .icon-btn {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   v64: ОБЩЕЕ — #btn-record всегда круглая (все темы)
-   ═══════════════════════════════════════════════════════════════════ */
-
+/* ─── 4. .btn-mic и #btn-record — круглая, как .btn-sm ───────────── */
+html body .btn.btn-ghost.btn-sm.btn-mic,
+html body .btn-mic,
 html body #btn-record,
 html body .btn#btn-record,
-html body .btn.btn-ghost.btn-sm#btn-record,
 html body button#btn-record {
   width: 38px !important;
   height: 38px !important;
@@ -773,14 +134,23 @@ html body button#btn-record {
   max-height: 38px !important;
   border-radius: 50% !important;
   padding: 0 !important;
-  aspect-ratio: 1 / 1 !important;
+  box-sizing: border-box !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-sizing: border-box !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+html body .btn.btn-ghost.btn-sm:not(.btn-mic) {
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
   vertical-align: middle !important;
 }
 @media (max-width: 900px) {
+  html body .btn.btn-ghost.btn-sm.btn-mic,
+  html body .btn-mic,
   html body #btn-record {
     width: 34px !important;
     height: 34px !important;
@@ -791,22 +161,28 @@ html body button#btn-record {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   v65: ОБЩЕЕ
-   ═══════════════════════════════════════════════════════════════════ */
+/* ─── 5. .controls-wrap padding ──────────────────────────────────── */
+html body .controls-wrap,
+html body [class*="controls-wrap"] {
+  padding: 0 40px !important;
+}
+@media (max-width: 900px) {
+  html body .controls-wrap,
+  html body [class*="controls-wrap"] {
+    padding: 0 12px !important;
+  }
+}
 
-/* ─── 1. ПЛЕЕР — всегда видим (перебиваем v61 скрытие) ─────────── */
+/* ─── 6. Плеер — всегда виден ────────────────────────────────────── */
 html body .jst-player,
-html body .jst-player.visible,
-html body #jst-player,
-html body .jst-player[data-has-audio] {
+html body #jst-player {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
 }
 
-/* ─── 2. RANGE — кружок ПО ЦЕНТРУ полоски (не снизу) ──────────── */
+/* ─── 7. input[type=range] — thumb ПО ЦЕНТРУ полоски ─────────────── */
 html body input[type="range"] {
   -webkit-appearance: none !important;
   appearance: none !important;
@@ -819,7 +195,6 @@ html body input[type="range"]::-webkit-slider-runnable-track {
   height: 5px !important;
   border-radius: 3px !important;
   background: rgba(0, 0, 0, 0.15) !important;
-  position: relative !important;
 }
 html body input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none !important;
@@ -829,8 +204,6 @@ html body input[type="range"]::-webkit-slider-thumb {
   border-radius: 50% !important;
   background: #fff !important;
   border: 2px solid #000 !important;
-  /* Ключевое: margin-top = (track-height - thumb-height) / 2 */
-  /* (5 - 14) / 2 = -4.5px — поднимает кружок на центр */
   margin-top: -4.5px !important;
   cursor: pointer !important;
   box-sizing: border-box !important;
@@ -849,20 +222,50 @@ html body input[type="range"]::-moz-range-thumb {
   box-sizing: border-box !important;
 }
 
-/* ─── 3. .slider (обёртка range) — кружок по центру ───────────── */
-html body .slider input[type="range"]::-webkit-slider-thumb {
-  margin-top: -4.5px !important;
+/* ─── 8. TOAST — ошибки красные/жёлтые (day/night/auto/time) ─────── */
+html:not([data-theme="contrast"]) body #toast,
+html:not([data-theme="contrast"]) body .toast {
+  position: fixed !important;
+  bottom: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999 !important;
+  background: #d32f2f !important;
+  background-color: #d32f2f !important;
+  color: #FFC72C !important;
+  -webkit-text-fill-color: #FFC72C !important;
+  border: 1.5px solid #FFC72C !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(211, 47, 47, 0.5) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  font-weight: 700 !important;
+  padding: 12px 22px 12px 40px !important;
+  font-size: 14px !important;
+  max-width: 380px !important;
+  min-width: 140px !important;
+  text-align: center !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.25s ease, visibility 0.25s !important;
+  white-space: pre-line !important;
 }
-html body .slider input[type="range"]::-moz-range-thumb {
-  margin-top: 0 !important;
+html:not([data-theme="contrast"]) body #toast.show,
+html:not([data-theme="contrast"]) body .toast.show {
+  opacity: 1 !important;
+  visibility: visible !important;
 }
-
-/* ═══════════════════════════════════════════════════════════════════
-   v66: ОБЩЕЕ
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ─── 1. .controls-wrap — padding 0 (перебиваем v65 night) ───── */
-html body .controls-wrap,
-html body [class*="controls-wrap"] {
-  padding: 0 40px !important;
+html:not([data-theme="contrast"]) body #toast::before,
+html:not([data-theme="contrast"]) body .toast::before {
+  content: "⚠" !important;
+  display: inline-block !important;
+  position: absolute !important;
+  left: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #FFC72C !important;
+  -webkit-text-fill-color: #FFC72C !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
 }
