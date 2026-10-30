@@ -289,6 +289,74 @@
       I(el, 'justify-content', 'center');
       mark(el);
     });
+  
+    applyKillGradient();
+    applyPanelButtons();
+}
+
+
+  /* ─── v83: kill gradient у btn-primary / btn-synth ─── */
+  function applyKillGradient() {
+    if (!isBW()) return;
+    var btns = document.querySelectorAll('button.btn.btn-primary, .btn.btn-primary, #btn-synth');
+    for (var i = 0; i < btns.length; i++) {
+      var el = btns[i];
+      var isActive = el.classList.contains('is-busy') || el.classList.contains('active') || el.getAttribute('aria-pressed') === 'true';
+      if (isActive) {
+        I(el, 'background', '#000');
+        I(el, 'background-color', '#000');
+        I(el, 'background-image', 'none');
+        I(el, 'color', '#fff');
+        I(el, '-webkit-text-fill-color', '#fff');
+        I(el, 'border', '2px solid #000');
+        I(el, 'box-shadow', 'none');
+        setChildrenColor(el, '#fff');
+      } else {
+        I(el, 'background', '#fff');
+        I(el, 'background-color', '#fff');
+        I(el, 'background-image', 'none');
+        I(el, 'color', '#000');
+        I(el, '-webkit-text-fill-color', '#000');
+        I(el, 'border', '2px solid #000');
+        I(el, 'box-shadow', 'none');
+        setChildrenColor(el, '#000');
+      }
+      mark(el);
+    }
+  }
+
+  /* ─── v83: .panel кнопки при active — чёрный/белый + все дети белые ─── */
+  function applyPanelButtons() {
+    if (!isBW()) return;
+    document.querySelectorAll('.panel button, .panel .btn, .panel [role="button"]').forEach(function (el) {
+      var isActive = el.classList.contains('active')
+                  || el.classList.contains('selected')
+                  || el.classList.contains('pressed')
+                  || el.classList.contains('is-busy')
+                  || el.getAttribute('aria-pressed') === 'true'
+                  || el.getAttribute('aria-selected') === 'true';
+      if (isActive) {
+        I(el, 'background', '#000');
+        I(el, 'background-color', '#000');
+        I(el, 'background-image', 'none');
+        I(el, 'color', '#fff');
+        I(el, '-webkit-text-fill-color', '#fff');
+        I(el, 'border', '2px solid #000');
+        I(el, 'border-color', '#000');
+        I(el, 'box-shadow', 'none');
+        setChildrenColor(el, '#fff');
+      } else if (!el.disabled) {
+        I(el, 'background', '#fff');
+        I(el, 'background-color', '#fff');
+        I(el, 'background-image', 'none');
+        I(el, 'color', '#000');
+        I(el, '-webkit-text-fill-color', '#000');
+        I(el, 'border', '2px solid #000');
+        I(el, 'border-color', '#000');
+        setChildrenColor(el, '#000');
+      }
+      mark(el);
+    });
   }
 
   /* ═══════════════════════════════════════════════════════════
