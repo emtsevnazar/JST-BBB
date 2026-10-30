@@ -1,28 +1,26 @@
-/* layout-resizer.js v41 — horizontal splitter-h между sidebar и workspace */
+/* layout-resizer.js v56 — горизонтальный splitter-h, sidebar 25%-75% */
 (function () {
   'use strict';
-  if (window.__jstResizerV41) return;
-  window.__jstResizerV41 = true;
+  if (window.__jstResizerV56) return;
+  window.__jstResizerV56 = true;
 
-  var MIN_VIEW = 900;
-  var MIN_SIDEBAR = 180;
-  var MIN_WS = 400;
-  var KEY = 'jst-sidebar-width';
+  var MIN_VIEW = 901;
+  var MIN_PCT = 0.25;
+  var MAX_PCT = 0.75;
+  var KEY = 'jst-sidebar-w';
 
   function init() {
     var main = document.querySelector('.main');
-    if (!main) { try { console.warn('[resizer] .main not found'); } catch(e){} return; }
-
+    if (!main) return;
     var sidebar = main.querySelector('.sidebar');
     var workspace = main.querySelector('.workspace');
-    if (!sidebar) { try { console.warn('[resizer] .sidebar not found'); } catch(e){} return; }
-    if (!workspace) { try { console.warn('[resizer] .workspace not found'); } catch(e){} return; }
+    if (!sidebar) return;
 
     if (getComputedStyle(main).position === 'static') {
       main.style.position = 'relative';
     }
 
-    var old = document.querySelector('.jst-resizer, .splitter-h');
+    var old = main.querySelector('.splitter-h');
     if (old) old.remove();
 
     var rz = document.createElement('div');
@@ -33,49 +31,24 @@
     rz.setAttribute('tabindex', '0');
     main.appendChild(rz);
 
+    function applyW(w) {
+      var total = main.getBoundingClientRect().width;
+      if (!isFinite(w)) return;
+      var minW = total * MIN_PCT;
+      var maxW = total * MAX_PCT;
+      if (w < minW) w = minW;
+      if (w > maxW) w = maxW;
+      main.style.setProperty('--jst-sidebar-w', w + 'px');
+      try { localStorage.setItem(KEY, String(Math.round(w))); } catch (e) {}
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (e) {}
+    if (saved) applyW(parseFloat(saved));
+
     var drag = false;
     var x0 = 0;
     var w0 = 0;
-
-    function show() {
-      if (window.innerWidth < MIN_VIEW) {
-        rz.style.display = 'none';
-        return;
-      }
-      rz.style.display = '';
-      var sR = sidebar.getBoundingClientRect();
-      var mR = main.getBoundingClientRect();
-      rz.style.left = (sR.right - mR.left) + 'px';
-      rz.style.top = '0';
-      rz.style.bottom = '0';
-      rz.style.height = '';
-    }
-
-    function save(v) { try { localStorage.setItem(KEY, String(Math.round(v))); } catch(e) {} }
-    function load() {
-      try { var v = localStorage.getItem(KEY); return v ? parseFloat(v) : null; } catch(e) { return null; }
-    }
-
-    function applyW(px) {
-      var total = main.getBoundingClientRect().width;
-      if (!isFinite(px)) return;
-      if (px < MIN_SIDEBAR) px = MIN_SIDEBAR;
-      if (total - px < MIN_WS) px = total - MIN_WS;
-      var d = getComputedStyle(main).display;
-      if (d === 'grid') {
-        main.style.gridTemplateColumns = px + 'px 1fr';
-      } else {
-        sidebar.style.width = px + 'px';
-        sidebar.style.flex = '0 0 ' + px + 'px';
-        sidebar.style.minWidth = px + 'px';
-        sidebar.style.maxWidth = px + 'px';
-      }
-      save(px);
-      show();
-    }
-
-    var saved = load();
-    if (saved) applyW(saved);
 
     function down(e) {
       if (e.button !== undefined && e.button !== 0) return;
@@ -109,26 +82,16 @@
     document.addEventListener('touchend', up);
     document.addEventListener('touchcancel', up);
 
-    window.addEventListener('resize', show);
-    show();
-    [100, 300, 800, 1500, 3000].forEach(function(t){ setTimeout(show, t); });
-
-    if (window.ResizeObserver) {
-      try { new ResizeObserver(function(){ if (!drag) show(); }).observe(sidebar); } catch(e){}
-    }
-
-    new MutationObserver(show).observe(document.documentElement, {
-      attributes: true, attributeFilter: ['data-theme']
-    });
-
     window.__jstResizerDebug = function () {
       return {
-        main: !!main, sidebar: !!sidebar, workspace: !!workspace,
+        main: !!main,
+        sidebar: !!sidebar,
+        workspace: !!workspace,
+        rz: !!rz,
         mainDisplay: getComputedStyle(main).display,
-        mainPos: getComputedStyle(main).position,
+        mainGridCols: getComputedStyle(main).gridTemplateColumns,
         sidebarW: sidebar.getBoundingClientRect().width,
-        rzDisplay: getComputedStyle(rz).display,
-        rzLeft: rz.style.left,
+        rzWidth: rz.getBoundingClientRect().width,
         viewport: window.innerWidth
       };
     };

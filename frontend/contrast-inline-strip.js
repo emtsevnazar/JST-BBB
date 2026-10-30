@@ -1,123 +1,110 @@
-/* contrast-inline-strip.js v41 */
+/* contrast-inline-strip.js v65 — убирает инжект :not(#p1) + правильные цвета */
 (function () {
   'use strict';
-  if (window.__jstInlineStripV41) return;
-  window.__jstInlineStripV41 = true;
+  if (window.__jstStrip65) return;
+  window.__jstStrip65 = true;
 
-  var SELECTORS = [
-    '.jst-dot', '#lang-toggle', '#help-header-fixed', '.help-arrow',
-    '.model-card', '.lang-card', '.accent-card', '.card', '.btn',
-    '#theme-mode-badge', '.theme-mode-badge', '#theme-toggle',
-    '#help-toggle', '.help-toggle',
-    '.controls .btn', '.controls button', '.controls .btn-primary',
-    '.btn.btn-primary', 'button.btn-primary', '.btn-primary',
-    '#btn-random', '#btn-clear-history', '#history-dropdown', '#dl-dropdown'
-  ].join(', ');
-
-  var KEEP_VAR = ['var(--panel-border', 'var(--gold', 'var(--red',
-    'var(--yellow', 'var(--accent', 'var(--error)', 'var(--danger',
-    'var(--warning', 'var(--text', 'var(--border'];
-
-  var COLOR_PROPS = [
-    'background', 'background-color', 'background-image', 'color',
-    'border', 'border-color', 'border-top-color', 'border-right-color',
-    'border-bottom-color', 'border-left-color',
-    'box-shadow', 'outline', 'outline-color'
+  var HH_PROPS_TO_REMOVE = [
+    'background', 'background-color', 'background-image',
+    'border', 'border-color', 'border-width', 'border-style', 'border-top',
+    'border-right', 'border-bottom', 'border-left', 'border-radius',
+    'box-shadow', 'outline', 'outline-color', 'outline-width',
+    'backdrop-filter', '-webkit-backdrop-filter',
+    'color', '-webkit-text-fill-color', 'position', 'top', 'left',
+    'transform', 'z-index', 'display', 'align-items', 'justify-content',
+    'padding', 'font-size', 'font-weight', 'letter-spacing', 'white-space'
   ];
 
-  function isVar(v) {
-    for (var i = 0; i < KEEP_VAR.length; i++) if (v.indexOf(KEEP_VAR[i]) === 0) return true;
-    return false;
-  }
-
-  function stripInline() {
-    if (document.documentElement.getAttribute('data-theme') !== 'contrast') return;
-    var nodes = document.querySelectorAll(SELECTORS);
-    for (var i = 0; i < nodes.length; i++) {
-      var el = nodes[i];
-      if (!el.getAttribute('style')) continue;
-      for (var j = 0; j < COLOR_PROPS.length; j++) {
-        var prop = COLOR_PROPS[j];
-        try {
-          var val = el.style.getPropertyValue(prop);
-          if (!val) continue;
-          if (el.style.getPropertyPriority(prop) !== 'important') continue;
-          if (isVar(val)) continue;
-          el.style.removeProperty(prop);
-        } catch (e) {}
-      }
-      if (!el.getAttribute('style') || /^[;\s]*$/.test(el.getAttribute('style'))) {
-        el.removeAttribute('style');
-      }
-    }
-    // Также удаляем inline background на #help-header-fixed (даже если не !important)
-    var hh = document.getElementById('help-header-fixed');
-    if (hh && hh.style) {
-      hh.style.removeProperty('background');
-      hh.style.removeProperty('background-color');
-      hh.style.removeProperty('background-image');
-      if (hh.getAttribute('style') && /^[;\s]*$/.test(hh.getAttribute('style'))) {
-        hh.removeAttribute('style');
-      }
-    }
-  }
-
-  function stripInjectStyle() {
-    if (document.documentElement.getAttribute('data-theme') !== 'contrast') return;
+  /* УБИРАЕМ инжект :not(#p1) с 24px shadow */
+  function removeInjectedShadows() {
     var styles = document.querySelectorAll('head style');
     for (var i = 0; i < styles.length; i++) {
       var txt = styles[i].textContent || '';
-      // Ищем injectStyle от app.js (help-header-fixed + прозрачный/жёлтый)
-      if (txt.indexOf('#help-header-fixed') !== -1 &&
-          (txt.indexOf('rgba(255, 255, 255, 0.15)') !== -1 ||
-           txt.indexOf('rgba(245, 184, 0, 0.06)') !== -1 ||
-           txt.indexOf('backdrop-filter: blur(20px)') !== -1)) {
-        try {
-          styles[i].setAttribute('data-jst-disabled', '1');
-          styles[i].disabled = true;
-          styles[i].remove();
-        } catch (e) {}
+      /* Паттерн :not(#p1) — auto-generated */
+      if (/:not\(#p[0-9]/i.test(txt) ||
+          /0 0 24px rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.65/i.test(txt) ||
+          /0 0 18px rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.55/i.test(txt)) {
+        try { styles[i].remove(); } catch (e) {}
       }
     }
   }
 
+  /* #btn-stop :disabled — убрать var(--input-bg) */
+  function fixBtnStopDisabled() {
+    var b = document.getElementById('btn-stop');
+    if (!b) return;
+    if (b.disabled) {
+      try {
+        b.style.removeProperty('background-color');
+        b.style.removeProperty('background');
+        b.style.removeProperty('border');
+        b.style.removeProperty('border-color');
+        b.style.removeProperty('color');
+        b.style.setProperty('background', '#fff', 'important');
+        b.style.setProperty('border', '2px solid #000', 'important');
+        b.style.setProperty('color', '#000', 'important');
+      } catch(e) {}
+    }
+  }
+
+  function fixHelpHeader() {
+    if (document.documentElement.getAttribute('data-theme') !== 'contrast') return;
+    var hh = document.getElementById('help-header-fixed');
+    if (!hh) return;
+    HH_PROPS_TO_REMOVE.forEach(function(p) {
+      try { hh.style.removeProperty(p); } catch(e) {}
+    });
+    try {
+      hh.style.setProperty('background', '#fff', 'important');
+      hh.style.setProperty('background-color', '#fff', 'important');
+      hh.style.setProperty('background-image', 'none', 'important');
+      hh.style.setProperty('color', '#000', 'important');
+      hh.style.setProperty('-webkit-text-fill-color', '#000', 'important');
+      hh.style.setProperty('border', '2px solid #000', 'important');
+      hh.style.setProperty('border-radius', '22px', 'important');
+      hh.style.setProperty('box-shadow', 'none', 'important');
+      hh.style.setProperty('backdrop-filter', 'none', 'important');
+      hh.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+      hh.style.setProperty('position', 'fixed', 'important');
+      hh.style.setProperty('top', '24px', 'important');
+      hh.style.setProperty('left', '50%', 'important');
+      hh.style.setProperty('transform', 'translateX(-50%)', 'important');
+      hh.style.setProperty('z-index', '2147483640', 'important');
+      hh.style.setProperty('display', 'inline-flex', 'important');
+      hh.style.setProperty('align-items', 'center', 'important');
+      hh.style.setProperty('justify-content', 'center', 'important');
+      hh.style.setProperty('padding', '10px 28px', 'important');
+      hh.style.setProperty('font-size', '20px', 'important');
+      hh.style.setProperty('font-weight', '700', 'important');
+      hh.style.setProperty('letter-spacing', '1.5px', 'important');
+      hh.style.setProperty('white-space', 'nowrap', 'important');
+    } catch(e) {}
+  }
+
   function tick() {
-    stripInjectStyle();
-    stripInline();
-    setTimeout(function(){ stripInjectStyle(); stripInline(); }, 100);
-    setTimeout(function(){ stripInjectStyle(); stripInline(); }, 300);
-    setTimeout(function(){ stripInjectStyle(); stripInline(); }, 800);
-    setTimeout(function(){ stripInjectStyle(); stripInline(); }, 1500);
-    setTimeout(function(){ stripInjectStyle(); stripInline(); }, 3000);
+    removeInjectedShadows();
+    fixBtnStopDisabled();
+    if (document.documentElement.getAttribute('data-theme') === 'contrast') {
+      fixHelpHeader();
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick);
   else tick();
 
-  new MutationObserver(function () {
-    if (document.documentElement.getAttribute('data-theme') === 'contrast') tick();
-  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(tick).observe(document.documentElement, {
+    attributes: true, attributeFilter: ['data-theme']
+  });
 
-  new MutationObserver(function (muts) {
-    if (document.documentElement.getAttribute('data-theme') !== 'contrast') return;
-    clearTimeout(window.__jstStripTimer);
-    window.__jstStripTimer = setTimeout(function(){ stripInjectStyle(); stripInline(); }, 30);
-  }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
-
-  // Наблюдение за head — при добавлении injectStyle
   try {
-    new MutationObserver(function () {
-      if (document.documentElement.getAttribute('data-theme') === 'contrast') {
-        setTimeout(stripInjectStyle, 10);
-      }
-    }).observe(document.head || document.documentElement, { childList: true, subtree: true });
-  } catch (e) {}
+    new MutationObserver(tick).observe(document.documentElement, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ['style']
+    });
+  } catch(e) {}
 
-  // Периодически
-  setInterval(function () {
-    if (document.documentElement.getAttribute('data-theme') === 'contrast') {
-      stripInjectStyle();
-      stripInline();
-    }
-  }, 800);
+  try {
+    new MutationObserver(tick).observe(document.head || document.documentElement, { childList: true });
+  } catch(e) {}
+
+  setInterval(tick, 500);
 })();

@@ -1,4 +1,4 @@
-const VERSION = 'v42.0.0';
+const VERSION = 'v68.0.0';
 const CACHE_STATIC = 'jst-static-' + VERSION;
 const CACHE_OFFL = 'jst-offl-' + VERSION;
 
@@ -7,7 +7,7 @@ const PRECACHE = [
   '/offline',
   '/static/style.css',
   '/static/style-clean.css',
-  '/static/style-contrast.css',
+  
   '/static/help-fix.js',
   '/static/dots.js',
   '/static/wand.js',

@@ -1,0 +1,899 @@
+html[data-theme="night"] body .panel {
+
+  background-color: rgba(13, 26, 63, 0.55) !important;
+
+}
+html[data-theme="night"] body #btn-random, html[data-theme="night"] body #btn-clear-history, html[data-theme="night"] body #history-dropdown, html[data-theme="night"] body #dl-dropdown {
+
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+
+}
+html[data-theme="night"] body #btn-random:hover, html[data-theme="night"] body #btn-random:active, html[data-theme="night"] body #btn-random:focus-visible, html[data-theme="night"] body #btn-clear-history:hover, html[data-theme="night"] body #btn-clear-history:active, html[data-theme="night"] body #btn-clear-history:focus-visible, html[data-theme="night"] body #history-dropdown:hover, html[data-theme="night"] body #history-dropdown:active, html[data-theme="night"] body #history-dropdown:focus-visible, html[data-theme="night"] body #history-dropdown.open, html[data-theme="night"] body #history-dropdown[aria-expanded="true"], html[data-theme="night"] body #dl-dropdown:hover, html[data-theme="night"] body #dl-dropdown:active, html[data-theme="night"] body #dl-dropdown:focus-visible, html[data-theme="night"] body #dl-dropdown.open, html[data-theme="night"] body #dl-dropdown[aria-expanded="true"], html[data-theme="night"] body #history-dropdown > .btn:hover, html[data-theme="night"] body #dl-dropdown > .btn:hover {
+
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold) !important;
+
+}
+html[data-theme="night"] body .panel {
+
+  background-color: rgba(13, 26, 63, 0.55) !important;
+
+}
+html[data-theme="night"] body .panel {
+
+  background-color: rgba(13, 26, 63, 0.55) !important;
+
+}
+html[data-theme="night"] body #btn-random:hover, html[data-theme="night"] body #btn-random:active, html[data-theme="night"] body #btn-random:focus-visible, html[data-theme="night"] body #btn-clear-history:hover, html[data-theme="night"] body #btn-clear-history:active, html[data-theme="night"] body #btn-clear-history:focus-visible, html[data-theme="night"] body #history-dropdown:hover, html[data-theme="night"] body #history-dropdown:active, html[data-theme="night"] body #history-dropdown:focus-visible, html[data-theme="night"] body #history-dropdown.open, html[data-theme="night"] body #history-dropdown[aria-expanded="true"], html[data-theme="night"] body #dl-dropdown:hover, html[data-theme="night"] body #dl-dropdown:active, html[data-theme="night"] body #dl-dropdown:focus-visible, html[data-theme="night"] body #dl-dropdown.open, html[data-theme="night"] body #dl-dropdown[aria-expanded="true"] {
+
+  border-color: var(--gold, #FFC72C) !important;
+  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
+
+}
+html[data-theme="night"] body #history-dropdown > .btn:hover, html[data-theme="night"] body #history-dropdown > button:hover, html[data-theme="night"] body #dl-dropdown > .btn:hover, html[data-theme="night"] body #dl-dropdown > button:hover {
+
+  border-color: var(--gold, #FFC72C) !important;
+  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
+
+}
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):hover, html[data-theme="night"] body .controls > .btn:not(.btn-primary):active, html[data-theme="night"] body .controls > .btn:not(.btn-primary):focus-visible, html[data-theme="night"] body .controls > button:not(.btn-primary):hover, html[data-theme="night"] body .controls > button:not(.btn-primary):active, html[data-theme="night"] body .controls > button:not(.btn-primary):focus-visible, html[data-theme="night"] body .controls .dropdown > .btn:not(.btn-primary):hover {
+
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold) !important;
+  outline: none !important;
+
+}
+html[data-theme="night"] body .controls .btn:hover, html[data-theme="night"] body .controls .btn:focus-visible, html[data-theme="night"] body .controls .btn:active, html[data-theme="night"] body .controls .btn-ghost:hover, html[data-theme="night"] body .controls .btn-ghost:focus-visible, html[data-theme="night"] body .controls .btn-ghost:active, html[data-theme="night"] body .controls > .btn:hover, html[data-theme="night"] body .controls > button:hover, html[data-theme="night"] body .controls > [role="button"]:hover, html[data-theme="night"] body .controls .dropdown > .btn:hover, html[data-theme="night"] body .controls .dropdown > .btn:focus-visible {
+
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1.5px var(--gold), 0 0 10px var(--gold) !important;
+  outline: none !important;
+
+}
+html[data-theme="night"] body .controls > .btn:hover, html[data-theme="night"] body .controls > .btn:focus-visible, html[data-theme="night"] body .controls > button:hover, html[data-theme="night"] body .controls > button:focus-visible, html[data-theme="night"] body .controls .dropdown > .btn:hover, html[data-theme="night"] body .controls .dropdown > .btn:focus-visible {
+
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1.5px var(--gold) !important;
+  outline: none !important;
+
+}
+html[data-theme="night"] body .controls > .btn.btn-primary:hover, html[data-theme="night"] body .controls > .btn.btn-primary:focus-visible {
+
+  border-color: transparent !important;
+
+}
+@media (min-width: 901px) {
+html[data-theme="night"] body .main > .splitter-h {
+
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.06) 0%,
+      rgba(255,255,255,0.18) 50%,
+      rgba(255,255,255,0.06) 100%
+    ) !important;
+  
+}
+}
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):hover, html[data-theme="night"] body .controls > .btn:not(.btn-primary):focus, html[data-theme="night"] body .controls > .btn:not(.btn-primary):focus-visible, html[data-theme="night"] body .controls > .btn:not(.btn-primary):active, html[data-theme="night"] body .controls > button:not(.btn-primary):hover, html[data-theme="night"] body .controls > button:not(.btn-primary):focus, html[data-theme="night"] body .controls > button:not(.btn-primary):focus-visible, html[data-theme="night"] body .controls > button:not(.btn-primary):active {
+
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 1.5px var(--gold) !important;
+  outline: none !important;
+  outline-color: var(--gold) !important;
+
+}
+html[data-theme="night"] body .controls > .btn:not(.btn-primary), html[data-theme="night"] body .controls > button:not(.btn-primary) {
+
+  box-shadow: none !important;
+
+}
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):focus-visible {
+
+  outline: 2px solid var(--gold) !important;
+  outline-offset: 2px !important;
+
+}
+html[data-theme="night"] body .btn:hover, html[data-theme="night"] body .btn:focus-visible, html[data-theme="night"] body button:hover, html[data-theme="night"] body button:focus-visible, html[data-theme="night"] body [role="button"]:hover, html[data-theme="night"] body [role="button"]:focus-visible, html[data-theme="night"] body .btn-ghost:hover, html[data-theme="night"] body .btn-primary:hover {
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+  outline: none !important;
+
+}
+html[data-theme="night"] body .main > .splitter:hover, html[data-theme="night"] body .splitter:hover, html[data-theme="night"] body .main > .splitter.dragging, html[data-theme="night"] body .splitter.dragging {
+
+  background: linear-gradient(
+    180deg,
+    rgba(245,184,0,0.20) 0%,
+    rgba(245,184,0,0.50) 50%,
+    rgba(245,184,0,0.20) 100%
+  ) !important;
+
+}
+html[data-theme="night"] body .main > .splitter-h:hover, html[data-theme="night"] body .main > .splitter-h.dragging {
+
+  background: linear-gradient(
+    90deg,
+    rgba(245,184,0,0.20) 0%,
+    rgba(245,184,0,0.50) 50%,
+    rgba(245,184,0,0.20) 100%
+  ) !important;
+
+}
+/* ═══ v54 ФИКСЫ (после split) ═══ */
+
+html[data-theme="night"] body .panel {
+  background-color: rgba(13, 26, 63, 0.55) !important;
+}
+
+/* Все кнопки — soft shadow, без чёрного/жёлтого */
+html[data-theme="night"] body .btn:hover,
+html[data-theme="night"] body .btn:focus-visible,
+html[data-theme="night"] body button:not([disabled]):not([aria-disabled="true"]):hover,
+html[data-theme="night"] body button:not([disabled]):not([aria-disabled="true"]):focus-visible,
+html[data-theme="night"] body [role="button"]:not([disabled]):not([aria-disabled="true"]):hover,
+html[data-theme="night"] body [role="button"]:not([disabled]):not([aria-disabled="true"]):focus-visible {
+  background: inherit !important;
+  color: inherit !important;
+  border-color: inherit !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+  outline: none !important;
+}
+html[data-theme="night"] body .btn-ghost:hover,
+html[data-theme="night"] body .btn-primary:hover {
+  border-color: inherit !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+}
+html[data-theme="night"] body .dropdown:hover,
+html[data-theme="night"] body .dropdown > .btn:hover,
+html[data-theme="night"] body .controls .btn:hover {
+  border-color: inherit !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+}
+
+/* Ночные кнопки-иконки — жёлтая рамка */
+html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body #btn-random:active,
+html[data-theme="night"] body #btn-random:focus-visible,
+html[data-theme="night"] body #btn-clear-history:hover,
+html[data-theme="night"] body #btn-clear-history:active,
+html[data-theme="night"] body #btn-clear-history:focus-visible,
+html[data-theme="night"] body #history-dropdown:hover,
+html[data-theme="night"] body #history-dropdown:active,
+html[data-theme="night"] body #history-dropdown:focus-visible,
+html[data-theme="night"] body #history-dropdown.open,
+html[data-theme="night"] body #history-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #dl-dropdown:hover,
+html[data-theme="night"] body #dl-dropdown:active,
+html[data-theme="night"] body #dl-dropdown:focus-visible,
+html[data-theme="night"] body #dl-dropdown.open,
+html[data-theme="night"] body #dl-dropdown[aria-expanded="true"] {
+  border-color: var(--gold, #FFC72C) !important;
+  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
+}
+
+/* Ночной splitter — жёлтый */
+html[data-theme="night"] body .main > .splitter:hover,
+html[data-theme="night"] body .splitter:hover,
+html[data-theme="night"] body .main > .splitter.dragging,
+html[data-theme="night"] body .splitter.dragging {
+  background: linear-gradient(180deg,
+    rgba(245,184,0,0.20) 0%, rgba(245,184,0,0.50) 50%, rgba(245,184,0,0.20) 100%) !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover,
+html[data-theme="night"] body .main > .splitter-h.dragging {
+  background: linear-gradient(90deg,
+    rgba(245,184,0,0.20) 0%, rgba(245,184,0,0.50) 50%, rgba(245,184,0,0.20) 100%) !important;
+}
+
+/* ═══ v56: НОЧЬ — .is-busy красный ═════════════════════════════ */
+html[data-theme="night"] body .btn.btn-primary.is-busy,
+html[data-theme="night"] body .btn-primary.is-busy,
+html[data-theme="night"] body #btn-synth.is-busy {
+  background: rgba(255,255,255,0.9) !important;
+  background-color: rgba(255,255,255,0.9) !important;
+  color: #d32f2f !important;
+  -webkit-text-fill-color: #d32f2f !important;
+  border: 2px solid #d32f2f !important;
+  border-color: #d32f2f !important;
+  box-shadow: none !important;
+  cursor: wait !important;
+}
+html[data-theme="night"] body .btn.btn-primary.is-busy > *,
+html[data-theme="night"] body .btn.btn-primary.is-busy svg,
+html[data-theme="night"] body .btn.btn-primary.is-busy svg *,
+html[data-theme="night"] body #btn-synth.is-busy > * {
+  color: #d32f2f !important;
+  -webkit-text-fill-color: #d32f2f !important;
+  fill: #d32f2f !important;
+  stroke: #d32f2f !important;
+}
+
+/* ═══ v60: .date в history-list — жёлтый ночью ═══ */
+html[data-theme="night"] body .history-list .date,
+html[data-theme="night"] body #history .date,
+html[data-theme="night"] body .dropdown-menu .date,
+html[data-theme="night"] body .history-item .date,
+html[data-theme="night"] body .history-list time,
+html[data-theme="night"] body #history time,
+html[data-theme="night"] body .date,
+html[data-theme="night"] body [class*="history"] [class*="date"],
+html[data-theme="night"] body [class*="history"] [class*="time"] {
+  color: var(--gold, #FFC72C) !important;
+  -webkit-text-fill-color: var(--gold, #FFC72C) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v61: НОЧЬ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* .btn-mic — круглая (уже в shared, дублируем для надёжности) */
+html[data-theme="night"] body .btn.btn-ghost.btn-sm.btn-mic,
+html[data-theme="night"] body .btn-mic {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* id-кнопки — жёлтая рамка на hover/active (уже есть в v38, дублируем) */
+html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body #btn-random:focus,
+html[data-theme="night"] body #btn-random:focus-visible,
+html[data-theme="night"] body #btn-random:active,
+html[data-theme="night"] body #btn-random[aria-pressed="true"],
+html[data-theme="night"] body #btn-clear-history:hover,
+html[data-theme="night"] body #btn-clear-history:focus,
+html[data-theme="night"] body #btn-clear-history:focus-visible,
+html[data-theme="night"] body #btn-clear-history:active,
+html[data-theme="night"] body #btn-batch:hover,
+html[data-theme="night"] body #btn-batch:focus,
+html[data-theme="night"] body #btn-batch:focus-visible,
+html[data-theme="night"] body #btn-batch:active,
+html[data-theme="night"] body #history-dropdown:hover,
+html[data-theme="night"] body #history-dropdown:focus,
+html[data-theme="night"] body #history-dropdown:focus-visible,
+html[data-theme="night"] body #history-dropdown:active,
+html[data-theme="night"] body #history-dropdown.open,
+html[data-theme="night"] body #history-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #dl-dropdown:hover,
+html[data-theme="night"] body #dl-dropdown:focus,
+html[data-theme="night"] body #dl-dropdown:focus-visible,
+html[data-theme="night"] body #dl-dropdown:active,
+html[data-theme="night"] body #dl-dropdown.open,
+html[data-theme="night"] body #dl-dropdown[aria-expanded="true"] {
+  border-color: var(--gold, #FFC72C) !important;
+  box-shadow: 0 0 0 1px var(--gold, #FFC72C) !important;
+  outline: none !important;
+}
+
+/* .header-buttons hover — жёлтый контур ночью */
+html[data-theme="night"] body .header-buttons > *:hover,
+html[data-theme="night"] body .header-buttons > *:focus-visible,
+html[data-theme="night"] body .header-buttons > *:active {
+  border-color: var(--gold, #FFC72C) !important;
+  color: var(--gold, #FFC72C) !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body .header-buttons > *:hover svg,
+html[data-theme="night"] body .header-buttons > *:hover #theme-icon {
+  color: var(--gold, #FFC72C) !important;
+  fill: var(--gold, #FFC72C) !important;
+  stroke: var(--gold, #FFC72C) !important;
+}
+
+/* .btn-mic hover — жёлтый контур ночью */
+html[data-theme="night"] body .btn.btn-ghost.btn-sm.btn-mic:hover,
+html[data-theme="night"] body .btn.btn-ghost.btn-sm.btn-mic:active,
+html[data-theme="night"] body .btn.btn-ghost.btn-sm.btn-mic:focus-visible,
+html[data-theme="night"] body .btn-mic:hover,
+html[data-theme="night"] body .btn-mic:active {
+  border-color: var(--gold, #FFC72C) !important;
+  color: var(--gold, #FFC72C) !important;
+  box-shadow: none !important;
+}
+
+/* Треугольник btn-synth — КРАСНЫЙ пока is-busy */
+html[data-theme="night"] body #btn-synth.is-busy svg,
+html[data-theme="night"] body #btn-synth.is-busy svg path,
+html[data-theme="night"] body #btn-synth.is-busy svg *,
+html[data-theme="night"] body .btn.btn-primary.is-busy svg,
+html[data-theme="night"] body .btn.btn-primary.is-busy svg path,
+html[data-theme="night"] body .btn.btn-primary.is-busy svg * {
+  fill: #d32f2f !important;
+  stroke: #d32f2f !important;
+  color: #d32f2f !important;
+}
+
+/* ═══ v62: НОЧЬ — точечные фиксы ═══════════════════════════════ */
+
+/* Убрать box-shadow 0 0 18px у #btn-random / #btn-batch */
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):hover,
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):focus,
+html[data-theme="night"] body :is(#btn-random, #btn-batch).btn.btn-ghost:not(#P67a):not(#P67b):not(#P67c):not(#P67d):not(#P67e):not(#P67f):active {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* #history-dropdown / #dl-dropdown — hover меняет ЦВЕТ контура */
+html[data-theme="night"] body #history-dropdown,
+html[data-theme="night"] body #history-dropdown > .btn,
+html[data-theme="night"] body #history-dropdown > button,
+html[data-theme="night"] body #dl-dropdown,
+html[data-theme="night"] body #dl-dropdown > .btn,
+html[data-theme="night"] body #dl-dropdown > button {
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body #history-dropdown:hover,
+html[data-theme="night"] body #history-dropdown:focus,
+html[data-theme="night"] body #history-dropdown:focus-visible,
+html[data-theme="night"] body #history-dropdown:active,
+html[data-theme="night"] body #history-dropdown.open,
+html[data-theme="night"] body #history-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #history-dropdown > .btn:hover,
+html[data-theme="night"] body #history-dropdown > .btn:focus-visible,
+html[data-theme="night"] body #dl-dropdown:hover,
+html[data-theme="night"] body #dl-dropdown:focus,
+html[data-theme="night"] body #dl-dropdown:focus-visible,
+html[data-theme="night"] body #dl-dropdown:active,
+html[data-theme="night"] body #dl-dropdown.open,
+html[data-theme="night"] body #dl-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #dl-dropdown > .btn:hover,
+html[data-theme="night"] body #dl-dropdown > .btn:focus-visible {
+  border-color: var(--gold, #FFC72C) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v63: НОЧЬ — точечные фиксы
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. #btn-record — круглая ──────────────────────────────── */
+html[data-theme="night"] body #btn-record,
+html[data-theme="night"] body .btn#btn-record {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  max-width: 38px !important;
+  max-height: 38px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+@media (max-width: 900px) {
+  html[data-theme="night"] body #btn-record {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    max-width: 34px !important;
+    max-height: 34px !important;
+  }
+}
+
+/* ─── 2. #btn-upload — жёлтая подсветка при hover ─────────────── */
+html[data-theme="night"] body #btn-upload:hover,
+html[data-theme="night"] body #btn-upload:focus-visible,
+html[data-theme="night"] body #btn-upload:active {
+  border-color: #FFC72C !important;
+  border-style: solid !important;
+  color: #FFC72C !important;
+  background: rgba(245, 184, 0, 0.12) !important;
+  box-shadow: 0 0 0 1px #FFC72C !important;
+}
+html[data-theme="night"] body #btn-upload:hover *,
+html[data-theme="night"] body #btn-upload:hover svg,
+html[data-theme="night"] body #btn-upload:hover svg * {
+  color: #FFC72C !important;
+  fill: #FFC72C !important;
+  stroke: #FFC72C !important;
+}
+
+/* ─── 3. .controls hover — ЖЁЛТЫЙ контур (не синий) ─────────────── */
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):hover,
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="night"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):hover,
+html[data-theme="night"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="night"] body .controls #btn-random:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-random:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-random:not([disabled]):active,
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):active,
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):active,
+html[data-theme="night"] body .controls #btn-stop:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-stop:not([disabled]):focus-visible {
+  border-color: #FFC72C !important;
+  border-style: solid !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ─── 4. #btn-stt — жёлтый контур + синий микрофон + жёлтый фон ── */
+html[data-theme="night"] body #btn-stt:hover,
+html[data-theme="night"] body #btn-stt:focus-visible,
+html[data-theme="night"] body #btn-stt:active {
+  border-color: #FFC72C !important;
+  border-style: solid !important;
+  background: #FFC72C !important;
+  background-color: #FFC72C !important;
+  box-shadow: 0 0 0 1px #FFC72C !important;
+}
+/* Микрофон внутри — СИНИЙ */
+html[data-theme="night"] body #btn-stt:hover svg,
+html[data-theme="night"] body #btn-stt:hover svg *,
+html[data-theme="night"] body #btn-stt:hover #mic-icon,
+html[data-theme="night"] body #btn-stt:hover #mic-icon *,
+html[data-theme="night"] body #btn-stt:hover .mic-icon,
+html[data-theme="night"] body #btn-stt:hover i {
+  color: #1a2a5e !important;
+  fill: #1a2a5e !important;
+  stroke: #1a2a5e !important;
+}
+
+/* ─── 5. Треугольник #btn-synth.is-busy — КРАСНЫЙ ──────────────── */
+html body #btn-synth.btn.btn-primary.is-busy svg,
+html body #btn-synth.btn.btn-primary.is-busy svg path,
+html body #btn-synth.btn.btn-primary.is-busy svg *,
+html[data-theme="night"] body #btn-synth.is-busy svg,
+html[data-theme="night"] body #btn-synth.is-busy svg path,
+html[data-theme="night"] body #btn-synth.is-busy svg * {
+  fill: #d32f2f !important;
+  stroke: #d32f2f !important;
+  color: #d32f2f !important;
+}
+
+/* ─── 6. #exaggeration — полоски ЖЁЛТЫЕ ──────────────────────── */
+html[data-theme="night"] body #exaggeration,
+html[data-theme="night"] body input#exaggeration[type="range"] {
+  background: #FFC72C !important;
+  background-color: #FFC72C !important;
+  accent-color: #FFC72C !important;
+}
+html[data-theme="night"] body #exaggeration::-webkit-slider-runnable-track {
+  background: #FFC72C !important;
+  background-color: #FFC72C !important;
+  height: 5px !important;
+  border-radius: 3px !important;
+}
+html[data-theme="night"] body #exaggeration::-webkit-slider-thumb {
+  background: #FFC72C !important;
+  background-color: #FFC72C !important;
+  border: 1px solid #FFC72C !important;
+  -webkit-appearance: none !important;
+}
+html[data-theme="night"] body #exaggeration::-moz-range-track {
+  background: #FFC72C !important;
+}
+html[data-theme="night"] body #exaggeration::-moz-range-thumb {
+  background: #FFC72C !important;
+}
+
+/* ─── 7. Полупрозрачно-жёлтые контуры у ВСЕХ кнопок/блоков ────── */
+/* КРОМЕ btn-stop (по твоему запросу) */
+html[data-theme="night"] body .btn:not(#btn-stop):not([disabled]),
+html[data-theme="night"] body button:not(#btn-stop):not([disabled]),
+html[data-theme="night"] body .btn-ghost:not(#btn-stop):not([disabled]),
+html[data-theme="night"] body .panel,
+html[data-theme="night"] body .card,
+html[data-theme="night"] body .select-wrap,
+html[data-theme="night"] body .save-row,
+html[data-theme="night"] body #dropzone,
+html[data-theme="night"] body .jstp-controls,
+html[data-theme="night"] body .jstp-controls .btn,
+html[data-theme="night"] body #new-voice:not([disabled]) {
+  border-color: rgba(255, 199, 44, 0.35) !important;
+  border-style: solid !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v64: НОЧЬ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. .splitter-h — полупрозрачный → ЖЁЛТЫЙ при hover ────── */
+html[data-theme="night"] body .main > .splitter-h {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.06) 0%,
+    rgba(255,255,255,0.18) 50%,
+    rgba(255,255,255,0.06) 100%) !important;
+  border-left-color: rgba(255,255,255,0.1) !important;
+  border-right-color: rgba(255,255,255,0.1) !important;
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover,
+html[data-theme="night"] body .main > .splitter-h.dragging,
+html[data-theme="night"] body .main > .splitter-h:focus,
+html[data-theme="night"] body .main > .splitter-h:active {
+  background: linear-gradient(90deg,
+    rgba(245, 184, 0, 0.35) 0%,
+    rgba(245, 184, 0, 0.65) 50%,
+    rgba(245, 184, 0, 0.35) 100%) !important;
+  border-left-color: rgba(245, 184, 0, 0.7) !important;
+  border-right-color: rgba(245, 184, 0, 0.7) !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover::before,
+html[data-theme="night"] body .main > .splitter-h.dragging::before {
+  background-image: radial-gradient(circle, #FFC72C 1.5px, transparent 1.5px) !important;
+}
+
+/* ─── 2. Квадратные рамки → ROUNDED (border-radius 10px) ──────── */
+/* Подсвечивается контур блока полукруглый, не квадратный */
+html[data-theme="night"] body .panel,
+html[data-theme="night"] body .save-row,
+html[data-theme="night"] body .select-wrap,
+html[data-theme="night"] body #dropzone,
+html[data-theme="night"] body .jstp-controls,
+html[data-theme="night"] body #new-voice,
+html[data-theme="night"] body #btn-upload,
+html[data-theme="night"] body #btn-record,
+html[data-theme="night"] body #carousel > * {
+  border-radius: 10px !important;
+}
+
+/* ─── 3. input[type="range"] — полупрозрачно-жёлтый ──────────── */
+html[data-theme="night"] body input[type="range"] {
+  accent-color: rgba(245, 184, 0, 0.6) !important;
+}
+html[data-theme="night"] body input[type="range"]::-webkit-slider-runnable-track {
+  background: rgba(245, 184, 0, 0.4) !important;
+  background-color: rgba(245, 184, 0, 0.4) !important;
+  height: 5px !important;
+  border-radius: 3px !important;
+}
+html[data-theme="night"] body input[type="range"]::-webkit-slider-thumb {
+  background: rgba(245, 184, 0, 0.75) !important;
+  background-color: rgba(245, 184, 0, 0.75) !important;
+  border: 1px solid #FFC72C !important;
+  -webkit-appearance: none !important;
+}
+html[data-theme="night"] body input[type="range"]::-moz-range-track {
+  background: rgba(245, 184, 0, 0.4) !important;
+}
+html[data-theme="night"] body input[type="range"]::-moz-range-thumb {
+  background: rgba(245, 184, 0, 0.75) !important;
+}
+
+/* ─── 4. .save-row — УБРАТЬ жёлтый (обычный серый/полупрозрачный) */
+html[data-theme="night"] body .save-row {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body .save-row:hover,
+html[data-theme="night"] body .save-row:focus-within {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
+/* ─── 5. #btn-upload — изначально НЕ ярко-жёлтая, при hover ЖЁЛТАЯ ─ */
+html[data-theme="night"] body #btn-upload,
+html[data-theme="night"] body #btn-upload:not(:hover):not(:focus):not(:active) {
+  border-color: rgba(245, 184, 0, 0.35) !important;
+  color: inherit !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease !important;
+}
+html[data-theme="night"] body #btn-upload:hover,
+html[data-theme="night"] body #btn-upload:focus,
+html[data-theme="night"] body #btn-upload:focus-visible,
+html[data-theme="night"] body #btn-upload:active {
+  border-color: #FFC72C !important;
+  color: #FFC72C !important;
+  background: rgba(245, 184, 0, 0.15) !important;
+  box-shadow: 0 0 0 1px #FFC72C !important;
+}
+html[data-theme="night"] body #btn-upload:hover svg,
+html[data-theme="night"] body #btn-upload:hover svg * {
+  color: #FFC72C !important;
+  fill: #FFC72C !important;
+  stroke: #FFC72C !important;
+}
+
+/* ─── 6. #carousel > * — контур ЯРКО-ЖЁЛТЫЙ при hover ────────── */
+html[data-theme="night"] body #carousel > *,
+html[data-theme="night"] body #carousel .card,
+html[data-theme="night"] body #carousel .model-card,
+html[data-theme="night"] body #carousel .lang-card,
+html[data-theme="night"] body #carousel .accent-card,
+html[data-theme="night"] body #carousel button,
+html[data-theme="night"] body #carousel [role="button"] {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+html[data-theme="night"] body #carousel > *:hover,
+html[data-theme="night"] body #carousel > *:focus-visible,
+html[data-theme="night"] body #carousel > *:active,
+html[data-theme="night"] body #carousel .card:hover,
+html[data-theme="night"] body #carousel .model-card:hover,
+html[data-theme="night"] body #carousel .lang-card:hover,
+html[data-theme="night"] body #carousel .accent-card:hover,
+html[data-theme="night"] body #carousel button:hover,
+html[data-theme="night"] body #carousel [role="button"]:hover {
+  border-color: #FFC72C !important;
+  box-shadow: 0 0 0 1px #FFC72C !important;
+  outline: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v65: НОЧЬ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. .batch-textarea — жёлтый контур с округлыми углами ──── */
+html[data-theme="night"] body .batch-textarea,
+html[data-theme="night"] body textarea.batch-textarea {
+  border: 1.5px solid rgba(245, 184, 0, 0.6) !important;
+  border-color: rgba(245, 184, 0, 0.6) !important;
+  border-style: solid !important;
+  border-width: 1.5px !important;
+  border-radius: 12px !important;
+  background: rgba(13, 26, 63, 0.4) !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body .batch-textarea:hover,
+html[data-theme="night"] body .batch-textarea:focus,
+html[data-theme="night"] body .batch-textarea:focus-visible {
+  border-color: var(--gold, #F5B800) !important;
+  outline: none !important;
+}
+
+/* ─── 2. .batch-dialog — фон rgba(13, 26, 63, 0.55) ────────────── */
+html[data-theme="night"] body .batch-dialog,
+html[data-theme="night"] body [class*="batch-dialog"],
+html[data-theme="night"] body .batch-modal,
+html[data-theme="night"] body .batch-modal .batch-dialog {
+  background: rgba(13, 26, 63, 0.55) !important;
+  background-color: rgba(13, 26, 63, 0.55) !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+  border: 1.5px solid rgba(245, 184, 0, 0.4) !important;
+  border-radius: 16px !important;
+}
+
+/* ─── 3. .controls-wrap — жёлтый контур, скруглённые, фон ─────── */
+html[data-theme="night"] body .controls-wrap,
+html[data-theme="night"] body [class*="controls-wrap"] {
+  background: rgba(13, 26, 63, 0.55) !important;
+  background-color: rgba(13, 26, 63, 0.55) !important;
+  border: 1.5px solid rgba(245, 184, 0, 0.5) !important;
+  border-color: rgba(245, 184, 0, 0.5) !important;
+  border-style: solid !important;
+  border-width: 1.5px !important;
+  border-radius: 16px !important;
+  padding: 8px 12px !important;
+  box-sizing: border-box !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* ─── 4. .save-row — УБРАТЬ border-color rgba(255,255,255,0.0) ── */
+/* Перебиваем v64 — ставим НОРМАЛЬНЫЙ видимый контур */
+html[data-theme="night"] body .save-row {
+  border-color: rgba(245, 184, 0, 0.25) !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body .save-row:hover,
+html[data-theme="night"] body .save-row:focus-within {
+  border-color: rgba(245, 184, 0, 0.5) !important;
+  box-shadow: none !important;
+}
+/* Убиваем inline rgba(255,255,255,0.0) принудительно */
+html[data-theme="night"] body .save-row[style] {
+  border-color: rgba(245, 184, 0, 0.25) !important;
+}
+
+/* ─── 5. id-dropdowns — полупрозрачно-жёлтые края ─────────────── */
+html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body #btn-clear-history,
+html[data-theme="night"] body #btn-batch,
+html[data-theme="night"] body #history-dropdown,
+html[data-theme="night"] body #dl-dropdown,
+html[data-theme="night"] body #history-dropdown > .btn,
+html[data-theme="night"] body #dl-dropdown > .btn {
+  border-color: rgba(245, 184, 0, 0.35) !important;
+  border-style: solid !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body #btn-random:focus-visible,
+html[data-theme="night"] body #btn-random:active,
+html[data-theme="night"] body #btn-clear-history:hover,
+html[data-theme="night"] body #btn-clear-history:focus-visible,
+html[data-theme="night"] body #btn-clear-history:active,
+html[data-theme="night"] body #btn-batch:hover,
+html[data-theme="night"] body #btn-batch:focus-visible,
+html[data-theme="night"] body #btn-batch:active,
+html[data-theme="night"] body #history-dropdown:hover,
+html[data-theme="night"] body #history-dropdown:focus-visible,
+html[data-theme="night"] body #history-dropdown.open,
+html[data-theme="night"] body #history-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #history-dropdown > .btn:hover,
+html[data-theme="night"] body #dl-dropdown:hover,
+html[data-theme="night"] body #dl-dropdown:focus-visible,
+html[data-theme="night"] body #dl-dropdown.open,
+html[data-theme="night"] body #dl-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #dl-dropdown > .btn:hover {
+  border-color: var(--gold, #F5B800) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ─── 6. .splitter-h — BLUR как туман → жёлтый при hover ─────── */
+html[data-theme="night"] body .main > .splitter-h {
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.2) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: background 0.2s ease, backdrop-filter 0.2s ease, border-color 0.2s ease !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover,
+html[data-theme="night"] body .main > .splitter-h.dragging,
+html[data-theme="night"] body .main > .splitter-h:focus,
+html[data-theme="night"] body .main > .splitter-h:active {
+  background: rgba(245, 184, 0, 0.45) !important;
+  background-color: rgba(245, 184, 0, 0.45) !important;
+  backdrop-filter: blur(8px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.4) !important;
+  border-left-color: rgba(245, 184, 0, 0.75) !important;
+  border-right-color: rgba(245, 184, 0, 0.75) !important;
+}
+html[data-theme="night"] body .main > .splitter-h::before {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1.5px, transparent 1.5px) !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover::before,
+html[data-theme="night"] body .main > .splitter-h.dragging::before {
+  background-image: radial-gradient(circle, var(--gold, #F5B800) 1.5px, transparent 1.5px) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v66: НОЧЬ
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. .save-row — border-color rgba(245,184,0,0) ────────── */
+html[data-theme="night"] body .save-row,
+html[data-theme="night"] body .save-row[style] {
+  border-color: rgba(245, 184, 0, 0) !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body .save-row:hover,
+html[data-theme="night"] body .save-row:focus-within {
+  border-color: rgba(245, 184, 0, 0.3) !important;
+  box-shadow: none !important;
+}
+
+/* ─── 2. range (slider) — убрать #FFC72C, 50% прозрачнее ───── */
+html[data-theme="night"] body input[type="range"],
+html[data-theme="night"] body #exaggeration,
+html[data-theme="night"] body input#exaggeration[type="range"],
+html[data-theme="night"] body .slider input[type="range"],
+html[data-theme="night"] body .slider {
+  background: transparent !important;
+  background-color: transparent !important;
+  accent-color: rgba(245, 184, 0, 0.3) !important;
+}
+html[data-theme="night"] body input[type="range"]::-webkit-slider-runnable-track,
+html[data-theme="night"] body #exaggeration::-webkit-slider-runnable-track {
+  background: rgba(245, 184, 0, 0.2) !important;
+  background-color: rgba(245, 184, 0, 0.2) !important;
+  height: 5px !important;
+  border-radius: 3px !important;
+}
+html[data-theme="night"] body input[type="range"]::-webkit-slider-thumb,
+html[data-theme="night"] body #exaggeration::-webkit-slider-thumb {
+  background: rgba(245, 184, 0, 0.35) !important;
+  background-color: rgba(245, 184, 0, 0.35) !important;
+  border: 1px solid rgba(245, 184, 0, 0.5) !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  margin-top: -4.5px !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+}
+html[data-theme="night"] body input[type="range"]::-moz-range-track,
+html[data-theme="night"] body #exaggeration::-moz-range-track {
+  background: rgba(245, 184, 0, 0.2) !important;
+}
+html[data-theme="night"] body input[type="range"]::-moz-range-thumb,
+html[data-theme="night"] body #exaggeration::-moz-range-thumb {
+  background: rgba(245, 184, 0, 0.35) !important;
+  border: 1px solid rgba(245, 184, 0, 0.5) !important;
+}
+
+/* ─── 3. #btn-stop — КРАСНАЯ кнопка (ночь) ────────────────── */
+html[data-theme="night"] body #btn-stop:disabled,
+html[data-theme="night"] body #btn-stop[disabled],
+html[data-theme="night"] body #btn-stop,
+html[data-theme="night"] body .controls #btn-stop {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  border: 2px solid #e63946 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #e63946 !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body #btn-stop:not([disabled]) {
+  background: #e63946 !important;
+  background-color: #e63946 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html[data-theme="night"] body #btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html[data-theme="night"] body #btn-stop:not([disabled]):hover {
+  background: #f44336 !important;
+  border-color: #f44336 !important;
+}
+
+/* ─── 4. text-panel / status / jst-player / footer — ЖЁЛТЫЙ контур ─ */
+html[data-theme="night"] body .text-panel,
+html[data-theme="night"] body .status,
+html[data-theme="night"] body .jst-player,
+html[data-theme="night"] body .jst-player.visible,
+html[data-theme="night"] body #jst-player,
+html[data-theme="night"] body .footer,
+html[data-theme="night"] body footer.footer {
+  border: 1.5px solid rgba(245, 184, 0, 0.4) !important;
+  border-style: solid !important;
+  border-width: 1.5px !important;
+  border-color: rgba(245, 184, 0, 0.4) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+/* ─── 5. .controls кнопки — полупрозрачно-жёлтые ИЗНАЧАЛЬНО + hover ─── */
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy),
+html[data-theme="night"] body .controls > .btn-ghost:not([disabled]):not(.is-busy),
+html[data-theme="night"] body .controls #btn-random:not([disabled]):not(.is-busy),
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):not(.is-busy),
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):not(.is-busy),
+html[data-theme="night"] body .controls #history-dropdown:not([disabled]),
+html[data-theme="night"] body .controls #dl-dropdown:not([disabled]) {
+  border: 1.5px solid rgba(245, 184, 0, 0.35) !important;
+  border-style: solid !important;
+  border-width: 1.5px !important;
+  border-color: rgba(245, 184, 0, 0.35) !important;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):hover,
+html[data-theme="night"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="night"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):hover,
+html[data-theme="night"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="night"] body .controls #btn-random:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-random:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-clear-history:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):hover,
+html[data-theme="night"] body .controls #btn-batch:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #history-dropdown:not([disabled]):hover,
+html[data-theme="night"] body .controls #history-dropdown:not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #dl-dropdown:not([disabled]):hover,
+html[data-theme="night"] body .controls #dl-dropdown:not([disabled]):focus-visible {
+  border-color: var(--gold, #F5B800) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}

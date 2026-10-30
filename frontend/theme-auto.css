@@ -1,0 +1,6 @@
+/* theme-auto.css — auto → data-theme = day/night */
+html[data-theme="auto"] body .btn:hover,
+html[data-theme="auto"] body button:not([disabled]):hover,
+html[data-theme="auto"] body [role="button"]:not([disabled]):hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+}

@@ -1,23 +1,41 @@
-# Backups
+# Backup
+.backups/
 *.bak
 *.bak.*
-*~
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
 .venv/
 venv/
+*.egg-info/
+
+# Output WAV
+output/*.wav
+output/.counter_*
+!output/.gitkeep
+
+# System
+.DS_Store
+Thumbs.db
+*.log
+logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
 
 # Node
 node_modules/
+npm-debug.log
 
-# OS
-.DS_Store
+# Local env
+.env
+.env.local
+.env.*.local
 
-# Logs
-logs/
-*.log
-
-# Seed-VC (external repo, не в git)
-seed-vc/
+# Legacy
+frontend/style-contrast.css

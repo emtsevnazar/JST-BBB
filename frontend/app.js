@@ -360,11 +360,12 @@ function applyLanguage() {
 function showToast(msg, type) {
   let el = $("toast");
   if (!el) { el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
-  const isError = (type === "error");
-  el.textContent = (isError ? "⚠ " : "") + msg;
-  el.className = "toast" + (isError ? " toast-error" : "") + " show";
+  /* v59: ВСЕ toast — красные с ⚠️ (через CSS). JS только ставит текст. */
+  var cleanMsg = String(msg || "").replace(/^⚠\s*/, "");
+  el.textContent = cleanMsg;
+  el.className = "toast toast-error show";
   clearTimeout(window._toastT);
-  window._toastT = setTimeout(() => el.classList.remove("show"), isError ? 8000 : 3500);
+  window._toastT = setTimeout(function() { el.classList.remove("show"); }, 8000);
 }
 
 // === STATUS ===
@@ -569,12 +570,40 @@ function getSettings() {
 
 // === SYNTHESIS ===
 function synthesize() {
+  /* JST_HARD_RESET_65: принудительный сброс is-busy если streaming=false */
+  if (window.JST_IS_STREAMING === false || window.JST_IS_STREAMING === undefined) {
+    try {
+      var _b = document.getElementById('btn-synth');
+      if (_b && _b.classList.contains('is-busy')) {
+        _b.classList.remove('is-busy');
+        window.JST_SYNTH_START = 0;
+        console.warn('[JST v65] Reset stale is-busy (streaming=false)');
+      }
+    } catch(e) {}
+  }
+
   const btnS = $("btn-synth"), btnT = $("btn-stop");
 
   // 1. Guard: если уже идёт — toast, выходим
+  if (btnS && btnS.classList.contains("is-busy") && !window.JST_IS_STREAMING && !isStreaming) {
+    /* is-busy висит, но streaming=false → зависший класс, сбрасываем сразу */
+    try { btnS.classList.remove("is-busy"); } catch(e) {}
+    window.JST_SYNTH_START = 0;
+  }
   if (btnS && btnS.classList.contains("is-busy")) {
-    if (typeof showToast === "function") showToast(t("synth_wait") || "Идёт синтез — подождите");
-    return;
+    /* v57: force reset если висит >30с */
+    var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
+    if (_elapsed > 10000) {
+      try { btnS.classList.remove("is-busy"); } catch(e) {}
+      try { if (ws) { ws.close(); ws = null; } } catch(e) {}
+      isStreaming = false;
+      window.JST_IS_STREAMING = false;
+      if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
+      if (typeof showToast === "function") showToast("Сброшен зависший синтез (" + Math.round(_elapsed/1000) + "с)");
+    } else {
+      if (typeof showToast === "function") showToast(t("synth_wait") || "Идёт синтез — подождите");
+      return;
+    }
   }
   if (isStreaming) return;
 
@@ -587,6 +616,7 @@ function synthesize() {
   if (!voice) { setStatus(t("status_voice_select"), "error"); return; }
 
   // 3. Все проверки пройдены — блокируем
+  window.JST_SYNTH_START = Date.now();
   if (btnS) { btnS.disabled = false; btnS.classList.add("is-busy"); }
   if (btnT) btnT.disabled = false;
 
@@ -649,6 +679,9 @@ function synthesize() {
     } else handleAudioChunk(ev.data);
   };
   ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
+  ws.onclose = function(ev) {
+    try { if (window.JST_IS_STREAMING && typeof finishStreaming === "function") finishStreaming(null); } catch(e) {}
+  };
   ws.onclose = (ev) => {
     if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
     if (isStreaming) {
@@ -669,7 +702,7 @@ function finishStreaming(file) {
     clearTimeout(wsTimeoutTimer);
     wsTimeoutTimer = null;
   }
-  const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
+  const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
   if (file) {
     const dl = $("btn-download"), pv = $("preview-player");
     if (dl) { dl.href = "/output/" + file; dl.download = file; }
@@ -701,7 +734,7 @@ function stopPlayback() {
   isStreaming = false;
   window.JST_IS_STREAMING = false;   // v1.6.5a
   const btnS = $("btn-synth"), btnT = $("btn-stop");
-  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); btnS.classList.remove("is-busy"); }
+  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
   if (btnT) btnT.disabled = true;
   setStatus(t("status_stop"), "");
   if (animFrame) cancelAnimationFrame(animFrame);
@@ -3668,3 +3701,84 @@ window.addEventListener("appinstalled", () => {
 
 document.addEventListener("DOMContentLoaded", _pwaAttach);
 
+/* JST_SHOW_PLAYER_65: показать плеер изначально */
+(function showPlayerInitially() {
+  function go() {
+    try {
+      var p = document.getElementById('jst-player');
+      if (!p) p = document.querySelector('.jst-player');
+      if (p) {
+        p.style.display = '';
+        p.style.visibility = '';
+        p.style.opacity = '';
+        p.classList.add('visible');
+        p.setAttribute('data-has-audio', 'true');  /* хак: считаем что плеер видим */
+      }
+    } catch(e) {}
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
+  setTimeout(go, 500);
+  setTimeout(go, 1500);
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   JST v66: __jstForceResetSynth() — ПОЛНЫЙ сброс состояния синтеза
+   Используется для принудительного сброса зависшего is-busy / isStreaming
+   ═══════════════════════════════════════════════════════════════════ */
+window.__jstForceResetSynth = function(reason) {
+  try {
+    var b = document.getElementById('btn-synth');
+    var s = document.getElementById('btn-stop');
+    if (b) {
+      b.classList.remove('is-busy', 'active', 'pressed');
+      b.disabled = false;
+    }
+    if (s) {
+      s.disabled = true;
+    }
+    // Закрываем WS
+    if (window.ws) {
+      try { window.ws.onclose = null; window.ws.close(); } catch(e) {}
+      window.ws = null;
+    }
+    // Сбрасываем флаги
+    window.JST_IS_STREAMING = false;
+    window.JST_SYNTH_START = 0;
+    if (window._synthTimer) {
+      clearInterval(window._synthTimer);
+      window._synthTimer = null;
+    }
+    console.warn('[JST v66] Force reset:', reason || 'manual');
+    return true;
+  } catch(e) {
+    console.error('[JST v66] Reset failed:', e);
+    return false;
+  }
+};
+
+/* Автосброс при закрытии WS без finishStreaming */
+(function() {
+  var _origWS = window.WebSocket;
+  if (_origWS && !_origWS.__jstWrapped) {
+    window.WebSocket = function(url, protocols) {
+      var ws = protocols ? new _origWS(url, protocols) : new _origWS(url);
+      ws.addEventListener('close', function(ev) {
+        // Если WS закрыт, но streaming всё ещё true — сбрасываем через 500ms
+        if (window.JST_IS_STREAMING) {
+          setTimeout(function() {
+            if (window.JST_IS_STREAMING && window.__jstForceResetSynth) {
+              window.__jstForceResetSynth('WS closed without finishStreaming (code ' + ev.code + ')');
+            }
+          }, 500);
+        }
+      });
+      return ws;
+    };
+    window.WebSocket.__jstWrapped = true;
+    window.WebSocket.CONNECTING = _origWS.CONNECTING;
+    window.WebSocket.OPEN = _origWS.OPEN;
+    window.WebSocket.CLOSING = _origWS.CLOSING;
+    window.WebSocket.CLOSED = _origWS.CLOSED;
+  }
+})();
