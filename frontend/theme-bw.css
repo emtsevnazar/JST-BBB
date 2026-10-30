@@ -566,10 +566,7 @@ html[data-theme="contrast"] body select {
    Fixed элементы: применяем правила позиционирования с !important
    ═══════════════════════════════════════════════════════════════════ */
 
-html[data-theme="contrast"] body {
-  filter: grayscale(1) contrast(1.05) !important;
-  -webkit-filter: grayscale(1) contrast(1.05) !important;
-}
+
 
 /* Плеер, canvas, картинки, видео — принудительно grayscale (даже если filter снят) */
 html[data-theme="contrast"] body canvas,
@@ -671,4 +668,177 @@ html[data-theme="contrast"] body progress {
   accent-color: #000 !important;
   background: #fff !important;
   border: 1px solid #000 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   v73: Ч/Б — БЕЗ filter на body (не ломает fixed).
+   Только canvas/img/video через filter.
+   Плюс: все элементы — background #fff, color #000, border #000.
+   Плюс: исключения для инвертированных (кнопки с bg:#000 / fg:#fff).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Canvas / img / video — grayscale */
+html[data-theme="contrast"] body canvas,
+html[data-theme="contrast"] body img,
+html[data-theme="contrast"] body video {
+  filter: grayscale(1) !important;
+  -webkit-filter: grayscale(1) !important;
+}
+
+/* ─── Базовый ч/б для всего текста и фонов ─── */
+html[data-theme="contrast"] body h1,
+html[data-theme="contrast"] body h2,
+html[data-theme="contrast"] body h3,
+html[data-theme="contrast"] body h4,
+html[data-theme="contrast"] body h5,
+html[data-theme="contrast"] body h6,
+html[data-theme="contrast"] body p,
+html[data-theme="contrast"] body span:not([style*="color"]),
+html[data-theme="contrast"] body li,
+html[data-theme="contrast"] body label,
+html[data-theme="contrast"] body small,
+html[data-theme="contrast"] body strong,
+html[data-theme="contrast"] body em,
+html[data-theme="contrast"] body b,
+html[data-theme="contrast"] body i,
+html[data-theme="contrast"] body dt,
+html[data-theme="contrast"] body dd,
+html[data-theme="contrast"] body summary,
+html[data-theme="contrast"] body legend,
+html[data-theme="contrast"] body caption,
+html[data-theme="contrast"] body blockquote {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+/* Панели/карточки/модалки — белый bg + чёрный border */
+html[data-theme="contrast"] body .panel,
+html[data-theme="contrast"] body .card,
+html[data-theme="contrast"] body .modal-content,
+html[data-theme="contrast"] body .modal-dialog,
+html[data-theme="contrast"] body .modal-body,
+html[data-theme="contrast"] body .modal-header,
+html[data-theme="contrast"] body .modal-footer,
+html[data-theme="contrast"] body .dropdown-menu,
+html[data-theme="contrast"] body .history-list,
+html[data-theme="contrast"] body .jstp-controls,
+html[data-theme="contrast"] body .text-panel,
+html[data-theme="contrast"] body .status,
+html[data-theme="contrast"] body .footer,
+html[data-theme="contrast"] body footer,
+html[data-theme="contrast"] body .jst-player,
+html[data-theme="contrast"] body #jst-player,
+html[data-theme="contrast"] body .controls-wrap,
+html[data-theme="contrast"] body .select-wrap,
+html[data-theme="contrast"] body .save-row,
+html[data-theme="contrast"] body .batch-textarea,
+html[data-theme="contrast"] body .batch-dialog,
+html[data-theme="contrast"] body #dropzone,
+html[data-theme="contrast"] body .help-modal,
+html[data-theme="contrast"] body .help-section,
+html[data-theme="contrast"] body .help-content {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  border-color: #000 !important;
+}
+
+/* Все дети этих панелей — чёрный текст */
+html[data-theme="contrast"] body .panel *:not(.btn):not(button):not(.badge):not(.pill):not(.tag),
+html[data-theme="contrast"] body .card *:not(.btn):not(button):not(.badge):not(.pill):not(.tag),
+html[data-theme="contrast"] body .modal-content *:not(.btn):not(button):not(.badge):not(.pill):not(.tag),
+html[data-theme="contrast"] body .dropdown-menu *:not(.btn):not(button):not(.badge):not(.pill):not(.tag) {
+  color: #000 !important;
+}
+
+/* ─── Инвертированные элементы (bg:#000 / fg:#fff) ─── */
+/* Badges, pills, tags — чёрный фон / белый текст */
+html[data-theme="contrast"] body .badge,
+html[data-theme="contrast"] body .pill,
+html[data-theme="contrast"] body .tag {
+  background: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-color: #000 !important;
+}
+html[data-theme="contrast"] body .badge *,
+html[data-theme="contrast"] body .pill *,
+html[data-theme="contrast"] body .tag * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* Таблицы — шапка чёрная / белый текст */
+html[data-theme="contrast"] body table th {
+  background: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html[data-theme="contrast"] body table td {
+  background: #fff !important;
+  color: #000 !important;
+  border-color: #000 !important;
+}
+
+/* Кнопки — уже есть в существующих правилах */
+
+/* Инпуты — белый bg / чёрный text */
+html[data-theme="contrast"] body input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="contrast"] body textarea,
+html[data-theme="contrast"] body select {
+  background: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+}
+
+/* Ссылки — чёрные с подчёркиванием */
+html[data-theme="contrast"] body a {
+  color: #000 !important;
+  text-decoration: underline !important;
+}
+
+/* HR / divider */
+html[data-theme="contrast"] body hr,
+html[data-theme="contrast"] body .divider {
+  border-color: #000 !important;
+  background: #000 !important;
+  height: 1px !important;
+}
+
+/* Все SVG — наследует цвет текста */
+html[data-theme="contrast"] body svg [fill]:not([fill="none"]):not([fill^="url"]) {
+  fill: currentColor !important;
+}
+html[data-theme="contrast"] body svg [stroke]:not([stroke="none"]):not([stroke^="url"]) {
+  stroke: currentColor !important;
+}
+
+/* Точки — чёрные */
+html[data-theme="contrast"] body .jst-dot,
+html[data-theme="contrast"] body .jst-dot::before,
+html[data-theme="contrast"] body .jst-dot::after,
+html[data-theme="contrast"] body .status-dot,
+html[data-theme="contrast"] body .dot {
+  background: #000 !important;
+  border-color: #000 !important;
+}
+
+/* Range — ч/б */
+html[data-theme="contrast"] body input[type="range"]::-webkit-slider-runnable-track {
+  background: #fff !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body input[type="range"]::-webkit-slider-thumb {
+  background: #000 !important;
+  border: 1px solid #000 !important;
+}
+
+/* === ГАРАНТИЯ: Модалки/тосты — позиционированы корректно (нет filter на body) === */
+html[data-theme="contrast"] body .modal,
+html[data-theme="contrast"] body .modal-overlay,
+html[data-theme="contrast"] body .help-modal,
+html[data-theme="contrast"] body #toast,
+html[data-theme="contrast"] body .toast {
+  position: fixed !important;
 }

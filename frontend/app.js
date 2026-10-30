@@ -585,15 +585,21 @@ function synthesize() {
   const btnS = $("btn-synth"), btnT = $("btn-stop");
 
   // 1. Guard: если уже идёт — toast, выходим
-  if (btnS && btnS.classList.contains("is-busy") && !window.JST_IS_STREAMING && !isStreaming) {
-    /* is-busy висит, но streaming=false → зависший класс, сбрасываем сразу */
-    try { btnS.classList.remove("is-busy"); } catch(e) {}
-    window.JST_SYNTH_START = 0;
+  if (btnS && btnS.classList.contains("is-busy")) {
+    var _wsDead = !ws || ws.readyState === 2 /*CLOSING*/ || ws.readyState === 3 /*CLOSED*/;
+    var _notStreaming = !window.JST_IS_STREAMING && !isStreaming;
+    if (_wsDead || _notStreaming) {
+      try { btnS.classList.remove("is-busy"); } catch(e) {}
+      window.JST_SYNTH_START = 0;
+      isStreaming = false;
+      window.JST_IS_STREAMING = false;
+      console.warn('[JST v73] Reset stale is-busy (ws dead or not streaming)');
+    }
   }
   if (btnS && btnS.classList.contains("is-busy")) {
     /* v57: force reset если висит >30с */
     var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
-    if (_elapsed > 10000) {
+    if (_elapsed > 3000) {
       try { btnS.classList.remove("is-busy"); } catch(e) {}
       try { if (ws) { ws.close(); ws = null; } } catch(e) {}
       isStreaming = false;
@@ -679,18 +685,18 @@ function synthesize() {
     } else handleAudioChunk(ev.data);
   };
   ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
-  ws.onclose = function(ev) {
-    try { if (window.JST_IS_STREAMING && typeof finishStreaming === "function") finishStreaming(null); } catch(e) {}
-  };
-  ws.onclose = (ev) => {
+    ws.onclose = (ev) => {
     if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
-    if (isStreaming) {
-      console.warn("[JST] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
-      if (typeof showToast === "function" && ev.code !== 1000) {
+    /* v73: ВСЕГДА вызываем finishStreaming если streaming ещё активен */
+    if (isStreaming || window.JST_IS_STREAMING) {
+      console.warn("[JST v73] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
+      try { finishStreaming(null); } catch(e) { console.error("finishStreaming failed:", e); }
+      /* Показываем toast только для НЕ-нормальных кодов (не 1000/1001/1005) */
+      if (typeof showToast === "function" && ev.code !== 1000 && ev.code !== 1001 && ev.code !== 1005) {
         showToast(ti("aborted") + " (code " + ev.code + ")", "error");
       }
-      finishStreaming(null);
     }
+    window.ws = null;
   };
 }
 
