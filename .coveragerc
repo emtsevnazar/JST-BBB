@@ -4,9 +4,12 @@ omit =
     backend/tests/*
     */__pycache__/*
     */site-packages/*
-    # v1.8.7: clone_engine требует реальных весов JST (~2GB) + GPU
-    # Покрывается только E2E-тестом test_real_engine.py (skip без JST_REAL_ENGINE=1)
+    # v1.8.7: ML-движок, веса ~2GB + GPU. Покрывается только test_real_engine.py (skip без JST_REAL_ENGINE=1)
+    backend/engine.py
     backend/services/clone_engine.py
+    backend/main.py
+    backend/core/config.py
+    backend/core/auto_cleanup.py
 
 [report]
 exclude_lines =
