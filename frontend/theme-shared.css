@@ -269,3 +269,146 @@ html:not([data-theme="contrast"]) body .toast::before {
   font-size: 18px !important;
   font-weight: 900 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v71: .splitter-h — горизонтальный перетаскиватель
+   ═══════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 901px) {
+  body .main {
+    display: grid !important;
+    grid-template-columns: var(--jst-sidebar-w, 350px) 8px 1fr !important;
+    grid-template-rows: 1fr !important;
+    gap: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  body .main > .sidebar {
+    grid-row: 1 !important;
+    grid-column: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  body .main > .workspace {
+    grid-row: 1 !important;
+    grid-column: 3 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  body .main > .splitter-h {
+    display: flex !important;
+    grid-row: 1 !important;
+    grid-column: 2 !important;
+    width: 8px !important;
+    min-width: 8px !important;
+    max-width: 8px !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    cursor: col-resize !important;
+    align-items: center !important;
+    justify-content: center !important;
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    position: relative !important;
+    z-index: 5 !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(90deg,
+      rgba(0,0,0,0.05) 0%,
+      rgba(0,0,0,0.15) 50%,
+      rgba(0,0,0,0.05) 100%) !important;
+    border-left: 1px solid rgba(0,0,0,0.08) !important;
+    border-right: 1px solid rgba(0,0,0,0.08) !important;
+    transition: background 0.2s ease, border-color 0.2s ease !important;
+  }
+  body .main > .splitter-h::before {
+    content: '' !important;
+    display: block !important;
+    height: 40px !important;
+    width: 4px !important;
+    background-image: radial-gradient(circle, rgba(0,0,0,0.55) 1.5px, transparent 1.5px) !important;
+    background-size: 4px 8px !important;
+    background-position: center !important;
+    background-repeat: repeat-y !important;
+    border-radius: 2px !important;
+    pointer-events: none !important;
+  }
+  body .main > .splitter-h:hover,
+  body .main > .splitter-h.dragging {
+    background: rgba(245, 184, 0, 0.5) !important;
+    border-left-color: rgba(245, 184, 0, 0.7) !important;
+    border-right-color: rgba(245, 184, 0, 0.7) !important;
+  }
+  body .main > .splitter-h:hover::before,
+  body .main > .splitter-h.dragging::before {
+    background-image: radial-gradient(circle, #F5B800 1.5px, transparent 1.5px) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body .main > .splitter-h {
+    display: none !important;
+  }
+}
+
+/* Night — blur default, yellow hover */
+html[data-theme="night"] body .main > .splitter-h {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(1.2) !important;
+  border-left-color: rgba(255, 255, 255, 0.1) !important;
+  border-right-color: rgba(255, 255, 255, 0.1) !important;
+}
+html[data-theme="night"] body .main > .splitter-h::before {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1.5px, transparent 1.5px) !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover,
+html[data-theme="night"] body .main > .splitter-h.dragging {
+  background: rgba(245, 184, 0, 0.5) !important;
+  border-left-color: rgba(245, 184, 0, 0.75) !important;
+  border-right-color: rgba(245, 184, 0, 0.75) !important;
+}
+html[data-theme="night"] body .main > .splitter-h:hover::before,
+html[data-theme="night"] body .main > .splitter-h.dragging::before {
+  background-image: radial-gradient(circle, #F5B800 1.5px, transparent 1.5px) !important;
+}
+
+/* Contrast — B&W (transparent black gradient) */
+html[data-theme="contrast"] body .main > .splitter-h {
+  background: linear-gradient(90deg,
+    rgba(0,0,0,0.1) 0%,
+    rgba(0,0,0,0.28) 50%,
+    rgba(0,0,0,0.1) 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-left-color: rgba(0,0,0,0.25) !important;
+  border-right-color: rgba(0,0,0,0.25) !important;
+}
+html[data-theme="contrast"] body .main > .splitter-h::before {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.65) 1.5px, transparent 1.5px) !important;
+}
+html[data-theme="contrast"] body .main > .splitter-h:hover,
+html[data-theme="contrast"] body .main > .splitter-h.dragging {
+  background: linear-gradient(90deg,
+    rgba(0,0,0,0.25) 0%,
+    rgba(0,0,0,0.5) 50%,
+    rgba(0,0,0,0.25) 100%) !important;
+  border-left-color: #000 !important;
+  border-right-color: #000 !important;
+}

@@ -452,3 +452,110 @@ html[data-theme="contrast"] body .toast {
   box-shadow: 4px 4px 0 #fff !important;
   backdrop-filter: none !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v71: Ч/Б — ГЛОБАЛЬНЫЙ reset всех цветов на чёрный/белый
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Все CSS-переменные из :root → чёрный/белый */
+html[data-theme="contrast"] {
+  --gold: #000 !important;
+  --gold-light: #000 !important;
+  --gold-dark: #000 !important;
+  --gold-rgb: 0,0,0 !important;
+  --navy: #000 !important;
+  --navy-light: #000 !important;
+  --navy-dark: #000 !important;
+  --yellow: #000 !important;
+  --yellow-light: #000 !important;
+  --red: #000 !important;
+  --red-light: #000 !important;
+  --red-dark: #000 !important;
+  --error: #000 !important;
+  --danger: #000 !important;
+  --warning: #000 !important;
+  --success: #000 !important;
+  --info: #000 !important;
+  --accent: #000 !important;
+  --accent-fg: #fff !important;
+  --text: #000 !important;
+  --text-dim: #000 !important;
+  --text-muted: #000 !important;
+  --text-secondary: #000 !important;
+  --text-invert: #fff !important;
+  --panel-bg: #fff !important;
+  --panel-border: #000 !important;
+  --panel-shadow: none !important;
+  --input-bg: #fff !important;
+  --app-bg: #fff !important;
+  --bg: #fff !important;
+  --background: #fff !important;
+  --surface-1: #fff !important;
+  --surface-2: #fff !important;
+  --card-bg: #fff !important;
+  --jst-dot-color: #000 !important;
+  --border: #000 !important;
+  --border-color: #000 !important;
+  --divider: #000 !important;
+  --input-border: #000 !important;
+  --shadow: none !important;
+  --shadow-sm: none !important;
+  --shadow-md: none !important;
+  --shadow-lg: none !important;
+  color-scheme: light !important;
+}
+
+/* Все SVG-иконки — currentColor (чёрный или белый в зависимости от контекста) */
+html[data-theme="contrast"] body svg [fill]:not([fill="none"]):not([fill="currentColor"]):not([fill^="url"]) {
+  fill: currentColor !important;
+}
+html[data-theme="contrast"] body svg [stroke]:not([stroke="none"]):not([stroke="currentColor"]):not([stroke^="url"]) {
+  stroke: currentColor !important;
+}
+
+/* Кнопки с цветными hover → ч/б */
+html[data-theme="contrast"] body .icon-btn:hover,
+html[data-theme="contrast"] body .carousel-btn:hover,
+html[data-theme="contrast"] body .carousel-btn:focus-visible,
+html[data-theme="contrast"] body .carousel-btn:active {
+  border-color: #000 !important;
+  color: #000 !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px #000 !important;
+}
+html[data-theme="contrast"] body .icon-btn:hover svg,
+html[data-theme="contrast"] body .carousel-btn:hover svg {
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+
+/* Точки-индикаторы (jst-dot) в BW — чёрные */
+html[data-theme="contrast"] body .jst-dot,
+html[data-theme="contrast"] body .jst-dot::before,
+html[data-theme="contrast"] body .jst-dot::after {
+  background: #000 !important;
+  background-color: #000 !important;
+  border-color: #000 !important;
+}
+
+/* dividers / hr */
+html[data-theme="contrast"] body hr,
+html[data-theme="contrast"] body .divider {
+  border-color: #000 !important;
+  background: #000 !important;
+}
+
+/* Любые градиенты/тени → нет */
+html[data-theme="contrast"] body * {
+  text-shadow: none !important;
+}
+
+/* Контрастные инпуты */
+html[data-theme="contrast"] body input,
+html[data-theme="contrast"] body textarea,
+html[data-theme="contrast"] body select {
+  background: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+}

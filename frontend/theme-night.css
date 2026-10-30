@@ -291,3 +291,61 @@ html[data-theme="night"] body .splitter.dragging {
     rgba(245,184,0,0.50) 50%,
     rgba(245,184,0,0.20) 100%) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v71: НОЧЬ — все рамки блоков/кнопок (кроме btn-stop) = semi-yellow
+   Через переменные + точечные селекторы для гарантии
+   ═══════════════════════════════════════════════════════════════════ */
+
+html[data-theme="night"] {
+  --panel-border: rgba(245, 184, 0, 0.35) !important;
+  --border: rgba(245, 184, 0, 0.35) !important;
+  --border-color: rgba(245, 184, 0, 0.35) !important;
+  --divider: rgba(245, 184, 0, 0.25) !important;
+  --input-border: rgba(245, 184, 0, 0.35) !important;
+}
+
+/* Явно: все блоки/кнопки/инпуты — yellow border */
+html[data-theme="night"] body .panel,
+html[data-theme="night"] body .card,
+html[data-theme="night"] body .modal-content,
+html[data-theme="night"] body .modal,
+html[data-theme="night"] body .modal-dialog,
+html[data-theme="night"] body .text-panel,
+html[data-theme="night"] body .status,
+html[data-theme="night"] body .footer,
+html[data-theme="night"] body .jst-player,
+html[data-theme="night"] body #jst-player,
+html[data-theme="night"] body .dropdown-menu,
+html[data-theme="night"] body .history-list,
+html[data-theme="night"] body .jstp-controls,
+html[data-theme="night"] body .batch-textarea,
+html[data-theme="night"] body #dropzone,
+html[data-theme="night"] body .select-wrap,
+html[data-theme="night"] body .save-row,
+html[data-theme="night"] body .controls-wrap,
+html[data-theme="night"] body input,
+html[data-theme="night"] body textarea,
+html[data-theme="night"] body select,
+html[data-theme="night"] body .btn:not(#btn-stop),
+html[data-theme="night"] body button:not(#btn-stop),
+html[data-theme="night"] body [role="button"]:not(#btn-stop),
+html[data-theme="night"] body .icon-btn,
+html[data-theme="night"] body #theme-toggle,
+html[data-theme="night"] body #lang-toggle,
+html[data-theme="night"] body #help-toggle,
+html[data-theme="night"] body .carousel-btn,
+html[data-theme="night"] body #btn-random,
+html[data-theme="night"] body #btn-clear-history,
+html[data-theme="night"] body #btn-batch,
+html[data-theme="night"] body #history-dropdown,
+html[data-theme="night"] body #dl-dropdown,
+html[data-theme="night"] body #btn-upload,
+html[data-theme="night"] body #btn-record,
+html[data-theme="night"] body #btn-stt,
+html[data-theme="night"] body #btn-mic,
+html[data-theme="night"] body .btn-mic,
+html[data-theme="night"] body .btn-sm,
+html[data-theme="night"] body .btn-ghost {
+  border-color: rgba(245, 184, 0, 0.35) !important;
+}
