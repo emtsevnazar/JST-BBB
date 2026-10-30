@@ -257,9 +257,54 @@
     /* ─── 9. Глобально: убрать жёлтый с .jst-dot ─── */
     document.querySelectorAll('.jst-dot').forEach(function (el) {
       I(el, 'border-color', '#000');
-      I(el, 'background', '#000');
-      I(el, 'background-color', '#000');
+      I(el, 'background', '#fff');
+      I(el, 'background-color', '#fff');
       I(el, 'box-shadow', 'none');
+      mark(el);
+    });
+    /* Также ::before/::after через CSS vars — уже через --jst-dot-color: #000 */
+
+    /* v85: .lang-card.unavailable / .model-card.unavailable — dashed на hover */
+    document.querySelectorAll('.lang-card.unavailable, .model-card.unavailable, .accent-card.unavailable, .card.unavailable').forEach(function (el) {
+      I(el, 'border', '2px dashed #000');
+      I(el, 'border-style', 'dashed');
+      I(el, 'border-color', '#000');
+      I(el, 'background', '#fff');
+      I(el, 'color', '#000');
+      setChildrenColor(el, '#000');
+      mark(el);
+    });
+
+    /* v85: .help-pill — белый bg / чёрный border / чёрный text */
+    document.querySelectorAll('.help-pill, [class*="help-pill"]').forEach(function (el) {
+      I(el, 'background', '#fff');
+      I(el, 'background-color', '#fff');
+      I(el, 'color', '#000');
+      I(el, '-webkit-text-fill-color', '#000');
+      I(el, 'border', '2px solid #000');
+      I(el, 'border-color', '#000');
+      setChildrenColor(el, '#000');
+      mark(el);
+    });
+
+    /* v85: .help-arrow — точки всегда чёрные */
+    document.querySelectorAll('.help-arrow').forEach(function (el) {
+      I(el, 'background', '#fff');
+      I(el, 'color', '#000');
+      I(el, 'border', '2px solid #000');
+      I(el, 'border-color', '#000');
+      setChildrenColor(el, '#000');
+      mark(el);
+    });
+
+    /* v85: .help-content — белый bg rounded */
+    document.querySelectorAll('.help-content').forEach(function (el) {
+      I(el, 'background', '#fff');
+      I(el, 'background-color', '#fff');
+      I(el, 'color', '#000');
+      I(el, 'border-radius', '12px');
+      I(el, 'border', 'none');
+      setChildrenColor(el, '#000');
       mark(el);
     });
 

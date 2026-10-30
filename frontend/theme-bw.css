@@ -1930,3 +1930,206 @@ html[data-theme="contrast"] body .panel .btn.active * {
   fill: #fff !important;
   stroke: #fff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v85: Ч/Б — 5 точечных фиксов
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. .lang-card.unavailable / .model-card.unavailable ───────
+   При hover/active/focus — ПУНКТИРНЫЙ контур (не красный, не сплошной)
+*/
+html[data-theme="contrast"] body .lang-card.unavailable,
+html[data-theme="contrast"] body .model-card.unavailable,
+html[data-theme="contrast"] body .accent-card.unavailable,
+html[data-theme="contrast"] body .card.unavailable,
+html[data-theme="contrast"] body [class*="card"].unavailable {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px dashed #000 !important;
+  border-style: dashed !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+html[data-theme="contrast"] body .lang-card.unavailable:hover,
+html[data-theme="contrast"] body .lang-card.unavailable:active,
+html[data-theme="contrast"] body .lang-card.unavailable:focus,
+html[data-theme="contrast"] body .lang-card.unavailable:focus-visible,
+html[data-theme="contrast"] body .model-card.unavailable:hover,
+html[data-theme="contrast"] body .model-card.unavailable:active,
+html[data-theme="contrast"] body .model-card.unavailable:focus,
+html[data-theme="contrast"] body .model-card.unavailable:focus-visible,
+html[data-theme="contrast"] body .accent-card.unavailable:hover,
+html[data-theme="contrast"] body .accent-card.unavailable:active,
+html[data-theme="contrast"] body .card.unavailable:hover,
+html[data-theme="contrast"] body .card.unavailable:active {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px dashed #000 !important;
+  border-style: dashed !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html[data-theme="contrast"] body .lang-card.unavailable *,
+html[data-theme="contrast"] body .model-card.unavailable *,
+html[data-theme="contrast"] body .accent-card.unavailable *,
+html[data-theme="contrast"] body .card.unavailable * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  fill: #000 !important;
+  stroke: #000 !important;
+  background: transparent !important;
+}
+
+/* ─── 2. .jst-dot — БЕЛЫЙ круг с чёрным контуром + чёрная точка в центре ─── */
+html[data-theme="contrast"] body .jst-dot {
+  background: #fff !important;
+  background-color: #fff !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+/* ::before — это кольцо контура, уже border-color: #000 через --jst-dot-color */
+html[data-theme="contrast"] body .jst-dot::before {
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+/* ::after — точка в центре, чёрная */
+html[data-theme="contrast"] body .jst-dot::after {
+  background: #000 !important;
+  background-color: #000 !important;
+  border-color: #000 !important;
+}
+/* Также для .jst-dot внутри кнопок — не менять на active/hover */
+html[data-theme="contrast"] body .jst-btn-with-dot:hover .jst-dot,
+html[data-theme="contrast"] body .jst-btn-with-dot:active .jst-dot,
+html[data-theme="contrast"] body .jst-btn-with-dot:focus-visible .jst-dot,
+html[data-theme="contrast"] body button:hover .jst-dot,
+html[data-theme="contrast"] body button:active .jst-dot {
+  background: #fff !important;
+  background-color: #fff !important;
+}
+html[data-theme="contrast"] body .jst-btn-with-dot:hover .jst-dot::before,
+html[data-theme="contrast"] body .jst-btn-with-dot:active .jst-dot::before {
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .jst-btn-with-dot:hover .jst-dot::after,
+html[data-theme="contrast"] body .jst-btn-with-dot:active .jst-dot::after {
+  background: #000 !important;
+}
+
+/* ─── 3. .help-content — БЕЛЫЙ блок со скруглёнными краями ──────── */
+html[data-theme="contrast"] body .help-content,
+html[data-theme="contrast"] body .help-modal .help-content,
+html[data-theme="contrast"] body .help-section .help-content,
+html[data-theme="contrast"] body .help-section[open] .help-content {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 12px 20px !important;
+}
+html[data-theme="contrast"] body .help-content * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: transparent !important;
+}
+
+/* ─── 4. .help-pill — БЕЛЫЙ bg / ЧЁРНЫЙ контур / ЧЁРНЫЙ текст ──── */
+html[data-theme="contrast"] body .help-pill,
+html[data-theme="contrast"] body .help-pill.help-en,
+html[data-theme="contrast"] body .help-pill.help-ru,
+html[data-theme="contrast"] body [class*="help-pill"] {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-pill *,
+html[data-theme="contrast"] body .help-pill.help-en *,
+html[data-theme="contrast"] body .help-pill.help-ru * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: transparent !important;
+}
+/* hover/active — тоже белый */
+html[data-theme="contrast"] body .help-pill:hover,
+html[data-theme="contrast"] body .help-pill:active,
+html[data-theme="contrast"] body .help-pill:focus-visible,
+html[data-theme="contrast"] body .help-pill.active,
+html[data-theme="contrast"] body .help-pill[aria-pressed="true"] {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-pill:hover *,
+html[data-theme="contrast"] body .help-pill.active * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+/* ─── 5. .help-arrow — точки не меняются при нажатии ───────────── */
+/* Контур остаётся чёрным всегда */
+html[data-theme="contrast"] body .help-arrow,
+html[data-theme="contrast"] body .help-arrow:hover,
+html[data-theme="contrast"] body .help-arrow:active,
+html[data-theme="contrast"] body .help-arrow:focus,
+html[data-theme="contrast"] body .help-arrow:focus-visible,
+html[data-theme="contrast"] body .help-arrow[aria-expanded="true"],
+html[data-theme="contrast"] body .help-section[open] .help-arrow,
+html[data-theme="contrast"] body .help-section:hover .help-arrow {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+/* Точки / стрелка внутри — всегда чёрные, не меняются */
+html[data-theme="contrast"] body .help-arrow::before,
+html[data-theme="contrast"] body .help-arrow::after,
+html[data-theme="contrast"] body .help-arrow > *,
+html[data-theme="contrast"] body .help-arrow:hover::before,
+html[data-theme="contrast"] body .help-arrow:hover::after,
+html[data-theme="contrast"] body .help-arrow:active::before,
+html[data-theme="contrast"] body .help-arrow:active::after,
+html[data-theme="contrast"] body .help-arrow:focus::before,
+html[data-theme="contrast"] body .help-arrow:focus::after {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background-color: #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+/* Если стрелка — svg, fill/stroke чёрные */
+html[data-theme="contrast"] body .help-arrow svg,
+html[data-theme="contrast"] body .help-arrow svg *,
+html[data-theme="contrast"] body .help-arrow:hover svg,
+html[data-theme="contrast"] body .help-arrow:active svg,
+html[data-theme="contrast"] body .help-arrow:hover svg *,
+html[data-theme="contrast"] body .help-arrow:active svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+}
