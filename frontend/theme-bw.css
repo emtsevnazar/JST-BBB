@@ -2133,3 +2133,95 @@ html[data-theme="contrast"] body .help-arrow:active svg * {
   fill: #000 !important;
   stroke: #000 !important;
 }
+
+/* ═══ v86: help-header — скруглённые края ═══ */
+html[data-theme="contrast"] body .help-header,
+html[data-theme="contrast"] body .help-header.active,
+html[data-theme="contrast"] body .help-header.open,
+html[data-theme="contrast"] body .help-header.expanded,
+html[data-theme="contrast"] body .help-header[aria-expanded="true"],
+html[data-theme="contrast"] body summary.help-header,
+html[data-theme="contrast"] body details.help-header {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-header *,
+html[data-theme="contrast"] body .help-header.active *,
+html[data-theme="contrast"] body .help-header.open * {
+  background: transparent !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+/* ═══ v86: SVG viewBox icon — белый на чёрном фоне, чёрный на белом ═══ */
+
+/* ACTIVE / IS-BUSY родитель (чёрный bg) → SVG белый */
+html[data-theme="contrast"] body .model-card.active svg,
+html[data-theme="contrast"] body .model-card.active svg *,
+html[data-theme="contrast"] body .model-card.selected svg,
+html[data-theme="contrast"] body .model-card.selected svg *,
+html[data-theme="contrast"] body .lang-card.active svg,
+html[data-theme="contrast"] body .lang-card.active svg *,
+html[data-theme="contrast"] body .lang-card.selected svg,
+html[data-theme="contrast"] body .lang-card.selected svg *,
+html[data-theme="contrast"] body .accent-card.active svg,
+html[data-theme="contrast"] body .accent-card.active svg *,
+html[data-theme="contrast"] body .accent-card.selected svg,
+html[data-theme="contrast"] body .accent-card.selected svg *,
+html[data-theme="contrast"] body .card.active svg,
+html[data-theme="contrast"] body .card.active svg *,
+html[data-theme="contrast"] body button.active svg,
+html[data-theme="contrast"] body button.active svg *,
+html[data-theme="contrast"] body button.is-busy svg,
+html[data-theme="contrast"] body button.is-busy svg *,
+html[data-theme="contrast"] body .btn.active svg,
+html[data-theme="contrast"] body .btn.active svg *,
+html[data-theme="contrast"] body .btn.is-busy svg,
+html[data-theme="contrast"] body .btn.is-busy svg *,
+html[data-theme="contrast"] body .controls button.active svg,
+html[data-theme="contrast"] body .controls button.active svg *,
+html[data-theme="contrast"] body .controls button.is-busy svg,
+html[data-theme="contrast"] body .controls button.is-busy svg * {
+  fill: #fff !important;
+  stroke: #fff !important;
+  color: #fff !important;
+}
+
+/* INACTIVE (белый bg) → SVG чёрный */
+html[data-theme="contrast"] body .model-card:not(.active):not(.selected) svg,
+html[data-theme="contrast"] body .model-card:not(.active):not(.selected) svg *,
+html[data-theme="contrast"] body .lang-card:not(.active):not(.selected) svg,
+html[data-theme="contrast"] body .lang-card:not(.active):not(.selected) svg *,
+html[data-theme="contrast"] body .accent-card:not(.active):not(.selected) svg,
+html[data-theme="contrast"] body .accent-card:not(.active):not(.selected) svg *,
+html[data-theme="contrast"] body .card:not(.active):not(.selected) svg,
+html[data-theme="contrast"] body .card:not(.active):not(.selected) svg *,
+html[data-theme="contrast"] body button:not(.active):not(.is-busy) svg,
+html[data-theme="contrast"] body button:not(.active):not(.is-busy) svg *,
+html[data-theme="contrast"] body .btn:not(.active):not(.is-busy) svg,
+html[data-theme="contrast"] body .btn:not(.active):not(.is-busy) svg *,
+html[data-theme="contrast"] body .help-arrow svg,
+html[data-theme="contrast"] body .help-arrow svg *,
+html[data-theme="contrast"] body .help-pill svg,
+html[data-theme="contrast"] body .help-pill svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+  color: #000 !important;
+}
+
+/* STOP кнопка — SVG цвет = цвет текста кнопки */
+html[data-theme="contrast"] body #btn-stop:disabled svg,
+html[data-theme="contrast"] body #btn-stop:disabled svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+html[data-theme="contrast"] body #btn-stop:not([disabled]) svg,
+html[data-theme="contrast"] body #btn-stop:not([disabled]) svg * {
+  fill: #fff !important;
+  stroke: #fff !important;
+}

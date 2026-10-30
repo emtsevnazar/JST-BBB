@@ -248,6 +248,20 @@ function normalizeSynthPrefs() {
 }
 let currentAccent = "neutral";
 let isStreaming = false;
+
+/* v86: публичный сброс модульной isStreaming */
+window.__jstResetStreaming = function(reason) {
+  isStreaming = false;
+  window.JST_IS_STREAMING = false;
+  if (typeof ws !== "undefined" && ws) {
+    try { ws.onclose = null; ws.onmessage = null; } catch(e) {}
+    try { ws.close(); } catch(e) {}
+    ws = null;
+  }
+  window.ws = null;
+  console.warn("[JST v86] isStreaming reset:", reason || "manual");
+};
+
 let audioCtx = null;
 let ws = null;
 let wsTimeoutTimer = null;
@@ -3760,6 +3774,7 @@ window.__jstForceResetSynth = function(reason) {
     }
     // Сбрасываем флаги
     window.JST_IS_STREAMING = false;
+    if (typeof window.__jstResetStreaming === "function") window.__jstResetStreaming("force-reset");
     window.JST_SYNTH_START = 0;
     if (window._synthTimer) {
       clearInterval(window._synthTimer);

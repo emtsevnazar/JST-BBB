@@ -415,9 +415,10 @@
     var stop = document.getElementById('btn-stop');
     if (!synth || !stop) return;
 
-    var isStreaming = window.JST_IS_STREAMING === true
-                   || synth.classList.contains('is-busy')
-                   || synth.classList.contains('active');
+    var wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
+    var hasBusy = synth.classList.contains('is-busy');
+    /* isStreaming только если есть is-busy ИЛИ JST_IS_STREAMING + WS жив */
+    var isStreaming = (hasBusy && wsAlive) || (window.JST_IS_STREAMING === true && wsAlive);
 
     if (isStreaming) {
       /* SYNTH заблокирована, STOP активна */
@@ -607,23 +608,30 @@
       if (isBW()) applyCardActive();
     }, 500);
 
-    /* v84: watchdog — если synth.disabled но isStreaming=false > 3 сек — разблокировать */
-    var _disabledSince = 0;
+    /* v86: АГРЕССИВНЫЙ watchdog — если WS мёртв или streaming залипло */
     setInterval(function () {
       var synth = document.getElementById('btn-synth');
       if (!synth) return;
-      var isStreaming = window.JST_IS_STREAMING === true || synth.classList.contains('is-busy');
-      if (synth.disabled && !isStreaming) {
-        if (!_disabledSince) _disabledSince = Date.now();
-        else if (Date.now() - _disabledSince > 3000) {
-          synth.disabled = false;
-          _disabledSince = 0;
-          console.warn('[JST v84] Unlocked synth after stale disabled');
-        }
-      } else {
-        _disabledSince = 0;
+
+      var hasBusy = synth.classList.contains('is-busy');
+      var jstStreaming = window.JST_IS_STREAMING === true;
+      var wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
+
+      /* Если is-busy есть, но WS не открыт — это залипание */
+      if (hasBusy && !wsAlive) {
+        console.warn('[JST v86] Watchdog: hasBusy but WS dead — reset');
+        if (typeof window.__jstResetStreaming === "function") window.__jstResetStreaming("ws-dead");
+        else if (typeof window.__jstForceResetSynth === "function") window.__jstForceResetSynth("ws-dead");
+        return;
       }
-    }, 1000);
+
+      /* Если JST_IS_STREAMING но is-busy нет — тоже залипание */
+      if (jstStreaming && !hasBusy) {
+        console.warn('[JST v86] Watchdog: JST_IS_STREAMING but no is-busy — reset');
+        if (typeof window.__jstResetStreaming === "function") window.__jstResetStreaming("streaming-no-busy");
+        return;
+      }
+    }, 700);
 
     console.log('[JST force v84] initialized');
   }
