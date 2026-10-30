@@ -238,8 +238,6 @@ app.include_router(ws_router)
 app.include_router(stt_ws_router)
 
 
-
-
 app.include_router(batch_router)
 app.include_router(emergency_router)
 app.include_router(history_router)
@@ -371,19 +369,33 @@ from backend.routes import error as _jst_err_routes
 
 app.include_router(_jst_err_routes.router)
 
+
 @app.middleware("http")
 async def _jst_error_redirect_mw(request, call_next):
     from fastapi.responses import RedirectResponse
+
     path = request.url.path
-    if (path == "/error"
+    if (
+        path == "/error"
         or path.startswith("/api/")
         or path.startswith("/static/")
-        or path in ("/healthz", "/readyz", "/favicon.ico",
-                    "/manifest.json", "/sw.js", "/offline", "/offline/")):
+        or path
+        in (
+            "/healthz",
+            "/readyz",
+            "/favicon.ico",
+            "/manifest.json",
+            "/sw.js",
+            "/offline",
+            "/offline/",
+        )
+    ):
         return await call_next(request)
     if path in ("/", "", "/index.html") and not _jst_err_state.snapshot()["healthy"]:
         return RedirectResponse(url="/error", status_code=302)
     return await call_next(request)
+
+
 # === /JST_ERROR_PATCH ===
 
 # === JST_VOICECLONE_PATCH ===
@@ -391,5 +403,3 @@ from backend.routes import voice_clone as _jst_vc_routes
 
 app.include_router(_jst_vc_routes.router)
 # === /JST_VOICECLONE_PATCH ===
-
-

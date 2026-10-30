@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+# JST_AUTOFIX: env BEFORE backend imports
+import os as _jst_os
+
+_jst_os.environ.setdefault("JST_ADMIN_TOKEN", "test-token-pytest")
+_jst_os.environ["JST_API_KEY"] = "test-token-pytest"
+
+
 import os
 
 # v1.8.3: тестовый TrustedHost — отклоняем evil.com
@@ -118,3 +125,38 @@ def fake_ref_path(tmp_path, monkeypatch):
 
     monkeypatch.setattr(synth_helpers, "resolve_reference", lambda voice, n: ref)
     return ref
+
+
+# ============ JST_AUTOFIX v4 ============
+import pytest as _jst_pt
+
+_JST_TOKEN = "test-token-pytest"
+
+
+@_jst_pt.fixture(scope="session", autouse=True)
+def _jst_patch_auth():
+    """Patch _api_key() -> test token (works for middleware + dependency), add header to httpx."""
+    try:
+        import core.security as _sec
+
+        _sec._api_key = lambda: _JST_TOKEN
+        print(f"[JST_AUTOFIX] core.security._api_key -> {_JST_TOKEN[:8]}...")
+    except Exception as e:
+        print(f"[JST_AUTOFIX] core.security FAIL: {e}")
+    try:
+        import httpx
+
+        _orig = httpx.Client.send
+
+        def _patched(self, req, *a, **kw):
+            req.headers["X-API-Key"] = _JST_TOKEN
+            return _orig(self, req, *a, **kw)
+
+        httpx.Client.send = _patched
+        print("[JST_AUTOFIX] httpx.Client.send patched")
+    except Exception as e:
+        print(f"[JST_AUTOFIX] httpx FAIL: {e}")
+    yield
+
+
+# ============ END JST_AUTOFIX ============

@@ -1,6 +1,7 @@
 """GET /error — HTML-страница ошибки (RU/EN).
-   GET /api/error-state — JSON для polling (public).
-   POST/DELETE /api/admin/error-state — требуют X-Admin-Token = JST_ADMIN_TOKEN."""
+GET /api/error-state — JSON для polling (public).
+POST/DELETE /api/admin/error-state — требуют X-Admin-Token = JST_ADMIN_TOKEN."""
+
 import os
 from pathlib import Path
 

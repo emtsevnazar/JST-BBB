@@ -39,3 +39,4 @@ npm-debug.log
 
 # Legacy
 frontend/style-contrast.css
+.backup-*

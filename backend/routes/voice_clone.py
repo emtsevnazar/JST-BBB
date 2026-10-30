@@ -1,7 +1,8 @@
 """POST /api/voice-clone (auth) — клонирование через Seed-VC worker.
-   GET  /api/voice-clone/health (public).
-   Лимиты: 20 MB/файл, audio/* MIME, 3 запроса/60s на IP,
-   1 одновременный inference (semaphore)."""
+GET  /api/voice-clone/health (public).
+Лимиты: 20 MB/файл, audio/* MIME, 3 запроса/60s на IP,
+1 одновременный inference (semaphore)."""
+
 import asyncio
 import logging
 import time
@@ -16,14 +17,22 @@ log = logging.getLogger("JST.VoiceClone.Routes")
 router = APIRouter()
 
 MAX_FILE_BYTES = 20 * 1024 * 1024
-ALLOWED_MIME = {"audio/wav", "audio/wave", "audio/x-wav", "audio/mpeg",
-                "audio/mp4", "audio/ogg", "audio/flac", "audio/x-m4a",
-                "application/octet-stream"}
+ALLOWED_MIME = {
+    "audio/wav",
+    "audio/wave",
+    "audio/x-wav",
+    "audio/mpeg",
+    "audio/mp4",
+    "audio/ogg",
+    "audio/flac",
+    "audio/x-m4a",
+    "application/octet-stream",
+}
 
 _RL: dict[str, list[float]] = defaultdict(list)
 _RL_LOCK = asyncio.Lock()
 _RL_WINDOW = 60.0
-_RL_LIMIT  = 3
+_RL_LIMIT = 3
 
 # Семафор: один Seed-VC = один inference за раз
 _INFERENCE_SEM = asyncio.Semaphore(1)
@@ -35,7 +44,9 @@ async def _rate_limit(ip: str) -> None:
     async with _RL_LOCK:
         bucket = [t for t in _RL[ip] if now - t < _RL_WINDOW]
         if len(bucket) >= _RL_LIMIT:
-            raise HTTPException(429, f"rate limit: max {_RL_LIMIT} clone requests per {int(_RL_WINDOW)}s")
+            raise HTTPException(
+                429, f"rate limit: max {_RL_LIMIT} clone requests per {int(_RL_WINDOW)}s"
+            )
         bucket.append(now)
         _RL[ip] = bucket
 
@@ -76,7 +87,8 @@ async def voice_clone(
     try:
         async with _INFERENCE_SEM:
             wav = await clone_voice(
-                src_bytes, tgt_bytes,
+                src_bytes,
+                tgt_bytes,
                 source_name=source.filename or "source.wav",
                 target_name=target.filename or "target.wav",
             )

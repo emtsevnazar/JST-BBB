@@ -1,5 +1,6 @@
 """HTTP-клиент к Seed-VC worker (порт 8100). Отдельный процесс, отдельный venv.
-   Обёртка не импортирует Seed-VC — только HTTP."""
+Обёртка не импортирует Seed-VC — только HTTP."""
+
 import logging
 import os
 
@@ -46,7 +47,12 @@ async def clone_voice(
     if len(r.content) < 100 or not r.content.startswith(b"RIFF"):
         raise VoiceCloneError(f"Seed-VC returned non-WAV ({len(r.content)} bytes)")
 
-    log.info("clone ok: %d bytes (source=%d target=%d)", len(r.content), len(source_bytes), len(target_bytes))
+    log.info(
+        "clone ok: %d bytes (source=%d target=%d)",
+        len(r.content),
+        len(source_bytes),
+        len(target_bytes),
+    )
     return r.content
 
 

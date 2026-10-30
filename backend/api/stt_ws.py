@@ -13,6 +13,7 @@ Inference (whisper.transcribe) выполняется в run_in_executor,
 один за раз (asyncio.Semaphore(1)), чтобы не блокировать event loop.
 Rate-limit + blocklist + max 3 WS per IP — как у /ws/synthesize.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -23,6 +24,7 @@ import time
 
 try:
     from faster_whisper import WhisperModel as _FWModel  # JST_FASTER_WHISPER
+
     _HAS_FW = True
 except ImportError:
     _FWModel = None
@@ -38,18 +40,18 @@ log = logging.getLogger("JST")
 router = APIRouter(tags=["STT"])
 
 # --- Ограничения ---
-MAX_WS_PER_IP      = 3
-MAX_AUDIO_BYTES    = 60 * 1024 * 1024   # 60 MB PCM = ~30 мин 16k mono int16
-MAX_DURATION_SEC   = 300                # 5 мин
-SAMPLE_RATE        = 16000
-ALLOWED_MODELS     = {"tiny", "base", "small", "medium"}  # large — слишком медленно на CPU
+MAX_WS_PER_IP = 3
+MAX_AUDIO_BYTES = 60 * 1024 * 1024  # 60 MB PCM = ~30 мин 16k mono int16
+MAX_DURATION_SEC = 300  # 5 мин
+SAMPLE_RATE = 16000
+ALLOWED_MODELS = {"tiny", "base", "small", "medium"}  # large — слишком медленно на CPU
 
 # --- Общее состояние ---
 _ws_active: dict[str, int] = defaultdict(int)
 _ws_lock = asyncio.Lock()
 _inference_sem = asyncio.Semaphore(1)
-_whisper_models: dict[str, object] = {}   # openai-whisper (fallback)
-_fw_models: dict[str, object] = {}         # faster-whisper (primary)
+_whisper_models: dict[str, object] = {}  # openai-whisper (fallback)
+_fw_models: dict[str, object] = {}  # faster-whisper (primary)
 _whisper_lock = asyncio.Lock()
 
 
@@ -69,9 +71,11 @@ def _unregister_ip(ip: str) -> None:
 
 MAX_CACHED_MODELS = 2
 
+
 def _load_whisper(model_name: str):
     """Загружает whisper-модель (блокирующе). Кэширует до MAX_CACHED_MODELS штук."""
     import whisper
+
     if model_name in _whisper_models:
         return _whisper_models[model_name]
     log.info("[stt_ws] загрузка whisper model=%s", model_name)
@@ -94,6 +98,7 @@ async def _transcribe_pcm(pcm_bytes: bytes, lang: str, model_name: str) -> str:
 
     # PCM int16 → numpy float32 / 32768
     import numpy as np
+
     audio = np.frombuffer(pcm_bytes, dtype=np.int16).astype(np.float32) / 32768.0
 
     def _do():
@@ -133,13 +138,17 @@ async def ws_stt(ws: WebSocket):
     buf = bytearray()
 
     try:
-        await ws.send_text(json.dumps({
-            "type": "ready",
-            "sr": SAMPLE_RATE,
-            "format": "pcm_s16le_mono",
-            "model_default": "small",
-            "max_seconds": MAX_DURATION_SEC,
-        }))
+        await ws.send_text(
+            json.dumps(
+                {
+                    "type": "ready",
+                    "sr": SAMPLE_RATE,
+                    "format": "pcm_s16le_mono",
+                    "model_default": "small",
+                    "max_seconds": MAX_DURATION_SEC,
+                }
+            )
+        )
 
         async def send(obj):
             try:
@@ -161,7 +170,13 @@ async def ws_stt(ws: WebSocket):
                 lng = (msg.get("lang") or "ru").lower()
                 m = (msg.get("model") or "small").lower()
                 if m not in ALLOWED_MODELS:
-                    await send({"type": "error", "code": "bad_model", "message": f"model must be one of {sorted(ALLOWED_MODELS)}"})
+                    await send(
+                        {
+                            "type": "error",
+                            "code": "bad_model",
+                            "message": f"model must be one of {sorted(ALLOWED_MODELS)}",
+                        }
+                    )
                     continue
                 lang, model_name = lng, m
                 buf.clear()
@@ -175,7 +190,13 @@ async def ws_stt(ws: WebSocket):
                     await send({"type": "error", "code": "bad_base64", "message": "invalid base64"})
                     continue
                 if len(buf) + len(chunk) > MAX_AUDIO_BYTES:
-                    await send({"type": "error", "code": "too_long", "message": f"> {MAX_AUDIO_BYTES} bytes"})
+                    await send(
+                        {
+                            "type": "error",
+                            "code": "too_long",
+                            "message": f"> {MAX_AUDIO_BYTES} bytes",
+                        }
+                    )
                     continue
                 buf.extend(chunk)
 
@@ -187,7 +208,15 @@ async def ws_stt(ws: WebSocket):
                 n_samples = len(buf) // 2
                 duration = n_samples / SAMPLE_RATE
                 if duration < 0.2:
-                    await send({"type": "final", "text": "", "lang": lang, "duration": duration, "elapsed": 0})
+                    await send(
+                        {
+                            "type": "final",
+                            "text": "",
+                            "lang": lang,
+                            "duration": duration,
+                            "elapsed": 0,
+                        }
+                    )
                     buf.clear()
                     continue
                 t0 = time.time()
@@ -195,28 +224,36 @@ async def ws_stt(ws: WebSocket):
                     text = await _transcribe_pcm(bytes(buf), lang, model_name)
                 except Exception as e:
                     log.exception("stt_ws transcribe")
-                    await send({"type": "error", "code": "transcribe_failed", "message": str(e)[:300]})
+                    await send(
+                        {"type": "error", "code": "transcribe_failed", "message": str(e)[:300]}
+                    )
                     buf.clear()
                     continue
-                await send({
-                    "type": "final",
-                    "text": text,
-                    "lang": lang,
-                    "duration": round(duration, 2),
-                    "elapsed": round(time.time() - t0, 2),
-                    "model": model_name,
-                })
+                await send(
+                    {
+                        "type": "final",
+                        "text": text,
+                        "lang": lang,
+                        "duration": round(duration, 2),
+                        "elapsed": round(time.time() - t0, 2),
+                        "model": model_name,
+                    }
+                )
                 buf.clear()
 
             else:
-                await send({"type": "error", "code": "bad_type", "message": f"unknown type {mtype!r}"})
+                await send(
+                    {"type": "error", "code": "bad_type", "message": f"unknown type {mtype!r}"}
+                )
 
     except WebSocketDisconnect:
         pass
     except Exception as e:
         log.exception("ws_stt error")
         try:
-            await ws.send_text(json.dumps({"type": "error", "code": "unknown", "message": str(e)[:300]}))
+            await ws.send_text(
+                json.dumps({"type": "error", "code": "unknown", "message": str(e)[:300]})
+            )
         except Exception:
             pass
     finally:

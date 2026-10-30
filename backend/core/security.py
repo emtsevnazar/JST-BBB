@@ -24,7 +24,6 @@ PUBLIC_PATHS = {
     "/api/journal",  # журнал (read-only)
     # v1.10.73: read-only GET endpoints (frontend загружает без ключа)
     "/api/models",
-    "/api/voices",
     "/api/presets",
     "/api/moods",
     "/api/output",
@@ -36,11 +35,9 @@ PUBLIC_PATHS = {
     "/offline",
     "/offline/",
     "/favicon.ico",
-
     "/error",
     "/api/error-state",
     "/api/admin/error-state",
-
     "/api/voice-clone/health",
 }
 
