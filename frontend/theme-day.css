@@ -312,3 +312,41 @@ html[data-theme="day"] body #btn-stop:not([disabled]):focus-visible {
   border-color: #f44336 !important;
   color: #fff !important;
 }
+
+/* v76: btn-stop guaranteed red */
+html[data-theme="day"] body button#btn-stop,
+html[data-theme="day"] body button#btn-stop:disabled,
+html[data-theme="day"] body button#btn-stop[disabled],
+html[data-theme="day"] body .controls > button#btn-stop,
+html[data-theme="day"] body .controls > button#btn-stop:disabled,
+html[data-theme="day"] body .controls > button#btn-stop[disabled] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  border: 2px solid #e63946 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #e63946 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+html[data-theme="day"] body button#btn-stop *,
+html[data-theme="day"] body button#btn-stop:disabled * {
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  fill: #e63946 !important;
+  stroke: #e63946 !important;
+}
+html[data-theme="day"] body button#btn-stop:not([disabled]) {
+  background: #e63946 !important;
+  background-color: #e63946 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-color: #e63946 !important;
+}
+html[data-theme="day"] body button#btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}

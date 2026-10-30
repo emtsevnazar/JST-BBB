@@ -1371,3 +1371,167 @@ html[data-theme="contrast"] body .help-modal .help-section[open] .help-arrow * {
   fill: #fff !important;
   stroke: #fff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   v76: Ч/Б — УБИВАЕМ ВСЕ жёлтые элементы (box-shadow, border, fill, color)
+   Применяется везде — через [data-theme="contrast"] *:not(button):not(.btn)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* 1. ВСЕ кнопки в Ч/Б — БЕЗ box-shadow (нет glow) */
+html[data-theme="contrast"] body button,
+html[data-theme="contrast"] body button:hover,
+html[data-theme="contrast"] body button:focus,
+html[data-theme="contrast"] body button:focus-visible,
+html[data-theme="contrast"] body button:active,
+html[data-theme="contrast"] body .btn,
+html[data-theme="contrast"] body .btn:hover,
+html[data-theme="contrast"] body .btn:focus-visible,
+html[data-theme="contrast"] body .btn:active,
+html[data-theme="contrast"] body [role="button"],
+html[data-theme="contrast"] body [role="button"]:hover {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+
+/* 2. .controls — все кнопки: hover = border 3px чёрный, без glow */
+html[data-theme="contrast"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy),
+html[data-theme="contrast"] body .controls > .btn-ghost:not([disabled]):not(.is-busy),
+html[data-theme="contrast"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy) {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):hover,
+html[data-theme="contrast"] body .controls > .btn:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="contrast"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):hover,
+html[data-theme="contrast"] body .controls > .btn-ghost:not([disabled]):not(.is-busy):focus-visible,
+html[data-theme="contrast"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):hover,
+html[data-theme="contrast"] body .controls > button:not(.btn-primary):not([disabled]):not(.is-busy):focus-visible {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 3px solid #000 !important;
+  border-style: solid !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 3. id-кнопки #btn-random/#btn-clear-history/#btn-batch — hover ЖЁЛТЫЙ УБИРАЕМ */
+html[data-theme="contrast"] body #btn-random:hover,
+html[data-theme="contrast"] body #btn-random:focus-visible,
+html[data-theme="contrast"] body #btn-random:active,
+html[data-theme="contrast"] body #btn-clear-history:hover,
+html[data-theme="contrast"] body #btn-clear-history:focus-visible,
+html[data-theme="contrast"] body #btn-clear-history:active,
+html[data-theme="contrast"] body #btn-batch:hover,
+html[data-theme="contrast"] body #btn-batch:focus-visible,
+html[data-theme="contrast"] body #btn-batch:active {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 3px solid #000 !important;
+  border-style: solid !important;
+  border-width: 3px !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* 4. STOP кнопка в Ч/Б — DISABLED белый/чёрный */
+html[data-theme="contrast"] body #btn-stop:disabled,
+html[data-theme="contrast"] body #btn-stop[disabled],
+html[data-theme="contrast"] body .controls #btn-stop:disabled {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+html[data-theme="contrast"] body #btn-stop:disabled * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+
+/* 5. STOP кнопка в Ч/Б — ENABLED чёрный/белый */
+html[data-theme="contrast"] body #btn-stop:not([disabled]),
+html[data-theme="contrast"] body .controls #btn-stop:not([disabled]) {
+  background: #000 !important;
+  background-color: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body #btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+html[data-theme="contrast"] body #btn-stop:not([disabled]):hover {
+  background: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+}
+
+/* 6. Глобально: ВСЕ ::before / ::after с border-color yellow → чёрный */
+html[data-theme="contrast"] body *::before,
+html[data-theme="contrast"] body *::after {
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+
+/* 7. help-modal — все кнопки работают по state machine */
+html[data-theme="contrast"] body .help-modal button,
+html[data-theme="contrast"] body .help-modal .btn,
+html[data-theme="contrast"] body .help-modal .help-pill {
+  background: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-modal button:hover,
+html[data-theme="contrast"] body .help-modal .btn:hover,
+html[data-theme="contrast"] body .help-modal .help-pill:hover {
+  background: #fff !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-modal button.active,
+html[data-theme="contrast"] body .help-modal button[aria-pressed="true"],
+html[data-theme="contrast"] body .help-modal .btn.active,
+html[data-theme="contrast"] body .help-modal .help-pill.active {
+  background: #000 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 2px solid #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-modal button.active *,
+html[data-theme="contrast"] body .help-modal .btn.active *,
+html[data-theme="contrast"] body .help-modal .help-pill.active * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}

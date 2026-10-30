@@ -3799,3 +3799,47 @@ window.__jstForceResetSynth = function(reason) {
     window.WebSocket.CLOSED = _origWS.CLOSED;
   }
 })();
+
+/* ═══════════════════════════════════════════════════════════════════
+   v76: ГАРАНТИРОВАННЫЙ handler для #btn-stop
+   ═══════════════════════════════════════════════════════════════════ */
+(function() {
+  if (window.__jstV76StopHandler) return;
+  window.__jstV76StopHandler = true;
+  function attach() {
+    var b = document.getElementById('btn-stop');
+    if (!b || b.dataset.v76attached === '1') return;
+    b.dataset.v76attached = '1';
+    /* Не перезаписываем если уже есть — используем addEventListener */
+    b.addEventListener('click', function(ev) {
+      if (typeof stopPlayback === 'function') {
+        ev.preventDefault();
+        ev.stopPropagation();
+        try {
+          stopPlayback();
+        } catch(e) {
+          console.error('[v76] stopPlayback failed:', e);
+          /* Fallback: полный reset */
+          if (window.__jstForceResetSynth) window.__jstForceResetSynth('stopPlayback error');
+        }
+      }
+    }, false);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
+  else attach();
+  setTimeout(attach, 500);
+  setTimeout(attach, 2000);
+})();
+
+/* v76: если идёт синтез — btn-stop ОБЯЗАТЕЛЬНО enabled */
+(function() {
+  setInterval(function() {
+    try {
+      var b = document.getElementById('btn-stop');
+      if (!b) return;
+      if (window.JST_IS_STREAMING && b.disabled) {
+        b.disabled = false;
+      }
+    } catch(e) {}
+  }, 300);
+})();
