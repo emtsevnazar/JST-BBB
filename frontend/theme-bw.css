@@ -1535,3 +1535,196 @@ html[data-theme="contrast"] body .help-modal .help-pill.active * {
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v80 FINAL: Ч/Б — все фиксы
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* 1. .help-section — БЕЗ чёрной прямоугольной рамки */
+html[data-theme="contrast"] body .help-modal .help-section,
+html[data-theme="contrast"] body .help-section,
+html[data-theme="contrast"] body details.help-section {
+  border: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 2. #help-header-fixed — БЕЛЫЙ фон rgb(255,255,255) */
+html[data-theme="contrast"] body #help-header-fixed,
+html[data-theme="contrast"] body #help-header-fixed[style] {
+  background: rgb(255, 255, 255) !important;
+  background-color: rgb(255, 255, 255) !important;
+  background-image: none !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-color: #000 !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html[data-theme="contrast"] body #help-header-fixed * {
+  background: transparent !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+/* 3. .help-header — БЕЛЫЙ фон (не чёрный), включая active/open */
+html[data-theme="contrast"] body .help-modal .help-header,
+html[data-theme="contrast"] body .help-header,
+html[data-theme="contrast"] body summary.help-header,
+html[data-theme="contrast"] body details.help-header,
+html[data-theme="contrast"] body .help-header.active,
+html[data-theme="contrast"] body .help-header.open,
+html[data-theme="contrast"] body .help-header[aria-expanded="true"] {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .help-header *,
+html[data-theme="contrast"] body .help-header.active *,
+html[data-theme="contrast"] body .help-header.open *,
+html[data-theme="contrast"] body .help-header[aria-expanded="true"] * {
+  background: transparent !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+html[data-theme="contrast"] body .help-header svg,
+html[data-theme="contrast"] body .help-header svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+
+/* 4. .help-table — БЕЛЫЙ фон (th, thead, tr, td) */
+html[data-theme="contrast"] body .help-modal .help-table,
+html[data-theme="contrast"] body .help-table,
+html[data-theme="contrast"] body table.help-table,
+html[data-theme="contrast"] body .help-table th,
+html[data-theme="contrast"] body .help-table thead,
+html[data-theme="contrast"] body .help-table thead th,
+html[data-theme="contrast"] body .help-table tr,
+html[data-theme="contrast"] body .help-table tbody,
+html[data-theme="contrast"] body .help-table td {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border-color: #000 !important;
+}
+html[data-theme="contrast"] body .help-table th *,
+html[data-theme="contrast"] body .help-table td * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: transparent !important;
+}
+
+/* 5. #carousel — ТЕКСТ ЧЁРНЫЙ */
+html[data-theme="contrast"] body #carousel > *,
+html[data-theme="contrast"] body #carousel .card,
+html[data-theme="contrast"] body #carousel .model-card,
+html[data-theme="contrast"] body #carousel .lang-card,
+html[data-theme="contrast"] body #carousel .accent-card,
+html[data-theme="contrast"] body #carousel button,
+html[data-theme="contrast"] body #carousel [role="button"],
+html[data-theme="contrast"] body .carousel-btn {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body #carousel > * *,
+html[data-theme="contrast"] body #carousel .card *,
+html[data-theme="contrast"] body #carousel button *,
+html[data-theme="contrast"] body .carousel-btn * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  fill: #000 !important;
+  stroke: #000 !important;
+  background: transparent !important;
+}
+
+/* 6. .controls active — ЧЁРНЫЙ (не жёлтый) */
+html[data-theme="contrast"] body .controls > button.active,
+html[data-theme="contrast"] body .controls > button[aria-pressed="true"],
+html[data-theme="contrast"] body .controls > button.is-busy,
+html[data-theme="contrast"] body .controls > .btn.active,
+html[data-theme="contrast"] body .controls > .btn[aria-pressed="true"],
+html[data-theme="contrast"] body .controls > .btn.is-busy,
+html[data-theme="contrast"] body .controls .btn.active,
+html[data-theme="contrast"] body .controls .btn[aria-pressed="true"],
+html[data-theme="contrast"] body .controls #btn-synth.is-busy,
+html[data-theme="contrast"] body .controls #btn-random.active,
+html[data-theme="contrast"] body .controls #btn-clear-history.active,
+html[data-theme="contrast"] body .controls #btn-batch.active {
+  background: #000 !important;
+  background-color: #000 !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .controls > button.active *,
+html[data-theme="contrast"] body .controls > .btn.active *,
+html[data-theme="contrast"] body .controls .btn.active *,
+html[data-theme="contrast"] body .controls #btn-synth.is-busy * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+/* 7. #carousel disabled — ПУНКТИР (не красный) */
+html[data-theme="contrast"] body #carousel > *[disabled],
+html[data-theme="contrast"] body #carousel > *.disabled,
+html[data-theme="contrast"] body #carousel > *.unavailable,
+html[data-theme="contrast"] body #carousel > *[aria-disabled="true"],
+html[data-theme="contrast"] body #carousel button[disabled],
+html[data-theme="contrast"] body #carousel button.disabled,
+html[data-theme="contrast"] body #carousel .card[disabled],
+html[data-theme="contrast"] body #carousel .card.unavailable,
+html[data-theme="contrast"] body #carousel .card.disabled,
+html[data-theme="contrast"] body #carousel .lang-card.unavailable,
+html[data-theme="contrast"] body #carousel .model-card.unavailable,
+html[data-theme="contrast"] body #carousel .accent-card.unavailable,
+html[data-theme="contrast"] body .carousel-btn[disabled],
+html[data-theme="contrast"] body .carousel-btn.disabled {
+  background: #fff !important;
+  color: #000 !important;
+  border: 2px dashed #000 !important;
+  border-style: dashed !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Доп: .controls hover — чёрный контур (не yellow glow) */
+html[data-theme="contrast"] body .controls > button:not([disabled]):not(.is-busy):hover,
+html[data-theme="contrast"] body .controls > .btn:not([disabled]):not(.is-busy):hover {
+  background: #fff !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
+  box-shadow: none !important;
+}
+
+/* Доп: глобально убить yellow в Ч/Б */
+html[data-theme="contrast"] body .jst-dot::before,
+html[data-theme="contrast"] body .jst-dot::after {
+  border-color: #000 !important;
+  box-shadow: none !important;
+  background: #000 !important;
+}

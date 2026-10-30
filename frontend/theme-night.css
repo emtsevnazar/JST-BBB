@@ -547,3 +547,41 @@ html[data-theme="night"] body button#btn-stop:not([disabled]) * {
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
 }
+
+/* ═══ v80 FINAL: STOP КРАСНЫЙ — night ═══ */
+html[data-theme="night"] body #btn-stop:disabled,
+html[data-theme="night"] body button#btn-stop:disabled,
+html[data-theme="night"] body .controls > #btn-stop:disabled,
+html[data-theme="night"] body .controls #btn-stop:disabled {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  border: 3px solid #e63946 !important;
+  border-style: solid !important;
+  border-width: 3px !important;
+  border-color: #e63946 !important;
+  outline: 1px solid #e63946 !important;
+  outline-offset: 1px !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+html[data-theme="night"] body #btn-stop:disabled * {
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  fill: #e63946 !important;
+  stroke: #e63946 !important;
+}
+html[data-theme="night"] body #btn-stop:not([disabled]) {
+  background: #e63946 !important;
+  background-color: #e63946 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 3px solid #e63946 !important;
+  border-color: #e63946 !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body #btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}

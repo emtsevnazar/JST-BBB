@@ -412,3 +412,23 @@ html[data-theme="contrast"] body .main > .splitter-h.dragging {
   border-left-color: #000 !important;
   border-right-color: #000 !important;
 }
+
+/* ═══ v80 FINAL: #accent-grid — кнопки 135×38 (все темы) ═══ */
+html body #accent-grid .accent-card,
+html body #accent-grid button,
+html body #accent-grid [role="button"],
+html body #accent-grid > * {
+  min-width: 135px !important;
+  width: 135px !important;
+  max-width: 135px !important;
+  min-height: 38px !important;
+  height: 38px !important;
+  max-height: 38px !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
