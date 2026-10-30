@@ -206,3 +206,63 @@ html[data-theme="day"] body #theme-toggle:hover #theme-mode-badge {
   stroke: #FFC72C !important;
   -webkit-text-fill-color: #FFC72C !important;
 }
+
+/* ═══ v72: .controls — ЖЁЛТЫЙ контур при hover/active (перебиваем всё) ═══ */
+
+html[data-theme="day"] body .controls .btn:hover,
+html[data-theme="day"] body .controls .btn:focus-visible,
+html[data-theme="day"] body .controls .btn:active,
+html[data-theme="day"] body .controls .btn.active,
+html[data-theme="day"] body .controls .btn[aria-pressed="true"],
+html[data-theme="day"] body .controls .btn-ghost:hover,
+html[data-theme="day"] body .controls .btn-ghost:focus-visible,
+html[data-theme="day"] body .controls .btn-ghost:active,
+html[data-theme="day"] body .controls button:hover,
+html[data-theme="day"] body .controls button:focus-visible,
+html[data-theme="day"] body .controls button:active,
+html[data-theme="day"] body .controls > .btn:hover,
+html[data-theme="day"] body .controls > .btn:focus-visible,
+html[data-theme="day"] body .controls > .btn:active,
+html[data-theme="day"] body .controls [role="button"]:hover,
+html[data-theme="day"] body .controls [role="button"]:focus-visible,
+html[data-theme="day"] body .controls [role="button"]:active,
+html[data-theme="day"] body .controls .dropdown > .btn:hover,
+html[data-theme="day"] body .controls .dropdown > .btn:focus-visible,
+html[data-theme="day"] body .controls #btn-random:hover,
+html[data-theme="day"] body .controls #btn-random:focus-visible,
+html[data-theme="day"] body .controls #btn-random:active,
+html[data-theme="day"] body .controls #btn-clear-history:hover,
+html[data-theme="day"] body .controls #btn-clear-history:focus-visible,
+html[data-theme="day"] body .controls #btn-clear-history:active,
+html[data-theme="day"] body .controls #btn-batch:hover,
+html[data-theme="day"] body .controls #btn-batch:focus-visible,
+html[data-theme="day"] body .controls #btn-batch:active,
+html[data-theme="day"] body .controls #history-dropdown:hover,
+html[data-theme="day"] body .controls #history-dropdown:focus-visible,
+html[data-theme="day"] body .controls #dl-dropdown:hover,
+html[data-theme="day"] body .controls #dl-dropdown:focus-visible {
+  border-color: #FFC72C !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 1px #FFC72C !important;
+  outline: none !important;
+}
+
+/* btn-synth в день — УБРАТЬ ВСЕ ТЕНИ */
+html[data-theme="day"] body #btn-synth,
+html[data-theme="day"] body #btn-synth:hover,
+html[data-theme="day"] body #btn-synth:focus,
+html[data-theme="day"] body #btn-synth:focus-visible,
+html[data-theme="day"] body #btn-synth:active,
+html[data-theme="day"] body #btn-synth.is-busy,
+html[data-theme="day"] body .controls #btn-synth,
+html[data-theme="day"] body .controls #btn-synth:hover,
+html[data-theme="day"] body .controls #btn-synth:active,
+html[data-theme="day"] body .btn.btn-primary#btn-synth,
+html[data-theme="day"] body .btn.btn-primary#btn-synth:hover,
+html[data-theme="day"] body .btn.btn-primary#btn-synth:active,
+html[data-theme="day"] body .btn.btn-primary#btn-synth:focus {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}

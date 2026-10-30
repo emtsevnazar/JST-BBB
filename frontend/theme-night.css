@@ -41,7 +41,6 @@ html[data-theme="night"] body #btn-stop:not([disabled]):hover {
 }
 
 /* ─── 3. .save-row — border прозрачный (без жёлтого) ────────────── */
-html[data-theme="night"] body .save-row,
 html[data-theme="night"] body .save-row[style] {
   border-color: rgba(245, 184, 0, 0) !important;
   border-style: solid !important;
@@ -322,7 +321,6 @@ html[data-theme="night"] body .jstp-controls,
 html[data-theme="night"] body .batch-textarea,
 html[data-theme="night"] body #dropzone,
 html[data-theme="night"] body .select-wrap,
-html[data-theme="night"] body .save-row,
 html[data-theme="night"] body .controls-wrap,
 html[data-theme="night"] body input,
 html[data-theme="night"] body textarea,
@@ -348,4 +346,123 @@ html[data-theme="night"] body .btn-mic,
 html[data-theme="night"] body .btn-sm,
 html[data-theme="night"] body .btn-ghost {
   border-color: rgba(245, 184, 0, 0.35) !important;
+}
+
+/* ═══ v72: .save-row — ПРОЗРАЧНЫЙ контур (пользователь просил) ═══ */
+html[data-theme="night"] body .save-row,
+html[data-theme="night"] body .save-row[style] {
+  border-color: rgba(245, 184, 0, 0) !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body .save-row:hover,
+html[data-theme="night"] body .save-row:focus-within {
+  border-color: rgba(245, 184, 0, 0.25) !important;
+  box-shadow: none !important;
+}
+
+/* ═══ v72: id-кнопки в ночи — ЯРКИЙ жёлтый hover (перебиваем всё) ═══ */
+
+html[data-theme="night"] body #btn-random:hover,
+html[data-theme="night"] body #btn-random:focus-visible,
+html[data-theme="night"] body #btn-random:active,
+html[data-theme="night"] body #btn-random[aria-pressed="true"],
+html[data-theme="night"] body #btn-clear-history:hover,
+html[data-theme="night"] body #btn-clear-history:focus-visible,
+html[data-theme="night"] body #btn-clear-history:active,
+html[data-theme="night"] body #btn-clear-history[aria-pressed="true"],
+html[data-theme="night"] body #btn-batch:hover,
+html[data-theme="night"] body #btn-batch:focus-visible,
+html[data-theme="night"] body #btn-batch:active,
+html[data-theme="night"] body #btn-batch[aria-pressed="true"],
+html[data-theme="night"] body #history-dropdown:hover,
+html[data-theme="night"] body #history-dropdown:focus-visible,
+html[data-theme="night"] body #history-dropdown.open,
+html[data-theme="night"] body #history-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #dl-dropdown:hover,
+html[data-theme="night"] body #dl-dropdown:focus-visible,
+html[data-theme="night"] body #dl-dropdown.open,
+html[data-theme="night"] body #dl-dropdown[aria-expanded="true"],
+html[data-theme="night"] body #history-dropdown > .btn:hover,
+html[data-theme="night"] body #history-dropdown > .btn:focus-visible,
+html[data-theme="night"] body #dl-dropdown > .btn:hover,
+html[data-theme="night"] body #dl-dropdown > .btn:focus-visible {
+  border-color: #F5B800 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  box-shadow: 0 0 0 1px #F5B800 !important;
+  outline: none !important;
+  color: #F5B800 !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease !important;
+}
+html[data-theme="night"] body #btn-random:hover *,
+html[data-theme="night"] body #btn-clear-history:hover *,
+html[data-theme="night"] body #btn-batch:hover *,
+html[data-theme="night"] body #btn-random:hover svg,
+html[data-theme="night"] body #btn-clear-history:hover svg,
+html[data-theme="night"] body #btn-batch:hover svg {
+  color: #F5B800 !important;
+  fill: #F5B800 !important;
+  stroke: #F5B800 !important;
+}
+
+/* ═══ v72: btn-synth в ночи — hover: yellow text/triangle on blue bg ═══ */
+
+/* HOVER / FOCUS (не busy) */
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):focus-visible,
+html[data-theme="night"] body .controls #btn-synth:not(.is-busy):not([disabled]):hover {
+  background: #1a2a5e !important;
+  background-color: #1a2a5e !important;
+  background-image: none !important;
+  color: #F5B800 !important;
+  -webkit-text-fill-color: #F5B800 !important;
+  border-color: #F5B800 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  box-shadow: 0 0 0 1px #F5B800 !important;
+}
+/* Текст внутри */
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover > *,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover span,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):focus-visible > * {
+  color: #F5B800 !important;
+  -webkit-text-fill-color: #F5B800 !important;
+}
+/* Треугольник (SVG) внутри */
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover svg,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover svg *,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):hover svg path,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):focus-visible svg,
+html[data-theme="night"] body #btn-synth:not(.is-busy):not([disabled]):focus-visible svg * {
+  color: #F5B800 !important;
+  fill: #F5B800 !important;
+  stroke: #F5B800 !important;
+}
+
+/* IS-BUSY (нажата, идёт синтез) — текст и треугольник КРАСНЫЕ */
+html[data-theme="night"] body #btn-synth.is-busy,
+html[data-theme="night"] body #btn-synth.is-busy:hover,
+html[data-theme="night"] body #btn-synth.is-busy:focus,
+html[data-theme="night"] body #btn-synth.is-busy:active {
+  background: #1a2a5e !important;
+  background-color: #1a2a5e !important;
+  background-image: none !important;
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  border-color: #e63946 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  box-shadow: none !important;
+}
+html[data-theme="night"] body #btn-synth.is-busy > *,
+html[data-theme="night"] body #btn-synth.is-busy span,
+html[data-theme="night"] body #btn-synth.is-busy svg,
+html[data-theme="night"] body #btn-synth.is-busy svg *,
+html[data-theme="night"] body #btn-synth.is-busy svg path {
+  color: #e63946 !important;
+  -webkit-text-fill-color: #e63946 !important;
+  fill: #e63946 !important;
+  stroke: #e63946 !important;
 }

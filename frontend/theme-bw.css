@@ -559,3 +559,116 @@ html[data-theme="contrast"] body select {
   border: 2px solid #000 !important;
   box-shadow: none !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v72: Ч/Б — АБСОЛЮТНЫЙ Ч/Б через filter: grayscale
+   Применяется на body — гарантирует что НИКАКОЙ цвет не просочится
+   Fixed элементы: применяем правила позиционирования с !important
+   ═══════════════════════════════════════════════════════════════════ */
+
+html[data-theme="contrast"] body {
+  filter: grayscale(1) contrast(1.05) !important;
+  -webkit-filter: grayscale(1) contrast(1.05) !important;
+}
+
+/* Плеер, canvas, картинки, видео — принудительно grayscale (даже если filter снят) */
+html[data-theme="contrast"] body canvas,
+html[data-theme="contrast"] body img,
+html[data-theme="contrast"] body video,
+html[data-theme="contrast"] body svg:not([fill="none"]):not([fill="currentColor"]) {
+  filter: grayscale(1) !important;
+  -webkit-filter: grayscale(1) !important;
+}
+
+/* Waveform плеер: цвета через CSS-переменные */
+html[data-theme="contrast"] {
+  --wave-color: #000 !important;
+  --wave-bg: #fff !important;
+  --wave-progress: #000 !important;
+}
+
+/* Дополнительно: убираем любые background-image (градиенты) */
+html[data-theme="contrast"] body *:not(svg):not(svg *) {
+  background-image: none !important;
+}
+
+/* Дополнительно: все box-shadow → чёрные или none */
+html[data-theme="contrast"] body *:not(input):not(textarea):not(select) {
+  text-shadow: none !important;
+}
+
+/* Модалки/dropdowns — вернуть fixed-позиционирование явно (не сломать filter'ом) */
+html[data-theme="contrast"] body .modal,
+html[data-theme="contrast"] body .modal-overlay,
+html[data-theme="contrast"] body .help-modal,
+html[data-theme="contrast"] body #toast,
+html[data-theme="contrast"] body .toast {
+  position: fixed !important;
+}
+
+/* Гарантия: все bg на ::before/::after → ч/б */
+html[data-theme="contrast"] body *::before,
+html[data-theme="contrast"] body *::after {
+  filter: grayscale(1) !important;
+}
+
+/* Рамки по умолчанию — чёрные, если наследовались цветные */
+html[data-theme="contrast"] body *:not(input):not(textarea):not(select):not([class*="btn"]):not(button) {
+  border-color: inherit !important;
+}
+
+/* Точки/индикаторы — чёрные */
+html[data-theme="contrast"] body .jst-dot,
+html[data-theme="contrast"] body .jst-dot::before,
+html[data-theme="contrast"] body .jst-dot::after,
+html[data-theme="contrast"] body .status-dot,
+html[data-theme="contrast"] body .dot {
+  background: #000 !important;
+  background-color: #000 !important;
+  border-color: #000 !important;
+}
+
+/* SVG-иконки наследуют цвет текста (который уже ч/б) */
+html[data-theme="contrast"] body svg {
+  color: inherit !important;
+}
+html[data-theme="contrast"] body svg [fill]:not([fill="none"]):not([fill^="url"]) {
+  fill: currentColor !important;
+}
+html[data-theme="contrast"] body svg [stroke]:not([stroke="none"]):not([stroke^="url"]) {
+  stroke: currentColor !important;
+}
+
+/* Range slider — ч/б */
+html[data-theme="contrast"] body input[type="range"] {
+  accent-color: #000 !important;
+}
+html[data-theme="contrast"] body input[type="range"]::-webkit-slider-runnable-track {
+  background: #fff !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body input[type="range"]::-webkit-slider-thumb {
+  background: #000 !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body input[type="range"]::-moz-range-track {
+  background: #fff !important;
+  border: 1px solid #000 !important;
+}
+html[data-theme="contrast"] body input[type="range"]::-moz-range-thumb {
+  background: #000 !important;
+  border: 1px solid #000 !important;
+}
+
+/* Checkbox/radio — чёрные */
+html[data-theme="contrast"] body input[type="checkbox"],
+html[data-theme="contrast"] body input[type="radio"] {
+  accent-color: #000 !important;
+}
+
+/* Прогресс — ч/б */
+html[data-theme="contrast"] body progress {
+  accent-color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #000 !important;
+}
