@@ -670,7 +670,7 @@ summary.help-header {
   text-align: center !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   border-radius: 12px !important;
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   font-size: 12px !important;
   font-weight: 700 !important;
@@ -739,7 +739,7 @@ summary.help-header {
   text-align: center !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   border-radius: 12px !important;
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   cursor: pointer !important;
   transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s !important;
@@ -809,7 +809,7 @@ button.btn:hover,
 button.btn:not(.btn-primary):not(.batch-submit):hover:not(:disabled),
 .btn:focus,
 button.btn:focus {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
 }
 .btn-primary:hover:not(:disabled),
 .btn-gold:hover:not(:disabled) {
@@ -923,7 +923,7 @@ button.btn:hover {
 /* Для обычных кнопок (не активных и не недоступных) — просто не менять фон */
 .btn:not(.active):not(.unavailable_old):hover,
 button.btn:not(.active):not(.unavailable_old):hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
 }
 
 /* ---------- 2. ТЁМНАЯ ТЕМА: ВЕСЬ ТЕКСТ ЖЁЛТЫЙ ---------- */
@@ -1090,7 +1090,7 @@ html:not([data-theme]) #lang-grid .lang-card.unavailable_old:hover {
 html[data-theme="night"] .btn:not(.active):not(.unavailable_old):hover,
 html[data-theme="day"] .btn:not(.active):not(.unavailable_old):hover,
 html:not([data-theme]) .btn:not(.active):not(.unavailable_old):hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: inherit !important;
 }
 html[data-theme="night"] .btn:not(.active):not(.unavailable_old):hover {
@@ -1111,7 +1111,7 @@ html body .btn.unavailable_old {
 
 /* --- ДЕНЬ: НЕАКТИВНЫЕ МОДЕЛИ — фон как у обычной кнопки --- */
 html body #model-grid .model-card.unavailable_old {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   cursor: not-allowed !important;
@@ -1123,7 +1123,7 @@ html body #model-grid .model-card.unavailable_old .model-name {
 
 /* --- ДЕНЬ: НЕАКТИВНЫЕ ЯЗЫКИ — фон как у обычной кнопки --- */
 html body #lang-grid .lang-card.unavailable_old {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   cursor: not-allowed !important;
@@ -1137,7 +1137,7 @@ html body #lang-grid .lang-card.unavailable_old .lang-name {
 /* --- HOVER (ДЕНЬ): КРАСНАЯ рамка, фон НЕ меняется --- */
 html body #model-grid .model-card.unavailable_old:hover,
 html body #lang-grid .lang-card.unavailable_old:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border-color: rgba(230, 57, 70, 0.90) !important;
   box-shadow: 0 0 0 1px rgba(230, 57, 70, 0.35), 0 0 10px rgba(230, 57, 70, 0.20) !important;
@@ -1183,7 +1183,7 @@ html body #lang-grid .lang-card.unavailable_old {
 /* 2. ДЕНЬ: фон как у обычной кнопки */
 html body #model-grid .model-card.unavailable_old,
 html body #lang-grid .lang-card.unavailable_old {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   box-shadow: none !important;
@@ -1198,7 +1198,7 @@ html body #lang-grid .lang-card.unavailable_old .lang-name {
 /* 3. ДЕНЬ: hover — только рамка краснеет, фон НЕ меняется */
 html body #model-grid .model-card.unavailable_old:hover,
 html body #lang-grid .lang-card.unavailable_old:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border-color: rgba(230, 57, 70, 0.90) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.35), 0 0 10px rgba(230,57,70,0.20) !important;
@@ -1245,7 +1245,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old {
 /* Фон = как у Core: var(--input-bg) (тот же, что у обычной карточки) */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   box-shadow: none !important;
@@ -1261,7 +1261,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old .lang-name {
 /* Hover: фон НЕ меняется, только рамка краснеет */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old:hover,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border-color: rgba(230, 57, 70, 0.95) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.45), 0 0 12px rgba(230,57,70,0.30) !important;
@@ -1317,7 +1317,7 @@ html[data-theme="night"] body #btn-synth.btn-primary * {
 /* ---------- 3. НОЧЬ: НЕАКТИВНЫЕ — фон как у Core, текст жёлтый ---------- */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   opacity: 1 !important;
@@ -1334,7 +1334,7 @@ html[data-theme="night"] body #lang-grid .lang-card.unavailable_old .lang-name {
 /* Hover: фон тот же, только рамка красная */
 html[data-theme="night"] body #model-grid .model-card.unavailable_old:hover,
 html[data-theme="night"] body #lang-grid .lang-card.unavailable_old:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border-color: rgba(230, 57, 70, 0.95) !important;
   box-shadow: 0 0 0 1px rgba(230,57,70,0.45), 0 0 12px rgba(230,57,70,0.30) !important;
@@ -1694,7 +1694,7 @@ html body .history-menu,
 html body #dl-dropdown .dropdown-menu,
 html body #history-dropdown .dropdown-menu,
 html body .dropdown .dropdown-menu {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
@@ -1755,7 +1755,7 @@ html[data-theme="night"] body .history-menu,
 html[data-theme="night"] body #dl-dropdown .dropdown-menu,
 html[data-theme="night"] body #history-dropdown .dropdown-menu,
 html[data-theme="night"] body .dropdown .dropdown-menu {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   color: var(--gold) !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.35) !important;
@@ -1807,7 +1807,7 @@ html body .select,
 html body .controls select,
 html body .panel select,
 html body .field select {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   border-radius: 10px !important;
@@ -1828,7 +1828,7 @@ html body #history-toggle,
 html body #help-toggle,
 html body .controls > .dropdown > .btn,
 html body .panel > .dropdown > .btn {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   border-radius: 10px !important;
@@ -1845,7 +1845,7 @@ html body #help-toggle * {
 /* ---------- ИНСТРУКЦИЯ (аккордеон) = как Core ---------- */
 html body .help-section,
 html body .help-section .help-header {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border-color: var(--panel-border, rgba(26,42,94,0.12)) !important;
 }
@@ -1884,7 +1884,7 @@ html[data-theme="night"] body #history-toggle,
 html[data-theme="night"] body #help-toggle,
 html[data-theme="night"] body .help-section,
 html[data-theme="night"] body .help-section .help-header {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border-color: rgba(0,0,0, 0.40) !important;
 }
@@ -1959,7 +1959,7 @@ html[data-theme="night"] body #dl-dropdown > button,
 html[data-theme="night"] body #history-dropdown > button,
 html[data-theme="night"] body .dropdown > .btn,
 html[data-theme="night"] body .dropdown > button {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--gold) !important;
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   box-shadow: none !important;
@@ -1981,7 +1981,7 @@ html[data-theme="night"] body #btn-download-toggle:hover,
 html[data-theme="night"] body #history-toggle:hover,
 html[data-theme="night"] body #dl-dropdown > .btn:hover,
 html[data-theme="night"] body #history-dropdown > .btn:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   border-color: var(--gold, #F5B800) !important;
   box-shadow: 0 2px 12px rgba(0,0,0, 0.30) !important;
 }
@@ -2134,7 +2134,7 @@ html body #cards button * {
 html[data-theme="day"] body .help-doc,
 html[data-theme="day"] body #help-body,
 html[data-theme="day"] body .help-body {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   color: var(--navy, #1a2a5e) !important;
 }
@@ -2222,7 +2222,7 @@ html[data-theme="day"] body #btn-clear-history,
 html[data-theme="day"] body #btn-download-toggle,
 html[data-theme="day"] body #history-toggle,
 html[data-theme="day"] body .dropdown > .btn {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   color: var(--navy, #1a2a5e) !important;
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
 }
@@ -2239,7 +2239,7 @@ html[data-theme="day"] body #btn-clear-history:hover,
 html[data-theme="day"] body #btn-download-toggle:hover,
 html[data-theme="day"] body #history-toggle:hover,
 html[data-theme="day"] body .dropdown > .btn:hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   border-color: var(--gold, #F5B800) !important;
   box-shadow: 0 2px 12px rgba(0,0,0,0.20) !important;
 }
@@ -3447,23 +3447,23 @@ html body #btn-synth.btn.btn-primary:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5
 /* ---------- 2. СТОП — DISABLED (неактивная фаза) — красный контур ---------- */
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):disabled,
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)[disabled] {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  border: 1.5px solid var(--red, #e63946) !important;
-  color: var(--red, #e63946) !important;
+  
+  
+  
+  
   opacity: 1 !important;
   cursor: not-allowed !important;
 }
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):disabled *,
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5)[disabled] * {
-  color: var(--red, #e63946) !important;
+  
 }
 
 /* ---------- 3. СТОП — ENABLED (активная фаза) — красный фон, белый текст ---------- */
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):not(:disabled) {
   background: var(--red, #e63946) !important;
-  background-color: var(--red, #e63946) !important;
-  border: 1.5px solid var(--red, #e63946) !important;
+  background-
+  
   color: #FFFFFF !important;
 }
 html body #btn-stop.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5):not(:disabled) * {
@@ -3480,8 +3480,8 @@ html body #btn-clear-history.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):n
 html body #btn-download-toggle.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5),
 html body #history-dropdown > button.btn.btn-ghost:not(#p1):not(#p2):not(#p3):not(#p4):not(#p5) {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
+  
   border: 1.5px solid var(--panel-border, rgba(26,42,94,0.12)) !important;
   color: var(--navy, #1a2a5e) !important;
   border-radius: 14px !important;
@@ -3552,8 +3552,8 @@ html[data-theme="night"] body #history-dropdown > .btn.btn-ghost:not(#p1):not(#p
 
 html[data-theme="night"] body #btn-upload:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5),
 html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5) {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
+  
   border: 1.5px solid rgba(0,0,0, 0.40) !important;
   color: var(--gold) !important;
   border-radius: 14px !important;
@@ -3566,7 +3566,7 @@ html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):no
 
 html[data-theme="night"] body #btn-upload:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5),
 html[data-theme="night"] body #btn-record:not(#n1):not(#n2):not(#n3):not(#n4):not(#n5):hover {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   border-color: var(--gold) !important;
   box-shadow: 0 4px 14px rgba(0,0,0,0.20) !important;
   transform: translateY(-2px) !important;
@@ -3638,7 +3638,7 @@ html body .help-doc .help-title {
   justify-content: center !important;
   padding: 12px 20px !important;
   margin: -28px -32px 16px !important;
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
   border: 1.5px solid var(--gold) !important;
@@ -3804,7 +3804,7 @@ html body .help-doc .help-title {
   justify-content: center !important;
   padding: 12px 20px !important;
   margin: -28px -32px 16px !important;
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
   backdrop-filter: blur(24px) saturate(1.2) !important;
   -webkit-backdrop-filter: blur(24px) saturate(1.2) !important;
   border: 1.5px solid var(--gold) !important;
@@ -5780,11 +5780,11 @@ html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4)
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):hover,
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):focus,
 html body #btn-synth.btn.btn-primary.is-busy:not(#x1):not(#x2):not(#x3):not(#x4):not(#x5):not(#x6):active {
-  background: var(--input-bg, rgba(255,255,255,0.55)) !important;
-  background-color: var(--input-bg, rgba(255,255,255,0.55)) !important;
+  
+  
   color: var(--navy, #1a2a5e) !important;
-  border: 1.5px solid var(--red, #e63946) !important;
-  border-color: var(--red, #e63946) !important;
+  
+  border-
   outline: none !important;
   box-shadow: none !important;
   cursor: not-allowed !important;
@@ -5803,8 +5803,8 @@ html[data-theme="night"] body #btn-synth.btn.btn-primary.is-busy:not(#y1):not(#y
   background: var(--input-bg, rgba(0,0,0,0.35)) !important;
   background-color: var(--input-bg, rgba(0,0,0,0.35)) !important;
   color: var(--gold) !important;
-  border: 1.5px solid var(--red, #e63946) !important;
-  border-color: var(--red, #e63946) !important;
+  
+  border-
   outline: none !important;
   box-shadow: none !important;
   cursor: not-allowed !important;

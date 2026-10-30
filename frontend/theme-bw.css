@@ -842,3 +842,314 @@ html[data-theme="contrast"] body #toast,
 html[data-theme="contrast"] body .toast {
   position: fixed !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   v74 Ч/Б — ВСЕ 8 ЯВНО ЗАПРОШЕННЫХ ФИКСОВ
+   С specificity через :not(#zzz) для гарантии победы над style-v4 и fixes-*
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── 1. .icon-btn / #theme-toggle — значок центр, текст 8px снизу ─── */
+html[data-theme="contrast"] body .icon-btn,
+html[data-theme="contrast"] body #theme-toggle,
+html[data-theme="contrast"] body #themeToggle {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  padding: 4px 2px 3px !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  position: relative !important;
+  transition: border-color 0.15s ease !important;
+}
+html[data-theme="contrast"] body #theme-toggle #theme-icon,
+html[data-theme="contrast"] body #theme-toggle > svg,
+html[data-theme="contrast"] body #theme-toggle > i {
+  display: block !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 auto !important;
+  flex-shrink: 0 !important;
+  color: #000 !important;
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+html[data-theme="contrast"] body #theme-toggle::before,
+html[data-theme="contrast"] body #theme-toggle::after {
+  content: none !important;
+  display: none !important;
+}
+html[data-theme="contrast"] body #theme-toggle #theme-mode-badge,
+html[data-theme="contrast"] body #theme-toggle .theme-mode-badge {
+  display: block !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  margin: 1px auto 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  position: static !important;
+  transform: none !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+}
+@media (max-width: 900px) {
+  html[data-theme="contrast"] body .icon-btn,
+  html[data-theme="contrast"] body #theme-toggle {
+    width: 45px !important;
+    height: 45px !important;
+    min-width: 45px !important;
+    min-height: 45px !important;
+    max-width: 45px !important;
+    max-height: 45px !important;
+    padding: 3px 2px !important;
+  }
+  html[data-theme="contrast"] body #theme-toggle #theme-icon {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+  html[data-theme="contrast"] body #theme-toggle #theme-mode-badge,
+  html[data-theme="contrast"] body #theme-toggle .theme-mode-badge {
+    font-size: 7px !important;
+  }
+}
+html[data-theme="contrast"] body #theme-toggle:hover,
+html[data-theme="contrast"] body #theme-toggle:focus,
+html[data-theme="contrast"] body #theme-toggle:focus-visible,
+html[data-theme="contrast"] body #theme-toggle:active,
+html[data-theme="contrast"] body .icon-btn:hover,
+html[data-theme="contrast"] body .icon-btn:active {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border-color: #666 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ─── 3. #new-voice / #dropzone / #btn-upload / #btn-record / ───────
+        .jstp-controls / .save-row / .panel / .select-wrap
+        Изначально 1.5px → 3px при hover (без box-shadow, тот же rounded) */
+html[data-theme="contrast"] body #new-voice,
+html[data-theme="contrast"] body #dropzone,
+html[data-theme="contrast"] body #btn-upload,
+html[data-theme="contrast"] body #btn-record,
+html[data-theme="contrast"] body .jstp-controls .btn,
+html[data-theme="contrast"] body .jstp-controls button,
+html[data-theme="contrast"] body .save-row,
+html[data-theme="contrast"] body .panel,
+html[data-theme="contrast"] body .select-wrap {
+  border: 1.5px solid #000 !important;
+  border-style: solid !important;
+  border-width: 1.5px !important;
+  border-color: #000 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-width 0.12s ease, border-color 0.15s ease !important;
+}
+html[data-theme="contrast"] body #new-voice:not([disabled]):hover,
+html[data-theme="contrast"] body #new-voice:not([disabled]):focus-visible,
+html[data-theme="contrast"] body #new-voice:not([disabled]):active,
+html[data-theme="contrast"] body #dropzone:hover,
+html[data-theme="contrast"] body #dropzone:focus-within,
+html[data-theme="contrast"] body #dropzone:active,
+html[data-theme="contrast"] body #btn-upload:not([disabled]):hover,
+html[data-theme="contrast"] body #btn-upload:not([disabled]):focus-visible,
+html[data-theme="contrast"] body #btn-upload:not([disabled]):active,
+html[data-theme="contrast"] body #btn-record:not([disabled]):hover,
+html[data-theme="contrast"] body #btn-record:not([disabled]):focus-visible,
+html[data-theme="contrast"] body #btn-record:not([disabled]):active,
+html[data-theme="contrast"] body .jstp-controls .btn:not([disabled]):hover,
+html[data-theme="contrast"] body .jstp-controls .btn:not([disabled]):focus-visible,
+html[data-theme="contrast"] body .jstp-controls .btn:not([disabled]):active,
+html[data-theme="contrast"] body .jstp-controls button:not([disabled]):hover,
+html[data-theme="contrast"] body .jstp-controls button:not([disabled]):focus-visible,
+html[data-theme="contrast"] body .save-row:hover,
+html[data-theme="contrast"] body .save-row:focus-within,
+html[data-theme="contrast"] body .panel:hover,
+html[data-theme="contrast"] body .panel:focus-within,
+html[data-theme="contrast"] body .select-wrap:hover,
+html[data-theme="contrast"] body .select-wrap:focus-within,
+html[data-theme="contrast"] body .select-wrap:active {
+  border: 3px solid #000 !important;
+  border-style: solid !important;
+  border-width: 3px !important;
+  border-color: #000 !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ─── 4. .help-title — белый bg / чёрный text ──────────────────── */
+/*      #help-header-fixed — белый bg + чёрный контур ──────────── */
+html[data-theme="contrast"] body .help-title,
+html[data-theme="contrast"] body #help-header-fixed .help-title,
+html[data-theme="contrast"] body #help-header-fixed .help-title *,
+html[data-theme="contrast"] body #help-header-fixed .help-title span {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-theme="contrast"] body #help-header-fixed,
+html[data-theme="contrast"] body #help-header-fixed[style],
+html[data-theme="contrast"] body #help-header-fixed[style*="background"] {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #000 !important;
+  border-radius: 22px !important;
+  box-shadow: none !important;
+  outline: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-theme="contrast"] body #help-header-fixed *,
+html[data-theme="contrast"] body #help-header-fixed *[style] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-theme="contrast"] body #help-header-fixed svg,
+html[data-theme="contrast"] body #help-header-fixed svg * {
+  fill: #000 !important;
+  stroke: #000 !important;
+}
+
+/* ─── 5. #btn-stop:disabled — БЕЗ var(--input-bg) / var(--red) ──── */
+html[data-theme="contrast"] body #btn-stop:disabled,
+html[data-theme="contrast"] body #btn-stop[disabled],
+html[data-theme="contrast"] body #btn-stop.btn.btn-ghost:disabled,
+html[data-theme="contrast"] body .controls #btn-stop:disabled {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border: 2px solid #000 !important;
+  border-style: solid !important;
+  border-width: 2px !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+/* ENABLED — чёрный/белый */
+html[data-theme="contrast"] body #btn-stop:not([disabled]),
+html[data-theme="contrast"] body .controls #btn-stop:not([disabled]) {
+  background: #000 !important;
+  background-color: #000 !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body #btn-stop:not([disabled]) * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+html[data-theme="contrast"] body #btn-stop:not([disabled]):hover {
+  background: #1a1a1a !important;
+  border-color: #1a1a1a !important;
+}
+
+/* ─── 6. #btn-random — УБРАТЬ жёлтое свечение (glow/box-shadow) ── */
+html[data-theme="contrast"] body #btn-random,
+html[data-theme="contrast"] body #btn-random:hover,
+html[data-theme="contrast"] body #btn-random:focus,
+html[data-theme="contrast"] body #btn-random:focus-visible,
+html[data-theme="contrast"] body #btn-random:active,
+html[data-theme="contrast"] body #btn-random[aria-pressed="true"],
+html[data-theme="contrast"] body .controls #btn-random:hover,
+html[data-theme="contrast"] body .controls #btn-random:active {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+html[data-theme="contrast"] body #btn-random:hover,
+html[data-theme="contrast"] body #btn-random:active,
+html[data-theme="contrast"] body #btn-random:focus-visible {
+  background: #fff !important;
+  color: #000 !important;
+  border: 3px solid #000 !important;
+  border-width: 3px !important;
+}
+
+/* ─── 7. #btn-synth — УБРАТЬ 24px box-shadow на hover/focus/active ─ */
+html[data-theme="contrast"] body #btn-synth:hover,
+html[data-theme="contrast"] body #btn-synth:focus,
+html[data-theme="contrast"] body #btn-synth:focus-visible,
+html[data-theme="contrast"] body #btn-synth:active,
+html[data-theme="contrast"] body .controls #btn-synth:hover,
+html[data-theme="contrast"] body .controls #btn-synth:active,
+html[data-theme="contrast"] body .btn.btn-primary#btn-synth:hover,
+html[data-theme="contrast"] body .btn.btn-primary#btn-synth:active {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* ─── 8. :active dropdowns — transparent background ─────────────── */
+html[data-theme="contrast"] body #btn-random:active,
+html[data-theme="contrast"] body #btn-clear-history:active,
+html[data-theme="contrast"] body #btn-batch:active,
+html[data-theme="contrast"] body #history-dropdown:active,
+html[data-theme="contrast"] body #dl-dropdown:active {
+  background-color: rgba(0, 0, 0, 0) !important;
+  background: transparent !important;
+}
+
+/* ─── 2. #theme-mode-badge — по центру кнопки ───────────────────── */
+html[data-theme="contrast"] body #theme-mode-badge,
+html[data-theme="contrast"] body .theme-mode-badge {
+  display: inline-block !important;
+  position: static !important;
+  font-size: 8px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  transform: none !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+}

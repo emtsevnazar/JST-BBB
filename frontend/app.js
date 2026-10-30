@@ -685,6 +685,16 @@ function synthesize() {
     } else handleAudioChunk(ev.data);
   };
   ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
+  /* v74: ws.onclose — при любом закрытии WS сбрасываем состояние */
+  ws.onclose = function(ev) {
+    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
+    try {
+      if (isStreaming || window.JST_IS_STREAMING) {
+        finishStreaming(null);
+      }
+    } catch(e) { console.error("[v74] finishStreaming in onclose failed:", e); }
+    window.ws = null;
+  };
     ws.onclose = (ev) => {
     if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
     /* v73: ВСЕГДА вызываем finishStreaming если streaming ещё активен */
@@ -3769,6 +3779,7 @@ window.__jstForceResetSynth = function(reason) {
   if (_origWS && !_origWS.__jstWrapped) {
     window.WebSocket = function(url, protocols) {
       var ws = protocols ? new _origWS(url, protocols) : new _origWS(url);
+      window.ws = ws;  /* v74: глобальная ссылка для reset */
       ws.addEventListener('close', function(ev) {
         // Если WS закрыт, но streaming всё ещё true — сбрасываем через 500ms
         if (window.JST_IS_STREAMING) {
