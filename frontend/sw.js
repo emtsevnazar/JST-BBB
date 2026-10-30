@@ -1,4 +1,4 @@
-const VERSION = 'v76.0.0';
+const VERSION = 'v77.0.0';
 const CACHE_STATIC = 'jst-static-' + VERSION;
 const CACHE_OFFL = 'jst-offl-' + VERSION;
 
@@ -69,5 +69,26 @@ self.addEventListener('fetch', function(e) {
       })
     );
     return;
+  }
+});
+
+/* v77: форсированное удаление старых кэшей */
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.filter(function(k) { return k.indexOf('jst-') !== 0 || k.indexOf('v77') === -1; })
+            .map(function(k) { return caches.delete(k); })
+      );
+    }).then(function() { return self.clients.claim(); })
+  );
+});
+
+/* v77: при получении сообщения от клиента — очистить всё */
+self.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'CLEAR_ALL') {
+    caches.keys().then(function(keys) {
+      return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+    });
   }
 });
