@@ -363,6 +363,67 @@
      DAY / NIGHT STYLES (без inline — только для STOP и accent-grid)
      Всё остальное делает CSS в theme-day/night.css
      ═══════════════════════════════════════════════════════════ */
+
+  /* ─── v84: state machine синтеза (disabled/enabled) ──── */
+  function applySynthState() {
+    var synth = document.getElementById('btn-synth');
+    var stop = document.getElementById('btn-stop');
+    if (!synth || !stop) return;
+
+    var isStreaming = window.JST_IS_STREAMING === true
+                   || synth.classList.contains('is-busy')
+                   || synth.classList.contains('active');
+
+    if (isStreaming) {
+      /* SYNTH заблокирована, STOP активна */
+      if (!synth.disabled) { synth.disabled = true; mark(synth); }
+      if (stop.disabled) { stop.disabled = false; mark(stop); }
+    } else {
+      /* SYNTH активна, STOP заблокирована */
+      if (synth.disabled) { synth.disabled = false; mark(synth); }
+      if (!stop.disabled) { stop.disabled = true; mark(stop); }
+    }
+  }
+
+  /* ─── v84: model-card / lang-card / accent-card / card active ──── */
+  function applyCardActive() {
+    if (!isBW()) return;
+
+    var selector = '.panel .model-card.active, .panel .lang-card.active, .panel .accent-card.active, .panel .card.active, '
+                 + '.controls .model-card.active, .controls .lang-card.active, .controls .accent-card.active, .controls .card.active, '
+                 + '.model-card.active, .lang-card.active, .accent-card.active, .card.active';
+
+    document.querySelectorAll(selector).forEach(function (el) {
+      I(el, 'background', '#000');
+      I(el, 'background-color', '#000');
+      I(el, 'background-image', 'none');
+      I(el, 'color', '#fff');
+      I(el, '-webkit-text-fill-color', '#fff');
+      I(el, 'border', '2px solid #000');
+      I(el, 'border-color', '#000');
+      I(el, 'box-shadow', 'none');
+      setChildrenColor(el, '#fff');
+      mark(el);
+    });
+
+    /* Неактивные карточки — белый/чёрный */
+    var inactiveSel = '.panel .model-card:not(.active), .panel .lang-card:not(.active), .panel .accent-card:not(.active), '
+                    + '.panel .card:not(.active), .model-card:not(.active):not(.unavailable):not(.disabled), '
+                    + '.lang-card:not(.active):not(.unavailable):not(.disabled), '
+                    + '.accent-card:not(.active):not(.unavailable):not(.disabled)';
+    document.querySelectorAll(inactiveSel).forEach(function (el) {
+      I(el, 'background', '#fff');
+      I(el, 'background-color', '#fff');
+      I(el, 'background-image', 'none');
+      I(el, 'color', '#000');
+      I(el, '-webkit-text-fill-color', '#000');
+      I(el, 'border', '2px solid #000');
+      I(el, 'border-color', '#000');
+      setChildrenColor(el, '#000');
+      mark(el);
+    });
+  }
+
   function applyDayNight() {
     if (!isDay() && !isNight()) return;
 
@@ -420,9 +481,13 @@
     /* ШАГ 1: очистить ВСЁ что мы ставили */
     cleanAll();
 
-    /* ШАГ 2: применить заново для текущей темы */
+    /* ШАГ 2: applySynthState — ВСЕГДА (независимо от темы) */
+    applySynthState();
+
+    /* ШАГ 3: применить заново для текущей темы */
     if (isBW()) {
       applyBW();
+      applyCardActive();
     } else if (isDay() || isNight()) {
       applyDayNight();
     }
@@ -490,7 +555,32 @@
       }
     }, 800);
 
-    console.log('[JST force v82] initialized');
+    
+    /* v84: watchdogs для state machine */
+    setInterval(function () {
+      applySynthState();
+      if (isBW()) applyCardActive();
+    }, 500);
+
+    /* v84: watchdog — если synth.disabled но isStreaming=false > 3 сек — разблокировать */
+    var _disabledSince = 0;
+    setInterval(function () {
+      var synth = document.getElementById('btn-synth');
+      if (!synth) return;
+      var isStreaming = window.JST_IS_STREAMING === true || synth.classList.contains('is-busy');
+      if (synth.disabled && !isStreaming) {
+        if (!_disabledSince) _disabledSince = Date.now();
+        else if (Date.now() - _disabledSince > 3000) {
+          synth.disabled = false;
+          _disabledSince = 0;
+          console.warn('[JST v84] Unlocked synth after stale disabled');
+        }
+      } else {
+        _disabledSince = 0;
+      }
+    }, 1000);
+
+    console.log('[JST force v84] initialized');
   }
 
   if (document.readyState === 'loading') {

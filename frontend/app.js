@@ -599,7 +599,7 @@ function synthesize() {
   if (btnS && btnS.classList.contains("is-busy")) {
     /* v57: force reset если висит >30с */
     var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
-    if (_elapsed > 3000) {
+    if (_elapsed > 60000) {
       try { btnS.classList.remove("is-busy"); } catch(e) {}
       try { if (ws) { ws.close(); ws = null; } } catch(e) {}
       isStreaming = false;
@@ -623,7 +623,7 @@ function synthesize() {
 
   // 3. Все проверки пройдены — блокируем
   window.JST_SYNTH_START = Date.now();
-  if (btnS) { btnS.disabled = false; btnS.classList.add("is-busy"); }
+  if (btnS) { btnS.disabled = true; btnS.classList.add("is-busy"); }
   if (btnT) btnT.disabled = false;
 
   if (!audioCtx) audioCtx = new AudioContext();

@@ -1879,3 +1879,54 @@ html[data-theme="contrast"] body .panel button:not(.active):not([aria-pressed="t
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
 }
+
+/* ═══ v84: .model-card / .lang-card / .accent-card / .card active в Ч/Б ═══ */
+html[data-theme="contrast"] body .model-card.active,
+html[data-theme="contrast"] body .lang-card.active,
+html[data-theme="contrast"] body .accent-card.active,
+html[data-theme="contrast"] body .card.active,
+html[data-theme="contrast"] body .model-card.selected,
+html[data-theme="contrast"] body .lang-card.selected,
+html[data-theme="contrast"] body .accent-card.selected,
+html[data-theme="contrast"] body .card.selected {
+  background: #000 !important;
+  background-color: #000 !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 2px solid #000 !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+html[data-theme="contrast"] body .model-card.active *,
+html[data-theme="contrast"] body .lang-card.active *,
+html[data-theme="contrast"] body .accent-card.active *,
+html[data-theme="contrast"] body .card.active *,
+html[data-theme="contrast"] body .model-card.active svg,
+html[data-theme="contrast"] body .model-card.active svg *,
+html[data-theme="contrast"] body .lang-card.active svg,
+html[data-theme="contrast"] body .lang-card.active svg *,
+html[data-theme="contrast"] body .accent-card.active svg,
+html[data-theme="contrast"] body .accent-card.active svg * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+  background: transparent !important;
+}
+
+/* .panel кнопки active — чёрный/белый */
+html[data-theme="contrast"] body .panel button.active,
+html[data-theme="contrast"] body .panel .btn.active,
+html[data-theme="contrast"] body .panel button[aria-pressed="true"],
+html[data-theme="contrast"] body .panel .btn[aria-pressed="true"] {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #000 !important;
+}
+html[data-theme="contrast"] body .panel button.active *,
+html[data-theme="contrast"] body .panel .btn.active * {
+  color: #fff !important;
+  fill: #fff !important;
+  stroke: #fff !important;
+}
