@@ -32,3 +32,48 @@
 
 ## Почему не «большая переделка за раз»
 `app.js` — 3860 строк, 125 `window.*`, `const I18N` на script-scope, IIFE инициализации, `isStreaming` мутируется в десятках мест. Full-rewrite = многодневная работа с высоким риском регрессий. Инкрементальная миграция с тегом после каждого шага — единственный безопасный путь.
+
+---
+
+## Phase 4a — Backend hardening (DONE, tag phase4a-docs-off)
+- docs_url/redoc_url/openapi_url → None в production (JST_ENV=production)
+- CORS whitelist (уже был, подтверждён)
+- engine.synth_one → loop.run_in_executor (уже был)
+- whisper.transcribe → run_in_executor (уже был)
+- bandit -ll: 0 findings
+- pip-audit: 0 CVE
+
+## Phase 4b — Documentation (DONE, tag phase4b-docs)
+- docs/API.md — 45+ HTTP + 4 WS эндпоинта
+- docs/SECURITY.md — auth, middleware, rate-limit, prod checklist
+- docs/ARCHITECTURE.md — обновлён
+
+## Итоговое состояние (на дату phase4b)
+- Тесты: 78 passed, coverage 62.12%
+- app.js: 164820 → 173675 байт (после pre-commit), PWA вынесен в pwa.js
+- ES6-модули: api.js, dom.js, format.js, index.js, pwa.js, state.js, ws-manager.js (7)
+- Отключены в prod: /docs, /redoc, /openapi.json
+- Удалены: dom-utils.js, utils.js (дубли)
+
+## Что НЕ сделано (честно)
+- isStreaming, ws, wsTimeoutTimer — всё ещё в app.js (Phase 4 план)
+- ui-theme, ui-help, ui-synth, history, stt — не тронуты
+- ~39 глобальных функций в app.js, 124 window.*
+- PWA-кнопка в браузере не проверена (только node --check + grep)
+- BOLA (owner check) — приемлемо для 127.0.0.1, нужно для prod
+
+## Следующие шаги (приоритет)
+1. Проверить в браузере: SYNTH→STOP→SYNTH, PWA-кнопка, Day/Night/BW
+2. Если ОК: ui-help (SVG, help-header) — следующий безопасный JS-шаг
+3. Если проблемы: git reset --hard phase3b-cleanup (до PWA-миграции)
+4. Phase 4c+: isStreaming миграция (требует особой осторожности)
+
+## Точки отката
+- checkpoint-before-refactor — до всех правок
+- checkpoint-tests-green — 62%, зелёные
+- phase2-modules-ready — state.js
+- phase3a-pwa-ready — pwa.js создан
+- phase3b-cleanup — дубли удалены
+- phase3c-pwa-migrated — app.js → pwa.js делегаты
+- phase4a-docs-off — /docs отключены в prod
+- phase4b-docs — документация
