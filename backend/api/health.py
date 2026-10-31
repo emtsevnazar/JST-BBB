@@ -51,9 +51,9 @@ async def health():
         "git_sha": GIT_SHA,
         "uptime_sec": uptime_sec(),
         "engine_ready": ENGINE is not None,
-        "sr": ENGINE.sr if ENGINE else None,
-        "device": ENGINE.device if ENGINE else None,
-        "mode": ENGINE.current_mode if ENGINE else None,
+        "sr": getattr(ENGINE, "sr", None) if ENGINE else None,
+        "device": getattr(ENGINE, "device", None) if ENGINE else None,
+        "mode": getattr(ENGINE, "current_mode", None) if ENGINE else None,
         "ws_active": ws_active_count(),
     }
 
