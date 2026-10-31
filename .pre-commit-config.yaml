@@ -11,7 +11,7 @@ repos:
     hooks:
       - id: pytest-cov
         name: pytest with coverage
-        entry: bash -c '/Users/nazar/Documents/AAC/code/bin/python3 -m pytest backend/tests/ -q --no-header --cov=backend --cov-report=term-missing 2>&1 | tail -5'
+        entry: bash -c 'set -o pipefail; .venv/bin/python -m pytest backend/tests/ -q --no-header --tb=short --cov=backend --cov-report=term-missing 2>&1 | tail -20'
         language: system
         pass_filenames: false
         files: ^backend/.*\.py$
@@ -19,7 +19,7 @@ repos:
       # v1.6.0: security — bandit на каждый коммит (~5 сек)
       - id: bandit
         name: bandit (security static analysis)
-        entry: /Users/nazar/Documents/AAC/code/bin/python -m bandit -r backend/ -ll -q
+        entry: .venv/bin/python -m bandit -r backend/ -ll -q
         language: system
         pass_filenames: false
         files: ^backend/.*\.py$
@@ -27,7 +27,7 @@ repos:
       # v1.6.0: pip-audit — manual (~2 мин, запускать перед релизом)
       - id: pip-audit
         name: pip-audit (CVE scan, manual)
-        entry: bash -c 'pip-audit --desc off 2>&1 | head -30'
+        entry: bash -c 'set -o pipefail; pip-audit --desc off 2>&1 | head -30'
         language: system
         pass_filenames: false
         files: ^(requirements.*\.txt|pyproject\.toml)$
