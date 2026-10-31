@@ -99,7 +99,10 @@ async def lifespan(app: FastAPI):
     try:
         from backend.core.error_state import error_state as _es_startup
 
-        _es_startup.clear()
+        # v1.1.33 FIX: clear() is async but startup is sync — use internals.
+        with _es_startup._lock:
+            _es_startup._current = None
+            _es_startup._version += 1
         log.info("[startup] error_state cleared (healthy)")
     except Exception as _e:
         log.warning("[startup] error_state.clear failed: %s", _e)
