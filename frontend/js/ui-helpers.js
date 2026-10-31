@@ -1,6 +1,7 @@
 /* ui-helpers.js — pure helpers (Phase 5c, extracted from app.js)
    Classic script for sync load, window.__jstHelpers bridge. */
 (function () {
+  var I18N = (window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} };
   var $ = function (id) { return document.getElementById(id); };  /* Phase 5e hotfix: local $ shim */
 function fmt(sec) {
   if (!isFinite(sec) || sec < 0) sec = 0;

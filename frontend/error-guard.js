@@ -51,7 +51,7 @@
   if (location.pathname === '/offline' || location.pathname === '/offline/') return;
 
   var IGNORE = [
-    '/api/error-state', '/error', '/offline', '/healthz', '/readyz',
+    '/api/error-state', '/api/mode', '/error', '/offline', '/healthz', '/readyz',
     '/api/security/', '/static/', '/favicon', '/manifest.json', '/sw.js'
   ];
   var redirected = false;
