@@ -20,6 +20,10 @@ from .security.hardening import rate_limiter as _rate_limiter
 async def jst_rate_limit(request, call_next):
     ip = request.client.host if request.client else "unknown"
     path = request.url.path
+    # Phase 4e LOOPBACK_NO_WS_LIMIT: local dev — no WS rate limit.
+    # SYNTH+STOP cycles re-create WS many times; 20/60s was killing localhost UX.
+    if ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost") and path.startswith("/ws/"):
+        return await call_next(request)
     # v1.7.10-fix: /api/security/* доступен даже забаненным IP
     # (иначе нельзя разбанить себя; stats нужен для видимости состояния)
     if not path.startswith("/api/security/") and _blocklist.is_banned(ip):
