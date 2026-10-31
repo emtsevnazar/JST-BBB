@@ -92,12 +92,25 @@
     if (current) sel.value = current;
   }
 
+
+  function updateModelInfo() {
+    if (window.__jstNormalizeSynthPrefs) window.__jstNormalizeSynthPrefs();
+    var info = $("model-info"); if (!info) return;
+    var m = (window.MODELS || []).find(function (x) { return x.code === window.currentMode; });
+    if (!m) { info.innerHTML = ""; return; }
+    var tDesc = function (k) { return ((I18N[window.LANG] && I18N[window.LANG].desc) || {})[k] || ""; };
+    var langs = (m.languages || []).map(function (l) { return l.toUpperCase(); }).join(" · ") || "—";
+    var status = m.loaded ? "" : " <span style=\"color:var(--red)\">(не загружена)</span>";
+    info.innerHTML = "<div class=\"mi-langs\">" + langs + "</div>" + "<div class=\"mi-desc\">" + tDesc(m.code) + status + "</div>";
+  }
+
   window.__jstRender = {
     rebuildPresetsSelect: rebuildPresetsSelect,
     rebuildCarousel: rebuildCarousel,
     applyCard: applyCard,
     rebuildAccents: rebuildAccents,
     renderMoods: renderMoods,
+    updateModelInfo: updateModelInfo,
   };
   if (typeof console !== 'undefined') {
     console.log('[JST ui-render] exports:', Object.keys(window.__jstRender));

@@ -101,6 +101,7 @@ function normalizeSynthPrefs() {
   saveSynthPrefs();
   applySynthLangToText();
 }
+window.__jstNormalizeSynthPrefs = normalizeSynthPrefs;
 let currentAccent = "neutral";
 let isStreaming = false; window.isStreaming = false;
 
@@ -281,16 +282,7 @@ function rebuildModelCarousel() {
   });
 }
 
-function updateModelInfo() {
-  normalizeSynthPrefs();
-  const info = $("model-info"); if (!info) return;
-  const m = MODELS.find(x => x.code === currentMode);
-  if (!m) { info.innerHTML = ""; return; }
-  const langs = (m.languages || []).map(l => l.toUpperCase()).join(" · ") || "—";
-  const status = m.loaded ? "" : ' <span style="color:var(--red)">(не загружена)</span>';
-  info.innerHTML = '<div class="mi-langs">' + langs + '</div>' +
-                   '<div class="mi-desc">' + tDesc(m.code) + status + '</div>';
-}
+function updateModelInfo() { if (window.__jstRender && window.__jstRender.updateModelInfo) return window.__jstRender.updateModelInfo(); }
 
 // === LANGUAGES ===
 function renderLanguages() {
