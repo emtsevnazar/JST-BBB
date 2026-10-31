@@ -1,50 +1,83 @@
-# Backup
-.backups/
-*.bak
-*.bak.*
+# ═══════════════════════════════════════════════════════════════════
+# Environment & secrets
+# ═══════════════════════════════════════════════════════════════════
+.env
+.env.local
+.env.*.local
+!.env.example
 
+# ═══════════════════════════════════════════════════════════════════
 # Python
+# ═══════════════════════════════════════════════════════════════════
 __pycache__/
 *.py[cod]
 *.pyo
 .venv/
 venv/
 *.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
-# Output WAV
+# ═══════════════════════════════════════════════════════════════════
+# Node
+# ═══════════════════════════════════════════════════════════════════
+node_modules/
+npm-debug.log*
+package-lock.json.bak*
+
+# ═══════════════════════════════════════════════════════════════════
+# Backups & snapshots
+# ═══════════════════════════════════════════════════════════════════
+*.bak
+*.bak.*
+*.bak2
+*.bak_*
+*.bak-*
+*.phase*.bak
+.backups/
+.backup-*/
+
+# ═══════════════════════════════════════════════════════════════════
+# Runtime data (logs, output, caches)
+# ═══════════════════════════════════════════════════════════════════
+logs/*.log
+logs/*.log.*
+logs/*.err.log
 output/*.wav
 output/.counter_*
+output/_tts_cache/
 !output/.gitkeep
 
+# ═══════════════════════════════════════════════════════════════════
 # System
+# ═══════════════════════════════════════════════════════════════════
 .DS_Store
+**/.DS_Store
 Thumbs.db
-*.log
-logs/*.log
 
+# ═══════════════════════════════════════════════════════════════════
 # IDE
+# ═══════════════════════════════════════════════════════════════════
 .vscode/
 .idea/
 *.swp
 *~
 
-# Node
-node_modules/
-npm-debug.log
-
-# Local env
-.env
-.env.local
-.env.*.local
-
-# Legacy
-frontend/style-contrast.css
-.backup-*
-frontend/js/*.bak-*
-frontend/*.bak-*
-
-# test/dev artifacts
-*.bak_*
-*.bak2
-*.bak_before_*
+# ═══════════════════════════════════════════════════════════════════
+# Build artifacts
+# ═══════════════════════════════════════════════════════════════════
 .fallow/
+dist/
+build/
+src-tauri/target/
+
+# ═══════════════════════════════════════════════════════════════════
+# Legacy (remove later)
+# ═══════════════════════════════════════════════════════════════════
+frontend/style-contrast.css
+requirements-frozen-*.txt
