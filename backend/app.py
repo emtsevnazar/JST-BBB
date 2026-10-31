@@ -226,7 +226,15 @@ async def lifespan(app: FastAPI):
 # v1.8.0: API-key auth для непубличных путей
 
 
-app = FastAPI(title="JST Studio", lifespan=lifespan)
+_JST_ENV = os.getenv("JST_ENV", "dev").lower()
+_JST_PROD = _JST_ENV == "production"
+app = FastAPI(
+    title="JST Studio",
+    lifespan=lifespan,
+    docs_url=None if _JST_PROD else "/docs",
+    redoc_url=None if _JST_PROD else "/redoc",
+    openapi_url=None if _JST_PROD else "/openapi.json",
+)
 
 app.include_router(moods_router)
 app.include_router(system_router)
