@@ -4,7 +4,7 @@
   if (window.__jstStrip65) return;
   window.__jstStrip65 = true;
 
-  var HH_PROPS_TO_REMOVE = [
+  const HH_PROPS_TO_REMOVE = [
     'background', 'background-color', 'background-image',
     'border', 'border-color', 'border-width', 'border-style', 'border-top',
     'border-right', 'border-bottom', 'border-left', 'border-radius',
@@ -17,9 +17,9 @@
 
   /* УБИРАЕМ инжект :not(#p1) с 24px shadow */
   function removeInjectedShadows() {
-    var styles = document.querySelectorAll('head style');
-    for (var i = 0; i < styles.length; i++) {
-      var txt = styles[i].textContent || '';
+    const styles = document.querySelectorAll('head style');
+    for (let i = 0; i < styles.length; i++) {
+      const txt = styles[i].textContent || '';
       /* Паттерн :not(#p1) — auto-generated */
       if (/:not\(#p[0-9]/i.test(txt) ||
           /0 0 24px rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0\.65/i.test(txt) ||
@@ -31,7 +31,7 @@
 
   /* #btn-stop :disabled — убрать var(--input-bg) */
   function fixBtnStopDisabled() {
-    var b = document.getElementById('btn-stop');
+    const b = document.getElementById('btn-stop');
     if (!b) return;
     if (b.disabled) {
       try {
@@ -49,9 +49,9 @@
 
   function fixHelpHeader() {
     if (document.documentElement.getAttribute('data-theme') !== 'contrast') return;
-    var hh = document.getElementById('help-header-fixed');
+    const hh = document.getElementById('help-header-fixed');
     if (!hh) return;
-    HH_PROPS_TO_REMOVE.forEach(function(p) {
+    HH_PROPS_TO_REMOVE.forEach((p) => {
       try { hh.style.removeProperty(p); } catch(e) {}
     });
     try {

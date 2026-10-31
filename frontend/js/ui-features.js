@@ -6,15 +6,15 @@
   "use strict";
   if (window.__jstpLastAudioRestore) return;
   window.__jstpLastAudioRestore = true;
-  window.addEventListener("DOMContentLoaded", function () {
+  window.addEventListener("DOMContentLoaded", () => {
     if (window.__jstApi && window.__jstApi.applySynthLangToText) window.__jstApi.applySynthLangToText();
     try {
-      var raw = localStorage.getItem("jstp-last-audio");
+      const raw = localStorage.getItem("jstp-last-audio");
       if (!raw) return;
-      var obj = JSON.parse(raw);
-      var url = obj && obj.url, text = obj && obj.text;
+      const obj = JSON.parse(raw);
+      const url = obj && obj.url, text = obj && obj.text;
       if (!url) return;
-      setTimeout(function () {
+      setTimeout(() => {
         window.dispatchEvent(new CustomEvent("jst:load-audio", {
           detail: { url: url, text: text || "" }
         }));
@@ -27,7 +27,7 @@
 (function showPlayerInitially() {
   function go() {
     try {
-      var p = document.getElementById('jst-player');
+      let p = document.getElementById('jst-player');
       if (!p) p = document.querySelector('.jst-player');
       if (p) {
         p.style.display = '';
@@ -49,10 +49,10 @@
   if (window.__jstV76StopHandler) return;
   window.__jstV76StopHandler = true;
   function attach() {
-    var b = document.getElementById('btn-stop');
+    const b = document.getElementById('btn-stop');
     if (!b || b.dataset.v76attached === '1') return;
     b.dataset.v76attached = '1';
-    b.addEventListener('click', function (ev) {
+    b.addEventListener('click', (ev) => {
       if (window.__jstSynth && window.__jstSynth.stopPlayback) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -73,9 +73,9 @@
 
 /* [4/4] btn-stop watchdog — при streaming держать кнопку enabled */
 (function () {
-  setInterval(function () {
+  setInterval(() => {
     try {
-      var b = document.getElementById('btn-stop');
+      const b = document.getElementById('btn-stop');
       if (!b) return;
       if (window.JST_IS_STREAMING && b.disabled) b.disabled = false;
     } catch (e) {}
@@ -85,12 +85,12 @@
 /* [5/6] Help-shutters: прозрачная модалка help + blur, без затемнения.
    Skipped в contrast (data-theme="contrast"). */
 (function () {
-  var STYLE_ID = "help-shutters-style";
+  const STYLE_ID = "help-shutters-style";
   function injectStyle() {
     if (document.documentElement.getAttribute("data-theme") === "contrast") return;
-    var old = document.getElementById(STYLE_ID);
+    const old = document.getElementById(STYLE_ID);
     if (old) old.remove();
-    var s = document.createElement("style");
+    const s = document.createElement("style");
     s.id = STYLE_ID;
     s.textContent = [
       "html body .help-modal.open::before,",
@@ -133,7 +133,7 @@
   }
   function apply() {
     if (document.documentElement.getAttribute("data-theme") === "contrast") return;
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal || !modal.classList.contains("open")) return;
     injectStyle();
     modal.style.setProperty("background", "transparent", "important");
@@ -141,19 +141,19 @@
     modal.style.setProperty("-webkit-backdrop-filter", "blur(35px) saturate(1.3)", "important");
   }
   function init() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal) return;
     apply();
-    new MutationObserver(function (muts) {
-      muts.forEach(function (m) {
+    new MutationObserver((muts) => {
+      muts.forEach((m) => {
         if (m.attributeName === "class") {
           setTimeout(apply, 50);
           setTimeout(apply, 200);
         }
       });
     }).observe(modal, { attributes: true, attributeFilter: ["class"] });
-    var ht = document.getElementById("help-toggle");
-    if (ht) ht.addEventListener("click", function () {
+    const ht = document.getElementById("help-toggle");
+    if (ht) ht.addEventListener("click", () => {
       setTimeout(apply, 80);
       setTimeout(apply, 250);
     });
@@ -164,44 +164,44 @@
 
 /* [6/6] FADE_ZONE: плавное затухание карточек help-sections у краёв viewport. */
 (function () {
-  var FADE_ZONE = 130, MAX_BLUR = 5, MIN_OP = 0.12;
+  const FADE_ZONE = 130, MAX_BLUR = 5, MIN_OP = 0.12;
   function applyEdgeFade() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal || !modal.classList.contains("open")) return;
-    var modalRect = modal.getBoundingClientRect();
-    var modalTop = modalRect.top, modalH = modalRect.height;
+    const modalRect = modal.getBoundingClientRect();
+    const modalTop = modalRect.top, modalH = modalRect.height;
     if (modalH <= 0) return;
-    var cards = modal.querySelectorAll(".help-section");
-    for (var i = 0; i < cards.length; i++) {
-      var card = cards[i];
-      var r = card.getBoundingClientRect();
-      var cy = (r.top + r.bottom) / 2 - modalTop;
-      var fTop = Math.min(1, Math.max(0, cy / FADE_ZONE));
-      var fBot = Math.min(1, Math.max(0, (modalH - cy) / FADE_ZONE));
-      var fade = Math.min(fTop, fBot);
+    const cards = modal.querySelectorAll(".help-section");
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      const r = card.getBoundingClientRect();
+      const cy = (r.top + r.bottom) / 2 - modalTop;
+      const fTop = Math.min(1, Math.max(0, cy / FADE_ZONE));
+      const fBot = Math.min(1, Math.max(0, (modalH - cy) / FADE_ZONE));
+      const fade = Math.min(fTop, fBot);
       if (fade < 0.999) {
-        var blurPx = (1 - fade) * MAX_BLUR;
-        var op = MIN_OP + fade * (1 - MIN_OP);
+        const blurPx = (1 - fade) * MAX_BLUR;
+        const op = MIN_OP + fade * (1 - MIN_OP);
         card.style.setProperty("opacity", op.toFixed(3), "important");
-        card.style.setProperty("filter", "blur(" + blurPx.toFixed(2) + "px)", "important");
+        card.style.setProperty("filter", `blur(${  blurPx.toFixed(2)  }px)`, "important");
       } else {
         card.style.removeProperty("opacity");
         card.style.removeProperty("filter");
       }
     }
   }
-  var rafId = null;
+  let rafId = null;
   function onScroll() {
     if (rafId) return;
-    rafId = requestAnimationFrame(function () { rafId = null; applyEdgeFade(); });
+    rafId = requestAnimationFrame(() => { rafId = null; applyEdgeFade(); });
   }
   function init() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal) return;
     modal.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
-    new MutationObserver(function (muts) {
-      muts.forEach(function (m) {
+    new MutationObserver((muts) => {
+      muts.forEach((m) => {
         if (m.attributeName === "class") {
           setTimeout(applyEdgeFade, 100);
           setTimeout(applyEdgeFade, 300);
@@ -209,8 +209,8 @@
         }
       });
     }).observe(modal, { attributes: true, attributeFilter: ["class"] });
-    var ht = document.getElementById("help-toggle");
-    if (ht) ht.addEventListener("click", function () {
+    const ht = document.getElementById("help-toggle");
+    if (ht) ht.addEventListener("click", () => {
       setTimeout(applyEdgeFade, 150);
       setTimeout(applyEdgeFade, 400);
     });
@@ -221,25 +221,25 @@
 
 /* [7/8] Dropdown closeAll #1 — blur on outside click + touch toggle */
 (function () {
-  document.addEventListener("click", function (e) {
-    var a = e.target.closest(".dropdown-menu a, .history-menu .history-list > div");
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest(".dropdown-menu a, .history-menu .history-list > div");
     if (a) {
-      var dd = a.closest(".dropdown");
+      const dd = a.closest(".dropdown");
       if (dd) {
-        var btn = dd.querySelector(":scope > .btn");
-        if (btn) setTimeout(function () { btn.blur(); }, 30);
+        const btn = dd.querySelector(":scope > .btn");
+        if (btn) setTimeout(() => { btn.blur(); }, 30);
       }
     }
     if (!e.target.closest(".dropdown")) {
-      document.querySelectorAll(".dropdown > .btn").forEach(function (b) { b.blur(); });
+      document.querySelectorAll(".dropdown > .btn").forEach((b) => { b.blur(); });
     }
   }, true);
-  document.querySelectorAll(".dropdown > .btn").forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
-      var dd = btn.parentElement;
+  document.querySelectorAll(".dropdown > .btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const dd = btn.parentElement;
       if (!dd) return;
       if (false) { /* DISABLED: toggle handled by IIFE [8/8] — avoided double-toggle on touch */
-        document.querySelectorAll(".dropdown.open").forEach(function (other) {
+        document.querySelectorAll(".dropdown.open").forEach((other) => {
           if (other !== dd) other.classList.remove("open");
         });
         dd.classList.toggle("open");
@@ -251,32 +251,32 @@
 /* [8/8] Dropdown closeAll #2 — preventDefault + closeAll + toggle + blur */
 (function () {
   function closeAll(except) {
-    document.querySelectorAll(".dropdown.open").forEach(function (d) {
+    document.querySelectorAll(".dropdown.open").forEach((d) => {
       if (d !== except) d.classList.remove("open");
     });
   }
-  document.querySelectorAll(".dropdown > .btn").forEach(function (btn) {
-    btn.addEventListener("click", function (e) {
+  document.querySelectorAll(".dropdown > .btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      var dd = btn.closest(".dropdown");
+      const dd = btn.closest(".dropdown");
       if (!dd) return;
       closeAll(dd);
       dd.classList.toggle("open");
       btn.blur();
     });
   });
-  document.querySelectorAll(".dropdown-menu a").forEach(function (a) {
-    a.addEventListener("click", function () {
-      var dd = a.closest(".dropdown");
+  document.querySelectorAll(".dropdown-menu a").forEach((a) => {
+    a.addEventListener("click", () => {
+      const dd = a.closest(".dropdown");
       if (dd) {
         dd.classList.remove("open");
-        var b = dd.querySelector(":scope > .btn");
+        const b = dd.querySelector(":scope > .btn");
         if (b) b.blur();
       }
     });
   });
-  document.addEventListener("click", function (e) {
+  document.addEventListener("click", (e) => {
     if (!e.target.closest(".dropdown")) closeAll(null);
   });
 })();

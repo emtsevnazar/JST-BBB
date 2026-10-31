@@ -4,26 +4,26 @@
   if (window.__jstResizerV56) return;
   window.__jstResizerV56 = true;
 
-  var MIN_VIEW = 901;
-  var MIN_PCT = 0.25;
-  var MAX_PCT = 0.75;
-  var KEY = 'jst-sidebar-w';
+  const MIN_VIEW = 901;
+  const MIN_PCT = 0.25;
+  const MAX_PCT = 0.75;
+  const KEY = 'jst-sidebar-w';
 
   function init() {
-    var main = document.querySelector('.main');
+    const main = document.querySelector('.main');
     if (!main) return;
-    var sidebar = main.querySelector('.sidebar');
-    var workspace = main.querySelector('.workspace');
+    const sidebar = main.querySelector('.sidebar');
+    const workspace = main.querySelector('.workspace');
     if (!sidebar) return;
 
     if (getComputedStyle(main).position === 'static') {
       main.style.position = 'relative';
     }
 
-    var old = main.querySelector('.splitter-h');
+    const old = main.querySelector('.splitter-h');
     if (old) old.remove();
 
-    var rz = document.createElement('div');
+    const rz = document.createElement('div');
     rz.className = 'splitter-h';
     rz.setAttribute('role', 'separator');
     rz.setAttribute('aria-orientation', 'vertical');
@@ -32,23 +32,23 @@
     main.appendChild(rz);
 
     function applyW(w) {
-      var total = main.getBoundingClientRect().width;
+      const total = main.getBoundingClientRect().width;
       if (!isFinite(w)) return;
-      var minW = total * MIN_PCT;
-      var maxW = total * MAX_PCT;
+      const minW = total * MIN_PCT;
+      const maxW = total * MAX_PCT;
       if (w < minW) w = minW;
       if (w > maxW) w = maxW;
-      main.style.setProperty('--jst-sidebar-w', w + 'px');
+      main.style.setProperty('--jst-sidebar-w', `${w  }px`);
       try { localStorage.setItem(KEY, String(Math.round(w))); } catch (e) {}
     }
 
-    var saved = null;
+    let saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
     if (saved) applyW(parseFloat(saved));
 
-    var drag = false;
-    var x0 = 0;
-    var w0 = 0;
+    let drag = false;
+    let x0 = 0;
+    let w0 = 0;
 
     function down(e) {
       if (e.button !== undefined && e.button !== 0) return;
@@ -62,7 +62,7 @@
     }
     function move(e) {
       if (!drag) return;
-      var x = e.touches ? e.touches[0].clientX : e.clientX;
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
       applyW(w0 + (x - x0));
       e.preventDefault();
     }
