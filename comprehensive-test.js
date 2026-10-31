@@ -141,8 +141,13 @@ t('textarea typing', () => {
 });
 
 t('modules/instruction.js loaded', () => {
-  const ok = loaded.some(f => f.includes('modules/instruction'));
-  return ok ? 'yes' : 'NOT LOADED';
+  return loaded.some(f => f.includes('modules/instruction')) ? 'yes' : 'NOT LOADED';
+});
+t('modules/sidebar.js loaded', () => {
+  return loaded.some(f => f.includes('modules/sidebar')) ? 'yes' : 'NOT LOADED';
+});
+t('modules/btn-hover.js loaded', () => {
+  return loaded.some(f => f.includes('modules/btn-hover')) ? 'yes' : 'NOT LOADED';
 });
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
