@@ -132,16 +132,7 @@
     }
   }
 
-    // v1.1.23: help-toggle fallback (ui-features/instruction могут падать)
-    const _ht = document.getElementById("help-toggle");
-    const _hm = document.getElementById("help-modal");
-    if (_ht && _hm) {
-      _ht.addEventListener("click", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        _hm.classList.toggle("open");
-      }, true);
-    }
+    // v1.1.25: v1.1.23 duplicate удалён (double-toggle ломал help-toggle)
 
     // v1.1.24 help-toggle toggle (раньше только apply-blur в ui-features.js)
     try {

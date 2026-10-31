@@ -24,9 +24,20 @@ async def jst_rate_limit(request, call_next):
     # SYNTH+STOP cycles re-create WS many times; 20/60s was killing localhost UX.
     if ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost") and path.startswith("/ws/"):
         return await call_next(request)
-    # v1.7.10-fix: /api/security/* доступен даже забаненным IP
-    # (иначе нельзя разбанить себя; stats нужен для видимости состояния)
-    if not path.startswith("/api/security/") and _blocklist.is_banned(ip):
+    # v1.1.26 FIX: /healthz, /readyz, /api/health, /api/error-state, /, /offline
+    # должны быть доступны даже забаненным IP. Иначе watchdog получает 403
+    # на /healthz → SIGTERM self (сервер убивал сам себя).
+    from .core.security import PUBLIC_PATHS as _PUB_PATHS
+    from .core.security import PUBLIC_PREFIXES as _PUB_PREFIX
+
+    def _is_public_path(p: str) -> bool:
+        return p in _PUB_PATHS or any(p.startswith(prefix) for prefix in _PUB_PREFIX)
+
+    if (
+        not path.startswith("/api/security/")
+        and not _is_public_path(path)
+        and _blocklist.is_banned(ip)
+    ):
         return _JSONResponse(
             {"error": "ip_blocked", "detail": "IP temporarily blocked"},
             status_code=403,

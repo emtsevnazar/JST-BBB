@@ -74,6 +74,19 @@ async def lifespan(app: FastAPI):
     try:
         from .security.hardening import watchdog as _wd
 
+        # v1.1.26 FIX: unblock localhost при старте (safety net, dev)
+        try:
+            from .security.hardening import blocklist as _bl_startup
+
+            for _ip in ("127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost"):
+                try:
+                    _bl_startup.unblock(_ip)
+                except Exception:
+                    pass
+            log.info("[startup] unblock localhost (dev safety net)")
+        except Exception as _e:
+            log.warning("[startup] unblock failed: %s", _e)
+
         _wd.start()
         log.info("[security] watchdog started")
     except Exception as _we:

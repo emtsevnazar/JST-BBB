@@ -127,7 +127,14 @@ async def api_key_middleware(request, call_next):
         try:
             from ..security.hardening import auth_bruteforce, blocklist
 
-            if auth_bruteforce.record_fail(ip):
+            # v1.1.26 FIX: не банить localhost — иначе watchdog умирает
+            if auth_bruteforce.record_fail(ip) and ip not in (
+                "127.0.0.1",
+                "::1",
+                "::ffff:127.0.0.1",
+                "localhost",
+                "testclient",
+            ):
                 blocklist.ban_now(ip, reason="auth_bruteforce")
         except Exception:
             pass

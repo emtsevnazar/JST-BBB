@@ -12,6 +12,7 @@ import os
 import signal
 import threading
 import time
+import urllib.error
 import urllib.request
 from collections import deque
 
@@ -300,11 +301,16 @@ class SelfHealingWatchdog:
                         self._recover()
 
     def _probe(self) -> bool:
+        # v1.1.26 FIX: HTTP-ответ (4xx/5xx) = сервер ЖИВ, не убивать его.
+        # Watchdog должен ловить только network errors / timeouts (сервер мёртв).
+        # Раньше: except Exception: return False — 403 от blocklist → SIGTERM self.
         try:
-            with urllib.request.urlopen(self.url, timeout=5.0) as resp:  # nosec B310 (internal /healthz only)
-                return 200 <= resp.status < 300
+            with urllib.request.urlopen(self.url, timeout=5.0):  # nosec B310 (internal /healthz only)
+                return True  # got response = alive
+        except urllib.error.HTTPError:
+            return True  # 4xx/5xx = response from live server = alive
         except Exception:
-            return False
+            return False  # ConnectionError / Timeout = server dead
 
     def _recover(self):
         pid = os.getpid()
