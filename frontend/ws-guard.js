@@ -76,3 +76,38 @@
     console.log("[JST ws-guard] Phase 4e: WebSocket retry-notice installed");
   }
 })();
+
+
+/* JST_WS_ERROR_REDIRECT (Phase 4f)
+   On WS close with error codes (1006 no-handshake, 1008 policy=rate-limit, 1011, 1013 try-again-later)
+   → redirect to /error. Protocol errors are real problems; user needs visible feedback.
+*/
+(function () {
+  if (location.pathname === '/error' || location.pathname.indexOf('/error') === 0) return;
+  if (location.pathname === '/offline' || location.pathname === '/offline/') return;
+  if (window.__jstWsErrHooked) return;
+
+  var _Orig = window.WebSocket;
+  if (!_Orig) return;
+
+  window.WebSocket = function (url, protocols) {
+    var ws = protocols ? new _Orig(url, protocols) : new _Orig(url);
+    ws.addEventListener('close', function (ev) {
+      var code = ev && ev.code;
+      if (code === 1006 || code === 1008 || code === 1011 || code === 1013) {
+        console.warn('[JST ws-guard] WS closed with', code, '— redirecting to /error');
+        try {
+          sessionStorage.setItem('jst_err_guard', '1');
+          sessionStorage.setItem('jst_error_state', JSON.stringify({ code: 'ws_' + code }));
+        } catch (e) {}
+        setTimeout(function () {
+          location.replace('/error?reason=ws_' + code);
+        }, 300);
+      }
+    });
+    return ws;
+  };
+  window.WebSocket._jstHooked = true;
+  window.__jstWsErrHooked = true;
+  console.log('[JST ws-guard] Phase 4f: WS_ERROR_REDIRECT active');
+})();
