@@ -2594,27 +2594,6 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
 })();
 
 // === v1.1.2: restore last audio on reload ===
-(function () {
-  "use strict";
-  if (window.__jstpLastAudioRestore) return;
-  window.__jstpLastAudioRestore = true;
-  window.addEventListener("DOMContentLoaded", () => {
-    applySynthLangToText();
-
-    try {
-      const raw = localStorage.getItem("jstp-last-audio");
-      if (!raw) return;
-      const { url, text } = JSON.parse(raw);
-      if (!url) return;
-      // Дадим другим IIFE зарегистрировать слушателя jst:load-audio
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent("jst:load-audio", {
-          detail: { url, text: text || "" }
-        }));
-      }, 500);
-    } catch (e) { /* ignore */ }
-  });
-})();
 
 // === v1.2.0: Shared Web Audio chain — EQ + Width + Mono + Limiter + Fade ===
 (function () {
@@ -2872,25 +2851,6 @@ function _pwaHideBtn() { if (window.__jstPwa) window.__jstPwa._pwaHideBtn(); }
 function _pwaAttach() { if (window.__jstPwa) window.__jstPwa._pwaAttach(); }
 
 /* JST_SHOW_PLAYER_65: показать плеер изначально */
-(function showPlayerInitially() {
-  function go() {
-    try {
-      var p = document.getElementById('jst-player');
-      if (!p) p = document.querySelector('.jst-player');
-      if (p) {
-        p.style.display = '';
-        p.style.visibility = '';
-        p.style.opacity = '';
-        p.classList.add('visible');
-        p.setAttribute('data-has-audio', 'true');  /* хак: считаем что плеер видим */
-      }
-    } catch(e) {}
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
-  else go();
-  setTimeout(go, 500);
-  setTimeout(go, 1500);
-})();
 
 /* ═══════════════════════════════════════════════════════════════════
    JST v66: __jstForceResetSynth() — ПОЛНЫЙ сброс состояния синтеза
@@ -2958,43 +2918,5 @@ window.__jstForceResetSynth = function(reason) {
 /* ═══════════════════════════════════════════════════════════════════
    v76: ГАРАНТИРОВАННЫЙ handler для #btn-stop
    ═══════════════════════════════════════════════════════════════════ */
-(function() {
-  if (window.__jstV76StopHandler) return;
-  window.__jstV76StopHandler = true;
-  function attach() {
-    var b = document.getElementById('btn-stop');
-    if (!b || b.dataset.v76attached === '1') return;
-    b.dataset.v76attached = '1';
-    /* Не перезаписываем если уже есть — используем addEventListener */
-    b.addEventListener('click', function(ev) {
-      if (typeof stopPlayback === 'function') {
-        ev.preventDefault();
-        ev.stopPropagation();
-        try {
-          stopPlayback();
-        } catch(e) {
-          console.error('[v76] stopPlayback failed:', e);
-          /* Fallback: полный reset */
-          if (window.__jstForceResetSynth) window.__jstForceResetSynth('stopPlayback error');
-        }
-      }
-    }, false);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attach);
-  else attach();
-  setTimeout(attach, 500);
-  setTimeout(attach, 2000);
-})();
 
 /* v76: если идёт синтез — btn-stop ОБЯЗАТЕЛЬНО enabled */
-(function() {
-  setInterval(function() {
-    try {
-      var b = document.getElementById('btn-stop');
-      if (!b) return;
-      if (window.JST_IS_STREAMING && b.disabled) {
-        b.disabled = false;
-      }
-    } catch(e) {}
-  }, 300);
-})();
