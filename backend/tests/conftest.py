@@ -88,7 +88,11 @@ def client(monkeypatch, tmp_path):
     monkeypatch.setattr(state_mod, "_engine", None)
     monkeypatch.setattr(history_mod, "DB_PATH", tmp_path / "jst.db")
 
-    with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
+    with TestClient(
+        app_mod.app,
+        base_url="http://127.0.0.1",
+        headers={"X-API-Key": _JST_TOKEN},
+    ) as c:
         yield c
 
 
@@ -105,7 +109,11 @@ def real_client(monkeypatch, tmp_path):
 
     monkeypatch.setattr(history_mod, "DB_PATH", tmp_path / "jst.db")
 
-    with TestClient(app_mod.app, base_url="http://127.0.0.1") as c:
+    with TestClient(
+        app_mod.app,
+        base_url="http://127.0.0.1",
+        headers={"X-API-Key": _JST_TOKEN},
+    ) as c:
         yield c
 
 
@@ -127,7 +135,9 @@ def fake_ref_path(tmp_path, monkeypatch):
     return ref
 
 
-# ============ JST_AUTOFIX v4 ============
+# ============ JST_AUTOFIX v5 ============
+# v5: headers переданы в TestClient конструктор — autofix-патчи больше не нужны.
+# Оставлен как no-op для совместимости с _JST_TOKEN.
 import pytest as _jst_pt
 
 _JST_TOKEN = "test-token-pytest"
@@ -135,28 +145,4 @@ _JST_TOKEN = "test-token-pytest"
 
 @_jst_pt.fixture(scope="session", autouse=True)
 def _jst_patch_auth():
-    """Patch _api_key() -> test token (works for middleware + dependency), add header to httpx."""
-    try:
-        import core.security as _sec
-
-        _sec._api_key = lambda: _JST_TOKEN
-        print(f"[JST_AUTOFIX] core.security._api_key -> {_JST_TOKEN[:8]}...")
-    except Exception as e:
-        print(f"[JST_AUTOFIX] core.security FAIL: {e}")
-    try:
-        import httpx
-
-        _orig = httpx.Client.send
-
-        def _patched(self, req, *a, **kw):
-            req.headers["X-API-Key"] = _JST_TOKEN
-            return _orig(self, req, *a, **kw)
-
-        httpx.Client.send = _patched
-        print("[JST_AUTOFIX] httpx.Client.send patched")
-    except Exception as e:
-        print(f"[JST_AUTOFIX] httpx FAIL: {e}")
     yield
-
-
-# ============ END JST_AUTOFIX ============

@@ -28,7 +28,7 @@ import zipfile
 import pytest
 
 pytestmark = pytest.mark.skipif(
-    not os.getenv("JST_REAL_ENGINE"),
+    os.getenv("JST_REAL_ENGINE", "0") != "1",
     reason="real-engine smoke: set JST_REAL_ENGINE=1 (нужны веса ~2GB)",
 )
 

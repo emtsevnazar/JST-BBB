@@ -14,7 +14,7 @@ def test_smoke_full_stack(client):
     assert "text/html" in r.headers["content-type"]
     assert len(r.text) > 1000
 
-    r = client.get("/static/style.css")
+    r = client.get("/static/css/style.css")
     assert r.status_code == 200
     assert "text/css" in r.headers["content-type"]
 
