@@ -118,3 +118,43 @@
 - `ready()` показывает "pending" для async-модулей (это правильно)
 
 **app.js не тронут** — делегаты `window.__jstI18n`/`__jstHelpers`/`__jstPwa`/`__jstHelpContent` работают как раньше.
+
+
+---
+
+## Phase 11 — API extraction (DONE, tag phase11-api / phase11-final)
+
+### Итоговая статистика
+- `app.js`: 173 675 → **119 336 b** (−31.3%)
+- ES6-модулей: **16** (`state`, `api`, `dom`, `format`, `index`, `pwa`, `help-content`, `i18n-data`, `ui-helpers`, `ui-synth`, `ui-render`, `ui-buttons`, `ui-api`, `ws-manager`, `bridge`, `index`)
+- Функций вынесено: **~30** через `window.__jstSynth`, `__jstRender`, `__jstHelpers`, `__jstApi`, `__jstUI`, `__jstPwa`, `__jstI18n`, `__jstHelpContent`
+- Тестов: **78 passed**, coverage 61.83%
+- Тегов: **40** (checkpoint-before-refactor → phase11-final)
+
+### Что вынесено (полный список)
+- **i18n-data.js**: I18N словари, JST_TOAST_I18N
+- **ui-helpers.js**: t, ti, fmt, _translateStatus, showToast, setStatus, __jstContrast
+- **ui-synth.js**: synthesize, stopPlayback, finishStreaming, resetPlayback, handleAudioChunk, updateProgress, initSTT, initRecordButton, drawWaveform
+- **ui-render.js**: rebuildPresetsSelect, rebuildCarousel, applyCard, rebuildAccents, renderMoods, updateModelInfo, applyLanguage, renderLanguages, rebuildModelCarousel
+- **ui-buttons.js**: bindUI
+- **ui-api.js**: getSettings, applyPreset, normalizeSynthPrefs, saveSynthPrefs, applySynthLangToText
+- **pwa.js**: _pwaIsStandalone, _pwaIsIOS, _pwaShowBtn, _pwaHideBtn, _pwaAttach
+
+### Что осталось в app.js (осознанно)
+- **27 делегатов** (~3.5 KB) — тонкие обёртки для обратной совместимости
+- **18 IIFEs** (~110 KB) — feature code: PWA SW registration, batch UI, wand, dots, splitter, layout-resizer, controls-scroll, dropdown-stable, model-grid-fix, batch-table-adaptive, hidePitchRow, showPlayerInitially, help-table labels, theme observer, и т.д.
+- **1 `init`** (7 строк) + `window.addEventListener("load", init)`
+
+### Что НЕ вынесено (и почему)
+- **IIFEs** — это feature code, не core-логика. Каждый IIFE запускается при загрузке страницы, зависит от порядка загрузки. Их вынос — **отдельный рефакторинг** (feature-модуляризация), требует отдельной браузерной проверки каждого плагина.
+
+### Известные баги исправлены в этой сессии
+- `__JST_FORCE_AUTO` в `theme-mode.js` (сбрасывал тему в auto при каждом reload) — удалён в `phase11-theme-fix`
+- `handleAudioChunk` + `updateProgress` отсутствовали (удалены в коммите 92fa064) — восстановлены в `phase9b-restore-chunk`
+- `_translateStatus` `ReferenceError: I18N` — фикс в `phase9c-fixes`
+- `/api/mode` не в IGNORE error-guard — фикс в `phase9c-fixes`
+
+### Следующая цель (Phase 12+, опционально)
+- IIFEs → отдельные feature-модули в `ui-features/` (batch.js, wand.js, dots.js, splitter.js, ...)
+- Удаление 27 делегатов из `app.js` (прямые вызовы `window.__jst*` в HTML/event handlers)
+- **Требует браузерной проверки после каждого шага** — feature code ломается молча
