@@ -158,6 +158,9 @@ t('modules/player.js loaded', () => {
 t('modules/fx-settings.js loaded', () => {
   return loaded.some(f => f.includes('modules/fx-settings')) ? 'yes' : 'NOT LOADED';
 });
+t('modules/error-toasts.js loaded', () => {
+  return loaded.some(f => f.includes('modules/error-toasts')) ? 'yes' : 'NOT LOADED';
+});
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
 t('__jstDotsV8', () => !!w.__jstDotsV8);
