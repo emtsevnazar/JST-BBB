@@ -161,6 +161,9 @@ t('modules/fx-settings.js loaded', () => {
 t('modules/error-toasts.js loaded', () => {
   return loaded.some(f => f.includes('modules/error-toasts')) ? 'yes' : 'NOT LOADED';
 });
+t('modules/web-audio-chain.js loaded', () => {
+  return loaded.some(f => f.includes('modules/web-audio-chain')) ? 'yes' : 'NOT LOADED';
+});
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
 t('__jstDotsV8', () => !!w.__jstDotsV8);
