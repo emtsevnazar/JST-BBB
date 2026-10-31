@@ -36,7 +36,7 @@ function drawWaveform(chunks) {
 function resetPlayback() {
   (window.activeSources || []).forEach(s => { try { s.stop(); } catch(e) {} });
   window.__jstSetActiveSources([]);
-  if (window.ws) { try { window.ws.close(); } catch(e) {} window.ws = null; }
+  if (window.ws) { try { window.ws.close(); } catch(e) {} if (window.__jstSetWs) window.__jstSetWs(null); else window.ws = null; }
   window.__jstSetNextStartTime(0);
   window.__jstSetTotalSamples(0);
   window.__jstSetAllChunks([]);

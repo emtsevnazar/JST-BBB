@@ -130,6 +130,8 @@ window.__jstSetActiveSources = function(v) { activeSources = v; window.activeSou
 window.__jstSetNextStartTime = function(v) { nextStartTime = v; window.nextStartTime = v; };
 window.__jstSetTotalSamples = function(v) { totalSamples = v; window.totalSamples = v; };
 window.__jstSetAllChunks = function(v) { allChunks = v; window.allChunks = v; };
+window.__jstSetWs = function(v) { ws = v; window.ws = v; };
+window.__jstSetStreaming = function(v) { isStreaming = v; window.isStreaming = v; };
 let recordTimer = null;
 let mediaRecorder = null;
 let recordedChunks = [];
