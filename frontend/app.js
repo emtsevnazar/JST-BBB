@@ -68,39 +68,11 @@ let PRESETS = {};
 let currentMode = localStorage.getItem("jst-mode") || "core";
 let currentLang = localStorage.getItem("jst-synth-lang") || "";
 
-function saveSynthPrefs() {
-window.currentMode = currentMode; window.currentLang = currentLang;
-  try {
-    localStorage.setItem("jst-mode", currentMode);
-    localStorage.setItem("jst-synth-lang", currentLang);
-  } catch (e) {}
-}
+function saveSynthPrefs() { if (window.__jstApi && window.__jstApi.saveSynthPrefs) return window.__jstApi.saveSynthPrefs(); }
 
-function applySynthLangToText() {
-  // v1.5.0: textarea должен иметь lang = язык синтеза, а не UI-язык
-  var ta = document.getElementById("text");
-  if (ta && currentLang) ta.setAttribute("lang", currentLang);
-}
+function applySynthLangToText() { if (window.__jstApi && window.__jstApi.applySynthLangToText) return window.__jstApi.applySynthLangToText(); }
 
-function normalizeSynthPrefs() {
-  var modelsList = [];
-  try {
-    if (typeof MODELS !== "undefined" && Array.isArray(MODELS)) modelsList = MODELS;
-  } catch (e) { /* TDZ */ }
-  if (!modelsList.length) {
-    if (!currentLang) currentLang = "en";
-    saveSynthPrefs();
-    return;
-  }
-  if (!modelsList.find(function (m) { return m.code === currentMode; })) currentMode = "core";
-  var m = modelsList.find(function (x) { return x.code === currentMode; });
-  var supported = (m && Array.isArray(m.languages) && m.languages.length) ? m.languages : ["en"];
-  if (!currentLang || supported.indexOf(currentLang) === -1) {
-    var _v = supported.indexOf("en") !== -1 ? "en" : supported[0]; if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else currentLang = _v;
-  }
-  saveSynthPrefs();
-  applySynthLangToText();
-}
+function normalizeSynthPrefs() { if (window.__jstApi && window.__jstApi.normalizeSynthPrefs) return window.__jstApi.normalizeSynthPrefs(); }
 window.__jstNormalizeSynthPrefs = normalizeSynthPrefs;
 let currentAccent = "neutral";
 let isStreaming = false; window.isStreaming = false;
@@ -191,21 +163,7 @@ var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || functi
 // === PRESETS ===
 function rebuildPresetsSelect() { if (window.__jstRender && window.__jstRender.rebuildPresetsSelect) return window.__jstRender.rebuildPresetsSelect(); }
 
-function applyPreset(p) {
-  if (!p) return;
-  const sliderIds = { exaggeration:["o-exag",2], cfg_weight:["o-cfg",2], temperature:["o-temp",2],
-    repetition_penalty:["o-rep",2], speed:["o-speed",2], pitch_shift:["o-pitch",0], volume:["o-vol",2] };
-  Object.entries(sliderIds).forEach(([key, [outId, dec]]) => {
-    if (key in p && p[key] != null) {
-      const el = $(key); const out = $(outId);
-      if (el) el.value = p[key];
-      if (out) out.textContent = Number(p[key]).toFixed(dec);
-    }
-  });
-  if (p.ref_length) { const el = $("ref_length"); if (el) el.value = p.ref_length; }
-  if (p.pause_between) { const el = $("pause_between"); if (el) el.value = p.pause_between; }
-  if (p.sentence_split) { const el = $("sentence_split"); if (el) el.value = p.sentence_split; }
-}
+function applyPreset(p) { if (window.__jstApi && window.__jstApi.applyPreset) return window.__jstApi.applyPreset(p); }
 
 // === CAROUSEL (text helpers) ===
 function rebuildCarousel() { if (window.__jstRender && window.__jstRender.rebuildCarousel) return window.__jstRender.rebuildCarousel(); }
@@ -224,30 +182,7 @@ function updateModelInfo() { if (window.__jstRender && window.__jstRender.update
 function renderLanguages() { if (window.__jstRender && window.__jstRender.renderLanguages) return window.__jstRender.renderLanguages(); }
 
 // === SETTINGS ===
-function getSettings() {
-  const sliderIds = ["exaggeration","cfg_weight","temperature","repetition_penalty","speed","pitch_shift","volume"];
-  const s = {};
-  sliderIds.forEach(key => {
-    const el = $(key);
-    s[key] = el ? (parseFloat(el.value) || 0) : 0;
-  });
-  const of = $("output_format"), osr = $("output_sr"), bd = $("bit_depth");
-  const fi = $("fade_in_sec"), fo = $("fade_out_sec");
-  const rl = $("ref_length"), pb = $("pause_between"), ss = $("sentence_split");
-  s.output_format = of ? of.value : "wav";
-  s.output_sr = osr ? (parseInt(osr.value) || 44100) : 44100;
-  s.bit_depth = bd ? (parseInt(bd.value) || 16) : 16;
-  s.fade_in_sec = fi ? (parseFloat(fi.value) || 0) : 0;
-  s.fade_out_sec = fo ? (parseFloat(fo.value) || 0) : 0;
-  s.mode = currentMode;
-  s.language = currentLang;
-  s.accent = currentAccent;
-  s.ref_length = rl ? (parseInt(rl.value) || 12) : 12;
-  s.pause_between = pb ? (parseFloat(pb.value) || 0.20) : 0.20;
-  s.sentence_split = ss ? ss.value : "medium";
-  s.mood = (document.querySelector("#mood") || {}).value || "auto";
-  return s;
-}
+function getSettings() { if (window.__jstApi && window.__jstApi.getSettings) return window.__jstApi.getSettings(); }
 
 // === SYNTHESIS ===
 function handleAudioChunk(buf) { if (window.__jstSynth && window.__jstSynth.handleAudioChunk) return window.__jstSynth.handleAudioChunk(buf); }
