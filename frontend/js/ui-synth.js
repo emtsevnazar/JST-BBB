@@ -222,6 +222,136 @@ function initRecordButton() {
     if (r < 1) window.animFrame = requestAnimationFrame(updateProgress);
   }
 
+  function synthesize() {
+    if (window.JST_IS_STREAMING === false || window.JST_IS_STREAMING === undefined) {
+      try {
+        var _b = document.getElementById('btn-synth');
+        if (_b && _b.classList.contains('is-busy')) {
+          _b.classList.remove('is-busy');
+          window.JST_SYNTH_START = 0;
+          console.warn('[JST v65] Reset stale is-busy (streaming=false)');
+        }
+      } catch(e) {}
+    }
+    var btnS = $("btn-synth"), btnT = $("btn-stop");
+    if (btnS && btnS.classList.contains("is-busy")) {
+      var _wsDead = !window.ws || window.ws.readyState === 2 || window.ws.readyState === 3;
+      var _notStreaming = !window.JST_IS_STREAMING && !window.isStreaming;
+      if (_wsDead || _notStreaming) {
+        try { btnS.classList.remove("is-busy"); } catch(e) {}
+        window.JST_SYNTH_START = 0;
+        if (window.__jstSetStreaming) window.__jstSetStreaming(false); else window.isStreaming = false;
+        window.JST_IS_STREAMING = false;
+        console.warn('[JST v73] Reset stale is-busy (ws dead or not streaming)');
+      }
+    }
+    if (btnS && btnS.classList.contains("is-busy")) {
+      var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
+      if (_elapsed > 60000) {
+        try { btnS.classList.remove("is-busy"); } catch(e) {}
+        try {
+          if (window.ws) {
+            window.ws.close();
+            if (window.__jstSetWs) window.__jstSetWs(null); else window.ws = null;
+          }
+        } catch(e) {}
+        if (window.__jstSetStreaming) window.__jstSetStreaming(false); else window.isStreaming = false;
+        window.JST_IS_STREAMING = false;
+        if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
+        if (typeof showToast === "function") showToast("Сброшен зависший синтез (" + Math.round(_elapsed/1000) + "с)");
+      } else {
+        if (typeof showToast === "function") showToast(t("synth_wait") || "Идёт синтез — подождите");
+        return;
+      }
+    }
+    if (window.isStreaming) return;
+    var textEl = $("text"), voiceEl = $("voice");
+    if (!textEl || !voiceEl) return;
+    var text = textEl.value.trim();
+    var voice = voiceEl.value;
+    if (!text) { setStatus(t("text_ph") || "Введите текст", "error"); textEl.focus(); return; }
+    if (!voice) { setStatus(t("status_voice_select"), "error"); return; }
+    window.JST_SYNTH_START = Date.now();
+    if (btnS) { btnS.disabled = true; btnS.classList.add("is-busy"); }
+    if (btnT) btnT.disabled = false;
+    if (!window.audioCtx) window.audioCtx = new AudioContext();
+    if (window.audioCtx.state === "suspended") window.audioCtx.resume();
+    if (window.__jstSynth && window.__jstSynth.resetPlayback) window.__jstSynth.resetPlayback();
+    if (window.__jstSetStreaming) window.__jstSetStreaming(true); else window.isStreaming = true;
+    window.JST_IS_STREAMING = true;
+    var pv = $("preview-player");
+    if (pv) pv.style.display = "none";
+    setStatus(t("status_synth") + "...", "busy");
+    var _synthStart = Date.now();
+    if (window._synthTimer) clearInterval(window._synthTimer);
+    window._synthTimer = setInterval(function() {
+      var sec = ((Date.now() - _synthStart) / 1000).toFixed(1);
+      var stt = document.getElementById("status-text");
+      if (stt && stt.textContent) {
+        if (stt.textContent.indexOf("...") >= 0 || stt.textContent.indexOf(t("status_synth")) >= 0) {
+          stt.textContent = t("status_synth") + "... " + sec + "s";
+          window.JST_LAST_STATUS = stt.textContent;
+          window.JST_LAST_STATUS_LANG = window.LANG;
+        }
+      }
+    }, 1000);
+    var proto = location.protocol === "https:" ? "wss:" : "ws:";
+    var _ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize");
+    if (window.__jstSetWs) window.__jstSetWs(_ws); else window.ws = _ws;
+    _ws.binaryType = "arraybuffer";
+    _ws.onopen = function() {
+      _ws.send(JSON.stringify({ type: "synthesize", text: text, voice: voice, settings: (window.__jstGetSettings ? window.__jstGetSettings() : {}) }));
+      var _timer = setTimeout(function() {
+        console.warn("[JST] WS timeout — 600s без ответа, закрываю");
+        setStatus(t("status_err") + ": timeout", "error");
+        try { _ws.close(); } catch (e) {}
+        if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null);
+      }, 600000);
+      if (window.__jstSetWsTimeoutTimer) window.__jstSetWsTimeoutTimer(_timer); else window.wsTimeoutTimer = _timer;
+    };
+    _ws.onmessage = function(ev) {
+      if (typeof ev.data === "string") {
+        var m = JSON.parse(ev.data);
+        if (m.type === "start") {
+          window.currentSR = m.sr;
+          setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy");
+        } else if (m.type === "stage") {
+          var stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];
+          setStatus(stageKey ? t(stageKey) : (m.detail || ""), "busy");
+        } else if (m.type === "done") {
+          setStatus(t("status_done") + " · " + m.file, "");
+          if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(m.file);
+        } else if (m.type === "error") {
+          var _errCode = m.code || "unknown";
+          var _errKey = "err_" + _errCode;
+          var _errText = t(_errKey);
+          if (_errText === _errKey) _errText = m.message || m.code || "unknown";
+          setStatus(t("status_err") + ": " + _errText, "error");
+          if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null);
+        }
+      } else {
+        if (window.__jstSynth && window.__jstSynth.handleAudioChunk) window.__jstSynth.handleAudioChunk(ev.data);
+      }
+    };
+    _ws.onerror = function() {
+      if (typeof showToast === "function") showToast(ti("ws_error"), "error");
+      setStatus(t("status_err"), "error");
+      if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null);
+    };
+    // Note: original had duplicate ws.onclose (v74 + v73); v73 was effective — preserved below.
+    _ws.onclose = function(ev) {
+      if (window.wsTimeoutTimer) { clearTimeout(window.wsTimeoutTimer); if (window.__jstSetWsTimeoutTimer) window.__jstSetWsTimeoutTimer(null); else window.wsTimeoutTimer = null; }
+      if (window.isStreaming || window.JST_IS_STREAMING) {
+        console.warn("[JST v73] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
+        try { if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null); } catch(e) { console.error("finishStreaming failed:", e); }
+        if (typeof showToast === "function" && ev.code !== 1000 && ev.code !== 1001 && ev.code !== 1005) {
+          showToast(ti("aborted") + " (code " + ev.code + ")", "error");
+        }
+      }
+      if (window.__jstSetWs) window.__jstSetWs(null); else window.ws = null;
+    };
+  }
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
   if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
   if (typeof stopPlayback !== 'undefined') window.__jstSynth.stopPlayback = stopPlayback;
@@ -230,5 +360,6 @@ function initRecordButton() {
   if (typeof initRecordButton !== 'undefined') window.__jstSynth.initRecordButton = initRecordButton;
   if (typeof handleAudioChunk !== 'undefined') window.__jstSynth.handleAudioChunk = handleAudioChunk;
   if (typeof updateProgress !== 'undefined') window.__jstSynth.updateProgress = updateProgress;
+  if (typeof synthesize !== 'undefined') window.__jstSynth.synthesize = synthesize;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();
