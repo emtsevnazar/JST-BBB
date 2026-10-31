@@ -41,3 +41,4 @@ npm-debug.log
 frontend/style-contrast.css
 .backup-*
 frontend/js/*.bak-*
+frontend/*.bak-*

@@ -83,3 +83,10 @@ window.__jstPwa = {
 };
 
 console.log("[JST pwa.js] module loaded, window.__jstPwa ready (not auto-attached)");
+
+// Phase 3c: app.js no longer calls _pwaAttach — pwa.js self-activates
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", _pwaAttach);
+} else {
+  _pwaAttach();
+}
