@@ -325,7 +325,7 @@ async def _html_404_500_handler(request, exc):
         from starlette.responses import JSONResponse as _JR  # noqa: N814
 
         return _JR({"detail": exc.detail}, status_code=exc.status_code)
-    if exc.status_code in (404, 500):
+    if exc.status_code == 500:
         from fastapi.responses import RedirectResponse as _RR  # noqa: N814
 
         reason = "notfound" if exc.status_code == 404 else "server"
@@ -370,6 +370,27 @@ app.mount("/static", StaticFiles(directory=str(FRONTEND)), name="static")
 # ============================================================
 # WS rate limit wrapper (A2)
 # ============================================================
+
+async def _jst_global_exception_handler(request, exc):
+    """Phase 4d: any unhandled exception → error_state unhealthy + redirect UI to /error."""
+    try:
+        from backend.core.error_state import error_state as _es
+        await _es.set("UNHANDLED", f"{type(exc).__name__}: {exc}"[:300], source="exception")
+    except Exception:
+        pass
+    from fastapi.responses import JSONResponse, RedirectResponse
+    path = request.url.path
+    if path.startswith("/api/") or path.startswith("/static/") or path.startswith("/ws/"):
+        return JSONResponse({"error": "internal", "detail": str(exc)[:200]}, status_code=500)
+    if path in ("/error", "/offline") or path.startswith("/offline"):
+        return JSONResponse({"error": "internal"}, status_code=500)
+    return RedirectResponse(url="/error?reason=exception", status_code=302)
+
+try:
+    app.add_exception_handler(Exception, _jst_global_exception_handler)
+except Exception as _e:
+    import logging as _lg
+    _lg.getLogger("JST.API").warning("cannot register global exception handler: %s", _e)
 
 # === JST_ERROR_PATCH ===
 from backend.core.error_state import error_state as _jst_err_state
