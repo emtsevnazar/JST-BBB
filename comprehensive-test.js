@@ -140,6 +140,10 @@ t('textarea typing', () => {
   return ta.value === 'test input' ? 'ok' : 'value lost';
 });
 
+t('modules/instruction.js loaded', () => {
+  const ok = loaded.some(f => f.includes('modules/instruction'));
+  return ok ? 'yes' : 'NOT LOADED';
+});
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
 t('__jstDotsV8', () => !!w.__jstDotsV8);
