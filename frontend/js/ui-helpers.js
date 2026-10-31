@@ -1,6 +1,7 @@
 /* ui-helpers.js — pure helpers (Phase 5c, extracted from app.js)
    Classic script for sync load, window.__jstHelpers bridge. */
 (function () {
+  var $ = function (id) { return document.getElementById(id); };  /* Phase 5e hotfix: local $ shim */
 function fmt(sec) {
   if (!isFinite(sec) || sec < 0) sec = 0;
   const m = Math.floor(sec / 60), s = (sec % 60).toFixed(1).padStart(4, "0");
@@ -61,7 +62,7 @@ function setStatus(text, type) {
   if (!stt) return;
   stt.textContent = text;
   window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
-  window.JST_LAST_STATUS_LANG = LANG;   // v1.6.5: язык статуса
+  window.JST_LAST_STATUS_LANG = (window.LANG || 'ru');  /* Phase 5e hotfix */   // v1.6.5: язык статуса
   if (st) st.className = "status" + (type ? " " + type : "");
 }
 

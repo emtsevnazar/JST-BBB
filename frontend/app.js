@@ -34,7 +34,7 @@ const ACCENTS = [
   { code:"bright", ru:"Яркий", en:"Bright", ru_d:"Выше", en_d:"Brighter" }
 ];
 
-let LANG = localStorage.getItem("jst-lang") || "en";
+let LANG = localStorage.getItem("jst-lang") || "en"; window.LANG = LANG;
 
 // v1.6.5: мини-словарь переводов для тостов/статусов (не трогает TRANSLATIONS)
 const JST_TOAST_I18N = {
@@ -966,7 +966,7 @@ async function init() {
   setStatus(t("status_ready"), "");
   const lt = $("lang-toggle");
   if (lt) lt.addEventListener("click", () => {
-    LANG = LANG === "ru" ? "en" : "ru";
+    LANG = LANG === "ru" ? "en" : "ru"; window.LANG = LANG;
       try { window.dispatchEvent(new CustomEvent("jst:lang-changed")); } catch (e) {}
     localStorage.setItem("jst-lang", LANG);
     document.documentElement.lang = LANG;
