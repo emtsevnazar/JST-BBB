@@ -238,7 +238,7 @@
     btn.addEventListener("click", function (e) {
       var dd = btn.parentElement;
       if (!dd) return;
-      if (matchMedia("(hover: none)").matches) {
+      if (false) { /* DISABLED: toggle handled by IIFE [8/8] — avoided double-toggle on touch */
         document.querySelectorAll(".dropdown.open").forEach(function (other) {
           if (other !== dd) other.classList.remove("open");
         });
