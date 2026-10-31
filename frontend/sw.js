@@ -6,7 +6,7 @@ const PRECACHE = [
   '/error',
   '/offline',
   '/static/css/style.css',
-  '/static/css/style-clean.css',
+  '/static/css/core/style-clean.css',
   
   '/static/js/help-fix.js',
   '/static/js/dots.js',
