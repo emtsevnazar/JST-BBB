@@ -27,6 +27,7 @@ PUBLIC_PATHS = {
     "/api/presets",
     "/api/moods",
     "/api/output",
+    "/api/voices",  # v1.11: GET list (frontend loads without key)
     "/api/formats",
     "/api/languages",
     "/api/history",

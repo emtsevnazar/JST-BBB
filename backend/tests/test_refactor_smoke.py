@@ -36,5 +36,7 @@ def test_security_public_paths():
     # key публичные пути должны быть в whitelist
     for path in ("/healthz", "/readyz", "/dashboard", "/api/security/stats"):
         assert core_security._is_public(path), f"{path} должен быть публичным"
-    # непубличный
-    assert not core_security._is_public("/api/voices")
+    # публичный: GET /api/voices (frontend loads list without key)
+    assert core_security._is_public("/api/voices")
+    # непубличный: POST /api/voices/create (mutating)
+    assert not core_security._is_public("/api/voices/create")

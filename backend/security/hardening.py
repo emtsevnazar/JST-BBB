@@ -250,7 +250,11 @@ class CircuitBreaker:
 
 class SelfHealingWatchdog:
     def __init__(
-        self, url: str = "http://127.0.0.1:8000/healthz", interval: float = 20.0, threshold: int = 3
+        self,
+        url: str = "http://127.0.0.1:8000/healthz",
+        interval: float = 20.0,
+        threshold: int = 3,
+        startup_grace: float = 120.0,
     ):
         self.url = url
         self.interval = interval
@@ -262,6 +266,8 @@ class SelfHealingWatchdog:
         self._lock = threading.Lock()
         self._thread: threading.Thread | None = None
         self._stop = threading.Event()
+        self.startup_grace = startup_grace
+        self.started_at = time.time()
 
     def start(self):
         if self._thread and self._thread.is_alive():
@@ -284,6 +290,9 @@ class SelfHealingWatchdog:
                     self._fails = 0
                     self._last_status = "ok"
                 else:
+                    if time.time() - self.started_at < self.startup_grace:
+                        self._last_status = "grace"
+                        continue
                     self._fails += 1
                     self._last_status = f"fail({self._fails})"
                     log.warning("[watchdog] healthz fail %d/%d", self._fails, self.threshold)
