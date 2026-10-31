@@ -2,6 +2,8 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function () { return false; };
+  var t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
+  var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function () {};
 function drawWaveform(chunks) {
   const c = $("waveform"); if (!c) return;
   const ctx = c.getContext("2d");
@@ -48,7 +50,22 @@ function resetPlayback() {
   drawWaveform([]);
 }
 
+function stopPlayback() {
+  (window.activeSources || []).forEach(s => { try { s.stop(); } catch(e) {} });
+  if (window.__jstSetActiveSources) window.__jstSetActiveSources([]);
+  if (window.ws) { try { window.ws.close(); } catch(e) {} if (window.__jstSetWs) window.__jstSetWs(null); }
+  if (window.__jstSetStreaming) window.__jstSetStreaming(false);
+  window.JST_IS_STREAMING = false;
+  const btnS = $("btn-synth"), btnT = $("btn-stop");
+  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
+  if (btnT) btnT.disabled = true;
+  setStatus(t("status_stop"), "");
+  if (window.animFrame) cancelAnimationFrame(window.animFrame);
+  const pv = $("preview-player"); if (pv) pv.pause();
+}
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
   if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
+  if (typeof stopPlayback !== 'undefined') window.__jstSynth.stopPlayback = stopPlayback;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();

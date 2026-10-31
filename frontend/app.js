@@ -572,19 +572,7 @@ function finishStreaming(file) {
   if (activeSources.length === 0) { const b = $("btn-stop"); if (b) b.disabled = true; }
 }
 
-function stopPlayback() {
-  activeSources.forEach(s => { try { s.stop(); } catch(e) {} });
-  activeSources = []; window.__jstSetActiveSources([]);
-  if (ws) { try { ws.close(); } catch(e) {} ws = null; window.ws = null; }
-  isStreaming = false; window.isStreaming = false;
-  window.JST_IS_STREAMING = false;   // v1.6.5a
-  const btnS = $("btn-synth"), btnT = $("btn-stop");
-  if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
-  if (btnT) btnT.disabled = true;
-  setStatus(t("status_stop"), "");
-  if (animFrame) cancelAnimationFrame(animFrame);
-  const pv = $("preview-player"); if (pv) pv.pause();
-}
+function stopPlayback() { if (window.__jstSynth && window.__jstSynth.stopPlayback) return window.__jstSynth.stopPlayback(); }
 
 function resetPlayback() { if (window.__jstSynth && window.__jstSynth.resetPlayback) return window.__jstSynth.resetPlayback(); }
 
