@@ -121,11 +121,15 @@ let audioCtx = null;
 let ws = null; window.ws = null;
 let wsTimeoutTimer = null; window.wsTimeoutTimer = null;
 let currentSR = 24000;
-let nextStartTime = 0;
-let totalSamples = 0;
-let allChunks = [];
+let nextStartTime = 0; window.nextStartTime = 0;
+let totalSamples = 0; window.totalSamples = 0;
+let allChunks = []; window.allChunks = [];
 let animFrame = null;
-let activeSources = [];
+let activeSources = []; window.activeSources = [];
+window.__jstSetActiveSources = function(v) { activeSources = v; window.activeSources = v; };
+window.__jstSetNextStartTime = function(v) { nextStartTime = v; window.nextStartTime = v; };
+window.__jstSetTotalSamples = function(v) { totalSamples = v; window.totalSamples = v; };
+window.__jstSetAllChunks = function(v) { allChunks = v; window.allChunks = v; };
 let recordTimer = null;
 let mediaRecorder = null;
 let recordedChunks = [];
@@ -568,7 +572,7 @@ function finishStreaming(file) {
 
 function stopPlayback() {
   activeSources.forEach(s => { try { s.stop(); } catch(e) {} });
-  activeSources = [];
+  activeSources = []; window.__jstSetActiveSources([]);
   if (ws) { try { ws.close(); } catch(e) {} ws = null; window.ws = null; }
   isStreaming = false; window.isStreaming = false;
   window.JST_IS_STREAMING = false;   // v1.6.5a
@@ -580,18 +584,7 @@ function stopPlayback() {
   const pv = $("preview-player"); if (pv) pv.pause();
 }
 
-function resetPlayback() {
-  activeSources.forEach(s => { try { s.stop(); } catch(e) {} });
-  activeSources = [];
-  if (ws) { try { ws.close(); } catch(e) {} ws = null; window.ws = null; }
-  nextStartTime = 0; totalSamples = 0; allChunks = [];
-  window.JST_IS_STREAMING = false;   // v1.6.5a
-  const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
-  if (prog) prog.style.width = "0%";
-  if (pt) pt.textContent = "0:00.0";
-  if (ptt) ptt.textContent = "0:00.0";
-  drawWaveform([]);
-}
+function resetPlayback() { if (window.__jstSynth && window.__jstSynth.resetPlayback) return window.__jstSynth.resetPlayback(); }
 
 function drawWaveform(chunks) { if (window.__jstSynth) return window.__jstSynth.drawWaveform(chunks); }
 

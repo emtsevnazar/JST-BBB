@@ -33,6 +33,22 @@ function drawWaveform(chunks) {
   ctx.stroke();
 }
 
+function resetPlayback() {
+  (window.activeSources || []).forEach(s => { try { s.stop(); } catch(e) {} });
+  window.__jstSetActiveSources([]);
+  if (window.ws) { try { window.ws.close(); } catch(e) {} window.ws = null; }
+  window.__jstSetNextStartTime(0);
+  window.__jstSetTotalSamples(0);
+  window.__jstSetAllChunks([]);
+  window.JST_IS_STREAMING = false;
+  const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
+  if (prog) prog.style.width = "0%";
+  if (pt) pt.textContent = "0:00.0";
+  if (ptt) ptt.textContent = "0:00.0";
+  drawWaveform([]);
+}
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
+  if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();
