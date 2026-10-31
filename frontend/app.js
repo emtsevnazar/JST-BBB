@@ -133,6 +133,12 @@ window.__jstSetAllChunks = function(v) { allChunks = v; window.allChunks = v; };
 window.__jstSetWs = function(v) { ws = v; window.ws = v; };
 window.__jstSetStreaming = function(v) { isStreaming = v; window.isStreaming = v; };
 window.__jstSetWsTimeoutTimer = function(v) { wsTimeoutTimer = v; window.wsTimeoutTimer = v; };
+window.CARDS = CARDS;
+window.ACCENTS = ACCENTS;
+window.PRESETS = PRESETS;
+window.currentAccent = currentAccent;
+window.__jstSetCurrentAccent = function(v) { currentAccent = v; window.currentAccent = v; };
+window.__jstSetPresets = function(v) { PRESETS = v; window.PRESETS = v; };
 let recordTimer = null;
 let mediaRecorder = null;
 let recordedChunks = [];
@@ -209,17 +215,7 @@ var showToast = (window.__jstHelpers && window.__jstHelpers.showToast) || functi
 var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function() { console.warn('[setStatus] stub'); };
 
 // === PRESETS ===
-function rebuildPresetsSelect() {
-  const el = $("preset"); if (!el) return;
-  const cur = el.value;
-  el.innerHTML = "";
-  Object.keys(PRESETS).forEach(k => {
-    const o = document.createElement("option");
-    o.value = k; o.textContent = tPreset(k);
-    el.appendChild(o);
-  });
-  if (cur) el.value = cur;
-}
+function rebuildPresetsSelect() { if (window.__jstRender && window.__jstRender.rebuildPresetsSelect) return window.__jstRender.rebuildPresetsSelect(); }
 
 function applyPreset(p) {
   if (!p) return;
@@ -238,57 +234,12 @@ function applyPreset(p) {
 }
 
 // === CAROUSEL (text helpers) ===
-function rebuildCarousel() {
-  const grid = $("carousel"); if (!grid) return;
-  grid.innerHTML = "";
-  CARDS.forEach(card => {
-    const c = document.createElement("div");
-    c.className = "card";
-    c.textContent = tCard(card.id);
-    c.onclick = () => applyCard(card);
-    grid.appendChild(c);
-  });
-}
+function rebuildCarousel() { if (window.__jstRender && window.__jstRender.rebuildCarousel) return window.__jstRender.rebuildCarousel(); }
 
-function applyCard(card) {
-  const text = $("text"); if (!text) return;
-  const s = text.selectionStart, e = text.selectionEnd;
-  const sel = text.value.slice(s, e);
-  if (card.action === "insert") {
-    text.value = text.value.slice(0, s) + card.value + text.value.slice(e);
-    text.focus(); text.setSelectionRange(s + card.value.length, s + card.value.length);
-  } else if (card.action === "wrap") {
-    if (Array.isArray(card.value)) {
-      const [o, c] = card.value;
-      const inner = sel || (LANG === "ru" ? "слово" : "word");
-      text.value = text.value.slice(0, s) + o + inner + c + text.value.slice(e);
-      text.focus(); text.setSelectionRange(s + o.length, s + o.length + inner.length);
-    } else {
-      const w = card.value;
-      const inner = sel || (LANG === "ru" ? "слово" : "word");
-      text.value = text.value.slice(0, s) + w + inner + w + text.value.slice(e);
-      text.focus(); text.setSelectionRange(s + w.length, s + w.length + inner.length);
-    }
-  }
-}
+function applyCard(card) { if (window.__jstRender && window.__jstRender.applyCard) return window.__jstRender.applyCard(card); }
 
 // === ACCENTS ===
-function rebuildAccents() {
-  const grid = $("accent-grid"); if (!grid) return;
-  grid.innerHTML = "";
-  ACCENTS.forEach(a => {
-    const c = document.createElement("div");
-    c.className = "accent-card" + (a.code === currentAccent ? " active" : "");
-    c.innerHTML = '<div class="accent-name">' + (LANG === "ru" ? a.ru : a.en) + '</div>' +
-                  '<div class="accent-desc">' + (LANG === "ru" ? a.ru_d : a.en_d) + '</div>';
-    c.onclick = () => {
-      document.querySelectorAll(".accent-card").forEach(x => x.classList.remove("active"));
-      c.classList.add("active");
-      currentAccent = a.code;
-    };
-    grid.appendChild(c);
-  });
-}
+function rebuildAccents() { if (window.__jstRender && window.__jstRender.rebuildAccents) return window.__jstRender.rebuildAccents(); }
 
 // === MODELS ===
 function rebuildModelCarousel() {
@@ -698,23 +649,7 @@ const MOOD_NAME_EN = {
 };
 window.MOOD_NAME_EN = MOOD_NAME_EN;
 
-function renderMoods() {
-  const sel = document.querySelector("#mood");
-  if (!sel || !window.__moodsData) return;
-  const lang = (document.documentElement.getAttribute("lang") || "ru").toLowerCase();
-  const current = sel.value;
-  sel.innerHTML = '<option value="auto">JST Auto Spirits</option>';
-  Object.entries(window.__moodsData).forEach(function(entry) {
-    const code = entry[0], m = entry[1];
-    const ruName = m.name || code;
-    const enName = m.name_en || MOOD_NAME_EN[ruName] || ruName;
-    const o = document.createElement("option");
-    o.value = code;
-    o.textContent = (lang === "en") ? enName : ruName;
-    sel.appendChild(o);
-  });
-  if (current) sel.value = current;
-}
+function renderMoods() { if (window.__jstRender && window.__jstRender.renderMoods) return window.__jstRender.renderMoods(); }
 
 if (!window.__moodsLangObserver) {
   window.__moodsLangObserver = new MutationObserver(function(muts) {
@@ -728,7 +663,7 @@ if (!window.__moodsLangObserver) {
 async function loadPresets() {
   try {
     const r = await fetch("/api/presets"); const d = await r.json();
-    PRESETS = d.presets;
+    if (window.__jstSetPresets) window.__jstSetPresets(d.presets); else PRESETS = d.presets;
     rebuildPresetsSelect();
     const p = $("preset");
     if (p) {

@@ -1,0 +1,105 @@
+/* ui-render.js — Phase 7a: pure DOM render functions (extracted from app.js) */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
+  var I18N = (window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} };
+  var LANG = (window.LANG || 'en');
+  var tPreset = function (k) { return ((I18N[LANG] && I18N[LANG].presets) || {})[k] || k; };
+  var tCard = function (k) { return ((I18N[LANG] && I18N[LANG].cards) || {})[k] || k; };
+
+  function rebuildPresetsSelect() {
+    var el = $('preset'); if (!el) return;
+    var cur = el.value;
+    el.innerHTML = '';
+    Object.keys(window.PRESETS || {}).forEach(function (k) {
+      var o = document.createElement('option');
+      o.value = k; o.textContent = tPreset(k);
+      el.appendChild(o);
+    });
+    if (cur) el.value = cur;
+  }
+
+  function rebuildCarousel() {
+    var grid = $('carousel'); if (!grid) return;
+    grid.innerHTML = '';
+    (window.CARDS || []).forEach(function (card) {
+      var c = document.createElement('div');
+      c.className = 'card';
+      c.textContent = tCard(card.id);
+      c.onclick = function () { applyCard(card); };
+      grid.appendChild(c);
+    });
+  }
+
+  function applyCard(card) {
+    var text = $('text'); if (!text) return;
+    var s = text.selectionStart, e = text.selectionEnd;
+    var sel = text.value.slice(s, e);
+    if (card.action === 'insert') {
+      text.value = text.value.slice(0, s) + card.value + text.value.slice(e);
+      text.focus(); text.setSelectionRange(s + card.value.length, s + card.value.length);
+    } else if (card.action === 'wrap') {
+      var inner;
+      if (Array.isArray(card.value)) {
+        var o = card.value[0], c = card.value[1];
+        inner = sel || ((window.LANG === 'ru') ? 'слово' : 'word');
+        text.value = text.value.slice(0, s) + o + inner + c + text.value.slice(e);
+        text.focus(); text.setSelectionRange(s + o.length, s + o.length + inner.length);
+      } else {
+        var w = card.value;
+        inner = sel || ((window.LANG === 'ru') ? 'слово' : 'word');
+        text.value = text.value.slice(0, s) + w + inner + w + text.value.slice(e);
+        text.focus(); text.setSelectionRange(s + w.length, s + w.length + inner.length);
+      }
+    }
+  }
+
+  function rebuildAccents() {
+    var grid = $('accent-grid'); if (!grid) return;
+    grid.innerHTML = '';
+    (window.ACCENTS || []).forEach(function (a) {
+      var c = document.createElement('div');
+      c.className = 'accent-card' + (a.code === window.currentAccent ? ' active' : '');
+      c.innerHTML = '<div class="accent-name">' + (window.LANG === 'ru' ? a.ru : a.en) + '</div>' +
+                    '<div class="accent-desc">' + (window.LANG === 'ru' ? a.ru_d : a.en_d) + '</div>';
+      c.onclick = function () {
+        document.querySelectorAll('.accent-card').forEach(function (x) { x.classList.remove('active'); });
+        c.classList.add('active');
+        if (window.__jstSetCurrentAccent) window.__jstSetCurrentAccent(a.code);
+        else window.currentAccent = a.code;
+      };
+      grid.appendChild(c);
+    });
+  }
+
+  function renderMoods() {
+    var sel = document.querySelector('#mood');
+    if (!sel || !window.__moodsData) return;
+    var lang = (document.documentElement.getAttribute('lang') || 'ru').toLowerCase();
+    var current = sel.value;
+    sel.innerHTML = '<option value="auto">JST Auto Spirits</option>';
+    Object.entries(window.__moodsData).forEach(function (entry) {
+      var code = entry[0], m = entry[1];
+      var ruName = m.name || code;
+      var MOOD_NAME_EN = window.MOOD_NAME_EN || {};
+      var enName = m.name_en || MOOD_NAME_EN[ruName] || ruName;
+      var o = document.createElement('option');
+      o.value = code;
+      o.textContent = (lang === 'en') ? enName : ruName;
+      sel.appendChild(o);
+    });
+    if (current) sel.value = current;
+  }
+
+  window.__jstRender = {
+    rebuildPresetsSelect: rebuildPresetsSelect,
+    rebuildCarousel: rebuildCarousel,
+    applyCard: applyCard,
+    rebuildAccents: rebuildAccents,
+    renderMoods: renderMoods,
+  };
+  if (typeof console !== 'undefined') {
+    console.log('[JST ui-render] exports:', Object.keys(window.__jstRender));
+  }
+})();
