@@ -124,7 +124,7 @@ let currentSR = 24000;
 let nextStartTime = 0; window.nextStartTime = 0;
 let totalSamples = 0; window.totalSamples = 0;
 let allChunks = []; window.allChunks = [];
-let animFrame = null;
+let animFrame = null; window.animFrame = null;
 let activeSources = []; window.activeSources = [];
 window.__jstSetActiveSources = function(v) { activeSources = v; window.activeSources = v; };
 window.__jstSetNextStartTime = function(v) { nextStartTime = v; window.nextStartTime = v; };
