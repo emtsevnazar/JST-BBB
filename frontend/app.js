@@ -118,10 +118,10 @@ window.__jstResetStreaming = function(reason) {
   console.warn("[JST v86] isStreaming reset:", reason || "manual");
 };
 
-let audioCtx = null;
+let audioCtx = null; window.audioCtx = null;
 let ws = null; window.ws = null;
 let wsTimeoutTimer = null; window.wsTimeoutTimer = null;
-let currentSR = 24000;
+let currentSR = 24000; window.currentSR = 24000;
 let nextStartTime = 0; window.nextStartTime = 0;
 let totalSamples = 0; window.totalSamples = 0;
 let allChunks = []; window.allChunks = [];
@@ -250,6 +250,8 @@ function getSettings() {
 }
 
 // === SYNTHESIS ===
+function handleAudioChunk(buf) { if (window.__jstSynth && window.__jstSynth.handleAudioChunk) return window.__jstSynth.handleAudioChunk(buf); }
+function updateProgress() { if (window.__jstSynth && window.__jstSynth.updateProgress) return window.__jstSynth.updateProgress(); }
 function synthesize() {
   /* JST_HARD_RESET_65: принудительный сброс is-busy если streaming=false */
   if (window.JST_IS_STREAMING === false || window.JST_IS_STREAMING === undefined) {
@@ -307,7 +309,7 @@ function synthesize() {
   if (btnS) { btnS.disabled = true; btnS.classList.add("is-busy"); }
   if (btnT) btnT.disabled = false;
 
-  if (!audioCtx) audioCtx = new AudioContext();
+if (!audioCtx) { audioCtx = new AudioContext(); window.audioCtx = audioCtx; }
   if (audioCtx.state === "suspended") audioCtx.resume();
 
   resetPlayback();
@@ -348,7 +350,7 @@ function synthesize() {
   ws.onmessage = (ev) => {
     if (typeof ev.data === "string") {
       const m = JSON.parse(ev.data);
-      if (m.type === "start") { currentSR = m.sr; setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy"); }
+      if (m.type === "start") { currentSR = m.sr; window.currentSR = currentSR; setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy"); }
       else if (m.type === "stage") {
         // v1.6.5b: только ключ, без backend m.detail (там русский)
         const stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];

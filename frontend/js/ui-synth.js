@@ -4,6 +4,7 @@
   var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function () { return false; };
   var t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
   var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function () {};
+  var fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function (sec) { return ((sec || 0)).toFixed(1) + "s"; };
 function drawWaveform(chunks) {
   const c = $("waveform"); if (!c) return;
   const ctx = c.getContext("2d");
@@ -179,11 +180,55 @@ function initRecordButton() {
   });
 }
 
+  function handleAudioChunk(buf) {
+    var floats = new Float32Array(buf);
+    if (window.allChunks) window.allChunks.push(floats);
+    else window.allChunks = [floats];
+    if (window.__jstSetTotalSamples) window.__jstSetTotalSamples((window.totalSamples || 0) + floats.length);
+    if (!window.audioCtx) return;
+    var ab = window.audioCtx.createBuffer(1, floats.length, window.currentSR || 24000);
+    ab.copyToChannel(floats, 0);
+    var src = window.audioCtx.createBufferSource();
+    src.buffer = ab; src.connect(window.audioCtx.destination);
+    var now = window.audioCtx.currentTime;
+    var ns = window.nextStartTime || 0;
+    if (ns < now) ns = now + 0.03;
+    src.start(ns);
+    if (window.__jstSetNextStartTime) window.__jstSetNextStartTime(ns + ab.duration);
+    if (window.activeSources) window.activeSources.push(src);
+    else window.activeSources = [src];
+    src.onended = function () {
+      var filtered = (window.activeSources || []).filter(function (s) { return s !== src; });
+      if (window.__jstSetActiveSources) window.__jstSetActiveSources(filtered);
+      else window.activeSources = filtered;
+      if (filtered.length === 0 && !window.isStreaming) { var b = $("btn-stop"); if (b) b.disabled = true; }
+    };
+    updateProgress();
+  }
+
+  function updateProgress() {
+    if (!window.audioCtx || !window.isStreaming) {
+      if (window.animFrame) cancelAnimationFrame(window.animFrame);
+      return;
+    }
+    var totalDur = (window.totalSamples || 0) / (window.currentSR || 24000);
+    var played = Math.max(0, window.audioCtx.currentTime - ((window.nextStartTime || 0) - totalDur));
+    var r = Math.min(1, played / totalDur);
+    var prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
+    if (prog) prog.style.width = (r * 100) + "%";
+    if (pt) pt.textContent = fmt(played);
+    if (ptt) ptt.textContent = fmt(totalDur);
+    drawWaveform(window.allChunks || []);
+    if (r < 1) window.animFrame = requestAnimationFrame(updateProgress);
+  }
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
   if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
   if (typeof stopPlayback !== 'undefined') window.__jstSynth.stopPlayback = stopPlayback;
   if (typeof finishStreaming !== 'undefined') window.__jstSynth.finishStreaming = finishStreaming;
   if (typeof initSTT !== 'undefined') window.__jstSynth.initSTT = initSTT;
   if (typeof initRecordButton !== 'undefined') window.__jstSynth.initRecordButton = initRecordButton;
+  if (typeof handleAudioChunk !== 'undefined') window.__jstSynth.handleAudioChunk = handleAudioChunk;
+  if (typeof updateProgress !== 'undefined') window.__jstSynth.updateProgress = updateProgress;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();
