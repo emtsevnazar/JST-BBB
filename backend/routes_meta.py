@@ -63,7 +63,7 @@ async def index():
 
 def register_meta_routes(app: FastAPI) -> None:
 
-    @app.get("/offline")
+    @app.api_route("/offline", methods=["GET", "HEAD"])
     async def offline_page():
         return FileResponse(FRONTEND / "offline.html")
 
@@ -72,4 +72,4 @@ def register_meta_routes(app: FastAPI) -> None:
     app.add_api_route("/api/journal", api_journal, methods=["GET"])
     app.add_api_route("/manifest.json", serve_manifest, methods=["GET", "HEAD"])
     app.add_api_route("/sw.js", serve_sw, methods=["GET", "HEAD"])
-    app.add_api_route("/", index, methods=["GET"])
+    app.add_api_route("/", index, methods=["GET", "HEAD"])
