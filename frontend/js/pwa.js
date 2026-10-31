@@ -1,48 +1,85 @@
-/* pwa.js — JST Studio PWA helpers (iOS standalone detection, install button)
-   Phase 3a: extracted from app.js. Attaches to window.__jstPwa so that
-   the classic <script>app.js</script> can call it during transition.
+/* pwa.js — JST Studio PWA (Phase 3b: семантика синхронизирована с app.js)
+   Использует #pwa-install (как app.js), _deferred через beforeinstallprompt.
+   window.__jstPwa — точка входа для будущей замены кода в app.js (Phase 3c).
+   ⚠ Пока НЕ активирует DOMContentLoaded-обработчик — app.js делает это сам.
 */
 
+let _deferred = null;
+let _btn = null;
+
 export function _pwaIsStandalone() {
-  if (window.navigator.standalone === true) return true;
-  return window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+  return (
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+    window.navigator.standalone === true
+  );
 }
 
 export function _pwaIsIOS() {
-  const ua = window.navigator.userAgent || '';
-  return /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
 export function _pwaShowBtn() {
-  const btn = document.getElementById('pwa-install-btn');
-  if (btn) btn.style.display = '';
+  if (_btn) _btn.style.display = "inline-flex";
 }
 
 export function _pwaHideBtn() {
-  const btn = document.getElementById('pwa-install-btn');
-  if (btn) btn.style.display = 'none';
+  if (_btn) _btn.style.display = "none";
 }
 
 export function _pwaAttach() {
-  try {
-    if (_pwaIsStandalone()) { _pwaHideBtn(); return; }
-    const btn = document.getElementById('pwa-install-btn');
-    if (!btn) return;
-    btn.addEventListener('click', function (e) {
-      if (e && e.preventDefault) e.preventDefault();
-      if (window.deferredPwaPrompt) {
-        window.deferredPwaPrompt.prompt();
-        window.deferredPwaPrompt = null;
-        _pwaHideBtn();
-      } else {
-        alert('Установка недоступна. Откройте меню браузера и выберите "Добавить на главный экран".');
-      }
-    }, false);
-    if (_pwaIsIOS()) _pwaShowBtn();
-  } catch (e) { /* noop */ }
+  _btn = document.getElementById("pwa-install");
+  if (!_btn) return;
+
+  if (localStorage.getItem("jst-pwa-dismissed") === "1") return;
+  if (_pwaIsStandalone()) return;
+
+  _btn.addEventListener("click", async () => {
+    if (_deferred) {
+      _deferred.prompt();
+      try {
+        const choice = await _deferred.userChoice;
+        if (choice && choice.outcome === "accepted") {
+          _pwaHideBtn();
+        }
+      } catch (e) {}
+      _deferred = null;
+      window.__jstPwaDeferred = null;
+    } else if (_pwaIsIOS()) {
+      const isEn = (typeof window.LANG !== "undefined" && window.LANG === "en");
+      const msg = isEn
+        ? "iOS: Share → Add to Home Screen"
+        : "iOS: Поделиться → На экран «Домой»";
+      try { alert(msg); } catch (e) {}
+    } else {
+      _pwaHideBtn();
+    }
+  });
+
+  if (_pwaIsIOS() && !_pwaIsStandalone()) _pwaShowBtn();
 }
 
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  _deferred = e;
+  window.__jstPwaDeferred = e;
+  _pwaShowBtn();
+});
+
+window.addEventListener("appinstalled", () => {
+  _deferred = null;
+  window.__jstPwaDeferred = null;
+  _pwaHideBtn();
+  try { localStorage.setItem("jst-pwa-dismissed", "1"); } catch (e) {}
+});
+
 window.__jstPwa = {
-  _pwaIsStandalone, _pwaIsIOS, _pwaShowBtn, _pwaHideBtn, _pwaAttach
+  _pwaIsStandalone,
+  _pwaIsIOS,
+  _pwaShowBtn,
+  _pwaHideBtn,
+  _pwaAttach,
+  isAttached: () => _btn !== null,
+  getDeferred: () => _deferred,
 };
-console.log('[JST pwa] module loaded, window.__jstPwa ready');
+
+console.log("[JST pwa.js] module loaded, window.__jstPwa ready (not auto-attached)");
