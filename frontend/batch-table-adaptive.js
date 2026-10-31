@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var DICT = {
+  const DICT = {
     'модель': { ru: 'Модель', en: 'Model' },
     'model': { ru: 'Модель', en: 'Model' },
     'название': { ru: 'Название', en: 'Name' },
@@ -52,45 +52,45 @@
   };
 
   function getLang() {
-    var l = (document.documentElement.getAttribute('lang') || 'ru').toLowerCase();
+    const l = (document.documentElement.getAttribute('lang') || 'ru').toLowerCase();
     return l.indexOf('en') === 0 ? 'en' : 'ru';
   }
 
   function translate(raw) {
     if (!raw) return '';
-    var key = raw.trim().toLowerCase().replace(/[:.]$/, '');
-    var entry = DICT[key];
+    const key = raw.trim().toLowerCase().replace(/[:.]$/, '');
+    const entry = DICT[key];
     return entry ? (entry[getLang()] || entry.ru || raw.trim()) : raw.trim();
   }
 
   function processTable(table) {
     if (!table) return;
-    var thead = table.querySelector('thead');
+    const thead = table.querySelector('thead');
     if (!thead) return;
-    var ths = thead.querySelectorAll('th');
+    const ths = thead.querySelectorAll('th');
     if (!ths.length) return;
-    var labels = [];
-    for (var i = 0; i < ths.length; i++) {
+    const labels = [];
+    for (let i = 0; i < ths.length; i++) {
       labels.push(translate(ths[i].textContent));
     }
-    var tbody = table.querySelector('tbody');
+    const tbody = table.querySelector('tbody');
     if (!tbody) return;
-    var rows = tbody.querySelectorAll('tr');
-    for (var r = 0; r < rows.length; r++) {
-      var tds = rows[r].querySelectorAll('td');
-      for (var c = 0; c < tds.length; c++) {
-        tds[c].setAttribute('data-label', labels[c] || ('#' + (c + 1)));
+    const rows = tbody.querySelectorAll('tr');
+    for (let r = 0; r < rows.length; r++) {
+      const tds = rows[r].querySelectorAll('td');
+      for (let c = 0; c < tds.length; c++) {
+        tds[c].setAttribute('data-label', labels[c] || (`#${  c + 1}`));
       }
     }
   }
 
   function processAll() {
-    var tables = document.querySelectorAll(
+    const tables = document.querySelectorAll(
       '.help-modal-content table, .help-table, ' +
       '.batch-dialog table, .batch-modal table, .batch-table, ' +
       '.help-doc table, .ai-modal table'
     );
-    for (var i = 0; i < tables.length; i++) {
+    for (let i = 0; i < tables.length; i++) {
       processTable(tables[i]);
     }
   }
@@ -102,23 +102,23 @@
     setTimeout(processAll, 2500);
     setTimeout(processAll, 5000);
 
-    var tables = document.querySelectorAll('table');
-    for (var i = 0; i < tables.length; i++) {
-      var tbody = tables[i].querySelector('tbody');
+    const tables = document.querySelectorAll('table');
+    for (let i = 0; i < tables.length; i++) {
+      const tbody = tables[i].querySelector('tbody');
       if (!tbody) continue;
       (function (tb) {
-        var obs = new MutationObserver(function () { processAll(); });
+        const obs = new MutationObserver(() => { processAll(); });
         obs.observe(tb, { childList: true, subtree: false });
       })(tbody);
     }
   }
 
-  var lastLang = getLang();
-  setInterval(function () {
-    var cur = getLang();
+  let lastLang = getLang();
+  setInterval(() => {
+    const cur = getLang();
     if (cur !== lastLang) {
       lastLang = cur;
-      document.querySelectorAll('td[data-label]').forEach(function (td) {
+      document.querySelectorAll('td[data-label]').forEach((td) => {
         td.removeAttribute('data-label');
       });
       processAll();

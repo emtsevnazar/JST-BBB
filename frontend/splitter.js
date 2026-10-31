@@ -2,10 +2,10 @@
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'jst_sidebar_h';
-  var MIN_PCT = 20;
-  var MAX_PCT = 75;
-  var DEFAULT_PCT = 40;
+  const STORAGE_KEY = 'jst_sidebar_h';
+  const MIN_PCT = 20;
+  const MAX_PCT = 75;
+  const DEFAULT_PCT = 40;
 
   function getMain() {
     return document.querySelector('.main');
@@ -20,15 +20,15 @@
   }
 
   function getOrCreateSplitter() {
-    var main = getMain();
+    const main = getMain();
     if (!main) return null;
-    var sidebar = getSidebar();
+    const sidebar = getSidebar();
     if (!sidebar) return null;
 
-    var existing = main.querySelector(':scope > .splitter');
+    const existing = main.querySelector(':scope > .splitter');
     if (existing) return existing;
 
-    var splitter = document.createElement('div');
+    const splitter = document.createElement('div');
     splitter.className = 'splitter';
     splitter.setAttribute('role', 'separator');
     splitter.setAttribute('aria-orientation', 'horizontal');
@@ -45,45 +45,45 @@
   }
 
   function applyHeight(pct) {
-    var main = getMain();
+    const main = getMain();
     if (!main) return;
     pct = Math.max(MIN_PCT, Math.min(MAX_PCT, pct));
-    main.style.setProperty('--sidebar-h', pct + '%', 'important');
+    main.style.setProperty('--sidebar-h', `${pct  }%`, 'important');
     try {
       localStorage.setItem(STORAGE_KEY, String(pct));
     } catch (e) {}
   }
 
   function restoreHeight() {
-    var main = getMain();
+    const main = getMain();
     if (!main) return;
-    var stored = null;
+    let stored = null;
     try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) {}
-    var pct = stored !== null ? parseFloat(stored) : DEFAULT_PCT;
+    let pct = stored !== null ? parseFloat(stored) : DEFAULT_PCT;
     if (isNaN(pct)) pct = DEFAULT_PCT;
     applyHeight(pct);
   }
 
   function attachDrag(splitter) {
-    var main = getMain();
+    const main = getMain();
     if (!main || !splitter || splitter.dataset.dragAttached) return;
     splitter.dataset.dragAttached = '1';
 
-    var startY = 0;
-    var startPct = DEFAULT_PCT;
-    var mainH = 0;
-    var dragging = false;
+    let startY = 0;
+    let startPct = DEFAULT_PCT;
+    let mainH = 0;
+    let dragging = false;
 
     function getMainRect() {
       return main.getBoundingClientRect();
     }
 
     function getCurrentPct() {
-      var sidebar = getSidebar();
+      const sidebar = getSidebar();
       if (!sidebar) return DEFAULT_PCT;
-      var mainH = getMainRect().height;
+      const mainH = getMainRect().height;
       if (mainH <= 0) return DEFAULT_PCT;
-      var sidebarH = sidebar.getBoundingClientRect().height;
+      const sidebarH = sidebar.getBoundingClientRect().height;
       return (sidebarH / mainH) * 100;
     }
 
@@ -107,10 +107,10 @@
 
     function onMove(e) {
       if (!dragging) return;
-      var clientY = (e.touches ? e.touches[0].clientY : e.clientY);
-      var deltaY = clientY - startY;
-      var deltaPct = (deltaY / mainH) * 100;
-      var newPct = startPct + deltaPct;
+      const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
+      const deltaY = clientY - startY;
+      const deltaPct = (deltaY / mainH) * 100;
+      const newPct = startPct + deltaPct;
       // Ползунок ВНИЗ (deltaY > 0) → sidebar больше → pct больше
       // Ползунок ВВЕРХ (deltaY < 0) → sidebar меньше → pct меньше
       applyHeight(newPct);
@@ -134,9 +134,9 @@
     splitter.addEventListener('touchstart', onDown, { passive: false });
 
     // Клавиатура: стрелки вверх/вниз
-    splitter.addEventListener('keydown', function (e) {
+    splitter.addEventListener('keydown', (e) => {
       if (window.innerWidth > 900) return;
-      var cur = getCurrentPct();
+      const cur = getCurrentPct();
       if (e.key === 'ArrowDown') {
         applyHeight(cur + 5);
         e.preventDefault();
@@ -148,7 +148,7 @@
   }
 
   function init() {
-    var splitter = getOrCreateSplitter();
+    const splitter = getOrCreateSplitter();
     if (!splitter) return;
     attachDrag(splitter);
     restoreHeight();
@@ -164,7 +164,7 @@
   setTimeout(init, 2000);
 
   // При переходе на мобилку — применить сохранённое
-  window.addEventListener('resize', function () {
+  window.addEventListener('resize', () => {
     if (window.innerWidth <= 900) {
       restoreHeight();
     }

@@ -4,7 +4,7 @@
 (function () {
   if (!window.JST_TEST_PHRASES) return;
 
-  var EXT = {
+  const EXT = {
     de: [
       "Hallo.", "Guten Tag.", "Wie geht's?", "Danke sehr.", "Bis später.",
       "In Ordnung.", "Einverstanden.", "Verstanden.", "Wunderbar!", "Los geht's.",
@@ -56,11 +56,11 @@
   };
 
   // Merge, не перезаписывая существующие (ru, en)
-  Object.keys(EXT).forEach(function (lang) {
+  Object.keys(EXT).forEach((lang) => {
     if (!window.JST_TEST_PHRASES[lang]) {
       window.JST_TEST_PHRASES[lang] = EXT[lang];
     }
   });
 
-  console.log("[JST] test_phrases_ext: добавлено " + Object.keys(EXT).length + " языков (DE/FR/ES/ZH/JA/KO/PT/IT)");
+  console.log(`[JST] test_phrases_ext: добавлено ${  Object.keys(EXT).length  } языков (DE/FR/ES/ZH/JA/KO/PT/IT)`);
 })();

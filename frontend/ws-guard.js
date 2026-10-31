@@ -4,11 +4,11 @@
   if (window.__jstWsGuardV57) return;
   window.__jstWsGuardV57 = true;
 
-  setInterval(function () {
+  setInterval(() => {
     try {
-      var b = document.getElementById('btn-synth');
+      const b = document.getElementById('btn-synth');
       if (!b || !b.classList.contains('is-busy')) return;
-      var elapsed = Date.now() - (window.JST_SYNTH_START || 0);
+      const elapsed = Date.now() - (window.JST_SYNTH_START || 0);
       // 90 секунд — если синтез висит, принудительно сбрасываем
       if (elapsed > 90000) {
         try { b.classList.remove('is-busy'); } catch (e) {}
@@ -28,11 +28,11 @@
    If WS fails repeatedly in <30s, show a toast so user knows it's rate limit.
 */
 (function () {
-  var fails = 0;
-  var lastFail = 0;
-  var notified = false;
+  let fails = 0;
+  let lastFail = 0;
+  let notified = false;
   function onFail() {
-    var now = Date.now();
+    const now = Date.now();
     if (now - lastFail > 30000) { fails = 0; notified = false; }
     lastFail = now;
     fails++;
@@ -46,18 +46,18 @@
     }
   }
   // Hook original WebSocket
-  var _Orig = window.WebSocket;
+  const _Orig = window.WebSocket;
   if (_Orig && !_Orig._jstHooked) {
     window.WebSocket = function (url, protocols) {
-      var ws = protocols ? new _Orig(url, protocols) : new _Orig(url);
-      var origOnError = null;
-      var origOnClose = null;
+      const ws = protocols ? new _Orig(url, protocols) : new _Orig(url);
+      let origOnError = null;
+      let origOnClose = null;
       Object.defineProperty(ws, "onerror", {
         configurable: true,
         get: function () { return origOnError; },
         set: function (fn) {
           origOnError = fn;
-          ws.addEventListener("error", function () { onFail(); });
+          ws.addEventListener("error", () => { onFail(); });
         },
       });
       Object.defineProperty(ws, "onclose", {
@@ -65,7 +65,7 @@
         get: function () { return origOnClose; },
         set: function (fn) {
           origOnClose = fn;
-          ws.addEventListener("close", function (ev) {
+          ws.addEventListener("close", (ev) => {
             if (ev.code === 1006 || ev.code === 1008 || ev.code === 1011) onFail();
           });
         },
@@ -87,21 +87,21 @@
   if (location.pathname === '/offline' || location.pathname === '/offline/') return;
   if (window.__jstWsErrHooked) return;
 
-  var _Orig = window.WebSocket;
+  const _Orig = window.WebSocket;
   if (!_Orig) return;
 
   window.WebSocket = function (url, protocols) {
-    var ws = protocols ? new _Orig(url, protocols) : new _Orig(url);
-    ws.addEventListener('close', function (ev) {
-      var code = ev && ev.code;
+    const ws = protocols ? new _Orig(url, protocols) : new _Orig(url);
+    ws.addEventListener('close', (ev) => {
+      const code = ev && ev.code;
       if (code === 1006 || code === 1008 || code === 1011 || code === 1013) {
         console.warn('[JST ws-guard] WS closed with', code, '— redirecting to /error');
         try {
           sessionStorage.setItem('jst_err_guard', '1');
-          sessionStorage.setItem('jst_error_state', JSON.stringify({ code: 'ws_' + code }));
+          sessionStorage.setItem('jst_error_state', JSON.stringify({ code: `ws_${  code}` }));
         } catch (e) {}
-        setTimeout(function () {
-          location.replace('/error?reason=ws_' + code);
+        setTimeout(() => {
+          location.replace(`/error?reason=ws_${  code}`);
         }, 300);
       }
     });

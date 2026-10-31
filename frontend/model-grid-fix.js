@@ -3,10 +3,10 @@
   'use strict';
 
   function fixModelGrid() {
-    var mg = document.getElementById('model-grid');
+    const mg = document.getElementById('model-grid');
     if (!mg) return;
 
-    var wrap = mg.closest('.carousel-wrap');
+    const wrap = mg.closest('.carousel-wrap');
     if (wrap) {
       wrap.classList.add('has-model-grid');
       wrap.style.setProperty('padding', '0 42px', 'important');
@@ -18,8 +18,8 @@
       wrap.style.setProperty('min-height', '46px', 'important');
       wrap.style.setProperty('box-sizing', 'border-box', 'important');
 
-      var btns = wrap.querySelectorAll('.carousel-btn');
-      for (var b = 0; b < btns.length; b++) {
+      const btns = wrap.querySelectorAll('.carousel-btn');
+      for (let b = 0; b < btns.length; b++) {
         btns[b].style.setProperty('display', 'flex', 'important');
         btns[b].style.setProperty('visibility', 'visible', 'important');
         btns[b].style.setProperty('opacity', '1', 'important');
@@ -53,9 +53,9 @@
     mg.style.setProperty('box-sizing', 'border-box', 'important');
 
     // Дети — 84×38 (НЕ 56)
-    var kids = mg.children;
-    for (var i = 0; i < kids.length; i++) {
-      var k = kids[i];
+    const kids = mg.children;
+    for (let i = 0; i < kids.length; i++) {
+      const k = kids[i];
       k.style.setProperty('flex', '1 1 0', 'important');
       k.style.setProperty('width', 'auto', 'important');
       k.style.setProperty('min-width', '84px', 'important');
@@ -91,10 +91,10 @@
   }
 
   function watch() {
-    var mg = document.getElementById('model-grid');
+    const mg = document.getElementById('model-grid');
     if (!mg || mg.dataset.mgObs) return;
     mg.dataset.mgObs = '1';
-    var obs = new MutationObserver(function () { fixModelGrid(); });
+    const obs = new MutationObserver(() => { fixModelGrid(); });
     obs.observe(mg, { childList: true, subtree: false, attributes: true, attributeFilter: ['style', 'class'] });
   }
   setTimeout(watch, 100);

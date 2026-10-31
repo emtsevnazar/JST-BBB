@@ -5,7 +5,7 @@
   window.__jstToastV57 = true;
 
   function ensureEl() {
-    var el = document.getElementById('toast');
+    let el = document.getElementById('toast');
     if (!el) {
       el = document.createElement('div');
       el.id = 'toast';
@@ -16,13 +16,13 @@
   }
 
   function toast(msg, type) {
-    var el = ensureEl();
-    var isError = (type === 'error' || type === 'warn');
-    var prefix = isError ? '⚠ ' : '';
+    const el = ensureEl();
+    const isError = (type === 'error' || type === 'warn');
+    const prefix = isError ? '⚠ ' : '';
     el.textContent = prefix + msg;
-    el.className = 'toast' + (isError ? ' toast-error' : '') + ' show';
+    el.className = `toast${  isError ? ' toast-error' : ''  } show`;
     clearTimeout(window._toastT57);
-    window._toastT57 = setTimeout(function () {
+    window._toastT57 = setTimeout(() => {
       el.classList.remove('show');
     }, isError ? 8000 : 3500);
   }

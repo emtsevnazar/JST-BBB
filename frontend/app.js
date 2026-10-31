@@ -138,7 +138,7 @@ const tCard = (k) => I18N[LANG].cards[k] || k;
 const tDesc = (k) => I18N[LANG].desc[k] || "";
 const $ = (id) => document.getElementById(id);
 /* __jstContrast moved to ui-helpers.js (Phase 5e) */
-var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function() { console.warn('[__jstContrast] stub'); };
+window.__jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function() { console.warn('[__jstContrast] stub'); };
 
 
 // === THEME (owned by theme-mode.js) ===
@@ -148,17 +148,17 @@ var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) |
 // === i18n UI ===
 // v1.7.7: smart translate статуса (сохраняет "5.2s", "· file.wav")
 /* _translateStatus moved to ui-helpers.js (Phase 5c) */
-var _translateStatus = (window.__jstHelpers && window.__jstHelpers._translateStatus) || function() { console.warn('[_translateStatus] stub'); return ''; };
+window._translateStatus = (window.__jstHelpers && window.__jstHelpers._translateStatus) || function() { console.warn('[_translateStatus] stub'); return ''; };
 
 function applyLanguage() { if (window.__jstRender && window.__jstRender.applyLanguage) return window.__jstRender.applyLanguage(); }
 
 // === TOAST ===
 /* showToast moved to ui-helpers.js (Phase 5e) */
-var showToast = (window.__jstHelpers && window.__jstHelpers.showToast) || function() { console.warn('[showToast] stub'); };
+window.showToast = (window.__jstHelpers && window.__jstHelpers.showToast) || function() { console.warn('[showToast] stub'); };
 
 // === STATUS ===
 /* setStatus moved to ui-helpers.js (Phase 5e) */
-var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function() { console.warn('[setStatus] stub'); };
+window.setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function() { console.warn('[setStatus] stub'); };
 
 // === PRESETS ===
 function rebuildPresetsSelect() { if (window.__jstRender && window.__jstRender.rebuildPresetsSelect) return window.__jstRender.rebuildPresetsSelect(); }
@@ -215,7 +215,7 @@ async function refreshHistory() {
 window.__jstRefreshHistory = refreshHistory;
 
 /* fmt moved to ui-helpers.js (Phase 5c) */
-var fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function() { console.warn('[fmt] stub'); return ''; };
+window.fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function() { console.warn('[fmt] stub'); return ''; };
 
 // === STT (голосовой ввод) ===
 function initSTT() { if (window.__jstSynth && window.__jstSynth.initSTT) return window.__jstSynth.initSTT(); }
