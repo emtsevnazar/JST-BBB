@@ -209,44 +209,7 @@ function applyCard(card) { if (window.__jstRender && window.__jstRender.applyCar
 function rebuildAccents() { if (window.__jstRender && window.__jstRender.rebuildAccents) return window.__jstRender.rebuildAccents(); }
 
 // === MODELS ===
-function rebuildModelCarousel() {
-  const grid = $("model-grid"); if (!grid) return;
-  grid.innerHTML = "";
-  if (!MODELS || !MODELS.length) {
-    grid.innerHTML = '<div style="padding:12px;color:var(--text-dim)">' + t("no_models") + '</div>';
-    return;
-  }
-  MODELS.forEach(m => {
-    const c = document.createElement("div");
-
-        c.className = "model-card" + (m.code === currentMode ? " active" : "") + (!m.loaded ? " unavailable" : "");
-    c.setAttribute("data-code", m.code);
-    const warn = "";
-    c.innerHTML = '<div class="model-name">' + m.name + warn + '</div>';
-    c.onclick = () => {
-      if (!m.loaded) {
-        showToast(ti("model_not_loaded") + ": " + m.name);
-        return;
-      }
-      if (window.__jstSetCurrentMode) window.__jstSetCurrentMode(m.code); else currentMode = m.code;
-      if (m.languages && m.languages.length && !m.languages.includes(currentLang)) {
-        var _v = m.languages.includes("en") ? "en" : m.languages[0]; if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else currentLang = _v;
-        showToast(t("toast_switched") + " " + currentLang.toUpperCase());
-      }
-      document.querySelectorAll(".model-card").forEach(x => x.classList.remove("active"));
-      c.classList.add("active");
-      updateModelInfo();
-      renderLanguages();
-      if (!m.loaded && m.code !== "core") {
-        showToast(t("toast_not_loaded") + " (" + m.name + ")");
-      }
-      saveSynthPrefs();
-      const fd = new FormData(); fd.append("mode", m.code);
-      fetch("/api/mode", { method: "POST", body: fd }).catch(() => {});
-    };
-    grid.appendChild(c);
-  });
-}
+function rebuildModelCarousel() { if (window.__jstRender && window.__jstRender.rebuildModelCarousel) return window.__jstRender.rebuildModelCarousel(); }
 
 function updateModelInfo() { if (window.__jstRender && window.__jstRender.updateModelInfo) return window.__jstRender.updateModelInfo(); }
 

@@ -176,6 +176,44 @@ function applyLanguage() {
   });
 }
 
+  function rebuildModelCarousel() {
+    var grid = $("model-grid"); if (!grid) return;
+    grid.innerHTML = "";
+    if (!window.MODELS || !window.MODELS.length) {
+      grid.innerHTML = '<div style="padding:12px;color:var(--text-dim)">' + t("no_models") + '</div>';
+      return;
+    }
+    window.MODELS.forEach(function (m) {
+      var c = document.createElement("div");
+      c.className = "model-card" + (m.code === window.currentMode ? " active" : "") + (!m.loaded ? " unavailable" : "");
+      c.setAttribute("data-code", m.code);
+      c.innerHTML = '<div class="model-name">' + m.name + '</div>';
+      c.onclick = function () {
+        if (!m.loaded) {
+          showToast(ti("model_not_loaded") + ": " + m.name);
+          return;
+        }
+        if (window.__jstSetCurrentMode) window.__jstSetCurrentMode(m.code); else window.currentMode = m.code;
+        if (m.languages && m.languages.length && m.languages.indexOf(window.currentLang) === -1) {
+          var _v = m.languages.indexOf("en") !== -1 ? "en" : m.languages[0];
+          if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else window.currentLang = _v;
+          showToast(t("toast_switched") + " " + (window.currentLang || "").toUpperCase());
+        }
+        document.querySelectorAll(".model-card").forEach(function (x) { x.classList.remove("active"); });
+        c.classList.add("active");
+        if (typeof updateModelInfo === "function") updateModelInfo();
+        if (typeof renderLanguages === "function") renderLanguages();
+        if (!m.loaded && m.code !== "core") {
+          showToast(t("toast_not_loaded") + " (" + m.name + ")");
+        }
+        if (window.__jstSaveSynthPrefs) window.__jstSaveSynthPrefs();
+        var fd = new FormData(); fd.append("mode", m.code);
+        fetch("/api/mode", { method: "POST", body: fd }).catch(function () {});
+      };
+      grid.appendChild(c);
+    });
+  }
+
   window.__jstRender = {
     rebuildPresetsSelect: rebuildPresetsSelect,
     rebuildCarousel: rebuildCarousel,
@@ -185,6 +223,7 @@ function applyLanguage() {
     updateModelInfo: updateModelInfo,
     applyLanguage: applyLanguage,
     renderLanguages: renderLanguages,
+    rebuildModelCarousel: rebuildModelCarousel,
   };
   if (typeof console !== 'undefined') {
     console.log('[JST ui-render] exports:', Object.keys(window.__jstRender));
