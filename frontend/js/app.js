@@ -65,7 +65,7 @@ window.JST_TOAST_I18N = JST_TOAST_I18N;
 function ti(key) { return (window.__jstHelpers && window.__jstHelpers.ti) ? window.__jstHelpers.ti(key) : key; }
 let MODELS = []; window.MODELS = [];
 let PRESETS = {};
-let currentMode = localStorage.getItem("jst-mode") || "core";
+let currentMode = localStorage.getItem("jst-mode") || "core"; window.currentMode = currentMode;
 let currentLang = localStorage.getItem("jst-synth-lang") || "";
 
 function saveSynthPrefs() { if (window.__jstApi && window.__jstApi.saveSynthPrefs) return window.__jstApi.saveSynthPrefs(); }
@@ -339,17 +339,30 @@ async function uploadVoice() {
 async function init() {
   console.log("[JST] init start");
   applyLanguage();
-  await loadModels();
-  console.log("[JST] models loaded:", MODELS.length);
-  await loadVoices();
-  await loadPresets();
-    await loadMoods();
+  // v1.1.24 FIX: bindUI ДО await load*() — чтобы кнопки привязались даже
+  // если fetch load*() упадёт (500/404/offline). Иначе init() прерывается
+  // и ВСЕ кнопки (btn-random, carousel, help-toggle, upload) мертвы.
+  try { bindUI(); } catch(e) { console.error("[init] bindUI:", e); }
+  // v1.1.24: каждый load* в отдельном try/catch — одно падение не блокирует rest
+  try { await loadModels(); console.log("[JST] models loaded:", MODELS.length); }
+  catch(e) { console.warn("[init] loadModels failed:", e); MODELS = []; window.MODELS = []; }
+  try { await loadVoices(); } catch(e) { console.warn("[init] loadVoices failed:", e); }
+  try { await loadPresets(); } catch(e) { console.warn("[init] loadPresets failed:", e); }
+  try { await loadMoods(); } catch(e) { console.warn("[init] loadMoods failed:", e); }
   try { rebuildModelCarousel(); } catch(e) { console.error(e); }
   try { updateModelInfo(); } catch(e) { console.error(e); }
   try { renderLanguages(); } catch(e) { console.error(e); }
   try { rebuildCarousel(); } catch(e) { console.error(e); }
   try { rebuildAccents(); } catch(e) { console.error(e); }
-  try { bindUI(); } catch(e) { console.error(e); }
+  // bindUI уже вызван выше (v1.1.24)
+  // v1.1.23: lang restore после bindUI (ui-features/instruction могут менять LANG)
+  try {
+    const _savedLang = localStorage.getItem("jst-lang");
+    if (_savedLang && typeof applyLanguage === "function") {
+      applyLanguage(_savedLang);
+      if (typeof renderLanguages === "function") renderLanguages();
+    }
+  } catch(e) { console.warn("[JST] lang restore failed:", e); }
   // v1.1.22: экспорт uploadVoice в window
   if (typeof uploadVoice === "function") window.uploadVoice = uploadVoice;
   try { initSTT(); } catch(e) { console.error(e); }

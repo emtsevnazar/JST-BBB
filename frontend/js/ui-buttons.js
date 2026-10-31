@@ -132,6 +132,39 @@
     }
   }
 
+    // v1.1.23: help-toggle fallback (ui-features/instruction могут падать)
+    const _ht = document.getElementById("help-toggle");
+    const _hm = document.getElementById("help-modal");
+    if (_ht && _hm) {
+      _ht.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        _hm.classList.toggle("open");
+      }, true);
+    }
+
+    // v1.1.24 help-toggle toggle (раньше только apply-blur в ui-features.js)
+    try {
+      const _ht = document.getElementById("help-toggle");
+      const _hm = document.getElementById("help-modal");
+      if (_ht && _hm) {
+        _ht.addEventListener("click", function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          _hm.classList.toggle("open");
+          _hm.setAttribute("aria-hidden", _hm.classList.contains("open") ? "false" : "true");
+        }, true);
+      }
+      const _hc = document.getElementById("help-close");
+      if (_hc && _hm) {
+        _hc.addEventListener("click", function(e) {
+          e.preventDefault();
+          _hm.classList.remove("open");
+          _hm.setAttribute("aria-hidden", "true");
+        }, true);
+      }
+    } catch(e) { console.warn("[bindUI] help-toggle:", e); }
+
   window.__jstUI = { bindUI: bindUI };
   if (typeof console !== 'undefined') console.log('[JST ui-buttons] exports:', Object.keys(window.__jstUI));
 })();
