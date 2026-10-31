@@ -36,6 +36,10 @@ log = logging.getLogger("JST")
 
 
 def save_output(samples, sr_in, s, base: str):
+    if samples is None:
+        raise TypeError("save_output: samples must not be None")
+    if not hasattr(samples, "__len__"):
+        raise TypeError(f"save_output: samples must be array-like, got {type(samples).__name__}")
     sr_out = _int(s.output_sr, 44100)
     if sr_out != sr_in:
         samples = librosa.resample(samples, orig_sr=sr_in, target_sr=sr_out)
