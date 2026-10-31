@@ -63,7 +63,7 @@ const JST_TOAST_I18N = {
 };
 window.JST_TOAST_I18N = JST_TOAST_I18N;
 function ti(key) { return (window.__jstHelpers && window.__jstHelpers.ti) ? window.__jstHelpers.ti(key) : key; }
-let MODELS = [];
+let MODELS = []; window.MODELS = [];
 let PRESETS = {};
 let currentMode = localStorage.getItem("jst-mode") || "core";
 let currentLang = localStorage.getItem("jst-synth-lang") || "";
@@ -140,6 +140,7 @@ window.PRESETS = PRESETS;
 window.currentAccent = currentAccent;
 window.__jstSetCurrentAccent = function(v) { currentAccent = v; window.currentAccent = v; };
 window.__jstSetPresets = function(v) { PRESETS = v; window.PRESETS = v; };
+window.__jstSetModels = function(v) { MODELS = v; window.MODELS = v; };
 window.__jstSetCurrentMode = function(v) { currentMode = v; window.currentMode = v; };
 window.__jstSetCurrentLang = function(v) { currentLang = v; window.currentLang = v; };
 window.LANG_NAMES = LANG_NAMES;
@@ -523,7 +524,7 @@ function initRecordButton() {
 
 // === LOAD DATA ===
 async function loadModels() {
-  try { const r = await fetch("/api/models"); const d = await r.json(); MODELS = d.models || []; }
+  try { const r = await fetch("/api/models"); const d = await r.json(); if (window.__jstSetModels) window.__jstSetModels(d.models || []); else MODELS = d.models || []; }
   catch(e) { console.error("models:", e); }
 }
 
