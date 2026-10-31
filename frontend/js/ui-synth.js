@@ -97,9 +97,93 @@ function finishStreaming(file) {
   if ((window.activeSources || []).length === 0) { const b = $("btn-stop"); if (b) b.disabled = true; }
 }
 
+function initSTT() {
+  var btn = $("btn-stt"); if (!btn) return;
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { btn.title = t("stt_not_supported"); btn.disabled = true; btn.style.opacity = "0.3"; return; }
+  btn.addEventListener("click", function () {
+    if (window.sttActive) return;
+    var recognition = new SR();
+    recognition.lang = (window.currentLang === "ru") ? "ru-RU" : "en-US";
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    var textEl = $("text");
+    var base = textEl ? textEl.value : "";
+    recognition.onstart = function () {
+      if (window.__jstSetSttActive) window.__jstSetSttActive(true); else window.sttActive = true;
+      btn.style.background = "var(--red)";
+      setStatus(t("status_listening"), "busy");
+    };
+    recognition.onresult = function (ev) {
+      var interim = "", final = "";
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        var tx = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) final += tx; else interim += tx;
+      }
+      if (textEl) {
+        if (final) { base = (base ? base + " " : "") + final; textEl.value = base; }
+        else if (interim) textEl.value = base + (base ? " " : "") + interim;
+      }
+    };
+    recognition.onerror = function (ev) { setStatus(t("status_err") + ": " + ev.error, "error"); };
+    recognition.onend = function () {
+      if (window.__jstSetSttActive) window.__jstSetSttActive(false); else window.sttActive = false;
+      btn.style.background = "";
+      setStatus(t("status_ready"), "");
+    };
+    try { recognition.start(); } catch(e) { setStatus(t("status_stt_fail") + ": " + e.message, "error"); }
+  });
+}
+
+function initRecordButton() {
+  var btn = $("btn-record"); if (!btn) return;
+  btn.addEventListener("click", async function () {
+    if (window.mediaRecorder && window.mediaRecorder.state === "recording") { window.mediaRecorder.stop(); return; }
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      var mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      if (window.__jstSetMediaRecorder) window.__jstSetMediaRecorder(mr); else window.mediaRecorder = mr;
+      var chunks = [];
+      if (window.__jstSetRecordedChunks) window.__jstSetRecordedChunks(chunks); else window.recordedChunks = chunks;
+      mr.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
+      mr.onstop = async function () {
+        stream.getTracks().forEach(function (tr) { tr.stop(); });
+        clearInterval(window.recordTimer);
+        btn.style.background = ""; btn.style.color = "";
+        var blob = new Blob(window.recordedChunks || chunks, { type: "audio/webm" });
+        var dur = ((Date.now() - window.recordStartTime) / 1000).toFixed(1);
+        setStatus(t("status_rec_loading") + " (" + dur + "s)...", "busy");
+        var nv = $("new-voice");
+        var name = nv ? nv.value.trim() : "";
+        if (!name) { name = "recorded_" + Date.now(); if (nv) nv.value = name; }
+        try {
+          var fd = new FormData(); fd.append("name", name);
+          await fetch("/api/voices/create", { method: "POST", body: fd });
+          var ffd = new FormData(); ffd.append("file", blob, "recording.webm");
+          var r = await fetch("/api/voices/" + encodeURIComponent(name) + "/upload-blob", { method: "POST", body: ffd });
+          if (!r.ok) throw new Error(await r.text());
+          var fd2 = new FormData(); fd2.append("ref_length", ($("ref_length") || {}).value || "15");
+          await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
+          if (window.__jstLoadVoices) await window.__jstLoadVoices();
+          var v = $("voice"); if (v) v.value = name;
+          setStatus(t("status_rec_saved") + ": " + name, "");
+        } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
+      };
+      mr.start();
+      if (window.__jstSetRecordStartTime) window.__jstSetRecordStartTime(Date.now()); else window.recordStartTime = Date.now();
+      btn.style.background = "var(--red)"; btn.style.color = "#fff";
+      var sec = 0;
+      var timer = setInterval(function () { sec++; setStatus(t("status_rec_timer") + ": " + sec + "s. " + t("status_rec_timer_hint"), "busy"); }, 1000);
+      if (window.__jstSetRecordTimer) window.__jstSetRecordTimer(timer); else window.recordTimer = timer;
+    } catch(e) { setStatus(t("status_mic_error") + ": " + e.message, "error"); }
+  });
+}
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
   if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
   if (typeof stopPlayback !== 'undefined') window.__jstSynth.stopPlayback = stopPlayback;
   if (typeof finishStreaming !== 'undefined') window.__jstSynth.finishStreaming = finishStreaming;
+  if (typeof initSTT !== 'undefined') window.__jstSynth.initSTT = initSTT;
+  if (typeof initRecordButton !== 'undefined') window.__jstSynth.initRecordButton = initRecordButton;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();

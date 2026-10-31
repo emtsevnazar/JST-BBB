@@ -141,17 +141,24 @@ window.currentAccent = currentAccent;
 window.__jstSetCurrentAccent = function(v) { currentAccent = v; window.currentAccent = v; };
 window.__jstSetPresets = function(v) { PRESETS = v; window.PRESETS = v; };
 window.__jstSetModels = function(v) { MODELS = v; window.MODELS = v; };
+window.__jstSetMediaRecorder = function(v) { mediaRecorder = v; window.mediaRecorder = v; };
+window.__jstSetRecordedChunks = function(v) { recordedChunks = v; window.recordedChunks = v; };
+window.__jstGetSettings = getSettings;
+window.__jstLoadVoices = loadVoices;
+window.__jstSetSttActive = function(v) { sttActive = v; window.sttActive = v; };
+window.__jstSetRecordTimer = function(v) { recordTimer = v; window.recordTimer = v; };
+window.__jstSetRecordStartTime = function(v) { recordStartTime = v; window.recordStartTime = v; };
 window.__jstSetCurrentMode = function(v) { currentMode = v; window.currentMode = v; };
 window.__jstSetCurrentLang = function(v) { currentLang = v; window.currentLang = v; };
 window.LANG_NAMES = LANG_NAMES;
 window.__jstSaveSynthPrefs = saveSynthPrefs;
 window.__jstApplySynthLangToText = applySynthLangToText;
 window.__jstRebuildModelCarousel = rebuildModelCarousel;
-let recordTimer = null;
-let mediaRecorder = null;
-let recordedChunks = [];
-let recordStartTime = 0;
-let sttActive = false;
+let recordTimer = null; window.recordTimer = null;
+let mediaRecorder = null; window.mediaRecorder = null;
+let recordedChunks = []; window.recordedChunks = [];
+let recordStartTime = 0; window.recordStartTime = 0;
+let sttActive = false; window.sttActive = false;
 
 function t(k) { return (window.__jstHelpers && window.__jstHelpers.t) ? window.__jstHelpers.t(k) : k; }
 const tPreset = (k) => I18N[LANG].presets[k] || k;
@@ -413,77 +420,10 @@ window.__jstRefreshHistory = refreshHistory;
 var fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function() { console.warn('[fmt] stub'); return ''; };
 
 // === STT (голосовой ввод) ===
-function initSTT() {
-  const btn = $("btn-stt"); if (!btn) return;
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { btn.title = t("stt_not_supported"); btn.disabled = true; btn.style.opacity = "0.3"; return; }
-  btn.addEventListener("click", () => {
-    if (sttActive) return;
-    const recognition = new SR();
-    recognition.lang = currentLang === "ru" ? "ru-RU" : "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    const textEl = $("text");
-    let base = textEl ? textEl.value : "";
-    recognition.onstart = () => { sttActive = true; btn.style.background = "var(--red)"; setStatus(t("status_listening"), "busy"); };
-    recognition.onresult = (ev) => {
-      let interim = "", final = "";
-      for (let i = ev.resultIndex; i < ev.results.length; i++) {
-        const tx = ev.results[i][0].transcript;
-        if (ev.results[i].isFinal) final += tx; else interim += tx;
-      }
-      if (textEl) {
-        if (final) { base = (base ? base + " " : "") + final; textEl.value = base; }
-        else if (interim) textEl.value = base + (base ? " " : "") + interim;
-      }
-    };
-    recognition.onerror = (ev) => setStatus(t("status_err") + ": " + ev.error, "error");
-    recognition.onend = () => { sttActive = false; btn.style.background = ""; setStatus(t("status_ready"), ""); };
-    try { recognition.start(); } catch(e) { setStatus(t("status_stt_fail") + ": " + e.message, "error"); }
-  });
-}
+function initSTT() { if (window.__jstSynth && window.__jstSynth.initSTT) return window.__jstSynth.initSTT(); }
 
 // === Запись голоса ===
-function initRecordButton() {
-  const btn = $("btn-record"); if (!btn) return;
-  btn.addEventListener("click", async () => {
-    if (mediaRecorder && mediaRecorder.state === "recording") { mediaRecorder.stop(); return; }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-      recordedChunks = [];
-      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-      mediaRecorder.onstop = async () => {
-        stream.getTracks().forEach(t => t.stop());
-        clearInterval(recordTimer);
-        btn.style.background = ""; btn.style.color = "";
-        const blob = new Blob(recordedChunks, { type: "audio/webm" });
-        const dur = ((Date.now() - recordStartTime) / 1000).toFixed(1);
-        setStatus(t("status_rec_loading") + " (" + dur + "s)...", "busy");
-        const nv = $("new-voice");
-        let name = nv ? nv.value.trim() : "";
-        if (!name) { name = "recorded_" + Date.now(); if (nv) nv.value = name; }
-        try {
-          const fd = new FormData(); fd.append("name", name);
-          await fetch("/api/voices/create", { method: "POST", body: fd });
-          const ffd = new FormData(); ffd.append("file", blob, "recording.webm");
-          const r = await fetch("/api/voices/" + encodeURIComponent(name) + "/upload-blob", { method: "POST", body: ffd });
-          if (!r.ok) throw new Error(await r.text());
-          const fd2 = new FormData(); fd2.append("ref_length", ($("ref_length")||{}).value || "15");
-          await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
-          await loadVoices();
-          const v = $("voice"); if (v) v.value = name;
-          setStatus(t("status_rec_saved") + ": " + name, "");
-        } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
-      };
-      mediaRecorder.start();
-      recordStartTime = Date.now();
-      btn.style.background = "var(--red)"; btn.style.color = "#fff";
-      let sec = 0;
-      recordTimer = setInterval(() => { sec++; setStatus(t("status_rec_timer") + ": " + sec + "s. " + t("status_rec_timer_hint"), "busy"); }, 1000);
-    } catch(e) { setStatus(t("status_mic_error") + ": " + e.message, "error"); }
-  });
-}
+function initRecordButton() { if (window.__jstSynth && window.__jstSynth.initRecordButton) return window.__jstSynth.initRecordButton(); }
 
 // === LOAD DATA ===
 async function loadModels() {
