@@ -96,7 +96,7 @@ function normalizeSynthPrefs() {
   var m = modelsList.find(function (x) { return x.code === currentMode; });
   var supported = (m && Array.isArray(m.languages) && m.languages.length) ? m.languages : ["en"];
   if (!currentLang || supported.indexOf(currentLang) === -1) {
-    currentLang = supported.indexOf("en") !== -1 ? "en" : supported[0];
+    var _v = supported.indexOf("en") !== -1 ? "en" : supported[0]; if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else currentLang = _v;
   }
   saveSynthPrefs();
   applySynthLangToText();
@@ -140,6 +140,12 @@ window.PRESETS = PRESETS;
 window.currentAccent = currentAccent;
 window.__jstSetCurrentAccent = function(v) { currentAccent = v; window.currentAccent = v; };
 window.__jstSetPresets = function(v) { PRESETS = v; window.PRESETS = v; };
+window.__jstSetCurrentMode = function(v) { currentMode = v; window.currentMode = v; };
+window.__jstSetCurrentLang = function(v) { currentLang = v; window.currentLang = v; };
+window.LANG_NAMES = LANG_NAMES;
+window.__jstSaveSynthPrefs = saveSynthPrefs;
+window.__jstApplySynthLangToText = applySynthLangToText;
+window.__jstRebuildModelCarousel = rebuildModelCarousel;
 let recordTimer = null;
 let mediaRecorder = null;
 let recordedChunks = [];
@@ -262,9 +268,9 @@ function rebuildModelCarousel() {
         showToast(ti("model_not_loaded") + ": " + m.name);
         return;
       }
-      currentMode = m.code;
+      if (window.__jstSetCurrentMode) window.__jstSetCurrentMode(m.code); else currentMode = m.code;
       if (m.languages && m.languages.length && !m.languages.includes(currentLang)) {
-        currentLang = m.languages.includes("en") ? "en" : m.languages[0];
+        var _v = m.languages.includes("en") ? "en" : m.languages[0]; if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else currentLang = _v;
         showToast(t("toast_switched") + " " + currentLang.toUpperCase());
       }
       document.querySelectorAll(".model-card").forEach(x => x.classList.remove("active"));
@@ -305,7 +311,7 @@ function renderLanguages() {
       c.onclick = () => {
         document.querySelectorAll(".lang-card").forEach(x => x.classList.remove("active"));
         c.classList.add("active");
-        currentLang = code;
+        if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(code); else currentLang = code;
         saveSynthPrefs();
         applySynthLangToText();
       };
