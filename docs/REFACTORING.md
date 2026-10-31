@@ -90,3 +90,31 @@
 ### Следующая цель (Phase 5b)
 - __jstContrast / applyTheme -> ui-theme.js (сейчас в app.js строки 285-295)
 - Либо isStreaming миграция — только после браузерной проверки PWA + help
+
+## Phase 5d — barrel aggregators (DONE, tag phase5d-barrel)
+
+**Проблема**: два типа скриптов (module vs classic) не видят друг друга.
+**Решение**: два barrel-файла.
+
+- **index.js** — barrel для `import { X } from './js/index.js'` (ES6 modules)
+- **bridge.js** — barrel для `window.__jst.*` (classic scripts)
+  - `window.__jst.t(key, lang)` — шорткат для переводов
+  - `window.__jst.helpers.*` — fmt, _translateStatus
+  - `window.__jst.helpContent` — HELP_HTML
+  - `window.__jst.pwa.*` — PWA-функции (после async-загрузки)
+  - `window.__jst.ready()` — диагностика `{ok, missing}`
+
+**Порядок script в index.html** (проверено):
+1. `<script type="module" src="/static/js/pwa.js">` (async)
+2. `<script type="module" src="/static/js/help-content.js">` (async)
+3. `<script src="/static/js/i18n-data.js">` (sync)
+4. `<script src="/static/js/ui-helpers.js">` (sync)
+5. `<script src="/static/js/bridge.js">` (sync, читает 1-4)
+6. `<script src="/static/app.js">` (sync, читает bridge)
+
+**Проверено в Node**:
+- `__jst.t('batch_title','ru')` → "Пакетный синтез" ✓
+- `__jst.helpers.fmt(90)` → "1:30.0" ✓
+- `ready()` показывает "pending" для async-модулей (это правильно)
+
+**app.js не тронут** — делегаты `window.__jstI18n`/`__jstHelpers`/`__jstPwa`/`__jstHelpContent` работают как раньше.
