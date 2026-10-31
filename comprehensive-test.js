@@ -155,6 +155,9 @@ t('modules/batch-ui.js loaded', () => {
 t('modules/player.js loaded', () => {
   return loaded.some(f => f.includes('modules/player')) ? 'yes' : 'NOT LOADED';
 });
+t('modules/ui-features/player-controls.js loaded', () => loaded.some(f => f.includes('ui-features/player-controls')) ? 'yes' : 'NOT LOADED');
+t('modules/ui-features/help-modal.js loaded', () => loaded.some(f => f.includes('ui-features/help-modal')) ? 'yes' : 'NOT LOADED');
+t('modules/ui-features/dropdown.js loaded', () => loaded.some(f => f.includes('ui-features/dropdown')) ? 'yes' : 'NOT LOADED');
 t('modules/fx-settings.js loaded', () => {
   return loaded.some(f => f.includes('modules/fx-settings')) ? 'yes' : 'NOT LOADED';
 });
