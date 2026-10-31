@@ -55,6 +55,55 @@
     const dm = $("btn-download-merged");
     if (dm) dm.addEventListener("click", (e) => { e.preventDefault(); window.location.href = "/api/download-all-merged"; });
 
+
+    // === v1.1.22 FIX: carousel prev/next (8 кнопок, потеряны при Phase 10) ===
+    function bindCarousel(prevId, nextId, gridId) {
+      const prev = $(prevId), next = $(nextId), grid = $(gridId);
+      if (!grid) return;
+      const step = () => Math.max(200, (grid.clientWidth || 400) * 0.7);
+      if (prev) prev.addEventListener("click", () => {
+        if (typeof grid.scrollBy === "function") grid.scrollBy({ left: -step(), behavior: "smooth" });
+        else grid.scrollLeft = Math.max(0, (grid.scrollLeft || 0) - step());
+      });
+      if (next) next.addEventListener("click", () => {
+        if (typeof grid.scrollBy === "function") grid.scrollBy({ left: step(), behavior: "smooth" });
+        else grid.scrollLeft = (grid.scrollLeft || 0) + step();
+      });
+    }
+    bindCarousel("model-prev", "model-next", "model-grid");
+    bindCarousel("lang-prev", "lang-next", "lang-grid");
+    bindCarousel("accent-prev", "accent-next", "accent-grid");
+    bindCarousel("carousel-prev", "carousel-next", "carousel");
+
+    // === v1.1.22 FIX: btn-upload → voice-files input + uploadVoice() ===
+    (function () {
+      const bu = $("btn-upload"), vf = $("voice-files");
+      if (bu && vf) {
+        bu.addEventListener("click", (e) => { e.preventDefault(); vf.click(); });
+        vf.addEventListener("change", () => {
+          if (typeof window.uploadVoice === "function") window.uploadVoice();
+          else console.warn("[JST] uploadVoice not on window — voices won't upload");
+        });
+      }
+      // Экспортируем uploadVoice в window (app.js определяет как функцию, не на window)
+      if (typeof window.uploadVoice !== "function" && typeof globalThis !== "undefined") {
+        // попробуем найти через app.js глобальный контекст — не всегда возможно
+        // решается ниже через override в app.js
+      }
+    })();
+
+    // === v1.1.22 FIX: initSTT / initRecordButton (если ещё не вызваны) ===
+    try {
+      if (window.__jstSynth) {
+        if (typeof window.__jstSynth.initSTT === "function") window.__jstSynth.initSTT();
+        if (typeof window.__jstSynth.initRecordButton === "function") window.__jstSynth.initRecordButton();
+      }
+    } catch (e) { console.warn("[JST] initSTT/Record error:", e); }
+
+    // === v1.1.22 FIX: btn-download-toggle → dropdown open (уже есть в ui-features,
+    // но проверим что target не в .dropdown-menu — иначе click-toggles)
+    // (ничего не добавляем — ui-features.js [8/8] делает toggle)
+
     const hb = document.querySelector("#help-body");
     if (hb && !hb.dataset.filled) {
       if (window.__jstHelpContent && window.__jstHelpContent.HELP_HTML) {

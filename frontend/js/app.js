@@ -309,6 +309,7 @@ async function loadPresets() {
 function bindUI() { if (window.__jstUI && window.__jstUI.bindUI) return window.__jstUI.bindUI(); }
 
 async function uploadVoice() {
+  // v1.1.22: экспортируем в window для ui-buttons.js
   const nv = $("new-voice"), vf = $("voice-files"), bu = $("btn-upload");
   if (!nv || !vf || !bu) return;
   const name = nv.value.trim();
@@ -349,6 +350,8 @@ async function init() {
   try { rebuildCarousel(); } catch(e) { console.error(e); }
   try { rebuildAccents(); } catch(e) { console.error(e); }
   try { bindUI(); } catch(e) { console.error(e); }
+  // v1.1.22: экспорт uploadVoice в window
+  if (typeof uploadVoice === "function") window.uploadVoice = uploadVoice;
   try { initSTT(); } catch(e) { console.error(e); }
   try { initRecordButton(); } catch(e) { console.error(e); }
   try { refreshHistory(); } catch(e) { console.error(e); }

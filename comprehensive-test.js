@@ -172,5 +172,37 @@ console.log('\n--- .controls-btn.controls-prev outerHTML ---');
 const prev = doc.querySelector('.controls-btn.controls-prev');
 console.log(prev ? prev.outerHTML.slice(0, 600) : 'NOT FOUND');
 
+
+// ===== v1.1.22: регресс-тесты потерянных обработчиков =====
+t('CAROUSEL: model-prev/next handlers', () => {
+  const grid = doc.getElementById('model-grid');
+  const prev = doc.getElementById('model-prev');
+  const next = doc.getElementById('model-next');
+  if (!grid || !prev || !next) return 'no elements';
+  let scrolled = 0;
+  grid.scrollBy = (opts) => { scrolled += (opts.left || 0); };
+  prev.click();
+  next.click();
+  return `scrollBy_called=${scrolled !== 0}, delta=${scrolled}`;
+});
+
+t('CAROUSEL: all 8 buttons have elements', () => {
+  const ids = ['model-prev','model-next','lang-prev','lang-next','accent-prev','accent-next','carousel-prev','carousel-next'];
+  const missing = ids.filter(id => !doc.getElementById(id));
+  return missing.length === 0 ? 'all present' : `missing: ${missing.join(',')}`;
+});
+
+t('btn-upload: opens voice-files dialog', () => {
+  const bu = doc.getElementById('btn-upload');
+  const vf = doc.getElementById('voice-files');
+  if (!bu || !vf) return 'no elements';
+  let clicked = false;
+  vf.click = () => { clicked = true; };
+  bu.click();
+  return clicked ? 'file-input clicked' : 'NO FILE-INPUT CLICK (bug)';
+});
+
+t('window.uploadVoice exported', () => typeof w.uploadVoice === 'function' ? 'yes' : 'NO');
+
 console.log('\nRESULT: ' + pass + ' PASS / ' + fail + ' FAIL');
 process.exit(fail > 0 ? 1 : 0);
