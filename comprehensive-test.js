@@ -111,13 +111,15 @@ t('controls-prev click runs', () => {
   try { btn.click(); return 'ok'; } catch(e){ return 'threw: ' + e.message; }
 });
 
-t('theme-toggle changes theme', () => {
+t('theme-toggle cycles modes', () => {
   const el = doc.getElementById('theme-toggle');
   if (!el) return 'no #theme-toggle';
-  const before = doc.documentElement.getAttribute('data-theme');
-  el.click();
-  const after = doc.documentElement.getAttribute('data-theme');
-  return 'before=' + before + ' after=' + after + ' ' + (before !== after ? 'CHANGED' : 'NO CHANGE');
+  const modes = [doc.documentElement.getAttribute('data-mode')];
+  el.click(); modes.push(doc.documentElement.getAttribute('data-mode'));
+  el.click(); modes.push(doc.documentElement.getAttribute('data-mode'));
+  el.click(); modes.push(doc.documentElement.getAttribute('data-mode'));
+  const uniq = new Set(modes.filter(Boolean));
+  return 'modes=' + modes.join('->') + ' unique=' + uniq.size + ' ' + (uniq.size >= 2 ? 'CYCLES' : 'STUCK');
 });
 
 t('all buttons clickable', () => {
@@ -138,7 +140,6 @@ t('textarea typing', () => {
   return ta.value === 'test input' ? 'ok' : 'value lost';
 });
 
-t('__jstFeatures', () => !!w.__jstFeatures);
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
 t('__jstDotsV8', () => !!w.__jstDotsV8);

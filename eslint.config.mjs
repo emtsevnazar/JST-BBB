@@ -10,9 +10,7 @@ export default [
       sourceType: 'script',
       globals: {
         ...globals.browser,
-        showToast: 'readonly',
-        ti: 'readonly',
-        t: 'readonly'
+        // showToast/ti/t are DEFINED in app.js itself; not added to globals (avoids no-redeclare)
       }
     },
     rules: {
