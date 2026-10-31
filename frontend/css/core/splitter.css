@@ -1,0 +1,86 @@
+/* splitter.css v1.1.35 - resizable sidebar/workspace handles
+   Desktop: .splitter-h (col-resize, --sidebar-w)
+   Mobile:  .splitter   (row-resize, --sidebar-h)
+   Range 15-85% enforced in splitter.js
+*/
+
+.splitter {
+  flex: 0 0 10px;
+  width: 100%;
+  height: 10px;
+  cursor: row-resize;
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  background: transparent;
+  z-index: 20;
+  outline: none;
+}
+.splitter::before {
+  content: "";
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.splitter:hover::before,
+.splitter:focus-visible::before,
+.splitter.dragging::before {
+  background: #F5B800;
+  box-shadow: 0 0 8px rgba(245,184,0,0.7);
+}
+
+.splitter-h {
+  flex: 0 0 10px;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  background: transparent;
+  z-index: 20;
+  outline: none;
+}
+.splitter-h::before {
+  content: "";
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  left: 50%;
+  width: 3px;
+  margin-left: -1.5px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.splitter-h:hover::before,
+.splitter-h:focus-visible::before,
+.splitter-h.dragging::before {
+  background: #F5B800;
+  box-shadow: 0 0 8px rgba(245,184,0,0.7);
+}
+
+html[data-theme="day"] .splitter::before,
+html[data-theme="day"] .splitter-h::before {
+  background: rgba(26,42,94,0.25);
+}
+
+html[data-theme="contrast"] .splitter::before,
+html[data-theme="contrast"] .splitter-h::before {
+  background: #000;
+}
+html[data-theme="contrast"] .splitter:hover::before,
+html[data-theme="contrast"] .splitter.dragging::before,
+html[data-theme="contrast"] .splitter-h:hover::before,
+html[data-theme="contrast"] .splitter-h.dragging::before {
+  background: #fff;
+  box-shadow: 0 0 8px #fff;
+}

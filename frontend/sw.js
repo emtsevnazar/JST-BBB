@@ -6,6 +6,9 @@ const PRECACHE = [
   '/error',
   '/offline',
   '/static/css/style.css',
+  '/static/css/core/style-v4.css',
+  '/static/css/core/splitter.css',
+  '/static/css/theme/theme-bw.css',
   '/static/css/core/style-clean.css',
   
   '/static/js/help-fix.js',
