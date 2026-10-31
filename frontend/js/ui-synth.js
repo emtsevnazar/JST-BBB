@@ -64,8 +64,42 @@ function stopPlayback() {
   const pv = $("preview-player"); if (pv) pv.pause();
 }
 
+function finishStreaming(file) {
+  if (window.__jstSetStreaming) window.__jstSetStreaming(false);
+  window.JST_IS_STREAMING = false;
+  if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
+  if (window.wsTimeoutTimer) {
+    clearTimeout(window.wsTimeoutTimer);
+    if (window.__jstSetWsTimeoutTimer) window.__jstSetWsTimeoutTimer(null);
+    else window.wsTimeoutTimer = null;
+  }
+  const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
+  if (file) {
+    const dl = $("btn-download"), pv = $("preview-player");
+    if (dl) { dl.href = "/output/" + file; dl.download = file; }
+    if (pv) {
+      pv.onerror = () => {
+        console.error("[JST] preview-player load error for " + file);
+        setStatus(t("status_err") + ": audio load failed", "error");
+      };
+      pv.style.display = "block";
+      pv.src = "/output/" + file;
+      pv.load();
+    }
+    try {
+      const ta = document.getElementById("text");
+      window.dispatchEvent(new CustomEvent("jst:load-audio", {
+        detail: { url: "/output/" + file, text: ta ? ta.value : "" }
+      }));
+    } catch (e) { console.warn("jst:load-audio dispatch failed", e); }
+    if (window.__jstRefreshHistory) window.__jstRefreshHistory();
+  }
+  if ((window.activeSources || []).length === 0) { const b = $("btn-stop"); if (b) b.disabled = true; }
+}
+
   window.__jstSynth = { drawWaveform: typeof drawWaveform !== "undefined" ? drawWaveform : null };
   if (typeof resetPlayback !== 'undefined') window.__jstSynth.resetPlayback = resetPlayback;
   if (typeof stopPlayback !== 'undefined') window.__jstSynth.stopPlayback = stopPlayback;
+  if (typeof finishStreaming !== 'undefined') window.__jstSynth.finishStreaming = finishStreaming;
   console.log("[JST ui-synth] exports:", Object.keys(window.__jstSynth));
 })();

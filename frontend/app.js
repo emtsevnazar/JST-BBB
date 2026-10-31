@@ -132,6 +132,7 @@ window.__jstSetTotalSamples = function(v) { totalSamples = v; window.totalSample
 window.__jstSetAllChunks = function(v) { allChunks = v; window.allChunks = v; };
 window.__jstSetWs = function(v) { ws = v; window.ws = v; };
 window.__jstSetStreaming = function(v) { isStreaming = v; window.isStreaming = v; };
+window.__jstSetWsTimeoutTimer = function(v) { wsTimeoutTimer = v; window.wsTimeoutTimer = v; };
 let recordTimer = null;
 let mediaRecorder = null;
 let recordedChunks = [];
@@ -491,7 +492,7 @@ function synthesize() {
       setStatus(t("status_err") + ": timeout", "error");
       try { ws.close(); } catch (e) {}
       finishStreaming(null);
-    }, 600000);
+    }, 600000); window.wsTimeoutTimer = wsTimeoutTimer;
   };
   ws.onmessage = (ev) => {
     if (typeof ev.data === "string") {
@@ -516,7 +517,7 @@ function synthesize() {
   ws.onerror = () => { if (typeof showToast === "function") showToast(ti("ws_error"), "error"); setStatus(t("status_err"), "error"); finishStreaming(null); };
   /* v74: ws.onclose — при любом закрытии WS сбрасываем состояние */
   ws.onclose = function(ev) {
-    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
+    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; window.wsTimeoutTimer = null; }
     try {
       if (isStreaming || window.JST_IS_STREAMING) {
         finishStreaming(null);
@@ -525,7 +526,7 @@ function synthesize() {
     window.ws = null;
   };
     ws.onclose = (ev) => {
-    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; }
+    if (wsTimeoutTimer) { clearTimeout(wsTimeoutTimer); wsTimeoutTimer = null; window.wsTimeoutTimer = null; }
     /* v73: ВСЕГДА вызываем finishStreaming если streaming ещё активен */
     if (isStreaming || window.JST_IS_STREAMING) {
       console.warn("[JST v73] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
@@ -539,38 +540,7 @@ function synthesize() {
   };
 }
 
-function finishStreaming(file) {
-  isStreaming = false; window.isStreaming = false;
-  window.JST_IS_STREAMING = false;   // v1.6.5a
-  if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
-  if (typeof wsTimeoutTimer !== "undefined" && wsTimeoutTimer) {
-    clearTimeout(wsTimeoutTimer);
-    wsTimeoutTimer = null;
-  }
-  const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
-  if (file) {
-    const dl = $("btn-download"), pv = $("preview-player");
-    if (dl) { dl.href = "/output/" + file; dl.download = file; }
-    if (pv) {
-      pv.onerror = () => {
-        console.error("[JST] preview-player load error for " + file);
-        setStatus(t("status_err") + ": audio load failed", "error");
-      };
-      pv.style.display = "block";
-      pv.src = "/output/" + file;
-      pv.load();
-    }
-    // P6.14-fix: сообщить новому SVG-плееру
-    try {
-      const ta = document.getElementById("text");
-      window.dispatchEvent(new CustomEvent("jst:load-audio", {
-        detail: { url: "/output/" + file, text: ta ? ta.value : "" }
-      }));
-    } catch (e) { console.warn("jst:load-audio dispatch failed", e); }
-    refreshHistory();
-  }
-  if (activeSources.length === 0) { const b = $("btn-stop"); if (b) b.disabled = true; }
-}
+function finishStreaming(file) { if (window.__jstSynth && window.__jstSynth.finishStreaming) return window.__jstSynth.finishStreaming(file); }
 
 function stopPlayback() { if (window.__jstSynth && window.__jstSynth.stopPlayback) return window.__jstSynth.stopPlayback(); }
 
@@ -593,6 +563,7 @@ async function refreshHistory() {
     });
   } catch(e) {}
 }
+window.__jstRefreshHistory = refreshHistory;
 
 /* fmt moved to ui-helpers.js (Phase 5c) */
 var fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function() { console.warn('[fmt] stub'); return ''; };
