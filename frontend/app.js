@@ -69,6 +69,7 @@ let currentMode = localStorage.getItem("jst-mode") || "core";
 let currentLang = localStorage.getItem("jst-synth-lang") || "";
 
 function saveSynthPrefs() {
+window.currentMode = currentMode; window.currentLang = currentLang;
   try {
     localStorage.setItem("jst-mode", currentMode);
     localStorage.setItem("jst-synth-lang", currentLang);
@@ -101,24 +102,24 @@ function normalizeSynthPrefs() {
   applySynthLangToText();
 }
 let currentAccent = "neutral";
-let isStreaming = false;
+let isStreaming = false; window.isStreaming = false;
 
 /* v86: публичный сброс модульной isStreaming */
 window.__jstResetStreaming = function(reason) {
-  isStreaming = false;
+  isStreaming = false; window.isStreaming = false;
   window.JST_IS_STREAMING = false;
   if (typeof ws !== "undefined" && ws) {
     try { ws.onclose = null; ws.onmessage = null; } catch(e) {}
     try { ws.close(); } catch(e) {}
-    ws = null;
+    ws = null; window.ws = null;
   }
   window.ws = null;
   console.warn("[JST v86] isStreaming reset:", reason || "manual");
 };
 
 let audioCtx = null;
-let ws = null;
-let wsTimeoutTimer = null;
+let ws = null; window.ws = null;
+let wsTimeoutTimer = null; window.wsTimeoutTimer = null;
 let currentSR = 24000;
 let nextStartTime = 0;
 let totalSamples = 0;
@@ -413,7 +414,7 @@ function synthesize() {
     if (_wsDead || _notStreaming) {
       try { btnS.classList.remove("is-busy"); } catch(e) {}
       window.JST_SYNTH_START = 0;
-      isStreaming = false;
+      isStreaming = false; window.isStreaming = false;
       window.JST_IS_STREAMING = false;
       console.warn('[JST v73] Reset stale is-busy (ws dead or not streaming)');
     }
@@ -423,8 +424,8 @@ function synthesize() {
     var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
     if (_elapsed > 60000) {
       try { btnS.classList.remove("is-busy"); } catch(e) {}
-      try { if (ws) { ws.close(); ws = null; } } catch(e) {}
-      isStreaming = false;
+      try { if (ws) { ws.close(); ws = null; window.ws = null; } } catch(e) {}
+      isStreaming = false; window.isStreaming = false;
       window.JST_IS_STREAMING = false;
       if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
       if (typeof showToast === "function") showToast("Сброшен зависший синтез (" + Math.round(_elapsed/1000) + "с)");
@@ -452,7 +453,7 @@ function synthesize() {
   if (audioCtx.state === "suspended") audioCtx.resume();
 
   resetPlayback();
-  isStreaming = true;
+  isStreaming = true; window.isStreaming = true;
   window.JST_IS_STREAMING = true;   // v1.6.5a: глобальный флаг
   const pv = $("preview-player");
   if (pv) pv.style.display = "none";
@@ -474,7 +475,7 @@ function synthesize() {
   }, 1000);
 
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize");
+  ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize"); window.ws = ws;
   ws.binaryType = "arraybuffer";
   ws.onopen = () => {
     ws.send(JSON.stringify({ type: "synthesize", text, voice, settings: getSettings() }));
@@ -533,7 +534,7 @@ function synthesize() {
 }
 
 function finishStreaming(file) {
-  isStreaming = false;
+  isStreaming = false; window.isStreaming = false;
   window.JST_IS_STREAMING = false;   // v1.6.5a
   if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
   if (typeof wsTimeoutTimer !== "undefined" && wsTimeoutTimer) {
@@ -568,8 +569,8 @@ function finishStreaming(file) {
 function stopPlayback() {
   activeSources.forEach(s => { try { s.stop(); } catch(e) {} });
   activeSources = [];
-  if (ws) { try { ws.close(); } catch(e) {} ws = null; }
-  isStreaming = false;
+  if (ws) { try { ws.close(); } catch(e) {} ws = null; window.ws = null; }
+  isStreaming = false; window.isStreaming = false;
   window.JST_IS_STREAMING = false;   // v1.6.5a
   const btnS = $("btn-synth"), btnT = $("btn-stop");
   if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
@@ -582,7 +583,7 @@ function stopPlayback() {
 function resetPlayback() {
   activeSources.forEach(s => { try { s.stop(); } catch(e) {} });
   activeSources = [];
-  if (ws) { try { ws.close(); } catch(e) {} ws = null; }
+  if (ws) { try { ws.close(); } catch(e) {} ws = null; window.ws = null; }
   nextStartTime = 0; totalSamples = 0; allChunks = [];
   window.JST_IS_STREAMING = false;   // v1.6.5a
   const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
