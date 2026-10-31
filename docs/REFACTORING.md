@@ -77,3 +77,16 @@
 - phase3c-pwa-migrated — app.js → pwa.js делегаты
 - phase4a-docs-off — /docs отключены в prod
 - phase4b-docs — документация
+
+## Phase 5a — help HTML extraction (DONE, tag phase5a-help-extracted)
+
+- frontend/js/help-content.js (298 строк, 18.5KB) — HTML бывшего hb.innerHTML
+- app.js: 15.9KB inline -> 374 байта delegate (экономия 18161 байт: 173675 -> 155514)
+- index.html: <script type="module" src="/static/js/help-content.js"> перед app.js
+- Fallback: если модуль не загрузился — stub с сообщением hard-refresh
+- 78 тестов, coverage 61.76%
+- jst-force.js + theme-bw.css продолжают применять help-стили (не тронуты)
+
+### Следующая цель (Phase 5b)
+- __jstContrast / applyTheme -> ui-theme.js (сейчас в app.js строки 285-295)
+- Либо isStreaming миграция — только после браузерной проверки PWA + help

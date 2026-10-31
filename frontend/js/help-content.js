@@ -294,5 +294,7 @@ export const HELP_HTML = `<div class="help-doc">
 
 </div>`;
 
-window.__jstHelpContent = { HELP_HTML };
-console.log("[JST help-content] loaded", HELP_HTML.length, "bytes");
+if (typeof window !== "undefined") {
+  window.__jstHelpContent = { HELP_HTML };
+  console.log("[JST help-content] loaded", HELP_HTML.length, "bytes");
+}
