@@ -109,7 +109,7 @@ async def api_key_middleware(request, call_next):
         req_id = getattr(request.state, "request_id", "-")
         # v1.9.1: audit log auth failure
         try:
-            from .audit import log_event
+            from ..audit import log_event
 
             log_event(
                 ip=ip,
@@ -125,7 +125,7 @@ async def api_key_middleware(request, call_next):
             pass
         # v1.9.1: brute-force → force-ban
         try:
-            from .security.hardening import auth_bruteforce, blocklist
+            from ..security.hardening import auth_bruteforce, blocklist
 
             if auth_bruteforce.record_fail(ip):
                 blocklist.ban_now(ip, reason="auth_bruteforce")
@@ -140,7 +140,7 @@ async def api_key_middleware(request, call_next):
 
     # Успех — сброс счётчика
     try:
-        from .security.hardening import auth_bruteforce
+        from ..security.hardening import auth_bruteforce
 
         auth_bruteforce.record_success(ip)
     except Exception:
