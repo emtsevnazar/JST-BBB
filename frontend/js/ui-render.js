@@ -3,10 +3,14 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
+  var ti = (window.__jstHelpers && window.__jstHelpers.ti) || function (k) { return k; };
+  var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function () {};
+  var showToast = (window.__jstHelpers && window.__jstHelpers.showToast) || function () {};
+  var _translateStatus = (window.__jstHelpers && window.__jstHelpers._translateStatus) || function (txt) { return txt; };
   var I18N = (window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} };
   var LANG = (window.LANG || 'en');
-  var tPreset = function (k) { return ((I18N[LANG] && I18N[LANG].presets) || {})[k] || k; };
-  var tCard = function (k) { return ((I18N[LANG] && I18N[LANG].cards) || {})[k] || k; };
+  var tPreset = function (k) { return ((I18N[window.LANG] && I18N[window.LANG].presets) || {})[k] || k; };
+  var tCard = function (k) { return ((I18N[window.LANG] && I18N[window.LANG].cards) || {})[k] || k; };
 
   function rebuildPresetsSelect() {
     var el = $('preset'); if (!el) return;
@@ -104,6 +108,74 @@
     info.innerHTML = "<div class=\"mi-langs\">" + langs + "</div>" + "<div class=\"mi-desc\">" + tDesc(m.code) + status + "</div>";
   }
 
+function renderLanguages() {
+  if (window.__jstNormalizeSynthPrefs) window.__jstNormalizeSynthPrefs();
+  var grid = $("lang-grid"); if (!grid) return;
+  var m = (window.MODELS || []).find(function (x) { return x.code === window.currentMode; });
+  var supported = new Set(m ? (m.languages || []) : ["en"]);
+  grid.innerHTML = "";
+  Object.keys(window.LANG_NAMES || {}).forEach(function (code) {
+    var c = document.createElement("div");
+    c.className = "lang-card";
+    c.setAttribute("data-code", code);
+    c.innerHTML = '<div class="lang-code">' + code.toUpperCase() + '</div>' +
+                  '<div class="lang-name">' + (window.LANG_NAMES || {})[code] + '</div>';
+    var isSupported = supported.has(code);
+    if (!isSupported) {
+      c.classList.add("unavailable");
+      c.onclick = function () { showToast(ti("soon") + (window.LANG_NAMES || {})[code]); };
+    } else {
+      c.onclick = function () {
+        document.querySelectorAll(".lang-card").forEach(function (x) { x.classList.remove("active"); });
+        c.classList.add("active");
+        if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(code); else window.currentLang = code;
+        if (window.__jstSaveSynthPrefs) window.__jstSaveSynthPrefs();
+        if (window.__jstApplySynthLangToText) window.__jstApplySynthLangToText();
+      };
+    }
+    if (code === window.currentLang && isSupported) c.classList.add("active");
+    grid.appendChild(c);
+  });
+}
+
+function applyLanguage() {
+  document.documentElement.lang = window.LANG;
+  try {
+    var _st = document.getElementById("status-text");
+    if (_st && window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== window.LANG) {
+      var _old = _st.textContent || "";
+      var _new = _translateStatus(_old, window.JST_LAST_STATUS_LANG, window.LANG);
+      if (_new !== _old) {
+        _st.textContent = _new;
+        window.JST_LAST_STATUS = _new;
+      }
+      window.JST_LAST_STATUS_LANG = window.LANG;
+    }
+  } catch (e) {}
+  var lt = $("lang-toggle");
+  if (lt) lt.textContent = window.LANG.toUpperCase();
+  document.querySelectorAll("[data-i18n]").forEach(function (el) {
+    if (el.id === "status-text") return;
+    var k = el.dataset.i18n; var v = t(k); if (v) el.textContent = v;
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+    var k = el.dataset.i18nPlaceholder; var v = t(k); if (v) el.placeholder = v;
+  });
+  try { if (window.__jstRender && window.__jstRender.rebuildPresetsSelect) window.__jstRender.rebuildPresetsSelect(); } catch(e){}
+  try { if (window.__jstRender && window.__jstRender.rebuildCarousel) window.__jstRender.rebuildCarousel(); } catch(e){}
+  try { if (window.__jstRender && window.__jstRender.rebuildAccents) window.__jstRender.rebuildAccents(); } catch(e){}
+  try { if (window.__jstRebuildModelCarousel) window.__jstRebuildModelCarousel(); } catch(e){}
+  try { if (window.__jstRender && window.__jstRender.updateModelInfo) window.__jstRender.updateModelInfo(); } catch(e){}
+  try { renderLanguages(); } catch(e){}
+  try { if (window.__jstRender && window.__jstRender.renderMoods) window.__jstRender.renderMoods(); } catch(e){}
+  document.querySelectorAll("[data-i18n-title]").forEach(function (el) {
+    var k = el.getAttribute("data-i18n-title"); var v = t(k); if (v) el.title = v;
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach(function (el) {
+    var k = el.getAttribute("data-i18n-aria-label"); var v = t(k); if (v) el.setAttribute("aria-label", v);
+  });
+}
+
   window.__jstRender = {
     rebuildPresetsSelect: rebuildPresetsSelect,
     rebuildCarousel: rebuildCarousel,
@@ -111,6 +183,8 @@
     rebuildAccents: rebuildAccents,
     renderMoods: renderMoods,
     updateModelInfo: updateModelInfo,
+    applyLanguage: applyLanguage,
+    renderLanguages: renderLanguages,
   };
   if (typeof console !== 'undefined') {
     console.log('[JST ui-render] exports:', Object.keys(window.__jstRender));

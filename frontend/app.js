@@ -170,48 +170,7 @@ var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) |
 /* _translateStatus moved to ui-helpers.js (Phase 5c) */
 var _translateStatus = (window.__jstHelpers && window.__jstHelpers._translateStatus) || function() { console.warn('[_translateStatus] stub'); return ''; };
 
-function applyLanguage() {
-  document.documentElement.lang = LANG;
-  // v1.6.5: во время синтеза статус не трогаем — таймер сам переведёт через 1 сек
-  // v1.7.8: переводим статус ВСЕГДА (даже при streaming) через _translateStatus
-  try {
-    var _st = document.getElementById("status-text");
-    if (_st && window.JST_LAST_STATUS_LANG && window.JST_LAST_STATUS_LANG !== LANG) {
-      const _old = _st.textContent || "";
-      const _new = _translateStatus(_old, window.JST_LAST_STATUS_LANG, LANG);
-      if (_new !== _old) {
-        _st.textContent = _new;
-        window.JST_LAST_STATUS = _new;
-      }
-      window.JST_LAST_STATUS_LANG = LANG;
-    }
-  } catch (e) {}
-  const lt = $("lang-toggle");
-  if (lt) lt.textContent = LANG.toUpperCase();
-  document.querySelectorAll("[data-i18n]").forEach(function(el) {
-    // v1.6.5c: статус управляется через setStatus(), не через data-i18n
-    if (el.id === "status-text") return;
-    const k = el.dataset.i18n; const v = t(k); if (v) el.textContent = v;
-  });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el) {
-    const k = el.dataset.i18nPlaceholder; const v = t(k); if (v) el.placeholder = v;
-  });
-  // v1.7.6: ВСЕГДА перерисовываем — все функции локальные (без API)
-  try { rebuildPresetsSelect(); } catch(e){}
-  try { rebuildCarousel(); } catch(e){}
-  try { rebuildAccents(); } catch(e){}
-  try { rebuildModelCarousel(); } catch(e){}
-  try { updateModelInfo(); } catch(e){}
-  try { renderLanguages(); } catch(e){}
-  try { renderMoods(); } catch(e){}
-  // v1.7.6: title / aria-label
-  document.querySelectorAll("[data-i18n-title]").forEach(el => {
-    const k = el.getAttribute("data-i18n-title"); const v = t(k); if (v) el.title = v;
-  });
-  document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
-    const k = el.getAttribute("data-i18n-aria-label"); const v = t(k); if (v) el.setAttribute("aria-label", v);
-  });
-}
+function applyLanguage() { if (window.__jstRender && window.__jstRender.applyLanguage) return window.__jstRender.applyLanguage(); }
 
 // === TOAST ===
 /* showToast moved to ui-helpers.js (Phase 5e) */
@@ -291,35 +250,7 @@ function rebuildModelCarousel() {
 function updateModelInfo() { if (window.__jstRender && window.__jstRender.updateModelInfo) return window.__jstRender.updateModelInfo(); }
 
 // === LANGUAGES ===
-function renderLanguages() {
-  normalizeSynthPrefs();
-  const grid = $("lang-grid"); if (!grid) return;
-  const m = MODELS.find(x => x.code === currentMode);
-  const supported = new Set(m ? (m.languages || []) : ["en"]);
-  grid.innerHTML = "";
-  Object.keys(LANG_NAMES).forEach(code => {
-    const c = document.createElement("div");
-    c.className = "lang-card";
-    c.setAttribute("data-code", code);
-    c.innerHTML = '<div class="lang-code">' + code.toUpperCase() + '</div>' +
-                  '<div class="lang-name">' + LANG_NAMES[code] + '</div>';
-    const isSupported = supported.has(code);
-    if (!isSupported) {
-      c.classList.add("unavailable");
-      c.onclick = () => showToast(ti("soon") + LANG_NAMES[code]);
-    } else {
-      c.onclick = () => {
-        document.querySelectorAll(".lang-card").forEach(x => x.classList.remove("active"));
-        c.classList.add("active");
-        if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(code); else currentLang = code;
-        saveSynthPrefs();
-        applySynthLangToText();
-      };
-    }
-    if (code === currentLang && isSupported) c.classList.add("active");
-    grid.appendChild(c);
-  });
-}
+function renderLanguages() { if (window.__jstRender && window.__jstRender.renderLanguages) return window.__jstRender.renderLanguages(); }
 
 // === SETTINGS ===
 function getSettings() {
