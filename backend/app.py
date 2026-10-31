@@ -93,6 +93,17 @@ async def lifespan(app: FastAPI):
         log.error("[security] watchdog start failed: %s", _we)
     # === END SECURITY INIT ===
 
+    # v1.1.28 FIX: error_state.clear() на startup (preventive)
+    # Баг из v1.1.28: если error_state.unhealthy после exception — / редиректит
+    # на /error до рестарта. clear() сбрасывает version/current, snapshot → healthy.
+    try:
+        from backend.core.error_state import error_state as _es_startup
+
+        _es_startup.clear()
+        log.info("[startup] error_state cleared (healthy)")
+    except Exception as _e:
+        log.warning("[startup] error_state.clear failed: %s", _e)
+
     # v1.3.0: memory guard — watchdog RSS + системной памяти
     from scripts.guard import memory_guard_loop
 
