@@ -61,10 +61,8 @@ const JST_TOAST_I18N = {
     cleared: "Текст очищен"
   }
 };
-function ti(key) {
-  const d = JST_TOAST_I18N[LANG];
-  return (d && d[key]) || key;
-}
+window.JST_TOAST_I18N = JST_TOAST_I18N;
+function ti(key) { return (window.__jstHelpers && window.__jstHelpers.ti) ? window.__jstHelpers.ti(key) : key; }
 let MODELS = [];
 let PRESETS = {};
 let currentMode = localStorage.getItem("jst-mode") || "core";
@@ -133,7 +131,7 @@ let recordedChunks = [];
 let recordStartTime = 0;
 let sttActive = false;
 
-const t = (k) => (I18N[LANG] && I18N[LANG][k]) || k;
+function t(k) { return (window.__jstHelpers && window.__jstHelpers.t) ? window.__jstHelpers.t(k) : k; }
 const tPreset = (k) => I18N[LANG].presets[k] || k;
 const tCard = (k) => I18N[LANG].cards[k] || k;
 const tDesc = (k) => I18N[LANG].desc[k] || "";

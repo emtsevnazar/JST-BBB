@@ -66,6 +66,8 @@ function setStatus(text, type) {
   if (st) st.className = "status" + (type ? " " + type : "");
 }
 
-window.__jstHelpers = { fmt: typeof fmt !== 'undefined' ? fmt : null, _translateStatus: typeof _translateStatus !== 'undefined' ? _translateStatus : null, __jstContrast: typeof __jstContrast !== 'undefined' ? __jstContrast : null, showToast: typeof showToast !== 'undefined' ? showToast : null, setStatus: typeof setStatus !== 'undefined' ? setStatus : null };
+function ti(key) { var d = (window.JST_TOAST_I18N || {})[(window.LANG || "ru")]; return (d && d[key]) || key; }
+var t = function (k) { var I = (window.__jstI18n && window.__jstI18n.I18N) || {}; var L2 = window.LANG || "ru"; return (I[L2] && I[L2][k]) || k; };
+window.__jstHelpers = { fmt: typeof fmt !== 'undefined' ? fmt : null, _translateStatus: typeof _translateStatus !== 'undefined' ? _translateStatus : null, __jstContrast: typeof __jstContrast !== 'undefined' ? __jstContrast : null, showToast: typeof showToast !== 'undefined' ? showToast : null, setStatus: typeof setStatus !== 'undefined' ? setStatus : null, ti: typeof ti !== 'undefined' ? ti : null, t: typeof t !== 'undefined' ? t : null };
   console.log("[JST ui-helpers] exports:", Object.keys(window.__jstHelpers));
 })();
