@@ -1,29 +1,29 @@
 (function () {
   "use strict";
-  var KEY = "jst-theme-mode";
-  var ORDER = ["day", "night", "auto", "time", "contrast"];
-  var LABELS_EN = { day: "Day", night: "Night", auto: "Auto", time: "Time", contrast: "B&W" };
-  var LABELS_RU = { day: "День", night: "Ночь", auto: "Авто", time: "Время", contrast: "Ч/Б" };
+  const KEY = "jst-theme-mode";
+  const ORDER = ["day", "night", "auto", "time", "contrast"];
+  const LABELS_EN = { day: "Day", night: "Night", auto: "Auto", time: "Time", contrast: "B&W" };
+  const LABELS_RU = { day: "День", night: "Ночь", auto: "Авто", time: "Время", contrast: "Ч/Б" };
   function _labels() {
-    var lang = (document.documentElement.lang || "en").toLowerCase();
+    const lang = (document.documentElement.lang || "en").toLowerCase();
     return lang.indexOf("ru") === 0 ? LABELS_RU : LABELS_EN;
   }
-  var SVG = {
+  const SVG = {
     day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     night: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" width="18" height="18"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     auto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 3v3M12 3h3M21 12h-3M21 12v-3"/></svg>',
     time: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     contrast: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor"/></svg>'
   };
-  var TITLES = {
+  const TITLES = {
     day: "Light", night: "Dark", auto: "Auto", time: "Time", contrast: "B&W"
   };
 
-  var _applying = false;
+  let _applying = false;
 
   function getMode() {
     try {
-      var m = localStorage.getItem(KEY);
+      const m = localStorage.getItem(KEY);
       return ORDER.indexOf(m) !== -1 ? m : "auto";
     } catch (e) { return "auto"; }
   }
@@ -38,7 +38,7 @@
       return (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "night" : "day";
     }
     if (mode === "time") {
-      var h = new Date().getHours();
+      const h = new Date().getHours();
       return (h >= 6 && h < 18) ? "day" : "night";
     }
     if (mode === "contrast") return "contrast";
@@ -46,27 +46,27 @@
   }
   function apply() {
     _applying = true;
-    var mode = getMode();
-    var actual = _actual(mode);
+    const mode = getMode();
+    const actual = _actual(mode);
     document.documentElement.setAttribute("data-theme", actual);
     document.documentElement.setAttribute("data-mode", mode);
     try { localStorage.setItem("jst-theme", actual); } catch (e) {}
     _applying = false;
   }
   function render() {
-    var mode = getMode();
-    var actual = document.documentElement.getAttribute("data-theme") || _actual(mode);
-    var icon = document.getElementById("theme-icon");
+    const mode = getMode();
+    const actual = document.documentElement.getAttribute("data-theme") || _actual(mode);
+    const icon = document.getElementById("theme-icon");
     if (icon) icon.innerHTML = SVG[mode] || SVG.auto;
-    var btn = document.getElementById("theme-toggle");
+    const btn = document.getElementById("theme-toggle");
     if (btn) {
-      btn.setAttribute("title", (TITLES[mode] || mode) + " (click to switch)");
+      btn.setAttribute("title", `${TITLES[mode] || mode  } (click to switch)`);
       btn.setAttribute("aria-label", TITLES[mode] || mode);
       btn.setAttribute("data-current-mode", mode);
     }
-    var badge = document.getElementById("theme-mode-badge");
+    let badge = document.getElementById("theme-mode-badge");
     if (!badge) {
-      var btn2 = document.getElementById("theme-toggle");
+      const btn2 = document.getElementById("theme-toggle");
       if (btn2) {
         badge = document.createElement("span");
         badge.id = "theme-mode-badge";
@@ -77,13 +77,13 @@
     if (badge) badge.textContent = _labels()[mode] || mode;
   }
   function nextMode() {
-    var cur = getMode();
-    var idx = ORDER.indexOf(cur);
+    const cur = getMode();
+    let idx = ORDER.indexOf(cur);
     if (idx === -1) idx = 0;
     setMode(ORDER[(idx + 1) % ORDER.length]);
   }
   function _intercept(e) {
-    var t = e.target;
+    let t = e.target;
     while (t && t !== document) {
       if (t.id === "theme-toggle" || (t.closest && t.closest("#theme-toggle"))) {
         e.preventDefault();
@@ -100,14 +100,14 @@
     document.addEventListener("click", _intercept, true);
 
     try {
-      new MutationObserver(function(mutations) {
+      new MutationObserver((mutations) => {
         if (_applying) return;
-        for (var i = 0; i < mutations.length; i++) {
+        for (let i = 0; i < mutations.length; i++) {
           if (mutations[i].attributeName === "data-theme") {
-            var expected = _actual(getMode());
-            var current = document.documentElement.getAttribute("data-theme");
+            const expected = _actual(getMode());
+            const current = document.documentElement.getAttribute("data-theme");
             if (current !== expected) {
-              try { console.warn("[theme-mode] reset detected: " + current + " → " + expected); } catch(e) {}
+              try { console.warn(`[theme-mode] reset detected: ${  current  } → ${  expected}`); } catch(e) {}
               _applying = true;
               document.documentElement.setAttribute("data-theme", expected);
               _applying = false;
@@ -119,17 +119,17 @@
 
     if (window.matchMedia) {
       try {
-        var mq = window.matchMedia("(prefers-color-scheme: dark)");
-        var h = function () { if (getMode() === "auto") apply(); };
+        const mq = window.matchMedia("(prefers-color-scheme: dark)");
+        const h = function () { if (getMode() === "auto") apply(); };
         if (mq.addEventListener) mq.addEventListener("change", h);
         else if (mq.addListener) mq.addListener(h);
       } catch (e) {}
     }
 
-    setInterval(function () { if (getMode() === "time") apply(); }, 60000);
+    setInterval(() => { if (getMode() === "time") apply(); }, 60000);
     /* __JST_LANG_OBS: обновление badge при смене языка */
     try {
-      new MutationObserver(function(){ render(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+      new MutationObserver(() =>{ render(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
     } catch(e) {}
     apply();
     render();
@@ -138,8 +138,8 @@
 
     window.__jstThemeLoaded = true;
     window.__jstThemeDebug = function() {
-      var btn = document.getElementById("theme-toggle");
-      var badge = document.querySelector(".theme-mode-badge");
+      const btn = document.getElementById("theme-toggle");
+      const badge = document.querySelector(".theme-mode-badge");
       return {
         dataTheme: document.documentElement.getAttribute("data-theme"),
         dataMode: document.documentElement.getAttribute("data-mode"),
@@ -149,7 +149,7 @@
         hasApplyTheme: typeof window.applyTheme
       };
     };
-    try { console.log("[theme-mode] ready. mode: " + getMode() + ", actual: " + document.documentElement.getAttribute("data-theme")); } catch (e) {}
+    try { console.log(`[theme-mode] ready. mode: ${  getMode()  }, actual: ${  document.documentElement.getAttribute("data-theme")}`); } catch (e) {}
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

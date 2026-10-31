@@ -1,10 +1,10 @@
 /* ui-synth.js — Phase 6a: drawWaveform (canvas) */
 (function () {
-  var $ = function (id) { return document.getElementById(id); };
-  var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function () { return false; };
-  var t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
-  var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function () {};
-  var fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function (sec) { return ((sec || 0)).toFixed(1) + "s"; };
+  const $ = function (id) { return document.getElementById(id); };
+  const __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function () { return false; };
+  const t = (window.__jstHelpers && window.__jstHelpers.t) || function (k) { return k; };
+  const setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function () {};
+  const fmt = (window.__jstHelpers && window.__jstHelpers.fmt) || function (sec) { return `${((sec || 0)).toFixed(1)  }s`; };
 function drawWaveform(chunks) {
   const c = $("waveform"); if (!c) return;
   const ctx = c.getContext("2d");
@@ -77,20 +77,20 @@ function finishStreaming(file) {
   const btnS = $("btn-synth"); if (btnS) { btnS.disabled = false; btnS.classList.remove("is-busy"); window.JST_SYNTH_START = 0; }
   if (file) {
     const dl = $("btn-download"), pv = $("preview-player");
-    if (dl) { dl.href = "/output/" + file; dl.download = file; }
+    if (dl) { dl.href = `/output/${  file}`; dl.download = file; }
     if (pv) {
       pv.onerror = () => {
-        console.error("[JST] preview-player load error for " + file);
-        setStatus(t("status_err") + ": audio load failed", "error");
+        console.error(`[JST] preview-player load error for ${  file}`);
+        setStatus(`${t("status_err")  }: audio load failed`, "error");
       };
       pv.style.display = "block";
-      pv.src = "/output/" + file;
+      pv.src = `/output/${  file}`;
       pv.load();
     }
     try {
       const ta = document.getElementById("text");
       window.dispatchEvent(new CustomEvent("jst:load-audio", {
-        detail: { url: "/output/" + file, text: ta ? ta.value : "" }
+        detail: { url: `/output/${  file}`, text: ta ? ta.value : "" }
       }));
     } catch (e) { console.warn("jst:load-audio dispatch failed", e); }
     if (window.__jstRefreshHistory) window.__jstRefreshHistory();
@@ -99,109 +99,109 @@ function finishStreaming(file) {
 }
 
 function initSTT() {
-  var btn = $("btn-stt"); if (!btn) return;
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const btn = $("btn-stt"); if (!btn) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) { btn.title = t("stt_not_supported"); btn.disabled = true; btn.style.opacity = "0.3"; return; }
-  btn.addEventListener("click", function () {
+  btn.addEventListener("click", () => {
     if (window.sttActive) return;
-    var recognition = new SR();
+    const recognition = new SR();
     recognition.lang = (window.currentLang === "ru") ? "ru-RU" : "en-US";
     recognition.continuous = false;
     recognition.interimResults = true;
-    var textEl = $("text");
-    var base = textEl ? textEl.value : "";
+    const textEl = $("text");
+    let base = textEl ? textEl.value : "";
     recognition.onstart = function () {
       if (window.__jstSetSttActive) window.__jstSetSttActive(true); else window.sttActive = true;
       btn.style.background = "var(--red)";
       setStatus(t("status_listening"), "busy");
     };
     recognition.onresult = function (ev) {
-      var interim = "", final = "";
-      for (var i = ev.resultIndex; i < ev.results.length; i++) {
-        var tx = ev.results[i][0].transcript;
+      let interim = "", final = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const tx = ev.results[i][0].transcript;
         if (ev.results[i].isFinal) final += tx; else interim += tx;
       }
       if (textEl) {
-        if (final) { base = (base ? base + " " : "") + final; textEl.value = base; }
+        if (final) { base = (base ? `${base  } ` : "") + final; textEl.value = base; }
         else if (interim) textEl.value = base + (base ? " " : "") + interim;
       }
     };
-    recognition.onerror = function (ev) { setStatus(t("status_err") + ": " + ev.error, "error"); };
+    recognition.onerror = function (ev) { setStatus(`${t("status_err")  }: ${  ev.error}`, "error"); };
     recognition.onend = function () {
       if (window.__jstSetSttActive) window.__jstSetSttActive(false); else window.sttActive = false;
       btn.style.background = "";
       setStatus(t("status_ready"), "");
     };
-    try { recognition.start(); } catch(e) { setStatus(t("status_stt_fail") + ": " + e.message, "error"); }
+    try { recognition.start(); } catch(e) { setStatus(`${t("status_stt_fail")  }: ${  e.message}`, "error"); }
   });
 }
 
 function initRecordButton() {
-  var btn = $("btn-record"); if (!btn) return;
-  btn.addEventListener("click", async function () {
+  const btn = $("btn-record"); if (!btn) return;
+  btn.addEventListener("click", async () => {
     if (window.mediaRecorder && window.mediaRecorder.state === "recording") { window.mediaRecorder.stop(); return; }
     try {
-      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      var mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mr = new MediaRecorder(stream, { mimeType: "audio/webm" });
       if (window.__jstSetMediaRecorder) window.__jstSetMediaRecorder(mr); else window.mediaRecorder = mr;
-      var chunks = [];
+      const chunks = [];
       if (window.__jstSetRecordedChunks) window.__jstSetRecordedChunks(chunks); else window.recordedChunks = chunks;
       mr.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
       mr.onstop = async function () {
-        stream.getTracks().forEach(function (tr) { tr.stop(); });
+        stream.getTracks().forEach((tr) => { tr.stop(); });
         clearInterval(window.recordTimer);
         btn.style.background = ""; btn.style.color = "";
-        var blob = new Blob(window.recordedChunks || chunks, { type: "audio/webm" });
-        var dur = ((Date.now() - window.recordStartTime) / 1000).toFixed(1);
-        setStatus(t("status_rec_loading") + " (" + dur + "s)...", "busy");
-        var nv = $("new-voice");
-        var name = nv ? nv.value.trim() : "";
-        if (!name) { name = "recorded_" + Date.now(); if (nv) nv.value = name; }
+        const blob = new Blob(window.recordedChunks || chunks, { type: "audio/webm" });
+        const dur = ((Date.now() - window.recordStartTime) / 1000).toFixed(1);
+        setStatus(`${t("status_rec_loading")  } (${  dur  }s)...`, "busy");
+        const nv = $("new-voice");
+        let name = nv ? nv.value.trim() : "";
+        if (!name) { name = `recorded_${  Date.now()}`; if (nv) nv.value = name; }
         try {
-          var fd = new FormData(); fd.append("name", name);
+          const fd = new FormData(); fd.append("name", name);
           await fetch("/api/voices/create", { method: "POST", body: fd });
-          var ffd = new FormData(); ffd.append("file", blob, "recording.webm");
-          var r = await fetch("/api/voices/" + encodeURIComponent(name) + "/upload-blob", { method: "POST", body: ffd });
+          const ffd = new FormData(); ffd.append("file", blob, "recording.webm");
+          const r = await fetch(`/api/voices/${  encodeURIComponent(name)  }/upload-blob`, { method: "POST", body: ffd });
           if (!r.ok) throw new Error(await r.text());
-          var fd2 = new FormData(); fd2.append("ref_length", ($("ref_length") || {}).value || "15");
-          await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
+          const fd2 = new FormData(); fd2.append("ref_length", ($("ref_length") || {}).value || "15");
+          await fetch(`/api/voices/${  encodeURIComponent(name)  }/rebuild-reference`, { method: "POST", body: fd2 });
           if (window.__jstLoadVoices) await window.__jstLoadVoices();
-          var v = $("voice"); if (v) v.value = name;
-          setStatus(t("status_rec_saved") + ": " + name, "");
-        } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
+          const v = $("voice"); if (v) v.value = name;
+          setStatus(`${t("status_rec_saved")  }: ${  name}`, "");
+        } catch(e) { setStatus(`${t("status_err")  }: ${  e.message}`, "error"); }
       };
       mr.start();
       if (window.__jstSetRecordStartTime) window.__jstSetRecordStartTime(Date.now()); else window.recordStartTime = Date.now();
       btn.style.background = "var(--red)"; btn.style.color = "#fff";
-      var sec = 0;
-      var timer = setInterval(function () { sec++; setStatus(t("status_rec_timer") + ": " + sec + "s. " + t("status_rec_timer_hint"), "busy"); }, 1000);
+      let sec = 0;
+      const timer = setInterval(() => { sec++; setStatus(`${t("status_rec_timer")  }: ${  sec  }s. ${  t("status_rec_timer_hint")}`, "busy"); }, 1000);
       if (window.__jstSetRecordTimer) window.__jstSetRecordTimer(timer); else window.recordTimer = timer;
-    } catch(e) { setStatus(t("status_mic_error") + ": " + e.message, "error"); }
+    } catch(e) { setStatus(`${t("status_mic_error")  }: ${  e.message}`, "error"); }
   });
 }
 
   function handleAudioChunk(buf) {
-    var floats = new Float32Array(buf);
+    const floats = new Float32Array(buf);
     if (window.allChunks) window.allChunks.push(floats);
     else window.allChunks = [floats];
     if (window.__jstSetTotalSamples) window.__jstSetTotalSamples((window.totalSamples || 0) + floats.length);
     if (!window.audioCtx) return;
-    var ab = window.audioCtx.createBuffer(1, floats.length, window.currentSR || 24000);
+    const ab = window.audioCtx.createBuffer(1, floats.length, window.currentSR || 24000);
     ab.copyToChannel(floats, 0);
-    var src = window.audioCtx.createBufferSource();
+    const src = window.audioCtx.createBufferSource();
     src.buffer = ab; src.connect(window.audioCtx.destination);
-    var now = window.audioCtx.currentTime;
-    var ns = window.nextStartTime || 0;
+    const now = window.audioCtx.currentTime;
+    let ns = window.nextStartTime || 0;
     if (ns < now) ns = now + 0.03;
     src.start(ns);
     if (window.__jstSetNextStartTime) window.__jstSetNextStartTime(ns + ab.duration);
     if (window.activeSources) window.activeSources.push(src);
     else window.activeSources = [src];
     src.onended = function () {
-      var filtered = (window.activeSources || []).filter(function (s) { return s !== src; });
+      const filtered = (window.activeSources || []).filter((s) => { return s !== src; });
       if (window.__jstSetActiveSources) window.__jstSetActiveSources(filtered);
       else window.activeSources = filtered;
-      if (filtered.length === 0 && !window.isStreaming) { var b = $("btn-stop"); if (b) b.disabled = true; }
+      if (filtered.length === 0 && !window.isStreaming) { const b = $("btn-stop"); if (b) b.disabled = true; }
     };
     updateProgress();
   }
@@ -211,11 +211,11 @@ function initRecordButton() {
       if (window.animFrame) cancelAnimationFrame(window.animFrame);
       return;
     }
-    var totalDur = (window.totalSamples || 0) / (window.currentSR || 24000);
-    var played = Math.max(0, window.audioCtx.currentTime - ((window.nextStartTime || 0) - totalDur));
-    var r = Math.min(1, played / totalDur);
-    var prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
-    if (prog) prog.style.width = (r * 100) + "%";
+    const totalDur = (window.totalSamples || 0) / (window.currentSR || 24000);
+    const played = Math.max(0, window.audioCtx.currentTime - ((window.nextStartTime || 0) - totalDur));
+    const r = Math.min(1, played / totalDur);
+    const prog = $("progress"), pt = $("player-time"), ptt = $("player-total");
+    if (prog) prog.style.width = `${r * 100  }%`;
     if (pt) pt.textContent = fmt(played);
     if (ptt) ptt.textContent = fmt(totalDur);
     drawWaveform(window.allChunks || []);
@@ -225,7 +225,7 @@ function initRecordButton() {
   function synthesize() {
     if (window.JST_IS_STREAMING === false || window.JST_IS_STREAMING === undefined) {
       try {
-        var _b = document.getElementById('btn-synth');
+        const _b = document.getElementById('btn-synth');
         if (_b && _b.classList.contains('is-busy')) {
           _b.classList.remove('is-busy');
           window.JST_SYNTH_START = 0;
@@ -233,10 +233,10 @@ function initRecordButton() {
         }
       } catch(e) {}
     }
-    var btnS = $("btn-synth"), btnT = $("btn-stop");
+    const btnS = $("btn-synth"), btnT = $("btn-stop");
     if (btnS && btnS.classList.contains("is-busy")) {
-      var _wsDead = !window.ws || window.ws.readyState === 2 || window.ws.readyState === 3;
-      var _notStreaming = !window.JST_IS_STREAMING && !window.isStreaming;
+      const _wsDead = !window.ws || window.ws.readyState === 2 || window.ws.readyState === 3;
+      const _notStreaming = !window.JST_IS_STREAMING && !window.isStreaming;
       if (_wsDead || _notStreaming) {
         try { btnS.classList.remove("is-busy"); } catch(e) {}
         window.JST_SYNTH_START = 0;
@@ -246,7 +246,7 @@ function initRecordButton() {
       }
     }
     if (btnS && btnS.classList.contains("is-busy")) {
-      var _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
+      const _elapsed = Date.now() - (window.JST_SYNTH_START || 0);
       if (_elapsed > 60000) {
         try { btnS.classList.remove("is-busy"); } catch(e) {}
         try {
@@ -258,17 +258,17 @@ function initRecordButton() {
         if (window.__jstSetStreaming) window.__jstSetStreaming(false); else window.isStreaming = false;
         window.JST_IS_STREAMING = false;
         if (window._synthTimer) { clearInterval(window._synthTimer); window._synthTimer = null; }
-        if (typeof showToast === "function") showToast("Сброшен зависший синтез (" + Math.round(_elapsed/1000) + "с)");
+        if (typeof showToast === "function") showToast(`Сброшен зависший синтез (${  Math.round(_elapsed/1000)  }с)`);
       } else {
         if (typeof showToast === "function") showToast(t("synth_wait") || "Идёт синтез — подождите");
         return;
       }
     }
     if (window.isStreaming) return;
-    var textEl = $("text"), voiceEl = $("voice");
+    const textEl = $("text"), voiceEl = $("voice");
     if (!textEl || !voiceEl) return;
-    var text = textEl.value.trim();
-    var voice = voiceEl.value;
+    const text = textEl.value.trim();
+    const voice = voiceEl.value;
     if (!text) { setStatus(t("text_ph") || "Введите текст", "error"); textEl.focus(); return; }
     if (!voice) { setStatus(t("status_voice_select"), "error"); return; }
     window.JST_SYNTH_START = Date.now();
@@ -279,31 +279,31 @@ function initRecordButton() {
     if (window.__jstSynth && window.__jstSynth.resetPlayback) window.__jstSynth.resetPlayback();
     if (window.__jstSetStreaming) window.__jstSetStreaming(true); else window.isStreaming = true;
     window.JST_IS_STREAMING = true;
-    var pv = $("preview-player");
+    const pv = $("preview-player");
     if (pv) pv.style.display = "none";
-    setStatus(t("status_synth") + "...", "busy");
-    var _synthStart = Date.now();
+    setStatus(`${t("status_synth")  }...`, "busy");
+    const _synthStart = Date.now();
     if (window._synthTimer) clearInterval(window._synthTimer);
-    window._synthTimer = setInterval(function() {
-      var sec = ((Date.now() - _synthStart) / 1000).toFixed(1);
-      var stt = document.getElementById("status-text");
+    window._synthTimer = setInterval(() => {
+      const sec = ((Date.now() - _synthStart) / 1000).toFixed(1);
+      const stt = document.getElementById("status-text");
       if (stt && stt.textContent) {
         if (stt.textContent.indexOf("...") >= 0 || stt.textContent.indexOf(t("status_synth")) >= 0) {
-          stt.textContent = t("status_synth") + "... " + sec + "s";
+          stt.textContent = `${t("status_synth")  }... ${  sec  }s`;
           window.JST_LAST_STATUS = stt.textContent;
           window.JST_LAST_STATUS_LANG = window.LANG;
         }
       }
     }, 1000);
-    var proto = location.protocol === "https:" ? "wss:" : "ws:";
-    var _ws = new WebSocket(proto + "//" + location.host + "/ws/synthesize");
+    const proto = location.protocol === "https:" ? "wss:" : "ws:";
+    const _ws = new WebSocket(`${proto  }//${  location.host  }/ws/synthesize`);
     if (window.__jstSetWs) window.__jstSetWs(_ws); else window.ws = _ws;
     _ws.binaryType = "arraybuffer";
     _ws.onopen = function() {
       _ws.send(JSON.stringify({ type: "synthesize", text: text, voice: voice, settings: (window.__jstGetSettings ? window.__jstGetSettings() : {}) }));
-      var _timer = setTimeout(function() {
+      const _timer = setTimeout(() => {
         console.warn("[JST] WS timeout — 600s без ответа, закрываю");
-        setStatus(t("status_err") + ": timeout", "error");
+        setStatus(`${t("status_err")  }: timeout`, "error");
         try { _ws.close(); } catch (e) {}
         if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null);
       }, 600000);
@@ -311,22 +311,22 @@ function initRecordButton() {
     };
     _ws.onmessage = function(ev) {
       if (typeof ev.data === "string") {
-        var m = JSON.parse(ev.data);
+        const m = JSON.parse(ev.data);
         if (m.type === "start") {
           window.currentSR = m.sr;
-          setStatus(t("status_plan") + ": " + m.sentences + " " + t("status_phrases"), "busy");
+          setStatus(`${t("status_plan")  }: ${  m.sentences  } ${  t("status_phrases")}`, "busy");
         } else if (m.type === "stage") {
-          var stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];
+          const stageKey = { prepare: "status_stage_prepare", synth: "status_stage_synth", post: "status_stage_post" }[m.stage];
           setStatus(stageKey ? t(stageKey) : (m.detail || ""), "busy");
         } else if (m.type === "done") {
-          setStatus(t("status_done") + " · " + m.file, "");
+          setStatus(`${t("status_done")  } · ${  m.file}`, "");
           if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(m.file);
         } else if (m.type === "error") {
-          var _errCode = m.code || "unknown";
-          var _errKey = "err_" + _errCode;
-          var _errText = t(_errKey);
+          const _errCode = m.code || "unknown";
+          const _errKey = `err_${  _errCode}`;
+          let _errText = t(_errKey);
           if (_errText === _errKey) _errText = m.message || m.code || "unknown";
-          setStatus(t("status_err") + ": " + _errText, "error");
+          setStatus(`${t("status_err")  }: ${  _errText}`, "error");
           if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null);
         }
       } else {
@@ -342,10 +342,10 @@ function initRecordButton() {
     _ws.onclose = function(ev) {
       if (window.wsTimeoutTimer) { clearTimeout(window.wsTimeoutTimer); if (window.__jstSetWsTimeoutTimer) window.__jstSetWsTimeoutTimer(null); else window.wsTimeoutTimer = null; }
       if (window.isStreaming || window.JST_IS_STREAMING) {
-        console.warn("[JST v73] WS closed mid-stream: code=" + ev.code + " reason=" + (ev.reason || "no reason"));
+        console.warn(`[JST v73] WS closed mid-stream: code=${  ev.code  } reason=${  ev.reason || "no reason"}`);
         try { if (window.__jstSynth && window.__jstSynth.finishStreaming) window.__jstSynth.finishStreaming(null); } catch(e) { console.error("finishStreaming failed:", e); }
         if (typeof showToast === "function" && ev.code !== 1000 && ev.code !== 1001 && ev.code !== 1005) {
-          showToast(ti("aborted") + " (code " + ev.code + ")", "error");
+          showToast(`${ti("aborted")  } (code ${  ev.code  })`, "error");
         }
       }
       if (window.__jstSetWs) window.__jstSetWs(null); else window.ws = null;

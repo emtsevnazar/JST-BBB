@@ -3,7 +3,7 @@
    Later when app.js becomes a module, rename to i18n.js and add export.
 */
 (function () {
-  var I18N = {
+  const I18N = {
   ru: {
     mood:"Настроение",
     batch:"Пакет", batch_lang:"Язык", text_ph:"Введите текст…", synth_wait:"Идёт синтез — подождите", batch_title:"Пакетный синтез", batch_text:"Текст",

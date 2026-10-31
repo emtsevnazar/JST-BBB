@@ -90,14 +90,14 @@ window.__jstResetStreaming = function(reason) {
   console.warn("[JST v86] isStreaming reset:", reason || "manual");
 };
 
-let audioCtx = null; window.audioCtx = null;
+const audioCtx = null; window.audioCtx = null;
 let ws = null; window.ws = null;
 let wsTimeoutTimer = null; window.wsTimeoutTimer = null;
-let currentSR = 24000; window.currentSR = 24000;
+const currentSR = 24000; window.currentSR = 24000;
 let nextStartTime = 0; window.nextStartTime = 0;
 let totalSamples = 0; window.totalSamples = 0;
 let allChunks = []; window.allChunks = [];
-let animFrame = null; window.animFrame = null;
+const animFrame = null; window.animFrame = null;
 let activeSources = []; window.activeSources = [];
 window.__jstSetActiveSources = function(v) { activeSources = v; window.activeSources = v; };
 window.__jstSetNextStartTime = function(v) { nextStartTime = v; window.nextStartTime = v; };
@@ -206,8 +206,8 @@ async function refreshHistory() {
     d.files.forEach(f => {
       const it = document.createElement("div");
       const dt = new Date(f.mtime * 1000);
-      it.innerHTML = '<a href="/output/' + f.name + '" download>' + f.name + '</a>' +
-        '<span class="date">' + dt.toLocaleString("ru-RU") + '</span>';
+      it.innerHTML = `<a href="/output/${  f.name  }" download>${  f.name  }</a>` +
+        `<span class="date">${  dt.toLocaleString("ru-RU")  }</span>`;
       h.appendChild(it);
     });
   } catch(e) {}
@@ -237,7 +237,7 @@ async function loadVoices() {
     v.innerHTML = "";
     d.voices.forEach(vo => {
       const o = document.createElement("option");
-      o.value = vo.name; o.textContent = vo.name + " (" + vo.files + ")";
+      o.value = vo.name; o.textContent = `${vo.name  } (${  vo.files  })`;
       v.appendChild(o);
     });
     if (cur) v.value = cur;
@@ -283,8 +283,8 @@ window.MOOD_NAME_EN = MOOD_NAME_EN;
 function renderMoods() { if (window.__jstRender && window.__jstRender.renderMoods) return window.__jstRender.renderMoods(); }
 
 if (!window.__moodsLangObserver) {
-  window.__moodsLangObserver = new MutationObserver(function(muts) {
-    muts.forEach(function(m) {
+  window.__moodsLangObserver = new MutationObserver((muts) => {
+    muts.forEach((m) => {
       if (m.attributeName === "lang") renderMoods();
     });
   });
@@ -319,18 +319,18 @@ async function uploadVoice() {
     const fd = new FormData(); fd.append("name", name);
     await fetch("/api/voices/create", { method: "POST", body: fd });
     for (let i = 0; i < files.length; i++) {
-      setStatus(t("status_uploading") + " " + (i+1) + "/" + files.length, "busy");
+      setStatus(`${t("status_uploading")  } ${  i+1  }/${  files.length}`, "busy");
       const ffd = new FormData(); ffd.append("file", files[i]);
-      await fetch("/api/voices/" + encodeURIComponent(name) + "/upload", { method: "POST", body: ffd });
+      await fetch(`/api/voices/${  encodeURIComponent(name)  }/upload`, { method: "POST", body: ffd });
     }
     setStatus(t("status_ref_building"), "busy");
     const fd2 = new FormData(); fd2.append("ref_length", ($("ref_length")||{}).value || "15");
-    await fetch("/api/voices/" + encodeURIComponent(name) + "/rebuild-reference", { method: "POST", body: fd2 });
+    await fetch(`/api/voices/${  encodeURIComponent(name)  }/rebuild-reference`, { method: "POST", body: fd2 });
     await loadVoices();
     const v = $("voice"); if (v) v.value = name;
     nv.value = ""; vf.value = "";
-    setStatus(t("status_uploaded") + ": " + name, "");
-  } catch(e) { setStatus(t("status_err") + ": " + e.message, "error"); }
+    setStatus(`${t("status_uploaded")  }: ${  name}`, "");
+  } catch(e) { setStatus(`${t("status_err")  }: ${  e.message}`, "error"); }
   finally { bu.disabled = false; }
 }
 
@@ -375,7 +375,7 @@ window.addEventListener("load", init);
 // === Инструкция: финальная версия — вынос заголовка в body, маска на viewport ===
 (function() {
   function getOrCreate(id, parent) {
-    var el = document.getElementById(id);
+    let el = document.getElementById(id);
     if (!el) {
       el = document.createElement("div");
       el.id = id;
@@ -385,16 +385,16 @@ window.addEventListener("load", init);
   }
 
   function applyStyles() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal || !modal.classList.contains("open")) return;
 
-    var isNight = document.documentElement.getAttribute("data-theme") === "night";
-    var lang = (document.documentElement.lang || "ru").toLowerCase();
-    var inputBg = isNight ? "rgba(13, 26, 63, 0.55)" : "rgba(255, 255, 255, 0.55)";
-    var textColor = __jstContrast() ? "#000" : (isNight ? "#F5B800" : "#1a2a5e");
+    const isNight = document.documentElement.getAttribute("data-theme") === "night";
+    const lang = (document.documentElement.lang || "ru").toLowerCase();
+    const inputBg = isNight ? "rgba(13, 26, 63, 0.55)" : "rgba(255, 255, 255, 0.55)";
+    const textColor = __jstContrast() ? "#000" : (isNight ? "#F5B800" : "#1a2a5e");
 
     // ---- 1. Модалка ----
-    var ms = modal.style;
+    const ms = modal.style;
     ms.setProperty("position", "fixed", "important");
     ms.setProperty("inset", "0", "important");
     ms.setProperty("z-index", "9999", "important");
@@ -408,14 +408,14 @@ window.addEventListener("load", init);
     ms.setProperty("margin", "0", "important");
 
     // ---- 2. Маска на VIEWPORT: затухание у верха и низа экрана ----
-    var maskV = "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 60px, rgba(0,0,0,1) 140px, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.4) calc(100% - 60px), transparent 100%)";
+    const maskV = "linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.4) 60px, rgba(0,0,0,1) 140px, rgba(0,0,0,1) calc(100% - 140px), rgba(0,0,0,0.4) calc(100% - 60px), transparent 100%)";
     ms.setProperty("mask-image", "none", "important");
     ms.setProperty("-webkit-mask-image", "none", "important");
 
     // ---- 3. Общий blur фона через #help-blur ----
-    var blur = getOrCreate("help-blur", modal);
+    const blur = getOrCreate("help-blur", modal);
     if (blur.parentElement !== modal) modal.insertBefore(blur, modal.firstChild);
-    var bs = blur.style;
+    const bs = blur.style;
     bs.setProperty("position", "fixed", "important");
     bs.setProperty("inset", "0", "important");
     bs.setProperty("z-index", "1", "important");
@@ -428,9 +428,9 @@ window.addEventListener("load", init);
       document.querySelector(".help-modal-content"),
       document.getElementById("help-body"),
       document.querySelector(".help-doc")
-    ].forEach(function(el) {
+    ].forEach((el) => {
       if (!el) return;
-      var s = el.style;
+      const s = el.style;
       s.setProperty("background", "transparent", "important");
       s.setProperty("background-color", "transparent", "important");
       s.setProperty("border", "none", "important");
@@ -448,7 +448,7 @@ window.addEventListener("load", init);
       s.setProperty("z-index", "10", "important");
     });
 
-    var doc = document.querySelector(".help-doc");
+    const doc = document.querySelector(".help-doc");
     if (doc) {
       doc.style.setProperty("padding", "130px 60px 130px", "important");
       doc.style.setProperty("-webkit-mask-image", "none", "important");
@@ -456,9 +456,9 @@ window.addEventListener("load", init);
     }
 
     // ---- 5. Вынос заголовка и крестика в body (вне маски) ----
-    var header = getOrCreate("help-header-fixed", document.body);
+    const header = getOrCreate("help-header-fixed", document.body);
     if (header.parentElement !== document.body) document.body.appendChild(header);
-    var hs = header.style;
+    const hs = header.style;
     hs.setProperty("position", "fixed", "important");
     hs.setProperty("top", "24px", "important");
     hs.setProperty("left", "50%", "important");
@@ -479,12 +479,12 @@ window.addEventListener("load", init);
     hs.setProperty("white-space", "nowrap", "important");
 
     // Перенос заголовка
-    var title = document.querySelector(".help-title");
+    const title = document.querySelector(".help-title");
     if (title && title.parentElement !== header) {
       header.appendChild(title);
     }
     if (title) {
-      var ts = title.style;
+      const ts = title.style;
       ts.setProperty("position", "static", "important");
       ts.setProperty("margin", "0", "important");
       ts.setProperty("padding", "0", "important");
@@ -496,19 +496,19 @@ window.addEventListener("load", init);
       ts.setProperty("letter-spacing", "inherit", "important");
       ts.setProperty("color", textColor, "important");
       // Язык
-      var ru = title.querySelector(".help-ru");
-      var en = title.querySelector(".help-en");
+      const ru = title.querySelector(".help-ru");
+      const en = title.querySelector(".help-en");
       if (ru) ru.style.setProperty("display", lang.indexOf("ru") === 0 ? "inline" : "none", "important");
       if (en) en.style.setProperty("display", lang.indexOf("en") === 0 ? "inline" : "none", "important");
     }
 
     // Перенос крестика
-    var close = document.getElementById("help-close");
+    const close = document.getElementById("help-close");
     if (close && close.parentElement !== header) {
       header.appendChild(close);
     }
     if (close) {
-      var cs = close.style;
+      const cs = close.style;
       cs.setProperty("position", "absolute", "important");
       cs.setProperty("top", "-12px", "important");
       cs.setProperty("right", "-12px", "important");
@@ -540,8 +540,8 @@ window.addEventListener("load", init);
     }
 
     // ---- 6. 9 блоков: фон как у Паузы + backdrop blur ----
-    document.querySelectorAll(".help-section").forEach(function(sec) {
-      var sc = sec.style;
+    document.querySelectorAll(".help-section").forEach((sec) => {
+      const sc = sec.style;
       sc.setProperty("display", "block", "important");
       sc.setProperty("background", inputBg, "important");
       sc.setProperty("background-color", inputBg, "important");
@@ -556,32 +556,32 @@ window.addEventListener("load", init);
       sc.setProperty("width", "100%", "important");
       sc.setProperty("color", textColor, "important");
       // Содержимое — прозрачное (наследует фон родителя)
-      sec.querySelectorAll(".help-content, .help-header").forEach(function(child) {
+      sec.querySelectorAll(".help-content, .help-header").forEach((child) => {
         child.style.setProperty("background", "transparent", "important");
       });
     });
   }
 
   function hideAll() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (modal) modal.style.setProperty("display", "none", "important");
-    var header = document.getElementById("help-header-fixed");
+    const header = document.getElementById("help-header-fixed");
     if (header) header.style.setProperty("display", "none", "important");
   }
 
   function showHeader() {
-    var header = document.getElementById("help-header-fixed");
+    const header = document.getElementById("help-header-fixed");
     if (header) header.style.setProperty("display", "inline-flex", "important");
   }
 
   function init() {
-    var modal = document.getElementById("help-modal");
+    const modal = document.getElementById("help-modal");
     if (!modal) return;
 
     if (!modal.classList.contains("open")) hideAll();
 
-    var obs = new MutationObserver(function(muts) {
-      muts.forEach(function(m) {
+    const obs = new MutationObserver((muts) => {
+      muts.forEach((m) => {
         if (m.attributeName === "class") {
           if (modal.classList.contains("open")) {
             showHeader();
@@ -595,9 +595,9 @@ window.addEventListener("load", init);
     });
     obs.observe(modal, { attributes: true, attributeFilter: ["class"] });
 
-    var ht = document.getElementById("help-toggle");
+    const ht = document.getElementById("help-toggle");
     if (ht) {
-      ht.addEventListener("click", function() {
+      ht.addEventListener("click", () => {
         showHeader();
         setTimeout(applyStyles, 50);
       });
@@ -617,19 +617,19 @@ window.addEventListener("load", init);
 
 // === Yellow border on button hover v6: dropdown-items без рамки ===
 (function() {
-    var TARGET_WORDS    = ["случайный", "очистить", "скачать", "история", "историю", "истории"];
-    var YELLOW          = __jstContrast() ? "#000" : "#F5B800";
-    var GLOW            = __jstContrast() ? "none" : "0 0 14px rgba(245, 184, 0, 0.45)";
-    var BASE_BORDER     = "var(--panel-border, rgba(26, 42, 94, 0.12))";
-    var BORDER_WIDTH    = "1.5px";
-    var BORDER_STYLE    = "solid";
+    const TARGET_WORDS    = ["случайный", "очистить", "скачать", "история", "историю", "истории"];
+    const YELLOW          = __jstContrast() ? "#000" : "#F5B800";
+    const GLOW            = __jstContrast() ? "none" : "0 0 14px rgba(245, 184, 0, 0.45)";
+    const BASE_BORDER     = "var(--panel-border, rgba(26, 42, 94, 0.12))";
+    const BORDER_WIDTH    = "1.5px";
+    const BORDER_STYLE    = "solid";
 
     function norm(s) { return (s || "").replace(/\s+/g, " ").trim().toLowerCase(); }
 
     function matches(text) {
         text = norm(text);
         if (!text) return false;
-        for (var i = 0; i < TARGET_WORDS.length; i++) {
+        for (let i = 0; i < TARGET_WORDS.length; i++) {
             if (text.indexOf(TARGET_WORDS[i]) !== -1) return true;
         }
         return false;
@@ -637,14 +637,14 @@ window.addEventListener("load", init);
 
     function isRealButton(el) {
         if (!el) return false;
-        var tag = el.tagName;
+        const tag = el.tagName;
         if (tag === "BUTTON" || tag === "A") return true;
-        var role = el.getAttribute && el.getAttribute("role");
+        const role = el.getAttribute && el.getAttribute("role");
         return role === "button";
     }
 
     function isInsideDropdownMenu(el) {
-        var p = el;
+        let p = el;
         while (p && p !== document.body) {
             if (p.classList && p.classList.contains("dropdown-menu")) return true;
             p = p.parentElement;
@@ -653,19 +653,19 @@ window.addEventListener("load", init);
     }
 
     function findButtons() {
-        var found = new Set();
-        document.querySelectorAll("button, a, [role='button']").forEach(function(el) {
+        const found = new Set();
+        document.querySelectorAll("button, a, [role='button']").forEach((el) => {
             if (!isRealButton(el)) return;
             if (isInsideDropdownMenu(el)) return; // <- пункты меню обрабатываем отдельно
-            var txt = el.textContent || el.value || "";
-            var aria = el.getAttribute && (el.getAttribute("aria-label") || el.getAttribute("title") || "");
+            const txt = el.textContent || el.value || "";
+            const aria = el.getAttribute && (el.getAttribute("aria-label") || el.getAttribute("title") || "");
             if (matches(txt) || matches(aria)) found.add(el);
         });
         return Array.from(found);
     }
 
     function cleanup() {
-        document.querySelectorAll(".btn-yellow-hover, .btn-yellow-hover-parent").forEach(function(el) {
+        document.querySelectorAll(".btn-yellow-hover, .btn-yellow-hover-parent").forEach((el) => {
             if (!isRealButton(el)) {
                 el.classList.remove("btn-yellow-hover");
                 el.classList.remove("btn-yellow-hover-parent");
@@ -698,19 +698,19 @@ window.addEventListener("load", init);
         setBase(el);
         if (el.__yh === true) return;
         el.__yh = true;
-        el.addEventListener("mouseenter", function() { setHover(el); });
-        el.addEventListener("mouseleave", function() { setBase(el); });
-        el.addEventListener("focus",      function() { setHover(el); });
-        el.addEventListener("blur",       function() { setBase(el); });
+        el.addEventListener("mouseenter", () => { setHover(el); });
+        el.addEventListener("mouseleave", () => { setBase(el); });
+        el.addEventListener("focus",      () => { setHover(el); });
+        el.addEventListener("blur",       () => { setBase(el); });
     }
 
     // ------------------------------------------------------------
     // Пункты выпадающего меню «Скачать ...» — БЕЗ рамки вообще
     // ------------------------------------------------------------
     function stripDropdownBorders() {
-        var removed = 0;
-        document.querySelectorAll(".dropdown-menu a, .dropdown-menu button, .dropdown-menu > *").forEach(function(el) {
-            var txt = norm(el.textContent || "");
+        let removed = 0;
+        document.querySelectorAll(".dropdown-menu a, .dropdown-menu button, .dropdown-menu > *").forEach((el) => {
+            const txt = norm(el.textContent || "");
             if (txt.indexOf("скачать") === -1) return;
             // Убираем классы hover, если они случайно попали
             el.classList.remove("btn-yellow-hover");
@@ -735,22 +735,22 @@ window.addEventListener("load", init);
 
     function apply() {
         cleanup();
-        var btns = findButtons();
+        const btns = findButtons();
         btns.forEach(paint);
-        var stripped = stripDropdownBorders();
+        const stripped = stripDropdownBorders();
 
         if (btns.length === 0) {
             console.warn("[btn-yellow-hover-v6] кнопки не найдены");
         } else {
-            console.log("[btn-yellow-hover-v6] найдено кнопок: " + btns.length);
-            btns.forEach(function(el, i) {
-                console.log("  #" + (i + 1) +
-                    " <" + el.tagName.toLowerCase() + ">" +
-                    " id=" + (el.id || "-") +
-                    " text=" + JSON.stringify((el.textContent || "").trim().slice(0, 30)));
+            console.log(`[btn-yellow-hover-v6] найдено кнопок: ${  btns.length}`);
+            btns.forEach((el, i) => {
+                console.log(`  #${  i + 1 
+                    } <${  el.tagName.toLowerCase()  }>` +
+                    ` id=${  el.id || "-" 
+                    } text=${  JSON.stringify((el.textContent || "").trim().slice(0, 30))}`);
             });
         }
-        console.log("[btn-yellow-hover-v6] очищено пунктов меню от рамки: " + stripped);
+        console.log(`[btn-yellow-hover-v6] очищено пунктов меню от рамки: ${  stripped}`);
     }
 
     function init() {
@@ -758,10 +758,10 @@ window.addEventListener("load", init);
         setTimeout(apply, 300);
         setTimeout(apply, 1000);
         setTimeout(apply, 2500);
-        var t = null;
-        new MutationObserver(function() {
+        let t = null;
+        new MutationObserver(() => {
             if (t) return;
-            t = setTimeout(function() { t = null; apply(); }, 200);
+            t = setTimeout(() => { t = null; apply(); }, 200);
         }).observe(document.body, { childList: true, subtree: true });
     }
 
@@ -774,17 +774,17 @@ window.addEventListener("load", init);
 
 // === Sidebar shutters v3: лёгкий градиентный blur, только по области блоков ===
 (function() {
-    var TOP_H    = 130;
-    var BOT_H    = 65;
-    var BLUR_PX  = 10;
-    var STYLE_ID = "sidebar-shutters-style";
+    const TOP_H    = 130;
+    const BOT_H    = 65;
+    const BLUR_PX  = 10;
+    const STYLE_ID = "sidebar-shutters-style";
 
     function injectStyle() {
         if (document.getElementById(STYLE_ID)) return;
-        var s = document.createElement("style");
+        const s = document.createElement("style");
         s.id = STYLE_ID;
         // 7 точек, ease-out — плавное затухание
-        var stops = [
+        const stops = [
             "rgba(0,0,0,1) 0%",
             "rgba(0,0,0,0.92) 15%",
             "rgba(0,0,0,0.75) 32%",
@@ -799,31 +799,31 @@ window.addEventListener("load", init);
             "  pointer-events:none;",
             "  z-index:900;",
             "  display:none;",
-            "  backdrop-filter:blur(" + BLUR_PX + "px) saturate(1.15);",
-            "  -webkit-backdrop-filter:blur(" + BLUR_PX + "px) saturate(1.15);",
+            `  backdrop-filter:blur(${  BLUR_PX  }px) saturate(1.15);`,
+            `  -webkit-backdrop-filter:blur(${  BLUR_PX  }px) saturate(1.15);`,
             "  will-change:backdrop-filter;",
             "}",
             ".sidebar-shutter-top{",
-            "  -webkit-mask-image:linear-gradient(to bottom," + stops + ");",
-            "  mask-image:linear-gradient(to bottom," + stops + ");",
+            `  -webkit-mask-image:linear-gradient(to bottom,${  stops  });`,
+            `  mask-image:linear-gradient(to bottom,${  stops  });`,
             "}",
             ".sidebar-shutter-bottom{",
-            "  -webkit-mask-image:linear-gradient(to top," + stops + ");",
-            "  mask-image:linear-gradient(to top," + stops + ");",
+            `  -webkit-mask-image:linear-gradient(to top,${  stops  });`,
+            `  mask-image:linear-gradient(to top,${  stops  });`,
             "}"
         ].join("");
         document.head.appendChild(s);
     }
 
     function makeShutters() {
-        var top = document.getElementById("sidebar-shutter-top");
+        let top = document.getElementById("sidebar-shutter-top");
         if (!top) {
             top = document.createElement("div");
             top.id = "sidebar-shutter-top";
             top.className = "sidebar-shutter sidebar-shutter-top";
             document.body.appendChild(top);
         }
-        var bot = document.getElementById("sidebar-shutter-bottom");
+        let bot = document.getElementById("sidebar-shutter-bottom");
         if (!bot) {
             bot = document.createElement("div");
             bot.id = "sidebar-shutter-bottom";
@@ -835,16 +835,16 @@ window.addEventListener("load", init);
 
     // Границы контента sidebar (объединение bbox всех видимых детей)
     function getContentBox(sidebar, sRect) {
-        var minX = Infinity, maxX = -Infinity;
-        var n = sidebar.children.length;
-        for (var i = 0; i < n; i++) {
-            var c = sidebar.children[i];
+        let minX = Infinity, maxX = -Infinity;
+        const n = sidebar.children.length;
+        for (let i = 0; i < n; i++) {
+            const c = sidebar.children[i];
             // пропускаем наши шторки, если они вдруг внутри
             if (c.id && c.id.indexOf("sidebar-shutter") === 0) continue;
-            var cs = getComputedStyle(c);
+            const cs = getComputedStyle(c);
             if (cs.display === "none" || cs.visibility === "hidden") continue;
             if (c.offsetWidth === 0 && c.offsetHeight === 0) continue;
-            var cr = c.getBoundingClientRect();
+            const cr = c.getBoundingClientRect();
             if (cr.bottom < sRect.top || cr.top > sRect.bottom) continue;
             if (cr.left < minX) minX = cr.left;
             if (cr.right > maxX) maxX = cr.right;
@@ -857,7 +857,7 @@ window.addEventListener("load", init);
 
     function positionShutters(sidebar, shutters) {
         if (!sidebar) return;
-        var r = sidebar.getBoundingClientRect();
+        const r = sidebar.getBoundingClientRect();
 
         if (r.bottom < 0 || r.top > window.innerHeight || r.height <= 0 || r.width <= 0) {
             shutters.top.style.display = "none";
@@ -865,10 +865,10 @@ window.addEventListener("load", init);
             return;
         }
 
-        var box = getContentBox(sidebar, r);
-        var left  = Math.max(0, box.left);
-        var right = Math.min(window.innerWidth, box.right);
-        var width = Math.max(0, right - left);
+        const box = getContentBox(sidebar, r);
+        const left  = Math.max(0, box.left);
+        const right = Math.min(window.innerWidth, box.right);
+        const width = Math.max(0, right - left);
         if (width <= 0) {
             shutters.top.style.display = "none";
             shutters.bot.style.display = "none";
@@ -876,48 +876,48 @@ window.addEventListener("load", init);
         }
 
         // Верхняя
-        var topTop = Math.max(0, r.top);
-        var topBottom = Math.min(window.innerHeight, r.top + TOP_H);
-        var topH = topBottom - topTop;
+        const topTop = Math.max(0, r.top);
+        const topBottom = Math.min(window.innerHeight, r.top + TOP_H);
+        const topH = topBottom - topTop;
         if (topH > 0) {
             shutters.top.style.display = "block";
-            shutters.top.style.top = topTop + "px";
-            shutters.top.style.left = left + "px";
-            shutters.top.style.width = width + "px";
-            shutters.top.style.height = topH + "px";
+            shutters.top.style.top = `${topTop  }px`;
+            shutters.top.style.left = `${left  }px`;
+            shutters.top.style.width = `${width  }px`;
+            shutters.top.style.height = `${topH  }px`;
         } else {
             shutters.top.style.display = "none";
         }
 
         // Нижняя
-        var botBottom = Math.min(window.innerHeight, r.bottom);
-        var botTop = Math.max(0, r.bottom - BOT_H);
-        var botH = botBottom - botTop;
+        const botBottom = Math.min(window.innerHeight, r.bottom);
+        const botTop = Math.max(0, r.bottom - BOT_H);
+        const botH = botBottom - botTop;
         if (botH > 0) {
             shutters.bot.style.display = "block";
-            shutters.bot.style.top = botTop + "px";
-            shutters.bot.style.left = left + "px";
-            shutters.bot.style.width = width + "px";
-            shutters.bot.style.height = botH + "px";
+            shutters.bot.style.top = `${botTop  }px`;
+            shutters.bot.style.left = `${left  }px`;
+            shutters.bot.style.width = `${width  }px`;
+            shutters.bot.style.height = `${botH  }px`;
         } else {
             shutters.bot.style.display = "none";
         }
     }
 
     function init() {
-        var sidebar = document.querySelector(".sidebar");
+        let sidebar = document.querySelector(".sidebar");
         if (!sidebar) {
             console.warn("[sidebar-shutters] .sidebar не найден");
             return;
         }
         console.log("[sidebar-shutters] .sidebar найден");
         injectStyle();
-        var shutters = makeShutters();
+        const shutters = makeShutters();
 
-        var rafId = null;
+        let rafId = null;
         function update() {
             if (rafId) return;
-            rafId = requestAnimationFrame(function() {
+            rafId = requestAnimationFrame(() => {
                 rafId = null;
                 positionShutters(sidebar, shutters);
             });
@@ -930,18 +930,18 @@ window.addEventListener("load", init);
         if (window.ResizeObserver) {
             new ResizeObserver(update).observe(sidebar);
         }
-        var t = null;
-        new MutationObserver(function() {
+        let t = null;
+        new MutationObserver(() => {
             if (t) return;
-            t = setTimeout(function() { t = null; update(); }, 150);
+            t = setTimeout(() => { t = null; update(); }, 150);
         }).observe(sidebar, { childList: true, subtree: false });
 
         setTimeout(update, 100);
         setTimeout(update, 500);
         setTimeout(update, 1500);
 
-        setInterval(function() {
-            var s = document.querySelector(".sidebar");
+        setInterval(() => {
+            const s = document.querySelector(".sidebar");
             if (s && s !== sidebar) {
                 sidebar = s;
                 update();
@@ -1002,17 +1002,17 @@ window.addEventListener("load", init);
 
     function findSrc(key) {
       let src = null;
-      document.querySelectorAll(".sidebar .panel").forEach(function (p) {
+      document.querySelectorAll(".sidebar .panel").forEach((p) => {
         if (src) return;
-        if (p.querySelector('[data-i18n="' + key + '"]')) src = p;
+        if (p.querySelector(`[data-i18n="${  key  }"]`)) src = p;
       });
       return src;
     }
     function clonePanel(src) {
       const c = src.cloneNode(true);
-      c.querySelectorAll("[id]").forEach(function (el) { el.id = "m-" + el.id; });
-      c.querySelectorAll("label[for]").forEach(function (el) {
-        el.setAttribute("for", "m-" + el.getAttribute("for"));
+      c.querySelectorAll("[id]").forEach((el) => { el.id = `m-${  el.id}`; });
+      c.querySelectorAll("label[for]").forEach((el) => {
+        el.setAttribute("for", `m-${  el.getAttribute("for")}`);
       });
       return c;
     }
@@ -1020,22 +1020,22 @@ window.addEventListener("load", init);
     // Пресет + Настроение — в 2 колонки (как model+voice)
     const twoCol = document.createElement("div");
     twoCol.className = "batch-row-2";
-    ["preset", "mood"].forEach(function (key) {
+    ["preset", "mood"].forEach((key) => {
       const src = findSrc(key);
       if (src) twoCol.appendChild(clonePanel(src));
     });
     target.appendChild(twoCol);
 
     // Остальные — столбиком
-    ["settings", "extra", "save"].forEach(function (key) {
+    ["settings", "extra", "save"].forEach((key) => {
       const src = findSrc(key);
       if (src) target.appendChild(clonePanel(src));
     });
 
     // input → output sync
-    Object.keys(OUT_MAP).forEach(function (sliderId) {
-      const inp = modal.querySelector("#m-" + sliderId);
-      const outp = modal.querySelector("#m-" + OUT_MAP[sliderId]);
+    Object.keys(OUT_MAP).forEach((sliderId) => {
+      const inp = modal.querySelector(`#m-${  sliderId}`);
+      const outp = modal.querySelector(`#m-${  OUT_MAP[sliderId]}`);
       if (inp && outp) {
         const sync = function () { outp.textContent = inp.value; };
         inp.addEventListener("input", sync);
@@ -1052,14 +1052,14 @@ window.addEventListener("load", init);
       "sentence_split", "output_format", "output_sr", "bit_depth",
       "fade_in_sec", "fade_out_sec",
     ];
-    ids.forEach(function (id) {
+    ids.forEach((id) => {
       const mainEl = document.getElementById(id);
-      const modalEl = modal.querySelector("#m-" + id);
+      const modalEl = modal.querySelector(`#m-${  id}`);
       if (mainEl && modalEl) {
         modalEl.value = mainEl.value;
         const outId = OUT_MAP[id];
         if (outId) {
-          const outp = modal.querySelector("#m-" + outId);
+          const outp = modal.querySelector(`#m-${  outId}`);
           if (outp) outp.textContent = modalEl.value;
         }
       }
@@ -1117,7 +1117,7 @@ window.addEventListener("load", init);
     modal.querySelector(".batch-backdrop").addEventListener("click", closeModal);
     modal.querySelector(".help-modal-close").addEventListener("click", closeModal);
     submitBtn.addEventListener("click", onSubmit);
-    if (modelEl) modelEl.addEventListener("change", function() { loadLangs(); });
+    if (modelEl) modelEl.addEventListener("change", () => { loadLangs(); });
     return modal;
   }
 
@@ -1128,7 +1128,7 @@ window.addEventListener("load", init);
     
     applyLangTo(modal);
     modal.style.display = "flex";
-    loadModels().then(function() { loadLangs(); });
+    loadModels().then(() => { loadLangs(); });
     loadVoices();
     setTimeout(() => textareaEl && textareaEl.focus(), 50);
   }
@@ -1137,12 +1137,12 @@ window.addEventListener("load", init);
   function applyLangTo(root) {
     const lang = (document.documentElement.lang === "en") ? "en" : "ru";
     if (typeof I18N === "undefined") return;
-    root.querySelectorAll("[data-i18n]").forEach(function (el) {
+    root.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       const val = I18N[lang] && I18N[lang][key];
       if (val) el.textContent = val;
     });
-    root.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+    root.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
       const key = el.getAttribute("data-i18n-placeholder");
       const val = I18N[lang] && I18N[lang][key];
       if (val) el.placeholder = val;
@@ -1177,12 +1177,12 @@ window.addEventListener("load", init);
     const current = langEl.value || (typeof currentLang !== "undefined" ? currentLang : "ru");
     langEl.innerHTML = "";
     let firstAvailable = null;
-    Object.keys(names).forEach(function (code) {
+    Object.keys(names).forEach((code) => {
       if (!supported.has(code)) return;
       if (!firstAvailable) firstAvailable = code;
       const opt = document.createElement("option");
       opt.value = code;
-      opt.textContent = code.toUpperCase() + " · " + names[code];
+      opt.textContent = `${code.toUpperCase()  } · ${  names[code]}`;
       if (code === current) opt.selected = true;
       langEl.appendChild(opt);
     });
@@ -1208,7 +1208,7 @@ window.addEventListener("load", init);
   function collectSettings() {
     const main = useMainChk.checked;
     const fromMain = function (id, def) {
-      const el = main ? document.getElementById(id) : modal.querySelector("#m-" + id);
+      const el = main ? document.getElementById(id) : modal.querySelector(`#m-${  id}`);
       return el ? el.value : def;
     };
     return {
@@ -1244,7 +1244,7 @@ window.addEventListener("load", init);
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, voice: voiceEl.value || "", settings: collectSettings() }),
       });
-      if (!r.ok) throw new Error("HTTP " + r.status);
+      if (!r.ok) throw new Error(`HTTP ${  r.status}`);
       const d = await r.json();
       if (!d.ok || !d.task_id) throw new Error("no task_id");
       addRow(d.task_id, text, modelEl.value);
@@ -1260,7 +1260,7 @@ window.addEventListener("load", init);
   function addRow(taskId, text, mode) {
     const row = document.createElement("div");
     row.className = "batch-task";
-    const short = text.length > 60 ? text.slice(0, 60) + "…" : text;
+    const short = text.length > 60 ? `${text.slice(0, 60)  }…` : text;
     row.innerHTML = `
       <div class="batch-task-main">
         <div class="batch-task-text" title="${escapeAttr(text)}">${escapeHtml(short)}</div>
@@ -1289,7 +1289,7 @@ window.addEventListener("load", init);
     r.statusEl.textContent = t(STATUS_LABEL_KEYS[st] || st);
     r.statusEl.style.color = STATUS_COLOR[st] || "#888";
     if (st === "done" && task.result_file) {
-      r.fileEl.href = "/api/history/" + encodeURIComponent(taskId) + "/export";
+      r.fileEl.href = `/api/history/${  encodeURIComponent(taskId)  }/export`;
       r.fileEl.style.display = "inline-block";
       r.fileEl.title = task.result_file;
     }
@@ -1299,7 +1299,7 @@ window.addEventListener("load", init);
   function watch(taskId) {
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     let ws;
-    try { ws = new WebSocket(proto + "//" + location.host + "/ws/batch/" + encodeURIComponent(taskId)); }
+    try { ws = new WebSocket(`${proto  }//${  location.host  }/ws/batch/${  encodeURIComponent(taskId)}`); }
     catch (e) { return; }
     ws.addEventListener("message", ev => {
       try {
@@ -1321,7 +1321,7 @@ window.addEventListener("load", init);
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
   }
 
-  window.addEventListener("jst:lang-changed", function () {
+  window.addEventListener("jst:lang-changed", () => {
     if (!modal) return;
     cloneSettingsPanels();
     applyLangTo(modal);
@@ -1360,7 +1360,7 @@ window.addEventListener("load", init);
     if (!peakData) return "";
     const w = canvas ? canvas.width : 0;
     const h = canvas ? canvas.height : 0;
-    return (peakSrc || "") + "|" + w + "|" + h + "|" + (PLAYER_SETTINGS.scale || 1);
+    return `${peakSrc || ""  }|${  w  }|${  h  }|${  PLAYER_SETTINGS.scale || 1}`;
   }
   function _ensurePts() {
     const key = _buildPtsKey();
@@ -1394,7 +1394,7 @@ window.addEventListener("load", init);
   }
   function _makeGradient(ratio) {
     const rounded = Math.round(ratio * 200) / 200;
-    const key = rounded + "|" + (isNight() ? "n" : "d");
+    const key = `${rounded  }|${  isNight() ? "n" : "d"}`;
     if (_gradCache && _gradKey === key) return _gradCache;
     const w = canvas.width;
     const c = isNight() ? COLOR.night : COLOR.day;
@@ -1434,7 +1434,7 @@ window.addEventListener("load", init);
       const _d = audio.duration || 0;
       const _c = audio.currentTime || 0;
       if (progressEl && _d > 0) {
-        progressEl.style.width = (_c / _d * 100).toFixed(2) + "%";
+        progressEl.style.width = `${(_c / _d * 100).toFixed(2)  }%`;
       }
       if (curEl) curEl.textContent = fmt(_c);
       try { drawWave(_c); } catch (e) { /* */ }
@@ -1480,7 +1480,7 @@ window.addEventListener("load", init);
     if (!isFinite(sec) || sec < 0) sec = 0;
     const m = Math.floor(sec / 60);
     const s = Math.floor(sec % 60);
-    return m + ":" + (s < 10 ? "0" : "") + s;
+    return `${m  }:${  s < 10 ? "0" : ""  }${s}`;
   }
 
   function ensure() {
@@ -1937,7 +1937,7 @@ window.addEventListener("load", init);
       const cur = audio.currentTime || 0;
       const dur = audio.duration || 0;
       if (dur > 0 && progressEl) {
-        progressEl.style.width = (cur / dur * 100).toFixed(2) + "%";
+        progressEl.style.width = `${(cur / dur * 100).toFixed(2)  }%`;
       }
       if (curEl) curEl.textContent = fmt(cur);
       if (audio.paused) drawWave(cur);
@@ -1951,7 +1951,7 @@ window.addEventListener("load", init);
       // Здесь — только fallback для paused (после seek например).
       if (audio.paused) {
         if (curEl) curEl.textContent = fmt(cur);
-        if (progressEl && dur > 0) progressEl.style.width = (cur / dur * 100).toFixed(2) + "%";
+        if (progressEl && dur > 0) progressEl.style.width = `${(cur / dur * 100).toFixed(2)  }%`;
       }
     });
 
@@ -1971,7 +1971,7 @@ window.addEventListener("load", init);
         if (!file) return;
         const url = file.startsWith("/") || file.startsWith("http")
           ? file
-          : "/output/" + file;
+          : `/output/${  file}`;
         loadAudioFromUrl(url, text);
         ev.preventDefault();
       });
@@ -2088,9 +2088,9 @@ window.addEventListener("load", init);
       {const _tv = document.getElementById("jstp-opt-thickness-val"); if (_tv) _tv.textContent = String(PLAYER_SETTINGS.thickness);}
       if (optGrid) optGrid.checked = !!PLAYER_SETTINGS.grid;
       if (optScale) optScale.value = String(PLAYER_SETTINGS.scale);
-      if (optScaleVal) optScaleVal.textContent = Number(PLAYER_SETTINGS.scale).toFixed(1) + "×";
+      if (optScaleVal) optScaleVal.textContent = `${Number(PLAYER_SETTINGS.scale).toFixed(1)  }×`;
       if (optOpacity) optOpacity.value = String(PLAYER_SETTINGS.opacity);
-      if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
+      if (optOpacityVal) optOpacityVal.textContent = `${Math.round(PLAYER_SETTINGS.opacity * 100)  }%`;
     }
     syncSettingsUI();
 
@@ -2115,7 +2115,7 @@ window.addEventListener("load", init);
     });
     if (optScale) optScale.addEventListener("input", () => {
       PLAYER_SETTINGS.scale = parseFloat(optScale.value) || 1;
-      if (optScaleVal) optScaleVal.textContent = PLAYER_SETTINGS.scale.toFixed(1) + "×";
+      if (optScaleVal) optScaleVal.textContent = `${PLAYER_SETTINGS.scale.toFixed(1)  }×`;
       redraw();
     });
         const optGlow = document.getElementById("jstp-opt-glow");
@@ -2131,7 +2131,7 @@ window.addEventListener("load", init);
     }
 if (optOpacity) optOpacity.addEventListener("input", () => {
       PLAYER_SETTINGS.opacity = parseFloat(optOpacity.value) || 1;
-      if (optOpacityVal) optOpacityVal.textContent = Math.round(PLAYER_SETTINGS.opacity * 100) + "%";
+      if (optOpacityVal) optOpacityVal.textContent = `${Math.round(PLAYER_SETTINGS.opacity * 100)  }%`;
       redraw();
     });
 
@@ -2224,7 +2224,7 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       if (em) {
         for (const node of lbl.childNodes) {
           if (node.nodeType === 3) {
-            node.textContent = dict[key] + " ";
+            node.textContent = `${dict[key]  } `;
             break;
           }
         }
@@ -2329,7 +2329,7 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   function bind(id, key, formatVal, isCheckbox) {
     const el = document.getElementById(id);
     if (!el) return;
-    const valEl = document.getElementById(id + "-val");
+    const valEl = document.getElementById(`${id  }-val`);
     if (isCheckbox) {
       el.checked = !!st[key];
     } else {
@@ -2524,15 +2524,15 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
 
   const pv = document.getElementById("preview-player");
   if (pv) {
-    pv.addEventListener("play", async function () {
+    pv.addEventListener("play", async () => {
       try { await ensureChain(); applyFxNow(); scheduleFade(); }
       catch (e) { console.warn("[FX] chain on play:", e); }
     });
-    pv.addEventListener("seeked", function () {
+    pv.addEventListener("seeked", () => {
       resetFade();
       if (!pv.paused) scheduleFade();
     });
-    pv.addEventListener("pause", function () {
+    pv.addEventListener("pause", () => {
       if (fadeOutTimer) { clearTimeout(fadeOutTimer); fadeOutTimer = null; }
     });
     pv.addEventListener("ended", resetFade);
@@ -2554,13 +2554,13 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       const resp = await _origFetch.apply(this, args);
       if (resp.status >= 400 && resp.status !== 401 && resp.status !== 403 && !silent) {
         if (typeof showToast === "function") {
-          showToast("HTTP " + resp.status + " " + (resp.statusText || "") + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
+          showToast(`HTTP ${  resp.status  } ${  resp.statusText || ""  } — ${  url.replace(/^https?:\/\/[^/]+/, "")}`, "error");
         }
       }
       return resp;
     } catch (err) {
       if (typeof showToast === "function") {
-        showToast(ti("network") + ": " + (err.message || ti("no_conn")) + " — " + url.replace(/^https?:\/\/[^/]+/, ""), "error");
+        showToast(`${ti("network")  }: ${  err.message || ti("no_conn")  } — ${  url.replace(/^https?:\/\/[^/]+/, "")}`, "error");
       }
       throw err;
     }
@@ -2570,7 +2570,7 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
   window.addEventListener("error", (e) => {
     if (typeof showToast !== "function") return;
     const msg = e.message || (e.error && e.error.message) || "JS error";
-    showToast("JS: " + msg, "error");
+    showToast(`JS: ${  msg}`, "error");
   });
 
   // 3c. Unhandled promise rejections
@@ -2578,7 +2578,7 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
     if (typeof showToast !== "function") return;
     const r = e.reason;
     const msg = (r && r.message) ? r.message : String(r || "unknown");
-    showToast("Promise: " + msg, "error");
+    showToast(`Promise: ${  msg}`, "error");
   });
 
   // 3d. Heartbeat — раз в 60 сек проверяет /healthz, не чаще 1 toast/мин
@@ -2589,14 +2589,14 @@ if (optOpacity) optOpacity.addEventListener("input", () => {
       if (!r.ok) {
         const now = Date.now();
         if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
-          showToast(ti("server_down") + " (healthz " + r.status + ")", "error");
+          showToast(`${ti("server_down")  } (healthz ${  r.status  })`, "error");
           _lastHealthToast = now;
         }
       }
     } catch (e) {
       const now = Date.now();
       if (now - _lastHealthToast > 60000 && typeof showToast === "function") {
-        showToast(ti("server_crashed") + ": " + (e.message || "offline"), "error");
+        showToast(`${ti("server_crashed")  }: ${  e.message || "offline"}`, "error");
         _lastHealthToast = now;
       }
     }
@@ -2624,8 +2624,8 @@ function _pwaAttach() { if (window.__jstPwa) window.__jstPwa._pwaAttach(); }
    ═══════════════════════════════════════════════════════════════════ */
 window.__jstForceResetSynth = function(reason) {
   try {
-    var b = document.getElementById('btn-synth');
-    var s = document.getElementById('btn-stop');
+    const b = document.getElementById('btn-synth');
+    const s = document.getElementById('btn-stop');
     if (b) {
       b.classList.remove('is-busy', 'active', 'pressed');
       b.disabled = false;
@@ -2656,17 +2656,17 @@ window.__jstForceResetSynth = function(reason) {
 
 /* Автосброс при закрытии WS без finishStreaming */
 (function() {
-  var _origWS = window.WebSocket;
+  const _origWS = window.WebSocket;
   if (_origWS && !_origWS.__jstWrapped) {
     window.WebSocket = function(url, protocols) {
-      var ws = protocols ? new _origWS(url, protocols) : new _origWS(url);
+      const ws = protocols ? new _origWS(url, protocols) : new _origWS(url);
       window.ws = ws;  /* v74: глобальная ссылка для reset */
-      ws.addEventListener('close', function(ev) {
+      ws.addEventListener('close', (ev) => {
         // Если WS закрыт, но streaming всё ещё true — сбрасываем через 500ms
         if (window.JST_IS_STREAMING) {
-          setTimeout(function() {
+          setTimeout(() => {
             if (window.JST_IS_STREAMING && window.__jstForceResetSynth) {
-              window.__jstForceResetSynth('WS closed without finishStreaming (code ' + ev.code + ')');
+              window.__jstForceResetSynth(`WS closed without finishStreaming (code ${  ev.code  })`);
             }
           }, 500);
         }

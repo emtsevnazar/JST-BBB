@@ -11,9 +11,9 @@
   window.__jstForce82 = true;
 
   /* WeakMap: element -> Set of property names that we set inline */
-  var forced = new WeakMap();
+  const forced = new WeakMap();
   /* Root CSS variables we set inline */
-  var rootVars = new Set();
+  const rootVars = new Set();
 
   function isBW()    { return document.documentElement.getAttribute('data-theme') === 'contrast'; }
   function isDay()   { return document.documentElement.getAttribute('data-theme') === 'day'; }
@@ -25,7 +25,7 @@
     if (!el || !el.style) return;
     try {
       el.style.setProperty(prop, val, 'important');
-      var set = forced.get(el);
+      let set = forced.get(el);
       if (!set) { set = new Set(); forced.set(el, set); }
       set.add(prop);
     } catch (e) {}
@@ -41,9 +41,9 @@
 
   /* Clean ALL inline props we set on an element */
   function clean(el) {
-    var set = forced.get(el);
+    const set = forced.get(el);
     if (!set) return;
-    set.forEach(function (p) {
+    set.forEach((p) => {
       try { el.style.removeProperty(p); } catch (e) {}
     });
     forced.delete(el);
@@ -56,13 +56,13 @@
   /* Clean ALL elements we touched */
   function cleanAll() {
     /* Can't iterate WeakMap, so we track via data attribute marker */
-    var marked = document.querySelectorAll('[data-jst-f82="1"]');
-    marked.forEach(function (el) {
+    const marked = document.querySelectorAll('[data-jst-f82="1"]');
+    marked.forEach((el) => {
       clean(el);
       el.removeAttribute('data-jst-f82');
     });
     /* Clean root vars */
-    rootVars.forEach(function (name) {
+    rootVars.forEach((name) => {
       try { document.documentElement.style.removeProperty(name); } catch (e) {}
     });
     rootVars.clear();
@@ -76,9 +76,9 @@
   /* Set all descendants to color */
   function setChildrenColor(el, color, important) {
     if (!el || !el.querySelectorAll) return;
-    var all = el.querySelectorAll('*');
-    for (var i = 0; i < all.length; i++) {
-      var c = all[i];
+    const all = el.querySelectorAll('*');
+    for (let i = 0; i < all.length; i++) {
+      const c = all[i];
       I(c, 'color', color);
       I(c, '-webkit-text-fill-color', color);
       I(c, 'fill', color);
@@ -117,7 +117,7 @@
     V('--input-border', '#000');
 
     /* ─── 1. help-section — без чёрной рамки ─── */
-    document.querySelectorAll('.help-section').forEach(function (el) {
+    document.querySelectorAll('.help-section').forEach((el) => {
       I(el, 'border', 'none');
       I(el, 'border-width', '0');
       I(el, 'box-shadow', 'none');
@@ -127,7 +127,7 @@
     });
 
     /* ─── 2. help-header-fixed — белый bg ─── */
-    var hh = document.getElementById('help-header-fixed');
+    const hh = document.getElementById('help-header-fixed');
     if (hh) {
       I(hh, 'background', 'rgb(255, 255, 255)');
       I(hh, 'background-color', 'rgb(255, 255, 255)');
@@ -145,7 +145,7 @@
     }
 
     /* ─── 3. help-header — белый bg ─── */
-    document.querySelectorAll('.help-header, summary.help-header, details.help-header').forEach(function (el) {
+    document.querySelectorAll('.help-header, summary.help-header, details.help-header').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'background-image', 'none');
@@ -159,7 +159,7 @@
     });
 
     /* ─── 4. help-table — белый bg для всех ячеек ─── */
-    document.querySelectorAll('.help-table, .help-table th, .help-table thead, .help-table tbody, .help-table tr, .help-table td').forEach(function (el) {
+    document.querySelectorAll('.help-table, .help-table th, .help-table thead, .help-table tbody, .help-table tr, .help-table td').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'color', '#000');
@@ -167,7 +167,7 @@
       I(el, 'border-color', '#000');
       mark(el);
     });
-    document.querySelectorAll('.help-table th *, .help-table td *').forEach(function (el) {
+    document.querySelectorAll('.help-table th *, .help-table td *').forEach((el) => {
       I(el, 'color', '#000');
       I(el, '-webkit-text-fill-color', '#000');
       I(el, 'background', 'transparent');
@@ -175,7 +175,7 @@
     });
 
     /* ─── 5. carousel — чёрный текст на белом ─── */
-    document.querySelectorAll('#carousel > *, #carousel .card, #carousel .model-card, #carousel .lang-card, #carousel .accent-card, #carousel button, #carousel [role="button"], .carousel-btn').forEach(function (el) {
+    document.querySelectorAll('#carousel > *, #carousel .card, #carousel .model-card, #carousel .lang-card, #carousel .accent-card, #carousel button, #carousel [role="button"], .carousel-btn').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'background-image', 'none');
@@ -194,7 +194,7 @@
       '.controls .btn.active, .controls .btn[aria-pressed="true"], .controls .btn.is-busy, ' +
       '.controls #btn-synth.is-busy, .controls #btn-random.active, .controls #btn-clear-history.active, ' +
       '.controls #btn-batch.active'
-    ).forEach(function (el) {
+    ).forEach((el) => {
       I(el, 'background', '#000');
       I(el, 'background-color', '#000');
       I(el, 'background-image', 'none');
@@ -215,7 +215,7 @@
       '#carousel .card[disabled], #carousel .card.unavailable, #carousel .card.disabled, ' +
       '#carousel .lang-card.unavailable, #carousel .model-card.unavailable, ' +
       '#carousel .accent-card.unavailable, .carousel-btn[disabled], .carousel-btn.disabled'
-    ).forEach(function (el) {
+    ).forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'color', '#000');
@@ -229,7 +229,7 @@
     });
 
     /* ─── 8. STOP в BW: disabled white/black, enabled black/white ─── */
-    var stop = document.getElementById('btn-stop');
+    const stop = document.getElementById('btn-stop');
     if (stop) {
       if (stop.disabled) {
         I(stop, 'background', '#fff');
@@ -255,7 +255,7 @@
     }
 
     /* ─── 9. Глобально: убрать жёлтый с .jst-dot ─── */
-    document.querySelectorAll('.jst-dot').forEach(function (el) {
+    document.querySelectorAll('.jst-dot').forEach((el) => {
       I(el, 'border-color', '#000');
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
@@ -265,7 +265,7 @@
     /* Также ::before/::after через CSS vars — уже через --jst-dot-color: #000 */
 
     /* v85: .lang-card.unavailable / .model-card.unavailable — dashed на hover */
-    document.querySelectorAll('.lang-card.unavailable, .model-card.unavailable, .accent-card.unavailable, .card.unavailable').forEach(function (el) {
+    document.querySelectorAll('.lang-card.unavailable, .model-card.unavailable, .accent-card.unavailable, .card.unavailable').forEach((el) => {
       I(el, 'border', '2px dashed #000');
       I(el, 'border-style', 'dashed');
       I(el, 'border-color', '#000');
@@ -276,7 +276,7 @@
     });
 
     /* v85: .help-pill — белый bg / чёрный border / чёрный text */
-    document.querySelectorAll('.help-pill, [class*="help-pill"]').forEach(function (el) {
+    document.querySelectorAll('.help-pill, [class*="help-pill"]').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'color', '#000');
@@ -288,7 +288,7 @@
     });
 
     /* v85: .help-arrow — точки всегда чёрные */
-    document.querySelectorAll('.help-arrow').forEach(function (el) {
+    document.querySelectorAll('.help-arrow').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'color', '#000');
       I(el, 'border', '2px solid #000');
@@ -298,7 +298,7 @@
     });
 
     /* v85: .help-content — белый bg rounded */
-    document.querySelectorAll('.help-content').forEach(function (el) {
+    document.querySelectorAll('.help-content').forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'color', '#000');
@@ -309,17 +309,17 @@
     });
 
     /* ─── 10. SVG везде в BW — currentColor ─── */
-    document.querySelectorAll('svg [fill]:not([fill="none"]):not([fill^="url"])').forEach(function (el) {
+    document.querySelectorAll('svg [fill]:not([fill="none"]):not([fill^="url"])').forEach((el) => {
       I(el, 'fill', 'currentColor');
       mark(el);
     });
-    document.querySelectorAll('svg [stroke]:not([stroke="none"]):not([stroke^="url"])').forEach(function (el) {
+    document.querySelectorAll('svg [stroke]:not([stroke="none"]):not([stroke^="url"])').forEach((el) => {
       I(el, 'stroke', 'currentColor');
       mark(el);
     });
 
     /* ─── 11. accent-grid — 135×38 ─── */
-    document.querySelectorAll('#accent-grid > *, #accent-grid .accent-card, #accent-grid button, #accent-grid [role="button"]').forEach(function (el) {
+    document.querySelectorAll('#accent-grid > *, #accent-grid .accent-card, #accent-grid button, #accent-grid [role="button"]').forEach((el) => {
       I(el, 'width', '135px');
       I(el, 'min-width', '135px');
       I(el, 'max-width', '135px');
@@ -343,10 +343,10 @@
   /* ─── v83: kill gradient у btn-primary / btn-synth ─── */
   function applyKillGradient() {
     if (!isBW()) return;
-    var btns = document.querySelectorAll('button.btn.btn-primary, .btn.btn-primary, #btn-synth');
-    for (var i = 0; i < btns.length; i++) {
-      var el = btns[i];
-      var isActive = el.classList.contains('is-busy') || el.classList.contains('active') || el.getAttribute('aria-pressed') === 'true';
+    const btns = document.querySelectorAll('button.btn.btn-primary, .btn.btn-primary, #btn-synth');
+    for (let i = 0; i < btns.length; i++) {
+      const el = btns[i];
+      const isActive = el.classList.contains('is-busy') || el.classList.contains('active') || el.getAttribute('aria-pressed') === 'true';
       if (isActive) {
         I(el, 'background', '#000');
         I(el, 'background-color', '#000');
@@ -373,8 +373,8 @@
   /* ─── v83: .panel кнопки при active — чёрный/белый + все дети белые ─── */
   function applyPanelButtons() {
     if (!isBW()) return;
-    document.querySelectorAll('.panel button, .panel .btn, .panel [role="button"]').forEach(function (el) {
-      var isActive = el.classList.contains('active')
+    document.querySelectorAll('.panel button, .panel .btn, .panel [role="button"]').forEach((el) => {
+      const isActive = el.classList.contains('active')
                   || el.classList.contains('selected')
                   || el.classList.contains('pressed')
                   || el.classList.contains('is-busy')
@@ -411,14 +411,14 @@
 
   /* ─── v84: state machine синтеза (disabled/enabled) ──── */
   function applySynthState() {
-    var synth = document.getElementById('btn-synth');
-    var stop = document.getElementById('btn-stop');
+    const synth = document.getElementById('btn-synth');
+    const stop = document.getElementById('btn-stop');
     if (!synth || !stop) return;
 
-    var wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
-    var hasBusy = synth.classList.contains('is-busy');
+    const wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
+    const hasBusy = synth.classList.contains('is-busy');
     /* isStreaming только если есть is-busy ИЛИ JST_IS_STREAMING + WS жив */
-    var isStreaming = (hasBusy && wsAlive) || (window.JST_IS_STREAMING === true && wsAlive);
+    const isStreaming = (hasBusy && wsAlive) || (window.JST_IS_STREAMING === true && wsAlive);
 
     if (isStreaming) {
       /* SYNTH заблокирована, STOP активна */
@@ -435,11 +435,11 @@
   function applyCardActive() {
     if (!isBW()) return;
 
-    var selector = '.panel .model-card.active, .panel .lang-card.active, .panel .accent-card.active, .panel .card.active, '
+    const selector = '.panel .model-card.active, .panel .lang-card.active, .panel .accent-card.active, .panel .card.active, '
                  + '.controls .model-card.active, .controls .lang-card.active, .controls .accent-card.active, .controls .card.active, '
                  + '.model-card.active, .lang-card.active, .accent-card.active, .card.active';
 
-    document.querySelectorAll(selector).forEach(function (el) {
+    document.querySelectorAll(selector).forEach((el) => {
       I(el, 'background', '#000');
       I(el, 'background-color', '#000');
       I(el, 'background-image', 'none');
@@ -453,11 +453,11 @@
     });
 
     /* Неактивные карточки — белый/чёрный */
-    var inactiveSel = '.panel .model-card:not(.active), .panel .lang-card:not(.active), .panel .accent-card:not(.active), '
+    const inactiveSel = '.panel .model-card:not(.active), .panel .lang-card:not(.active), .panel .accent-card:not(.active), '
                     + '.panel .card:not(.active), .model-card:not(.active):not(.unavailable):not(.disabled), '
                     + '.lang-card:not(.active):not(.unavailable):not(.disabled), '
                     + '.accent-card:not(.active):not(.unavailable):not(.disabled)';
-    document.querySelectorAll(inactiveSel).forEach(function (el) {
+    document.querySelectorAll(inactiveSel).forEach((el) => {
       I(el, 'background', '#fff');
       I(el, 'background-color', '#fff');
       I(el, 'background-image', 'none');
@@ -474,7 +474,7 @@
     if (!isDay() && !isNight()) return;
 
     /* STOP — inline, чтобы точно перебить style-v4 */
-    var stop = document.getElementById('btn-stop');
+    const stop = document.getElementById('btn-stop');
     if (stop) {
       if (stop.disabled) {
         I(stop, 'background', 'transparent');
@@ -503,7 +503,7 @@
     }
 
     /* accent-grid 135×38 */
-    document.querySelectorAll('#accent-grid > *, #accent-grid .accent-card, #accent-grid button, #accent-grid [role="button"]').forEach(function (el) {
+    document.querySelectorAll('#accent-grid > *, #accent-grid .accent-card, #accent-grid button, #accent-grid [role="button"]').forEach((el) => {
       I(el, 'width', '135px');
       I(el, 'min-width', '135px');
       I(el, 'max-width', '135px');
@@ -541,10 +541,10 @@
   }
 
   /* ─── INIT ─── */
-  var timer = null;
+  let timer = null;
   function schedule() {
     if (timer) return;
-    timer = setTimeout(function () { timer = null; applyAll(); }, 50);
+    timer = setTimeout(() => { timer = null; applyAll(); }, 50);
   }
 
   function start() {
@@ -563,7 +563,7 @@
     } catch (e) {}
 
     /* Periodic re-apply — на случай если disabled/enabled изменилось через app.js */
-    setInterval(function () {
+    setInterval(() => {
       /* Без полного cleanAll — только для STOP и accent-grid */
       if (isBW()) {
         var stop = document.getElementById('btn-stop');
@@ -603,19 +603,19 @@
 
     
     /* v84: watchdogs для state machine */
-    setInterval(function () {
+    setInterval(() => {
       applySynthState();
       if (isBW()) applyCardActive();
     }, 500);
 
     /* v86: АГРЕССИВНЫЙ watchdog — если WS мёртв или streaming залипло */
-    setInterval(function () {
-      var synth = document.getElementById('btn-synth');
+    setInterval(() => {
+      const synth = document.getElementById('btn-synth');
       if (!synth) return;
 
-      var hasBusy = synth.classList.contains('is-busy');
-      var jstStreaming = window.JST_IS_STREAMING === true;
-      var wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
+      const hasBusy = synth.classList.contains('is-busy');
+      const jstStreaming = window.JST_IS_STREAMING === true;
+      const wsAlive = window.ws && (window.ws.readyState === 0 || window.ws.readyState === 1);
 
       /* Если is-busy есть, но WS не открыт — это залипание */
       if (hasBusy && !wsAlive) {

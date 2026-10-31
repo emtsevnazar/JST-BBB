@@ -4,12 +4,12 @@
   window.__jstDotsV8 = true;
 
   function addDots() {
-    ['#btn-download-toggle', '#history-dropdown > .btn', '#dl-dropdown > .btn'].forEach(function(sel){
+    ['#btn-download-toggle', '#history-dropdown > .btn', '#dl-dropdown > .btn'].forEach((sel) =>{
       try {
-        document.querySelectorAll(sel).forEach(function(btn){
+        document.querySelectorAll(sel).forEach((btn) =>{
           if (btn.querySelector('.jst-dot')) return;
           btn.classList.add('jst-btn-with-dot');
-          var d = document.createElement('span');
+          const d = document.createElement('span');
           d.className = 'jst-dot';
           d.setAttribute('aria-hidden', 'true');
           btn.appendChild(d);
@@ -21,7 +21,7 @@
   if (document.body) new MutationObserver(addDots).observe(document.body, {childList: true, subtree: true});
   window.addEventListener('load', addDots);
 
-  var ERRORS = {
+  const ERRORS = {
     offline: { t: "No Connection", m: "Wi-Fi or mobile data is disabled. Reconnecting automatically." },
     no_internet: { t: "No Internet", m: "Your device is not connected to the internet." },
     weak_internet: { t: "Weak Connection", m: "Internet is slow or unstable. Retrying..." },
@@ -43,8 +43,8 @@
   };
   function classifyFetchError(err) {
     if (!navigator.onLine) return 'offline';
-    var m = String((err && err.message) || err || '').toLowerCase();
-    var n = String((err && err.name) || '').toLowerCase();
+    const m = String((err && err.message) || err || '').toLowerCase();
+    const n = String((err && err.name) || '').toLowerCase();
     if (n === 'aborterror' || m.indexOf('timeout') !== -1 || m.indexOf('timed out') !== -1) return 'timeout';
     if (m.indexOf('dns') !== -1 || m.indexOf('getaddrinfo') !== -1) return 'dns_error';
     if (m.indexOf('ssl') !== -1 || m.indexOf('certificate') !== -1 || m.indexOf('tls') !== -1) return 'ssl_error';
@@ -64,7 +64,7 @@
   }
   function getMsg(code) {
     if (!code) return ERRORS.unknown;
-    var k = String(code).toLowerCase().replace(/[^a-z0-9_]/g, '_');
+    const k = String(code).toLowerCase().replace(/[^a-z0-9_]/g, '_');
     if (ERRORS[k]) return ERRORS[k];
     if (k.indexOf('offline') !== -1 || k.indexOf('connect') !== -1) return ERRORS.offline;
     if (k.indexOf('internet') !== -1) return ERRORS.no_internet;
@@ -86,7 +86,7 @@
     return ERRORS.unknown;
   }
 
-  var overlay = null, fails = 0;
+  let overlay = null, fails = 0;
 
   function show(title, msg){
     if (!overlay) {
@@ -98,36 +98,36 @@
         '<button class="jst-err-btn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></button>' +
         '</div>';
       document.body.appendChild(overlay);
-      overlay.querySelector('.jst-err-btn').addEventListener('click', function(){ fails=0; check(); });
+      overlay.querySelector('.jst-err-btn').addEventListener('click', () =>{ fails=0; check(); });
     }
-    var t = overlay.querySelector('.jst-err-title');
-    var m = overlay.querySelector('.jst-err-msg');
+    const t = overlay.querySelector('.jst-err-title');
+    const m = overlay.querySelector('.jst-err-msg');
     if (t) t.textContent = title;
     if (m) m.textContent = msg;
   }
 
   function hide(){ if (overlay) { overlay.remove(); overlay = null; } }
-  function showCode(code){ var e = getMsg(code); show(e.t, e.m); }
+  function showCode(code){ const e = getMsg(code); show(e.t, e.m); }
 
   function check(){
     if (!navigator.onLine) { showCode('offline'); return; }
-    var ctl = null, toId = null;
-    if (window.AbortController) { ctl = new AbortController(); toId = setTimeout(function(){ try{ ctl.abort(); }catch(e){} }, 10000); }
-    var o = {cache: 'no-store'};
+    let ctl = null, toId = null;
+    if (window.AbortController) { ctl = new AbortController(); toId = setTimeout(() =>{ try{ ctl.abort(); }catch(e){} }, 10000); }
+    const o = {cache: 'no-store'};
     if (ctl) o.signal = ctl.signal;
-    fetch('/api/error-state?_t=' + Date.now(), o)
-      .then(function(r){
+    fetch(`/api/error-state?_t=${  Date.now()}`, o)
+      .then((r) =>{
         if (toId) clearTimeout(toId);
         if (!r.ok) { showCode(classifyStatus(r.status)); return null; }
         return r.json();
       })
-      .then(function(d){
+      .then((d) =>{
         if (d === null) return;
         fails = 0;
         if (d && d.healthy === true) hide();
         else if (d && d.error) showCode(d.error.code);
       })
-      .catch(function(err){
+      .catch((err) =>{
         if (toId) clearTimeout(toId);
         fails++;
         if (!navigator.onLine) showCode('offline');
@@ -137,12 +137,12 @@
       });
   }
 
-  window.addEventListener('offline', function(){ showCode('offline'); });
-  window.addEventListener('online', function(){ fails=0; check(); });
+  window.addEventListener('offline', () =>{ showCode('offline'); });
+  window.addEventListener('online', () =>{ fails=0; check(); });
 
-  var path = location.pathname;
+  const path = location.pathname;
   if (path.indexOf('/error') !== 0 && path.indexOf('/offline') !== 0) {
-    var start = function(){ setTimeout(check, 800); setInterval(check, 3000); };
+    const start = function(){ setTimeout(check, 800); setInterval(check, 3000); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
     else start();
   }

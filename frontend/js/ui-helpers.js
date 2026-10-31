@@ -1,12 +1,12 @@
 /* ui-helpers.js — pure helpers (Phase 5c, extracted from app.js)
    Classic script for sync load, window.__jstHelpers bridge. */
 (function () {
-  var I18N = (window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} };
-  var $ = function (id) { return document.getElementById(id); };  /* Phase 5e hotfix: local $ shim */
+  const I18N = (window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} };
+  const $ = function (id) { return document.getElementById(id); };  /* Phase 5e hotfix: local $ shim */
 function fmt(sec) {
   if (!isFinite(sec) || sec < 0) sec = 0;
   const m = Math.floor(sec / 60), s = (sec % 60).toFixed(1).padStart(4, "0");
-  return m + ":" + s;
+  return `${m  }:${  s}`;
 }
 function _translateStatus(text, fromLang, toLang) {
   if (!text || fromLang === toLang) return text;
@@ -51,11 +51,11 @@ function showToast(msg, type) {
   let el = $("toast");
   if (!el) { el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
   /* v59: ВСЕ toast — красные с ⚠️ (через CSS). JS только ставит текст. */
-  var cleanMsg = String(msg || "").replace(/^⚠\s*/, "");
+  const cleanMsg = String(msg || "").replace(/^⚠\s*/, "");
   el.textContent = cleanMsg;
   el.className = "toast toast-error show";
   clearTimeout(window._toastT);
-  window._toastT = setTimeout(function() { el.classList.remove("show"); }, 8000);
+  window._toastT = setTimeout(() => { el.classList.remove("show"); }, 8000);
 }
 
 function setStatus(text, type) {
@@ -64,11 +64,11 @@ function setStatus(text, type) {
   stt.textContent = text;
   window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
   window.JST_LAST_STATUS_LANG = (window.LANG || 'ru');  /* Phase 5e hotfix */   // v1.6.5: язык статуса
-  if (st) st.className = "status" + (type ? " " + type : "");
+  if (st) st.className = `status${  type ? ` ${  type}` : ""}`;
 }
 
-function ti(key) { var d = (window.JST_TOAST_I18N || {})[(window.LANG || "ru")]; return (d && d[key]) || key; }
-var t = function (k) { var I = (window.__jstI18n && window.__jstI18n.I18N) || {}; var L2 = window.LANG || "ru"; return (I[L2] && I[L2][k]) || k; };
+function ti(key) { const d = (window.JST_TOAST_I18N || {})[(window.LANG || "ru")]; return (d && d[key]) || key; }
+const t = function (k) { const I = (window.__jstI18n && window.__jstI18n.I18N) || {}; const L2 = window.LANG || "ru"; return (I[L2] && I[L2][k]) || k; };
 window.__jstHelpers = { fmt: typeof fmt !== 'undefined' ? fmt : null, _translateStatus: typeof _translateStatus !== 'undefined' ? _translateStatus : null, __jstContrast: typeof __jstContrast !== 'undefined' ? __jstContrast : null, showToast: typeof showToast !== 'undefined' ? showToast : null, setStatus: typeof setStatus !== 'undefined' ? setStatus : null, ti: typeof ti !== 'undefined' ? ti : null, t: typeof t !== 'undefined' ? t : null };
   console.log("[JST ui-helpers] exports:", Object.keys(window.__jstHelpers));
 })();

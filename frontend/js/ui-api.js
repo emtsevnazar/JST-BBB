@@ -1,7 +1,7 @@
 /* ui-api.js — Phase 11: settings/prefs/presets (getSettings, applyPreset, normalize, save, applySynthLang). */
 (function () {
   'use strict';
-  var $ = function (id) { return document.getElementById(id); };
+  const $ = function (id) { return document.getElementById(id); };
   function saveSynthPrefs() {
     window.currentMode = (window.currentMode !== undefined ? window.currentMode : window.currentMode);
     try {
@@ -11,12 +11,12 @@
   }
 
   function applySynthLangToText() {
-    var ta = document.getElementById("text");
+    const ta = document.getElementById("text");
     if (ta && window.currentLang) ta.setAttribute("lang", window.currentLang);
   }
 
   function normalizeSynthPrefs() {
-    var modelsList = [];
+    let modelsList = [];
     try {
       if (window.MODELS && Array.isArray(window.MODELS)) modelsList = window.MODELS;
     } catch (e) {}
@@ -25,13 +25,13 @@
       saveSynthPrefs();
       return;
     }
-    if (!modelsList.find(function (m) { return m.code === window.currentMode; })) {
+    if (!modelsList.find((m) => { return m.code === window.currentMode; })) {
       if (window.__jstSetCurrentMode) window.__jstSetCurrentMode("core");
     }
-    var m = modelsList.find(function (x) { return x.code === window.currentMode; });
-    var supported = (m && Array.isArray(m.languages) && m.languages.length) ? m.languages : ["en"];
+    const m = modelsList.find((x) => { return x.code === window.currentMode; });
+    const supported = (m && Array.isArray(m.languages) && m.languages.length) ? m.languages : ["en"];
     if (!window.currentLang || supported.indexOf(window.currentLang) === -1) {
-      var _v = supported.indexOf("en") !== -1 ? "en" : supported[0];
+      const _v = supported.indexOf("en") !== -1 ? "en" : supported[0];
       if (window.__jstSetCurrentLang) window.__jstSetCurrentLang(_v); else window.currentLang = _v;
     }
     saveSynthPrefs();
@@ -40,31 +40,31 @@
 
   function applyPreset(p) {
     if (!p) return;
-    var sliderIds = { exaggeration:["o-exag",2], cfg_weight:["o-cfg",2], temperature:["o-temp",2],
+    const sliderIds = { exaggeration:["o-exag",2], cfg_weight:["o-cfg",2], temperature:["o-temp",2],
       repetition_penalty:["o-rep",2], speed:["o-speed",2], pitch_shift:["o-pitch",0], volume:["o-vol",2] };
-    Object.entries(sliderIds).forEach(function (entry) {
-      var key = entry[0], outId = entry[1][0], dec = entry[1][1];
+    Object.entries(sliderIds).forEach((entry) => {
+      const key = entry[0], outId = entry[1][0], dec = entry[1][1];
       if (key in p && p[key] != null) {
-        var el = $(key); var out = $(outId);
+        const el = $(key); const out = $(outId);
         if (el) el.value = p[key];
         if (out) out.textContent = Number(p[key]).toFixed(dec);
       }
     });
-    if (p.ref_length) { var elr = $("ref_length"); if (elr) elr.value = p.ref_length; }
-    if (p.pause_between) { var elp = $("pause_between"); if (elp) elp.value = p.pause_between; }
-    if (p.sentence_split) { var els = $("sentence_split"); if (els) els.value = p.sentence_split; }
+    if (p.ref_length) { const elr = $("ref_length"); if (elr) elr.value = p.ref_length; }
+    if (p.pause_between) { const elp = $("pause_between"); if (elp) elp.value = p.pause_between; }
+    if (p.sentence_split) { const els = $("sentence_split"); if (els) els.value = p.sentence_split; }
   }
 
   function getSettings() {
-    var sliderIds = ["exaggeration","cfg_weight","temperature","repetition_penalty","speed","pitch_shift","volume"];
-    var s = {};
-    sliderIds.forEach(function (key) {
-      var el = $(key);
+    const sliderIds = ["exaggeration","cfg_weight","temperature","repetition_penalty","speed","pitch_shift","volume"];
+    const s = {};
+    sliderIds.forEach((key) => {
+      const el = $(key);
       s[key] = el ? (parseFloat(el.value) || 0) : 0;
     });
-    var of = $("output_format"), osr = $("output_sr"), bd = $("bit_depth");
-    var fi = $("fade_in_sec"), fo = $("fade_out_sec");
-    var rl = $("ref_length"), pb = $("pause_between"), ss = $("sentence_split");
+    const of = $("output_format"), osr = $("output_sr"), bd = $("bit_depth");
+    const fi = $("fade_in_sec"), fo = $("fade_out_sec");
+    const rl = $("ref_length"), pb = $("pause_between"), ss = $("sentence_split");
     s.output_format = of ? of.value : "wav";
     s.output_sr = osr ? (parseInt(osr.value) || 44100) : 44100;
     s.bit_depth = bd ? (parseInt(bd.value) || 16) : 16;

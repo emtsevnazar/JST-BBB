@@ -13,7 +13,7 @@
   'use strict';
 
   // Безопасная сборка с fallback на пустые объекты
-  var jst = {
+  const jst = {
     // Данные (classic scripts)
     i18n: (typeof window !== 'undefined' && window.__jstI18n && window.__jstI18n.I18N) || { ru: {}, en: {} },
     helpers: (typeof window !== 'undefined' && window.__jstHelpers) || {},
@@ -29,15 +29,15 @@
   // Метод получения перевода — удобный шорткат
   // window.__jst.t('batch_title', 'ru') → 'Пакетный синтез'
   jst.t = function (key, lang) {
-    var L = lang || (typeof window.LANG !== 'undefined' ? window.LANG : 'ru');
-    var dict = jst.i18n[L] || jst.i18n.ru || {};
-    var v = dict[key];
+    const L = lang || (typeof window.LANG !== 'undefined' ? window.LANG : 'ru');
+    const dict = jst.i18n[L] || jst.i18n.ru || {};
+    const v = dict[key];
     return (v && typeof v === 'string') ? v : key;
   };
 
   // shim-проверка: всё ли загрузилось до bridge.js?
   jst.ready = function () {
-    var missing = [];
+    const missing = [];
     if (!window.__jstI18n) missing.push('i18n-data.js');
     if (!window.__jstHelpers) missing.push('ui-helpers.js');
     if (!window.__jstPwa) missing.push('pwa.js (module — загружается async)');
@@ -46,9 +46,9 @@
   };
 
   window.__jst = jst;
-  console.log('[JST bridge] v' + jst.version + ' ready;',
-    'i18n=' + Object.keys(jst.i18n).join(','),
-    'helpers=' + Object.keys(jst.helpers).join(','),
-    'pwa=' + (jst.pwa ? 'yes' : 'pending'),
-    'helpContent=' + (jst.helpContent ? jst.helpContent.length + 'b' : 'pending'));
+  console.log(`[JST bridge] v${  jst.version  } ready;`,
+    `i18n=${  Object.keys(jst.i18n).join(',')}`,
+    `helpers=${  Object.keys(jst.helpers).join(',')}`,
+    `pwa=${  jst.pwa ? 'yes' : 'pending'}`,
+    `helpContent=${  jst.helpContent ? `${jst.helpContent.length  }b` : 'pending'}`);
 })();
