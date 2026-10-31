@@ -81,3 +81,13 @@ src-tauri/target/
 # ═══════════════════════════════════════════════════════════════════
 frontend/style-contrast.css
 requirements-frozen-*.txt
+
+# Runtime logs (все места)
+backend/logs/
+journal/*.log
+journal/*.log.*
+
+# Runtime output
+output/_tts_cache/
+output/_stt_*
+output/merged_reference_*

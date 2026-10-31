@@ -1,3 +1,0 @@
-{"ts":"2026-10-29 13:31:48,957","level":"ERROR","logger":"JST.Hardening","msg":'[watchdog] threshold reached - SIGTERM self (pid=61623)'}
-{"ts":"2026-10-29 13:37:11,507","level":"ERROR","logger":"JST.Hardening","msg":'[watchdog] threshold reached - SIGTERM self (pid=68750)'}
-{"ts":"2026-10-31 00:41:25,716","level":"ERROR","logger":"JST.Hardening","msg":'[watchdog] threshold reached - SIGTERM self (pid=26685)'}
