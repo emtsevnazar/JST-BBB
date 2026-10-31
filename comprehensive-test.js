@@ -152,6 +152,12 @@ t('modules/btn-hover.js loaded', () => {
 t('modules/batch-ui.js loaded', () => {
   return loaded.some(f => f.includes('modules/batch-ui')) ? 'yes' : 'NOT LOADED';
 });
+t('modules/player.js loaded', () => {
+  return loaded.some(f => f.includes('modules/player')) ? 'yes' : 'NOT LOADED';
+});
+t('modules/fx-settings.js loaded', () => {
+  return loaded.some(f => f.includes('modules/fx-settings')) ? 'yes' : 'NOT LOADED';
+});
 t('__jstHelpers', () => !!w.__jstHelpers);
 t('__jstApi', () => !!w.__jstApi);
 t('__jstDotsV8', () => !!w.__jstDotsV8);
