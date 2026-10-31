@@ -96,8 +96,7 @@
     }
   }
   function init() {
-    /* __JST_FORCE_AUTO: по требованию — при загрузке всегда auto */
-    try { localStorage.setItem(KEY, "auto"); } catch (e) {}
+    /* Phase 11: __JST_FORCE_AUTO removed — theme now persists across reloads */
     document.addEventListener("click", _intercept, true);
 
     try {
