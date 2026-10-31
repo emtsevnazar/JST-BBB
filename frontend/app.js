@@ -138,9 +138,8 @@ const tPreset = (k) => I18N[LANG].presets[k] || k;
 const tCard = (k) => I18N[LANG].cards[k] || k;
 const tDesc = (k) => I18N[LANG].desc[k] || "";
 const $ = (id) => document.getElementById(id);
-function __jstContrast() {
-  return document.documentElement.getAttribute("data-theme") === "contrast";
-}
+/* __jstContrast moved to ui-helpers.js (Phase 5e) */
+var __jstContrast = (window.__jstHelpers && window.__jstHelpers.__jstContrast) || function() { console.warn('[__jstContrast] stub'); };
 
 
 // === THEME (owned by theme-mode.js) ===
@@ -197,26 +196,12 @@ function applyLanguage() {
 }
 
 // === TOAST ===
-function showToast(msg, type) {
-  let el = $("toast");
-  if (!el) { el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
-  /* v59: ВСЕ toast — красные с ⚠️ (через CSS). JS только ставит текст. */
-  var cleanMsg = String(msg || "").replace(/^⚠\s*/, "");
-  el.textContent = cleanMsg;
-  el.className = "toast toast-error show";
-  clearTimeout(window._toastT);
-  window._toastT = setTimeout(function() { el.classList.remove("show"); }, 8000);
-}
+/* showToast moved to ui-helpers.js (Phase 5e) */
+var showToast = (window.__jstHelpers && window.__jstHelpers.showToast) || function() { console.warn('[showToast] stub'); };
 
 // === STATUS ===
-function setStatus(text, type) {
-  const st = $("status"); const stt = $("status-text");
-  if (!stt) return;
-  stt.textContent = text;
-  window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
-  window.JST_LAST_STATUS_LANG = LANG;   // v1.6.5: язык статуса
-  if (st) st.className = "status" + (type ? " " + type : "");
-}
+/* setStatus moved to ui-helpers.js (Phase 5e) */
+var setStatus = (window.__jstHelpers && window.__jstHelpers.setStatus) || function() { console.warn('[setStatus] stub'); };
 
 // === PRESETS ===
 function rebuildPresetsSelect() {

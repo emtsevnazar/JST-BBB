@@ -38,6 +38,33 @@ function _translateStatus(text, fromLang, toLang) {
   }
   return text;
 }
-  window.__jstHelpers = { fmt: typeof fmt !== 'undefined' ? fmt : null, _translateStatus: typeof _translateStatus !== 'undefined' ? _translateStatus : null };
+  
+
+// ─── Phase 5e: DOM helpers ───
+function __jstContrast() {
+  return document.documentElement.getAttribute("data-theme") === "contrast";
+}
+
+function showToast(msg, type) {
+  let el = $("toast");
+  if (!el) { el = document.createElement("div"); el.id = "toast"; el.className = "toast"; document.body.appendChild(el); }
+  /* v59: ВСЕ toast — красные с ⚠️ (через CSS). JS только ставит текст. */
+  var cleanMsg = String(msg || "").replace(/^⚠\s*/, "");
+  el.textContent = cleanMsg;
+  el.className = "toast toast-error show";
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(function() { el.classList.remove("show"); }, 8000);
+}
+
+function setStatus(text, type) {
+  const st = $("status"); const stt = $("status-text");
+  if (!stt) return;
+  stt.textContent = text;
+  window.JST_LAST_STATUS = text;   // v1.6.3: для перерисовки при switch
+  window.JST_LAST_STATUS_LANG = LANG;   // v1.6.5: язык статуса
+  if (st) st.className = "status" + (type ? " " + type : "");
+}
+
+window.__jstHelpers = { fmt: typeof fmt !== 'undefined' ? fmt : null, _translateStatus: typeof _translateStatus !== 'undefined' ? _translateStatus : null, __jstContrast: typeof __jstContrast !== 'undefined' ? __jstContrast : null, showToast: typeof showToast !== 'undefined' ? showToast : null, setStatus: typeof setStatus !== 'undefined' ? setStatus : null };
   console.log("[JST ui-helpers] exports:", Object.keys(window.__jstHelpers));
 })();
