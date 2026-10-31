@@ -31,7 +31,7 @@ if not _audit_logger.handlers:
 def _classify(method: str, path: str) -> str:
     if path.startswith("/ws/synthesize"):
         return "synthesize"
-    if path.startswith("/api/mode"):
+    if path == "/api/mode" or path.startswith("/api/mode/") or path.startswith("/api/mode?"):
         return "mode_change"
     if path.startswith("/api/output"):
         return "list_output"
