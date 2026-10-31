@@ -49,5 +49,5 @@ def test_save_output_non_array():
         bit_depth = 16
         output_format = "wav"
 
-    with pytest.raises(TypeError, match="must be array-like"):
-        os_mod.save_output("not array", 24000, S(), "TEST")
+    with pytest.raises(TypeError, match="must be numpy.ndarray"):
+        os_mod.save_output(42, 24000, S(), "TEST")
