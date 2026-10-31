@@ -369,70 +369,8 @@ async function init() {
 window.addEventListener("load", init);
 
 // dropdown-blur: после клика по пункту меню — снимаем фокус с кнопки
-(function() {
-  document.addEventListener("click", function(e) {
-    var a = e.target.closest(".dropdown-menu a, .history-menu .history-list > div");
-    if (a) {
-      var dd = a.closest(".dropdown");
-      if (dd) {
-        var btn = dd.querySelector(":scope > .btn");
-        if (btn) setTimeout(function(){ btn.blur(); }, 30);
-      }
-    }
-    // Клик вне dropdown — снять фокус со всех кнопок
-    if (!e.target.closest(".dropdown")) {
-      document.querySelectorAll(".dropdown > .btn").forEach(function(b){ b.blur(); });
-    }
-  }, true);
-
-  // После клика на toggle — toggle открытие через класс .open (для мобильных)
-  document.querySelectorAll(".dropdown > .btn").forEach(function(btn) {
-    btn.addEventListener("click", function(e) {
-      var dd = btn.parentElement;
-      if (!dd) return;
-      // На тач-устройствах — toggle .open
-      if (matchMedia("(hover: none)").matches) {
-        document.querySelectorAll(".dropdown.open").forEach(function(other){
-          if (other !== dd) other.classList.remove("open");
-        });
-        dd.classList.toggle("open");
-      }
-    });
-  });
-})();
 
 // JST dropdown click-toggle: открыть/закрыть + blur после клика (точка гаснет)
-(function() {
-  function closeAll(except) {
-    document.querySelectorAll(".dropdown.open").forEach(function(d) {
-      if (d !== except) d.classList.remove("open");
-    });
-  }
-  document.querySelectorAll(".dropdown > .btn").forEach(function(btn) {
-    btn.addEventListener("click", function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var dd = btn.closest(".dropdown");
-      if (!dd) return;
-      closeAll(dd);
-      dd.classList.toggle("open");
-      btn.blur();            // ← точка гаснет после клика
-    });
-  });
-  document.querySelectorAll(".dropdown-menu a").forEach(function(a) {
-    a.addEventListener("click", function() {
-      var dd = a.closest(".dropdown");
-      if (dd) {
-        dd.classList.remove("open");
-        var b = dd.querySelector(":scope > .btn");
-        if (b) b.blur();
-      }
-    });
-  });
-  document.addEventListener("click", function(e) {
-    if (!e.target.closest(".dropdown")) closeAll(null);
-  });
-})();
 
 // === Инструкция: финальная версия — вынос заголовка в body, маска на viewport ===
 (function() {

@@ -218,3 +218,65 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else setTimeout(init, 80);
 })();
+
+/* [7/8] Dropdown closeAll #1 — blur on outside click + touch toggle */
+(function () {
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest(".dropdown-menu a, .history-menu .history-list > div");
+    if (a) {
+      var dd = a.closest(".dropdown");
+      if (dd) {
+        var btn = dd.querySelector(":scope > .btn");
+        if (btn) setTimeout(function () { btn.blur(); }, 30);
+      }
+    }
+    if (!e.target.closest(".dropdown")) {
+      document.querySelectorAll(".dropdown > .btn").forEach(function (b) { b.blur(); });
+    }
+  }, true);
+  document.querySelectorAll(".dropdown > .btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      var dd = btn.parentElement;
+      if (!dd) return;
+      if (matchMedia("(hover: none)").matches) {
+        document.querySelectorAll(".dropdown.open").forEach(function (other) {
+          if (other !== dd) other.classList.remove("open");
+        });
+        dd.classList.toggle("open");
+      }
+    });
+  });
+})();
+
+/* [8/8] Dropdown closeAll #2 — preventDefault + closeAll + toggle + blur */
+(function () {
+  function closeAll(except) {
+    document.querySelectorAll(".dropdown.open").forEach(function (d) {
+      if (d !== except) d.classList.remove("open");
+    });
+  }
+  document.querySelectorAll(".dropdown > .btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var dd = btn.closest(".dropdown");
+      if (!dd) return;
+      closeAll(dd);
+      dd.classList.toggle("open");
+      btn.blur();
+    });
+  });
+  document.querySelectorAll(".dropdown-menu a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      var dd = a.closest(".dropdown");
+      if (dd) {
+        dd.classList.remove("open");
+        var b = dd.querySelector(":scope > .btn");
+        if (b) b.blur();
+      }
+    });
+  });
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".dropdown")) closeAll(null);
+  });
+})();
