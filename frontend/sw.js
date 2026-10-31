@@ -5,12 +5,12 @@ const CACHE_OFFL = `jst-offl-${  VERSION}`;
 const PRECACHE = [
   '/error',
   '/offline',
-  '/static/style.css',
-  '/static/style-clean.css',
+  '/static/css/style.css',
+  '/static/css/style-clean.css',
   
-  '/static/help-fix.js',
-  '/static/dots.js',
-  '/static/wand.js',
+  '/static/js/help-fix.js',
+  '/static/js/dots.js',
+  '/static/js/wand.js',
   '/static/img/ph_b2.png',
   '/static/img/icon-192.png'
 ];
